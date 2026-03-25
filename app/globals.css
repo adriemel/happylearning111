@@ -208,7 +208,6 @@ body {
   font-family: var(--font-serif);
   font-size: 1.18rem;
   font-weight: 400;
-  font-style: italic;
   color: var(--text-primary);
   line-height: 1.35;
   flex-grow: 0;
@@ -238,6 +237,36 @@ body {
 
 .card:hover .open-label {
   color: var(--lime);
+}
+
+/* ── Stick figure ── */
+.title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.stick-figure {
+  flex-shrink: 0;
+  animation: figure-bounce 2s ease-in-out infinite;
+  margin-bottom: 6px;
+}
+
+.wave-arm {
+  transform-origin: 0px 0px;
+  animation: wave-arm 0.9s ease-in-out infinite;
+}
+
+@keyframes wave-arm {
+  0%, 100% { transform: rotate(10deg); }
+  50%       { transform: rotate(-65deg); }
+}
+
+@keyframes figure-bounce {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
 }
 
 /* ── Footer ── */
