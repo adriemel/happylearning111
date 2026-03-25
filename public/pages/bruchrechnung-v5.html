@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bruchrechnung</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0f13;--panel:#17171e;--card:#1e1e28;--border:rgba(255,255,255,0.07);--text:#eeeae2;--muted:#6a6880;--blue:#6eb5ff;--green:#5ddfb0;--yellow:#ffd166;--red:#ff6b6b;--purple:#c084fc}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:Nunito,sans-serif;min-height:100vh;padding:40px 20px 80px}
+h1{text-align:center;font-family:Lora,serif;font-size:clamp(24px,4vw,34px);font-weight:400;margin-bottom:6px}
+.sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:32px;font-family:JetBrains Mono,monospace;letter-spacing:.12em;text-transform:uppercase}
+.tabs{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:28px}
+.tab{padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;transition:all .18s}
+.tab:hover{color:var(--text);border-color:rgba(255,255,255,.15)}
+.tab.active{background:var(--card);color:var(--blue);border-color:var(--blue)}
+.ibox{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:32px 28px 26px;max-width:760px;margin:0 auto 28px}
+/* fraction with horizontal bar */
+.f{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px}
+.fn,.fd{font-family:Lora,serif;font-size:1.05em;line-height:1.15;text-align:center;min-width:1.2em;padding:0 1px}
+.fb{width:100%;min-width:1.4em;height:1.5px;background:currentColor;margin:2px 0}
+/* input fraction */
+.fi{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.fi input{width:52px;height:36px;text-align:center;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:Lora,serif;font-size:17px;outline:none;transition:border-color .2s}
+.fi input:focus{border-color:var(--blue)}
+.fi .fb{background:var(--muted);min-width:52px}
+.erow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:1.1em}
+.ob{display:inline-block;font-family:Lora,serif;font-size:24px;color:var(--yellow);padding:0 3px;vertical-align:middle}
+.pa{display:inline-block;font-family:Lora,serif;font-size:36px;color:var(--purple);line-height:.9;vertical-align:middle}
+.hint{text-align:center;margin-top:16px;font-size:12px;color:var(--muted);font-family:JetBrains Mono,monospace;min-height:16px}
+.btn{display:block;margin:20px auto 0;padding:11px 44px;background:var(--blue);border:none;border-radius:8px;color:#0a0a12;font-family:Nunito,sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:transform .15s,opacity .15s}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.sp{max-width:760px;margin:0 auto}
+.sb{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:10px;opacity:0;transform:translateY(10px);transition:opacity .32s ease,transform .32s ease}
+.sb.show{opacity:1;transform:translateY(0)}
+.sl{font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sl::after{content:'';flex:1;height:1px;background:var(--border)}
+.sn{width:20px;height:20px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.se{font-size:1.18em;line-height:2.6;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.sx{font-size:13px;color:var(--muted);margin-top:9px;line-height:1.65}
+.sx em{color:var(--text);font-style:normal}
+.rb{background:linear-gradient(135deg,rgba(93,223,176,.08),rgba(110,181,255,.08));border:1px solid rgba(93,223,176,.28);border-radius:10px;padding:22px 26px;margin-bottom:10px;display:flex;align-items:center;gap:22px;opacity:0;transform:translateY(10px);transition:opacity .4s ease,transform .4s ease}
+.rb.show{opacity:1;transform:translateY(0)}
+.ri{font-size:13.5px;color:var(--muted);line-height:1.8}
+.ri strong{color:var(--green)}
+.rule{background:rgba(110,181,255,.06);border:1px solid rgba(110,181,255,.15);border-left:3px solid var(--blue);border-radius:6px;padding:10px 14px;font-size:13px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rule em{color:var(--blue);font-style:normal;font-weight:700}
+/* kuerzen visual: strikethrough + small green above */
+.rw{display:inline-flex;flex-direction:column;align-items:center;position:relative;vertical-align:middle;margin:0 1px}
+.ro{font-family:Lora,serif;font-size:1em;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px;line-height:1.15}
+.rn{font-family:Lora,serif;font-size:.68em;color:var(--green);font-style:italic;font-weight:600;position:absolute;top:-.9em;right:-.55em}
+.eq{display:inline-block;color:var(--muted);font-size:20px;vertical-align:middle;font-family:Lora,serif;margin:0 8px}
+</style>
+</head>
+<body>
+<h1>Bruchrechnung</h1>
+<div class="sub">komplette Gleichung bei jedem Schritt &mdash; so fr&uuml;h wie m&ouml;glich k&uuml;rzen</div>
+<div class="tabs">
+  <button class="tab active" onclick="M('add')">a + b</button>
+  <button class="tab" onclick="M('sub')">a &minus; b</button>
+  <button class="tab" onclick="M('mul')">a &times; b</button>
+  <button class="tab" onclick="M('div')">a &divide; b</button>
+  <button class="tab" onclick="M('pbs')">Punkt vor Strich</button>
+  <button class="tab" onclick="M('kl')">(a+b) &times; c</button>
+  <button class="tab" onclick="M('ko')">(a+b) &times; c &minus; d</button>
+</div>
+<div class="ibox">
+  <div class="erow" id="IR"></div>
+  <div class="hint" id="HT"></div>
+  <button class="btn" onclick="calc()">L&ouml;sen &amp; Erkl&auml;ren &rarr;</button>
+</div>
+<div class="sp" id="SP"></div>
+
+<script>
+// ── GLOBALS ───────────────────────────────────────────────────────
+var mode = 'add';
+var DEF = {add:[2,3,3,4], sub:[5,6,1,4], mul:[2,3,3,5], div:[5,6,2,3],
+           pbs:[2,3,1,4,3,5], kl:[1,4,1,3,1,7], ko:[2,3,1,4,3,5,1,6]};
+var HINTS = {add:'Gemeinsamen Nenner finden, dann Z\u00e4hler addieren',
+             sub:'Gemeinsamen Nenner finden, dann Z\u00e4hler subtrahieren',
+             mul:'Z\u00e4hler \u00d7 Z\u00e4hler, Nenner \u00d7 Nenner',
+             div:'\u00f7 wird zu \u00d7 mit dem Kehrbruch',
+             pbs:'Punkt vor Strich: \u00d7 zuerst, dann +',
+             kl:'Klammer zuerst, dann \u00d7',
+             ko:'Klammer \u2192 \u00d7 \u2192 \u2212'};
+
+// ── HTML HELPERS ──────────────────────────────────────────────────
+// Plain fraction with horizontal bar
+function F(n, d) {
+  return '<span class="f"><span class="fn">' + n + '</span><span class="fb"></span><span class="fd">' + d + '</span></span>';
+}
+// Colored fraction
+function Fc(n, d, col) {
+  return F('<span style="color:'+col+'">'+n+'</span>', '<span style="color:'+col+'">'+d+'</span>');
+}
+function Fb(n,d){ return Fc(n,d,'var(--blue)'); }
+function Fp(n,d){ return Fc(n,d,'var(--purple)'); }
+function Fy(n,d){ return Fc(n,d,'var(--yellow)'); }
+function Fg(n,d){ return Fc(n,d,'var(--muted)'); }   // grey = waiting
+function Fgr(n,d){ return Fc(n,d,'var(--green)'); }  // green = result
+
+// Kuerzen visual: old crossed out, new small italic above
+function Fk(oN, oD, nN, nD) {
+  var top = '<span class="rw"><span class="ro">'+oN+'</span><span class="rn">'+nN+'</span></span>';
+  var bot = '<span class="rw"><span class="ro">'+oD+'</span><span class="rn">'+nD+'</span></span>';
+  return '<span class="f">'+top+'<span class="fb" style="min-width:1.6em;background:var(--muted)"></span>'+bot+'</span>';
+}
+// Input fraction
+function FI(id, n, d) {
+  return '<span class="fi"><input type="number" id="'+id+'n" value="'+n+'" min="-99" max="99">' +
+         '<span class="fb"></span>' +
+         '<input type="number" id="'+id+'d" value="'+d+'" min="1" max="99"></span>';
+}
+function OP(s, grey) {
+  return '<span class="ob"' + (grey ? ' style="color:var(--muted)"' : '') + '>' + s + '</span>';
+}
+function EQ(){ return '<span class="eq">=</span>'; }
+function PAR(s){ return '<span class="pa">'+s+'</span>'; }
+
+// ── MATH ──────────────────────────────────────────────────────────
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); return b===0?a:gcd(b,a%b); }
+function lcm(a,b){ return Math.abs(a*b)/gcd(a,b); }
+function gv(id){ return {n:parseInt(document.getElementById(id+'n').value)||1, d:parseInt(document.getElementById(id+'d').value)||1}; }
+function sp(n,d){ var g=gcd(Math.abs(n),Math.abs(d)); return {n:n/g,d:d/g}; }
+
+// ── STEPS ARRAY ───────────────────────────────────────────────────
+var steps = [];
+function step(title, expr, xpl, rule) {
+  steps.push({title:title, expr:expr, xpl:xpl||null, rule:rule||null});
+}
+
+// ── CORE: ADD/SUB ─────────────────────────────────────────────────
+// pre/suf: the grey context that surrounds this addition in the full equation
+// Returns the simplified result {n,d}
+function doAddSub(a, b, sign, pre, suf) {
+  var L = lcm(a.d, b.d);
+  var aN = a.n * (L/a.d);
+  var bN = b.n * (L/b.d);
+  var rN = sign==='+' ? aN+bN : aN-bN;
+  var s  = sp(rN, L);
+  var g  = gcd(Math.abs(rN), L);
+
+  // Step 1+2 merged: find LCD and expand in one step
+  if (a.d === b.d) {
+    // Same denominator — skip LCD step entirely
+  } else {
+    step('Gemeinsamen Nenner: kgV(' + a.d + ', ' + b.d + ') = ' + L,
+      pre + Fb(a.n,a.d) + OP(sign) + Fp(b.n,b.d) + suf +
+      EQ() +
+      pre + Fb(aN,L) + OP(sign) + Fp(bN,L) + suf,
+      'kgV von <em>' + a.d + '</em> und <em>' + b.d + '</em> ist <em>' + L + '</em>. Beide Br\u00fcche erweitern.'
+    );
+  }
+
+  // Step 3: compute numerator — direct to result, no (a+b)/L intermediate
+  step('Z\u00e4hler ' + (sign==='+'?'addieren':'subtrahieren'),
+    pre + Fb(aN,L) + OP(sign) + Fp(bN,L) + suf +
+    EQ() +
+    pre + F(rN, L) + suf,
+    'Nenner bleibt <em>' + L + '</em>. Z\u00e4hler: <em>' + aN + ' ' + sign + ' ' + bN + ' = ' + rN + '</em>.'
+  );
+
+  // Step 4: simplify immediately if possible
+  if (g > 1) {
+    step('Sofort k\u00fcrzen durch ' + g,
+      pre + Fk(rN, L, s.n, s.d) + suf +
+      EQ() +
+      pre + Fgr(s.n, s.d) + suf,
+      'Immer sofort k\u00fcrzen \u2014 auch wenn noch mehr kommt.'
+    );
+  }
+  return s;
+}
+
+// ── CORE: MUL ─────────────────────────────────────────────────────
+function doMul(a, b, pre, suf) {
+  // Cross-cancel BEFORE multiplying: gcd(a.n, b.d) and gcd(b.n, a.d)
+  var g1 = gcd(Math.abs(a.n), Math.abs(b.d));
+  var g2 = gcd(Math.abs(b.n), Math.abs(a.d));
+  var aN=a.n, aD=a.d, bN=b.n, bD=b.d;
+  var didCross = (g1>1 || g2>1);
+
+  if (didCross) {
+    // Show cross-cancellation step
+    // Build the visual: show which numbers get cancelled
+    var expr = pre;
+    // Left fraction: top=aN cross with bD (g1), bottom=aD cross with bN (g2)
+    var topL = g1>1 ? '<span class="rw"><span class="ro">'+aN+'</span><span class="rn">'+(aN/g1)+'</span></span>' : '<span style="color:var(--blue)">'+aN+'</span>';
+    var botL = g2>1 ? '<span class="rw"><span class="ro">'+aD+'</span><span class="rn">'+(aD/g2)+'</span></span>' : '<span style="color:var(--blue)">'+aD+'</span>';
+    var topR = g2>1 ? '<span class="rw"><span class="ro">'+bN+'</span><span class="rn">'+(bN/g2)+'</span></span>' : '<span style="color:var(--purple)">'+bN+'</span>';
+    var botR = g1>1 ? '<span class="rw"><span class="ro">'+bD+'</span><span class="rn">'+(bD/g1)+'</span></span>' : '<span style="color:var(--purple)">'+bD+'</span>';
+    expr += '<span class="f">'+topL+'<span class="fb" style="min-width:1.4em"></span>'+botL+'</span>';
+    expr += OP('\u00d7');
+    expr += '<span class="f">'+topR+'<span class="fb" style="min-width:1.4em"></span>'+botR+'</span>';
+    expr += suf;
+
+    // Simplified fractions after cross-cancel
+    aN = aN/g1; aD = aD/g2; bN = bN/g2; bD = bD/g1;
+    expr += EQ() + pre + Fb(aN,aD) + OP('\u00d7') + Fp(bN,bD) + suf;
+
+    var parts = [];
+    if (g1>1) parts.push('Z\u00e4hler links \u00f7 Nenner rechts durch <em>'+g1+'</em>');
+    if (g2>1) parts.push('Z\u00e4hler rechts \u00f7 Nenner links durch <em>'+g2+'</em>');
+    step('Erst k\u00fcrzen \u2014 kreuzweise',
+      expr,
+      parts.join('. ')+'.',
+      '<em>Kreuzk\u00fcrzen:</em> Z\u00e4hler und gegen\u00fcberliegenden Nenner k\u00fcrzen \u2014 vor dem Multiplizieren.'
+    );
+  }
+
+  // Now multiply the (possibly simplified) values
+  var rN = aN*bN, rD = aD*bD;
+  var s  = sp(rN, rD);
+  var g  = gcd(Math.abs(rN), rD);
+
+  step('Z\u00e4hler \u00d7 Z\u00e4hler, Nenner \u00d7 Nenner',
+    pre + Fb(aN,aD) + OP('\u00d7') + Fp(bN,bD) + suf +
+    EQ() +
+    pre + F(rN, rD) + suf,
+    (didCross ? 'Durch vorheriges K\u00fcrzen bleiben die Zahlen klein.' : 'Z\u00e4hler mal Z\u00e4hler, Nenner mal Nenner.')
+  );
+
+  if (g > 1) {
+    step('Noch weiter k\u00fcrzen durch ' + g,
+      pre + Fk(rN, rD, s.n, s.d) + suf +
+      EQ() +
+      pre + Fgr(s.n, s.d) + suf,
+      'Noch weiter k\u00fcrzen.'
+    );
+  }
+  return s;
+}
+
+// ── MODE SETUP ────────────────────────────────────────────────────
+function M(m) {
+  mode = m;
+  document.querySelectorAll('.tab').forEach(function(t,i){
+    t.classList.toggle('active', ['add','sub','mul','div','pbs','kl','ko'][i] === m);
+  });
+  var d = DEF[m], r = document.getElementById('IR');
+  if (m==='add') r.innerHTML = FI('a',d[0],d[1])+OP('+')+FI('b',d[2],d[3]);
+  else if(m==='sub') r.innerHTML = FI('a',d[0],d[1])+OP('\u2212')+FI('b',d[2],d[3]);
+  else if(m==='mul') r.innerHTML = FI('a',d[0],d[1])+OP('\u00d7')+FI('b',d[2],d[3]);
+  else if(m==='div') r.innerHTML = FI('a',d[0],d[1])+OP('\u00f7')+FI('b',d[2],d[3]);
+  else if(m==='pbs') r.innerHTML = FI('a',d[0],d[1])+OP('+')+FI('b',d[2],d[3])+OP('\u00d7')+FI('c',d[4],d[5]);
+  else if(m==='kl')  r.innerHTML = PAR('(')+FI('a',d[0],d[1])+OP('+')+FI('b',d[2],d[3])+PAR(')')+OP('\u00d7')+FI('c',d[4],d[5]);
+  else if(m==='ko')  r.innerHTML = PAR('(')+FI('a',d[0],d[1])+OP('+')+FI('b',d[2],d[3])+PAR(')')+OP('\u00d7')+FI('c',d[4],d[5])+OP('\u2212')+FI('d',d[6],d[7]);
+  document.getElementById('HT').textContent = HINTS[m];
+  document.getElementById('SP').innerHTML = '';
+}
+
+// ── CALCULATE ─────────────────────────────────────────────────────
+function calc() {
+  steps = [];
+  var result;
+
+  if (mode==='add' || mode==='sub') {
+    var a=gv('a'), b=gv('b'), sign=mode==='add'?'+':'\u2212';
+    step('Aufgabe', Fb(a.n,a.d)+OP(sign)+Fp(b.n,b.d));
+    result = doAddSub(a, b, sign, '', '');
+
+  } else if (mode==='mul') {
+    var a=gv('a'), b=gv('b');
+    step('Aufgabe', F(a.n,a.d)+OP('\u00d7')+F(b.n,b.d));
+    result = doMul(a, b, '', '');
+
+  } else if (mode==='div') {
+    var a=gv('a'), b=gv('b'), kb={n:b.d,d:b.n};
+    step('Aufgabe', F(a.n,a.d)+OP('\u00f7')+F(b.n,b.d));
+    step('Kehrbruch: \u00f7 wird zu \u00d7',
+      F(a.n,a.d)+OP('\u00f7')+F(b.n,b.d)+EQ()+F(a.n,a.d)+OP('\u00d7')+Fy(kb.n,kb.d),
+      '\u00f7 wird zu \u00d7 \u2014 zweiten Bruch umdrehen.',
+      '<em>Regel:</em> \u00f7 '+F(b.n,b.d)+' = \u00d7 '+F(b.d,b.n)
+    );
+    result = doMul(a, kb, '', '');
+
+  } else if (mode==='pbs') {
+    // a + b*c
+    // Rule: every step shows the FULL equation
+    // grey prefix = the part that waits
+    var a=gv('a'), b=gv('b'), c=gv('c');
+    step('Aufgabe',
+      F(a.n,a.d)+OP('+')+F(b.n,b.d)+OP('\u00d7')+F(c.n,c.d),
+      null,
+      '<em>Punkt vor Strich:</em> \u00d7 vor + \u2014 egal wo es steht.'
+    );
+
+    // The grey "a +" prefix that always stays visible
+    var gPre = Fg(a.n,a.d) + OP('+',true);
+
+    // Show: full equation, highlight the × part
+    step('Schritt \u2460 \u00d7 zuerst \u2014 der + Teil wartet',
+      gPre + Fb(b.n,b.d) + OP('\u00d7') + Fp(c.n,c.d),
+      'Der <em>graue</em> Teil ('+a.n+'/'+a.d+') wartet. Erst \u00d7 berechnen.'
+    );
+
+    // multiply b*c — with grey prefix always present
+    var bc = doMul(b, c, gPre, '');
+
+    // Now add: a + bc. Full equation at every sub-step.
+    step('Schritt \u2461 Jetzt addieren: \u00d7 ist erledigt',
+      Fb(a.n,a.d) + OP('+') + Fy(bc.n,bc.d),
+      '\u00d7 fertig \u2014 Ergebnis ist <em>'+bc.n+'/'+bc.d+'</em>. Jetzt addieren.'
+    );
+    result = doAddSub(a, bc, '+', '', '');
+
+  } else if (mode==='kl') {
+    // (a+b) * c
+    var a=gv('a'), b=gv('b'), c=gv('c');
+    // grey suffix = × c, stays visible at every klammer step
+    var gSuf = OP('\u00d7',true) + Fg(c.n,c.d);
+
+    step('Aufgabe',
+      PAR('(')+F(a.n,a.d)+OP('+')+F(b.n,b.d)+PAR(')')+OP('\u00d7')+F(c.n,c.d),
+      null,
+      '<em>Klammer zuerst:</em> Klammer vor \u00d7 \u2014 immer.'
+    );
+
+    // Klammer steps — show × c greyed throughout
+    var Lk=lcm(a.d,b.d), akN=a.n*(Lk/a.d), bkN=b.n*(Lk/b.d);
+    var abS=akN+bkN, abR=sp(abS,Lk), gk=gcd(Math.abs(abS),Lk);
+
+    step('Schritt \u2460 Klammer: kgV('+a.d+','+b.d+')='+Lk,
+      PAR('(')+Fb(a.n,a.d)+OP('+')+Fp(b.n,b.d)+PAR(')') + gSuf +
+      EQ() +
+      PAR('(')+Fb(akN,Lk)+OP('+')+Fp(bkN,Lk)+PAR(')') + gSuf +
+      EQ() +
+      PAR('(')+F(abS,Lk)+PAR(')') + gSuf,
+      '\u00d7 '+c.n+'/'+c.d+' wartet <em>grau</em>. Erst Klammer berechnen.'
+    );
+
+    if (gk>1) {
+      step('Sofort k\u00fcrzen durch '+gk,
+        PAR('(')+Fk(abS,Lk,abR.n,abR.d)+PAR(')') + gSuf +
+        EQ() +
+        PAR('(')+Fy(abR.n,abR.d)+PAR(')') + gSuf,
+        'Sofort k\u00fcrzen \u2014 \u00d7 bleibt grau sichtbar.'
+      );
+    }
+    var ab = abR;
+
+    // multiply ab * c
+    step('Schritt \u2461 Klammer = '+ab.n+'/'+ab.d+' \u2014 jetzt \u00d7',
+      Fy(ab.n,ab.d)+OP('\u00d7')+Fb(c.n,c.d),
+      'Klammer-Ergebnis: <em>'+ab.n+'/'+ab.d+'</em>. Jetzt multiplizieren.'
+    );
+    result = doMul(ab, c, '', '');
+
+  } else if (mode==='ko') {
+    // (a+b)*c - d
+    var a=gv('a'), b=gv('b'), c=gv('c'), d=gv('d');
+    var gDsuf = OP('\u2212',true) + Fg(d.n,d.d);
+    var gCDsuf = OP('\u00d7',true) + Fg(c.n,c.d) + gDsuf;
+
+    step('Aufgabe',
+      PAR('(')+F(a.n,a.d)+OP('+')+F(b.n,b.d)+PAR(')')+OP('\u00d7')+F(c.n,c.d)+OP('\u2212')+F(d.n,d.d),
+      null,
+      '<em>Reihenfolge:</em> \u2460 Klammer \u2192 \u2461 \u00d7 \u2192 \u2462 \u2212'
+    );
+
+    // Schritt 1: Klammer — show ×c −d greyed throughout
+    var Lkk=lcm(a.d,b.d), ak2=a.n*(Lkk/a.d), bk2=b.n*(Lkk/b.d);
+    var abS2=ak2+bk2, ab2R=sp(abS2,Lkk), gkk=gcd(Math.abs(abS2),Lkk);
+
+    step('Schritt \u2460 Klammer: kgV('+a.d+','+b.d+')='+Lkk,
+      PAR('(')+Fb(a.n,a.d)+OP('+')+Fp(b.n,b.d)+PAR(')') + gCDsuf +
+      EQ() +
+      PAR('(')+Fb(ak2,Lkk)+OP('+')+Fp(bk2,Lkk)+PAR(')') + gCDsuf +
+      EQ() +
+      PAR('(')+F(abS2,Lkk)+PAR(')') + gCDsuf,
+      '\u00d7 und \u2212 warten <em>grau</em>. Erst Klammer.'
+    );
+    if (gkk>1) {
+      step('Sofort k\u00fcrzen durch '+gkk,
+        PAR('(')+Fk(abS2,Lkk,ab2R.n,ab2R.d)+PAR(')') + gCDsuf +
+        EQ() +
+        PAR('(')+Fy(ab2R.n,ab2R.d)+PAR(')') + gCDsuf,
+        'Sofort k\u00fcrzen \u2014 alles andere bleibt sichtbar.'
+      );
+    }
+    var ab2 = ab2R;
+
+    // Schritt 2: multiply ab2*c — show −d greyed
+    step('Schritt \u2461 Klammer = '+ab2.n+'/'+ab2.d+' \u2014 jetzt \u00d7',
+      Fy(ab2.n,ab2.d)+OP('\u00d7')+Fb(c.n,c.d) + gDsuf,
+      '\u2212 wartet <em>grau</em>. Erst \u00d7 berechnen.'
+    );
+    // multiply ab2*c — using doMul with grey suffix for -d
+    var abc = doMul(ab2, c, '', gDsuf);
+
+    // Schritt 3: subtract abc - d
+    step('Schritt \u2462 Jetzt subtrahieren: \u00d7 ist erledigt',
+      Fb(abc.n,abc.d) + OP('\u2212') + Fp(d.n,d.d),
+      '\u00d7 fertig \u2014 Ergebnis ist <em>'+abc.n+'/'+abc.d+'</em>. Jetzt subtrahieren.'
+    );
+    result = doAddSub(abc, d, '\u2212', '', '');
+  }
+
+  // ── RENDER ────────────────────────────────────────────────────
+  var html = '';
+  steps.forEach(function(s, i) {
+    html += '<div class="sb" id="sb'+i+'">';
+    html += '<div class="sl"><span class="sn">'+i+'</span>'+s.title+'</div>';
+    html += '<div class="se">'+s.expr+'</div>';
+    if (s.xpl)  html += '<div class="sx">'+s.xpl+'</div>';
+    if (s.rule) html += '<div class="rule">'+s.rule+'</div>';
+    html += '</div>';
+  });
+  var dec = (result.n/result.d).toFixed(4).replace(/\.?0+$/, '');
+  var extra = result.n>result.d ? 'Gr\u00f6\u00dfer als 1 \u2014 mehr als ein Ganzes' : (result.n<0?'Negativer Bruch':'');
+  html += '<div class="rb" id="RB">' +
+    '<div style="font-size:2em">'+Fgr(result.n,result.d)+'</div>' +
+    '<div class="ri"><strong>Ergebnis: '+result.n+'/'+result.d+'</strong><br>Dezimal \u2248 '+dec+
+    (extra?'<br><span style="color:var(--yellow)">'+extra+'</span>':'')+
+    '</div></div>';
+
+  document.getElementById('SP').innerHTML = html;
+  var delay = 0;
+  steps.forEach(function(_, i) {
+    setTimeout(function(){ var e=document.getElementById('sb'+i); if(e) e.classList.add('show'); }, delay);
+    delay += 110;
+  });
+  setTimeout(function(){ var r=document.getElementById('RB'); if(r) r.classList.add('show'); }, delay+80);
+}
+
+M('add');
+</script>
+</body>
+</html>

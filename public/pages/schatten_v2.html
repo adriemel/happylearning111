@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optik – Licht & Schatten</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    --ink: #0f0e0b;
+    --paper: #f5f0e8;
+    --warm: #e8c84a;
+    --cold: #7ab8e8;
+    --green: #5ab87a;
+    --blue-ray: #7ab8e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 40px 24px;
+    background-image:
+      radial-gradient(circle at 15% 75%, rgba(232,200,74,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 85% 25%, rgba(122,184,232,0.07) 0%, transparent 50%);
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.3rem, 3vw, 2.2rem);
+    line-height: 1.1;
+    margin-bottom: 8px;
+    margin-top: 64px;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a6e5a;
+    margin-bottom: 40px;
+  }
+
+  .step-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #9a8e7a;
+    margin-bottom: 8px;
+    max-width: 760px;
+  }
+
+  .canvas-wrap {
+    max-width: 760px;
+    display: flex;
+    align-items: stretch;
+  }
+
+  canvas {
+    flex: 1;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--ink);
+    display: block;
+  }
+
+  .vslider-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 10px;
+    border: 1.5px solid var(--ink);
+    border-left: none;
+    background: rgba(240,234,220,0.7);
+    min-width: 48px;
+  }
+
+  .vslider-col .vlabel {
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a6e5a;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    white-space: nowrap;
+  }
+
+  input.vrange {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    width: 22px;
+    height: 160px;
+    cursor: ns-resize;
+    accent-color: var(--ink);
+  }
+
+  .controls {
+    max-width: 760px;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ctrl-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.74rem;
+  }
+
+  .ctrl-label {
+    min-width: 190px;
+    color: #5a5040;
+  }
+
+  .ctrl-label strong { color: var(--ink); }
+
+  input.hrange {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background: var(--ink);
+    width: 200px;
+    cursor: pointer;
+    flex-shrink: 0;
+    accent-color: var(--ink);
+  }
+
+  input.hrange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px; height: 13px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+
+  input.hrange::-moz-range-thumb {
+    width: 13px; height: 13px;
+    background: var(--ink);
+    border-radius: 50%;
+    border: none;
+  }
+
+  .val {
+    font-size: 0.68rem;
+    color: #9a8e7a;
+    min-width: 28px;
+  }
+
+  /* ── Toggle switches ── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 16px;
+    max-width: 760px;
+  }
+
+  .toggle-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.74rem;
+    color: #5a5040;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-switch {
+    width: 44px;
+    height: 22px;
+    border-radius: 2px;
+    border: 1.5px solid var(--ink);
+    background: #d0c9b8;
+    position: relative;
+    transition: background 0.2s;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch.on-warm { background: #c8a020; border-color: #a07818; }
+  .toggle-switch.on-cold { background: #3a80c8; border-color: #2060a0; }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    border-radius: 1px;
+    background: var(--paper);
+    transition: transform 0.18s;
+  }
+
+  .toggle-switch.on-warm::after,
+  .toggle-switch.on-cold::after { transform: translateX(22px); }
+
+  .toggle-hint {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9a8e7a;
+  }
+
+  /* ── Legend & explanation ── */
+  .explanation { max-width: 760px; margin-top: 28px; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+  }
+
+  .swatch {
+    width: 20px;
+    height: 12px;
+    border: 1px solid rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+
+  .text-block {
+    font-size: 0.8rem;
+    line-height: 1.85;
+    color: #2a251e;
+    border-left: 3px solid var(--ink);
+    padding-left: 16px;
+  }
+
+  /* ── Section 2 buttons ── */
+  .scene-controls {
+    max-width: 760px;
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .btn:hover { background: rgba(0,0,0,0.06); }
+
+  .btn.active-warm {
+    background: #c8a020;
+    color: #f5f0e8;
+    border-color: #a07818;
+  }
+
+  .btn.active-obj {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-group-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #9a8e7a;
+  }
+
+  .divider {
+    max-width: 760px;
+    height: 1px;
+    background: rgba(15,14,11,0.18);
+    margin: 60px 0 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — Kernschatten / Zwei Lichtquellen
+════════════════════════════════════════════ -->
+<h1>Schattenbildung<br>bei zwei Lichtquellen</h1>
+<p class="subtitle">Optik · Geometrische Strahlenoptik · Kern- und Halbschatten</p>
+
+<div class="step-label">Interaktiv — Lichtquellen &amp; Kugel verschieben · Quellen ein-/ausschalten</div>
+
+<div class="canvas-wrap">
+  <canvas id="canvasA" width="680" height="400"></canvas>
+  <div class="vslider-col">
+    <span class="vlabel">Kugelhöhe</span>
+    <input type="range" class="vrange" id="sliderBallY"
+           min="0" max="100" value="48"
+           oninput="drawA()">
+    <span class="val" id="valBall" style="font-size:0.58rem;color:#9a8e7a;"></span>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="ctrl-row">
+    <span class="ctrl-label"><strong>Abstand</strong> L₁ ↔ L₂</span>
+    <input type="range" class="hrange" id="sliderSpread"
+           min="30" max="340" value="150"
+           oninput="drawA()">
+    <span class="val" id="valSpread"></span>
+  </div>
+</div>
+
+<div class="toggle-row">
+  <div class="toggle-item" onclick="toggleL(1)">
+    <div class="toggle-switch on-warm" id="toggleL1"></div>
+    <span><strong style="color:#b8900a;">L₁</strong> (warm) an/aus</span>
+  </div>
+  <div class="toggle-item" onclick="toggleL(2)">
+    <div class="toggle-switch on-cold" id="toggleL2"></div>
+    <span><strong style="color:#2a7ab8;">L₂</strong> (kalt) an/aus</span>
+  </div>
+  <span class="toggle-hint">← Quelle abschalten → Unterschied sehen</span>
+</div>
+
+<div class="explanation">
+  <div class="legend">
+    <div class="legend-item">
+      <div class="swatch" style="background:#e8c84a;"></div>
+      <span style="color:#b8900a;font-weight:500;">Lichtquelle L₁ (warm)</span>
+    </div>
+    <div class="legend-item">
+      <div class="swatch" style="background:#7ab8e8;"></div>
+      <span style="color:#2a7ab8;font-weight:500;">Lichtquelle L₂ (kalt)</span>
+    </div>
+    <div class="legend-item">
+      <div class="swatch" style="background:rgba(60,45,16,0.75); border-color:#777;"></div>
+      <span>Halbschatten von L₁</span>
+    </div>
+    <div class="legend-item">
+      <div class="swatch" style="background:rgba(16,30,60,0.75); border-color:#777;"></div>
+      <span>Halbschatten von L₂</span>
+    </div>
+    <div class="legend-item">
+      <div class="swatch" style="background:rgba(185,38,118,0.92);"></div>
+      <span style="color:#b02878;font-weight:500;">Kernschatten — kein Licht</span>
+    </div>
+  </div>
+  <div class="text-block">
+    Mit zwei Quellen: Jede wirft einen <strong>Halbschatten</strong> — der noch Licht von der <em>anderen</em> Quelle erhält. Wo sich beide Schatten überlagern (<span style="color:#b02878;font-weight:500;">violett</span>), kommt von keiner Quelle Licht an — das ist der <strong>Kernschatten</strong>. Schalte L₁ oder L₂ ab: mit nur einer Quelle gibt es keinen Halbschatten, nur einen einzigen scharfen Schatten — und keinen Kernschatten mehr.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — Sender–Empfänger–Modell
+════════════════════════════════════════════ -->
+<div class="divider"></div>
+
+<h2>Licht, Quellen &amp; Sehen</h2>
+<p class="subtitle">Sender–Empfänger–Modell · Direktes &amp; reflektiertes Licht</p>
+
+<div class="step-label">Taschenlampen &amp; Objekte ein-/ausschalten · Lichtstrahlen zum Beobachter beobachten</div>
+
+<div class="canvas-wrap">
+  <canvas id="canvasB" width="680" height="390"></canvas>
+</div>
+
+<div class="scene-controls">
+  <span class="btn-group-label">Lichtquellen:</span>
+  <button class="btn active-warm" id="btnFlash1" onclick="toggleFlash(1)">⚡ T1 (links) AN</button>
+  <button class="btn active-warm" id="btnFlash2" onclick="toggleFlash(2)" style="border-color:#4a9adc;">⚡ T2 (rechts) AN</button>
+
+  <span class="btn-group-label" style="margin-left:10px;">Objekte:</span>
+  <button class="btn active-obj" id="btnBuch" onclick="toggleObj('buch')">Buch</button>
+  <button class="btn active-obj" id="btnBall" onclick="toggleObj('ball')">Ball</button>
+</div>
+
+<div class="explanation" style="margin-top:20px;">
+  <div class="legend">
+    <div class="legend-item">
+      <div class="swatch" style="background:#ffe566; border-color:#c8a020;"></div>
+      <span style="color:#a07010;font-weight:500;">T1 → direktes Licht (Quelle gerade zum Auge)</span>
+    </div>
+    <div class="legend-item">
+      <div class="swatch" style="background:#6ad48a; border-color:#2a8a4a;"></div>
+      <span style="color:#1a7a3a;font-weight:500;">T2 → reflektiertes Licht (Objekt → Auge)</span>
+    </div>
+    <div class="legend-item">
+      <div class="swatch" style="background:rgba(10,8,4,0.62); border-color:#666;"></div>
+      <span>Schatten (kein Licht von dieser Quelle)</span>
+    </div>
+  </div>
+  <div class="text-block">
+    <strong>T1 (links)</strong> zeigt <em>direktes Licht</em>: der Lichtstrahl geht ohne Umweg geradewegs von der Quelle zum Auge des Beobachters. <strong>T2 (oben)</strong> zeigt <em>reflektiertes Licht</em>: T2 beleuchtet Buch und Ball — die senden kein eigenes Licht, sie <em>reflektieren</em> das auftreffende Licht diffus in alle Richtungen, auch zum Beobachter hin. <strong>Sehen</strong> braucht immer Licht im Auge — entweder direkt oder als Reflexion. Schalte beide Lampen aus: alles dunkel.
+  </div>
+</div>
+
+
+<script>
+// ═════════════════════════════════════════
+//  ANIMATION A  —  Kern- und Halbschatten
+// ═════════════════════════════════════════
+const WARM = '#e8c84a';
+const COLD  = '#7ab8e8';
+
+let l1on = true, l2on = true;
+
+function toggleL(n) {
+  if (n === 1) {
+    l1on = !l1on;
+    const sw = document.getElementById('toggleL1');
+    sw.classList.toggle('on-warm', l1on);
+  } else {
+    l2on = !l2on;
+    const sw = document.getElementById('toggleL2');
+    sw.classList.toggle('on-cold', l2on);
+  }
+  drawA();
+}
+
+function drawA() {
+  const canvas = document.getElementById('canvasA');
+  const ctx    = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const spread   = parseInt(document.getElementById('sliderSpread').value);
+  const ballYPct = parseInt(document.getElementById('sliderBallY').value);
+
+  document.getElementById('valSpread').textContent = spread + ' px';
+  document.getElementById('valBall').textContent =
+    ballYPct < 33 ? 'hoch' : ballYPct < 66 ? 'Mitte' : 'tief';
+
+  const floor    = H - 44;
+  const lightsY  = 54;
+  const ballR    = 34;
+  const ballYMin = lightsY + ballR + 24;
+  const ballYMax = floor   - ballR - 8;
+  const ballY    = ballYMax - (ballYPct / 100) * (ballYMax - ballYMin);
+  const obj      = { x: W / 2, y: ballY, r: ballR };
+
+  const L1 = { x: W/2 - spread/2, y: lightsY };
+  const L2 = { x: W/2 + spread/2, y: lightsY };
+
+  // — Background —
+  ctx.fillStyle = '#bbb5a8';
+  ctx.fillRect(0, 0, W, H);
+  const amb = ctx.createLinearGradient(0, 0, 0, H);
+  amb.addColorStop(0, 'rgba(255,252,240,0.22)');
+  amb.addColorStop(1, 'rgba(0,0,0,0.12)');
+  ctx.fillStyle = amb;
+  ctx.fillRect(0, 0, W, H);
+
+  // — Light halos (stronger) —
+  if (l1on) {
+    const g1 = ctx.createRadialGradient(L1.x, L1.y, 0, L1.x, L1.y, 340);
+    g1.addColorStop(0,   'rgba(232,200,74,0.90)');
+    g1.addColorStop(0.15,'rgba(232,200,74,0.60)');
+    g1.addColorStop(0.45,'rgba(232,200,74,0.22)');
+    g1.addColorStop(1,   'transparent');
+    ctx.save(); ctx.globalAlpha = 1;
+    ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+  if (l2on) {
+    const g2 = ctx.createRadialGradient(L2.x, L2.y, 0, L2.x, L2.y, 340);
+    g2.addColorStop(0,   'rgba(122,184,232,0.90)');
+    g2.addColorStop(0.15,'rgba(122,184,232,0.60)');
+    g2.addColorStop(0.45,'rgba(122,184,232,0.22)');
+    g2.addColorStop(1,   'transparent');
+    ctx.save(); ctx.globalAlpha = 1;
+    ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+
+  // — Shadow geometry —
+  function shadowPoly(lx, ly) {
+    const dist = Math.hypot(obj.x - lx, obj.y - ly);
+    if (dist <= obj.r + 1) return null;
+    const sAng    = Math.asin(Math.min(obj.r / dist, 1));
+    const baseAng = Math.atan2(obj.y - ly, obj.x - lx);
+    const t1 = {
+      x: obj.x + obj.r * Math.cos(baseAng - sAng - Math.PI/2),
+      y: obj.y + obj.r * Math.sin(baseAng - sAng - Math.PI/2)
+    };
+    const t2 = {
+      x: obj.x + obj.r * Math.cos(baseAng + sAng + Math.PI/2),
+      y: obj.y + obj.r * Math.sin(baseAng + sAng + Math.PI/2)
+    };
+    function toFloor(tx, ty) {
+      const dx = tx - lx, dy = ty - ly;
+      const t  = (floor - ly) / dy;
+      return { x: lx + dx * t, y: floor };
+    }
+    const f1 = toFloor(t1.x, t1.y);
+    const f2 = toFloor(t2.x, t2.y);
+    return { t1, t2, f1, f2, baseAng, sAng };
+  }
+
+  function fillPoly(tctx, p, color) {
+    if (!p) return;
+    const { t1, t2, f1, f2, baseAng, sAng } = p;
+    tctx.beginPath();
+    tctx.moveTo(t1.x, t1.y);
+    tctx.lineTo(f1.x, f1.y);
+    tctx.lineTo(f2.x, f2.y);
+    tctx.lineTo(t2.x, t2.y);
+    tctx.arc(obj.x, obj.y, obj.r,
+      baseAng + sAng + Math.PI/2,
+      baseAng - sAng - Math.PI/2, true);
+    tctx.closePath();
+    tctx.fillStyle = color;
+    tctx.fill();
+  }
+
+  const p1 = l1on ? shadowPoly(L1.x, L1.y) : null;
+  const p2 = l2on ? shadowPoly(L2.x, L2.y) : null;
+
+  // Individual shadows
+  if (p1) fillPoly(ctx, p1, 'rgba(50, 34, 10, 0.70)');
+  if (p2) fillPoly(ctx, p2, 'rgba(10, 24, 52, 0.70)');
+
+  // Overlap = Kernschatten
+  if (p1 && p2) {
+    const off  = document.createElement('canvas');
+    off.width  = W; off.height = H;
+    const octx = off.getContext('2d');
+    fillPoly(octx, p1, 'white');
+    octx.globalCompositeOperation = 'source-in';
+    fillPoly(octx, p2, 'rgba(185, 38, 118, 0.94)');
+    ctx.drawImage(off, 0, 0);
+  }
+
+  // Floor
+  ctx.fillStyle = '#8e887c';
+  ctx.fillRect(0, floor, W, H - floor);
+  ctx.strokeStyle = '#5a5448';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(0, floor); ctx.lineTo(W, floor); ctx.stroke();
+
+  // Light ray lines (dashed, more visible)
+  function drawRays(p, lx, ly, col, alpha) {
+    if (!p) return;
+    ctx.save();
+    ctx.setLineDash([4, 6]);
+    ctx.strokeStyle = col;
+    ctx.lineWidth   = 1.6;
+    ctx.globalAlpha = alpha || 0.65;
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.t1.x, p.t1.y); ctx.lineTo(p.f1.x, floor); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.t2.x, p.t2.y); ctx.lineTo(p.f2.x, floor); ctx.stroke();
+    ctx.restore();
+  }
+  drawRays(p1, L1.x, L1.y, '#e8c84a', 0.72);
+  drawRays(p2, L2.x, L2.y, '#1878d8', 0.85); // darker blue — much more visible
+
+  // Ball drop guide
+  ctx.save();
+  ctx.setLineDash([2, 6]);
+  ctx.strokeStyle = 'rgba(80,60,30,0.18)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(obj.x, obj.y + obj.r + 2);
+  ctx.lineTo(obj.x, floor);
+  ctx.stroke();
+  ctx.restore();
+
+  // Sphere
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(obj.x, obj.y, obj.r, 0, Math.PI * 2);
+  const og = ctx.createRadialGradient(obj.x - 11, obj.y - 13, 2, obj.x + 6, obj.y + 8, obj.r * 1.1);
+  og.addColorStop(0, '#f4ece0');
+  og.addColorStop(0.45, '#b8ad98');
+  og.addColorStop(1, '#504030');
+  ctx.fillStyle = og;
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur  = 18;
+  ctx.shadowOffsetY = 6;
+  ctx.fill();
+  ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+  ctx.strokeStyle = '#908070';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.restore();
+
+  // Light source dots
+  function drawLight(lx, ly, col, label, isOn) {
+    if (!isOn) {
+      // OFF state
+      ctx.save();
+      ctx.beginPath(); ctx.arc(lx, ly, 9, 0, Math.PI * 2);
+      ctx.fillStyle = '#7a7068';
+      ctx.globalAlpha = 0.35;
+      ctx.fill();
+      ctx.restore();
+      ctx.save();
+      ctx.globalAlpha = 0.38;
+      ctx.fillStyle = '#7a7068';
+      ctx.font = 'bold 10px DM Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(label + ' (aus)', lx, ly - 17);
+      ctx.restore();
+      return;
+    }
+    // Outer soft glow
+    const glowG = ctx.createRadialGradient(lx, ly, 0, lx, ly, 50);
+    glowG.addColorStop(0, col);
+    glowG.addColorStop(1, 'transparent');
+    ctx.save();
+    ctx.globalAlpha = 0.40;
+    ctx.fillStyle = glowG;
+    ctx.beginPath(); ctx.arc(lx, ly, 50, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    // Inner glow ring
+    ctx.save();
+    ctx.beginPath(); ctx.arc(lx, ly, 14, 0, Math.PI * 2);
+    ctx.fillStyle = col;
+    ctx.globalAlpha = 0.30;
+    ctx.fill();
+    ctx.restore();
+    // Core dot
+    ctx.save();
+    ctx.beginPath(); ctx.arc(lx, ly, 8, 0, Math.PI * 2);
+    ctx.fillStyle = col;
+    ctx.shadowColor = col;
+    ctx.shadowBlur  = 28;
+    ctx.fill();
+    ctx.restore();
+    // Specular glint
+    ctx.save();
+    ctx.beginPath(); ctx.arc(lx - 2, ly - 2, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fill();
+    ctx.restore();
+    // Label
+    ctx.fillStyle = '#1a1510';
+    ctx.font = 'bold 11px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, lx, ly - 22);
+  }
+
+  drawLight(L1.x, L1.y, WARM, 'L₁', l1on);
+  drawLight(L2.x, L2.y, COLD, 'L₂', l2on);
+
+  // Floor labels
+  ctx.setLineDash([]);
+  ctx.font = '9.5px DM Mono, monospace';
+  ctx.textAlign = 'center';
+
+  if (p1) {
+    const cx1 = (p1.f1.x + p1.f2.x) / 2;
+    ctx.fillStyle = 'rgba(55,35,10,0.62)';
+    ctx.fillText('Halbschatten L₁', cx1, floor + 20);
+  }
+  if (p2) {
+    const cx2 = (p2.f1.x + p2.f2.x) / 2;
+    ctx.fillStyle = 'rgba(10,22,52,0.62)';
+    ctx.fillText('Halbschatten L₂', cx2, floor + 20);
+  }
+  if (p1 && p2) {
+    const l1x = Math.min(p1.f1.x, p1.f2.x), r1x = Math.max(p1.f1.x, p1.f2.x);
+    const l2x = Math.min(p2.f1.x, p2.f2.x), r2x = Math.max(p2.f1.x, p2.f2.x);
+    const oL = Math.max(l1x, l2x), oR = Math.min(r1x, r2x);
+    if (oR > oL + 4) {
+      ctx.fillStyle = 'rgba(160,28,92,0.92)';
+      ctx.fillText('Kernschatten', (oL + oR) / 2, floor + 34);
+    }
+  }
+}
+
+drawA();
+
+
+// ═════════════════════════════════════════
+//  ANIMATION B  —  Sender–Empfänger–Modell
+//  T1 (links)  = direktes Licht
+//  T2 (rechts) = reflektiertes Licht via Objekte
+// ═════════════════════════════════════════
+
+let flash1On = true, flash2On = true;
+const objOn  = { buch: true, ball: true };
+
+// Scene constants
+const BW = 680, BH = 390;
+const BFLOOR = BH - 52;          // y = 338
+
+// T1: left side, pointing RIGHT → direct ray to observer
+const FLASH1 = { x: 44, y: 194 };
+
+// T2: upper-right corner, pointing lower-left → illuminates objects → reflected light to observer
+const FLASH2 = { x: 628, y: 22 };
+// Direction angle T2 cone/flashlight: from (628,34) toward scene center (~BW*0.44, BFLOOR*0.82)
+const FLASH2_ANG = Math.atan2(338*0.82 - 34, 680*0.44 - 628); // ≈ 2.51 rad (lower-left)
+
+// Observer: right side
+const OBS_X = 594;
+const EYE   = { x: 592, y: BFLOOR - 92 }; // = (592, 246)
+
+// Objects: Buch center-left (on floor), Ball floating in center at ~2/3 height
+const SCENE_OBJS = [
+  { key: 'buch', x: 260, w: 44, h: 82, r: 0,  type: 'rect',   col: '#7a5220', label: 'Buch' },
+  { key: 'ball', x: 350, cy: 130, w: 0, h: 0,  r: 34, type: 'circle', col: '#904820', label: 'Ball' },
+];
+
+// ── Helper: bounds of an object ──
+function getObjBounds(o) {
+  if (o.type === 'circle') {
+    // o.cy = floating center y; if absent, ball sits on floor
+    const cy = (o.cy !== undefined) ? o.cy : BFLOOR - o.r;
+    return { left: o.x-o.r, right: o.x+o.r, top: cy-o.r, bot: cy+o.r, cx: o.x, cy };
+  }
+  return { left: o.x-o.w/2, right: o.x+o.w/2, top: BFLOOR-o.h, bot: BFLOOR, cx: o.x, cy: BFLOOR-o.h/2 };
+}
+
+// ── Toggle handlers ──
+function toggleFlash(n) {
+  if (n === 1) {
+    flash1On = !flash1On;
+    const btn = document.getElementById('btnFlash1');
+    btn.textContent = flash1On ? '⚡ T1 (links) AN' : '○ T1 (links) AUS';
+    btn.className   = flash1On ? 'btn active-warm' : 'btn';
+  } else {
+    flash2On = !flash2On;
+    const btn = document.getElementById('btnFlash2');
+    btn.textContent = flash2On ? '⚡ T2 (rechts) AN' : '○ T2 (rechts) AUS';
+    btn.className   = flash2On ? 'btn active-warm' : 'btn';
+    if (flash2On) btn.style.borderColor = '#4a9adc';
+  }
+  drawB();
+}
+
+function toggleObj(key) {
+  objOn[key] = !objOn[key];
+  const btn = document.getElementById('btn' + key.charAt(0).toUpperCase() + key.slice(1));
+  btn.classList.toggle('active-obj', objOn[key]);
+  drawB();
+}
+
+// ── Extend ray from (lx,ly) through (px,py) to scene boundary ──
+function extendRayB(lx, ly, px, py) {
+  const dx = px - lx, dy = py - ly;
+  if (Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001) return { x: px, y: py };
+  let t = 300;
+  if (dy >  0.001) t = Math.min(t, (BFLOOR - ly) / dy);
+  if (dy < -0.001) t = Math.min(t, (0      - ly) / dy);
+  if (dx >  0.001) t = Math.min(t, (BW     - lx) / dx);
+  if (dx < -0.001) t = Math.min(t, (0      - lx) / dx);
+  return { x: lx + dx * t, y: ly + dy * t };
+}
+
+// ── Segment–circle intersection ──
+function segHitsCircle(x1, y1, x2, y2, cx, cy, r) {
+  const dx = x2-x1, dy = y2-y1;
+  const fx = x1-cx, fy = y1-cy;
+  const a = dx*dx+dy*dy, b2 = 2*(fx*dx+fy*dy), c = fx*fx+fy*fy-r*r;
+  let d = b2*b2-4*a*c;
+  if (d < 0) return false;
+  d = Math.sqrt(d);
+  const t1 = (-b2-d)/(2*a), t2 = (-b2+d)/(2*a);
+  return (t1>0.04&&t1<0.96)||(t2>0.04&&t2<0.96);
+}
+
+// ── Segment–rect intersection (Cohen–Sutherland clip) ──
+function segHitsRect(x1, y1, x2, y2, l, t, r, b) {
+  if (Math.max(x1,x2)<l||Math.min(x1,x2)>r||Math.max(y1,y2)<t||Math.min(y1,y2)>b) return false;
+  const dx=x2-x1, dy=y2-y1;
+  let tMin=0.04, tMax=0.96;
+  function clip(p,q){
+    if(Math.abs(p)<1e-9) return q>=0;
+    const rc=q/p;
+    if(p<0){if(rc>tMax)return false;if(rc>tMin)tMin=rc;}
+    else   {if(rc<tMin)return false;if(rc<tMax)tMax=rc;}
+    return true;
+  }
+  return clip(-dx,x1-l)&&clip(dx,r-x1)&&clip(-dy,y1-t)&&clip(dy,b-y1);
+}
+
+// ── Does segment hit object o? ──
+function segHitsObj(x1, y1, x2, y2, o) {
+  const b = getObjBounds(o);
+  return o.type === 'circle'
+    ? segHitsCircle(x1,y1,x2,y2,b.cx,b.cy,o.r)
+    : segHitsRect(x1,y1,x2,y2,b.left,b.top,b.right,b.bot);
+}
+
+// ── Is segment blocked by any active object (excluding one)? ──
+function isBlocked(x1, y1, x2, y2, excludeKey) {
+  for (const o of SCENE_OBJS) {
+    if (!objOn[o.key] || o.key === excludeKey) continue;
+    if (segHitsObj(x1,y1,x2,y2,o)) return true;
+  }
+  return false;
+}
+
+// ── Surface point: where a ray from (fx,fy) first hits object o's boundary ──
+function surfaceHitPoint(o, fx, fy) {
+  const b = getObjBounds(o);
+  if (o.type === 'circle') {
+    const dx = b.cx - fx, dy = b.cy - fy;
+    const mag = Math.hypot(dx, dy);
+    if (mag < 1) return { x: b.cx, y: b.cy };
+    return { x: b.cx - (dx / mag) * o.r, y: b.cy - (dy / mag) * o.r };
+  }
+  // Rect: walk the ray from (fx,fy) toward object center; find first face it pierces
+  const dx = b.cx - fx, dy = b.cy - fy;
+  let bestT = Infinity, sx = b.cx, sy = b.cy;
+  const faces = [
+    (dx !== 0) ? (b.left  - fx) / dx : Infinity,
+    (dx !== 0) ? (b.right - fx) / dx : Infinity,
+    (dy !== 0) ? (b.top   - fy) / dy : Infinity,
+    (dy !== 0) ? (b.bot   - fy) / dy : Infinity,
+  ];
+  for (const t of faces) {
+    if (!isFinite(t) || t <= 0 || t > 1.02) continue;
+    const ix = fx + dx * t, iy = fy + dy * t;
+    if (ix < b.left - 1 || ix > b.right + 1) continue;
+    if (iy < b.top  - 1 || iy > b.bot  + 1) continue;
+    if (t < bestT) {
+      bestT = t;
+      sx = Math.min(Math.max(ix, b.left), b.right);
+      sy = Math.min(Math.max(iy, b.top),  b.bot);
+    }
+  }
+  return { x: Math.round(sx), y: Math.round(sy) };
+}
+
+// ── Shadow tangent edges from light (lx,ly) past object o ──
+function shadowEdges(lx, ly, o) {
+  const b = getObjBounds(o);
+  if (o.type === 'circle') {
+    const cx=b.cx, cy=b.cy;
+    const dist = Math.hypot(cx-lx, cy-ly);
+    if (dist <= o.r+1) return null;
+    const sAng=Math.asin(Math.min(o.r/dist,1));
+    const baseAng=Math.atan2(cy-ly, cx-lx);
+    return {
+      t1:{x:cx+o.r*Math.cos(baseAng-sAng-Math.PI/2), y:cy+o.r*Math.sin(baseAng-sAng-Math.PI/2)},
+      t2:{x:cx+o.r*Math.cos(baseAng+sAng+Math.PI/2), y:cy+o.r*Math.sin(baseAng+sAng+Math.PI/2)},
+      cx,cy,r:o.r,baseAng,sAng
+    };
+  }
+  // Rect: find the two corners with smallest and largest angle from the light.
+  // These are the true silhouette corners — no fixed assumption about which face is visible.
+  const corners = [
+    {x: b.left,  y: b.top},
+    {x: b.right, y: b.top},
+    {x: b.right, y: b.bot},
+    {x: b.left,  y: b.bot},
+  ];
+  let minAng = Infinity, maxAng = -Infinity, t1 = corners[0], t2 = corners[0];
+  for (const c of corners) {
+    const a = Math.atan2(c.y - ly, c.x - lx);
+    if (a < minAng) { minAng = a; t1 = c; }
+    if (a > maxAng) { maxAng = a; t2 = c; }
+  }
+  return { t1, t2, cx: null };
+}
+
+// ── Draw shadow polygon from a light source through an object ──
+function drawShadowPoly(ctx, lx, ly, o) {
+  const edges = shadowEdges(lx, ly, o);
+  if (!edges) return;
+  const f1 = extendRayB(lx, ly, edges.t1.x, edges.t1.y);
+  const f2 = extendRayB(lx, ly, edges.t2.x, edges.t2.y);
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(edges.t1.x, edges.t1.y);
+  ctx.lineTo(f1.x, f1.y);
+  ctx.lineTo(f2.x, f2.y);
+  ctx.lineTo(edges.t2.x, edges.t2.y);
+  if (edges.cx !== null) {
+    ctx.arc(edges.cx, edges.cy, edges.r,
+      edges.baseAng+edges.sAng+Math.PI/2,
+      edges.baseAng-edges.sAng-Math.PI/2, true);
+  }
+  ctx.closePath();
+  const sg = ctx.createLinearGradient(edges.t1.x,edges.t1.y,f1.x,f1.y);
+  sg.addColorStop(0,'rgba(0,0,0,0.78)'); sg.addColorStop(1,'rgba(0,0,0,0.48)');
+  ctx.fillStyle = sg;
+  ctx.fill();
+  ctx.restore();
+}
+
+// ── Arrow with arrowhead ──
+function arrow(ctx, x1, y1, x2, y2, col, lw) {
+  const ang = Math.atan2(y2-y1, x2-x1), hl = 9;
+  ctx.save();
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw;
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-hl*Math.cos(ang-0.4), y2-hl*Math.sin(ang-0.4));
+  ctx.lineTo(x2-hl*Math.cos(ang+0.4), y2-hl*Math.sin(ang+0.4));
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+// ── Dashed arrow with solid arrowhead ──
+function dashedArrow(ctx, x1, y1, x2, y2, col, lw, dashPat) {
+  const ang = Math.atan2(y2-y1, x2-x1), hl = 10;
+  ctx.save();
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw;
+  ctx.setLineDash(dashPat || [7, 5]);
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  ctx.setLineDash([]); // solid arrowhead
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - hl*Math.cos(ang - 0.4), y2 - hl*Math.sin(ang - 0.4));
+  ctx.lineTo(x2 - hl*Math.cos(ang + 0.4), y2 - hl*Math.sin(ang + 0.4));
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+// ── Label with dark background chip ──
+function midLabel(ctx, x1, y1, x2, y2, text, col, dy) {
+  ctx.save();
+  const mx=(x1+x2)/2, my=(y1+y2)/2+(dy||0);
+  ctx.font='8px DM Mono,monospace';
+  const tw=ctx.measureText(text).width;
+  ctx.fillStyle='rgba(8,6,2,0.62)';
+  ctx.fillRect(mx-tw/2-4, my-10, tw+8, 13);
+  ctx.fillStyle=col; ctx.textAlign='center';
+  ctx.fillText(text, mx, my);
+  ctx.restore();
+}
+
+// ── T2 light cone: pointing lower-left from upper-right corner ──
+function drawConeT2(ctx) {
+  const fx = FLASH2.x, fy = FLASH2.y + 12;
+  const dir = FLASH2_ANG;          // ≈ 2.51 rad — points lower-left toward objects
+  const halfAngle = 0.40;           // covers Buch (x≈192) and Ball (x≈450) from upper-right
+  const coneLen   = Math.hypot(BW, BH) + 60;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(fx, fy);
+  ctx.lineTo(fx + Math.cos(dir - halfAngle) * coneLen,
+             fy + Math.sin(dir - halfAngle) * coneLen);
+  ctx.lineTo(fx + Math.cos(dir + halfAngle) * coneLen,
+             fy + Math.sin(dir + halfAngle) * coneLen);
+  ctx.closePath();
+  const cg = ctx.createRadialGradient(fx, fy, 0, fx, fy, coneLen * 0.78);
+  cg.addColorStop(0,    'rgba(160,210,255,0.65)');
+  cg.addColorStop(0.18, 'rgba(140,200,255,0.38)');
+  cg.addColorStop(0.50, 'rgba(110,180,255,0.15)');
+  cg.addColorStop(1,    'rgba( 80,160,255,0.02)');
+  ctx.fillStyle = cg;
+  ctx.fill();
+  ctx.restore();
+}
+
+// ── T1 light cone: pointing rightward from FLASH1 ──
+function drawConeT1(ctx) {
+  const fx=FLASH1.x+14, fy=FLASH1.y;
+  const halfAngle = 0.44;
+  const coneLen   = BW + 80;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(fx, fy);
+  ctx.lineTo(fx+coneLen, fy - Math.tan(halfAngle)*coneLen);
+  ctx.lineTo(fx+coneLen, fy + Math.tan(halfAngle)*coneLen);
+  ctx.closePath();
+  const cg = ctx.createRadialGradient(fx, fy, 0, fx, fy, coneLen*0.7);
+  cg.addColorStop(0,    'rgba(255,230,100,0.70)');
+  cg.addColorStop(0.20, 'rgba(255,215,80,0.35)');
+  cg.addColorStop(0.55, 'rgba(255,195,55,0.13)');
+  cg.addColorStop(1,    'rgba(255,175,30,0.02)');
+  ctx.fillStyle = cg;
+  ctx.fill();
+  ctx.restore();
+}
+
+// ── Main draw function ──
+function drawB() {
+  const canvas = document.getElementById('canvasB');
+  const ctx    = canvas.getContext('2d');
+  ctx.clearRect(0, 0, BW, BH);
+
+  // Background: dark room
+  const bg = ctx.createLinearGradient(0,0,BW,BH);
+  bg.addColorStop(0,'#16120d'); bg.addColorStop(1,'#0c0a06');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,BW,BH);
+  ctx.strokeStyle='rgba(255,240,200,0.05)'; ctx.lineWidth=1;
+  ctx.strokeRect(4,4,BW-8,BH-8);
+
+  // Light cones
+  if (flash1On) drawConeT1(ctx);
+  if (flash2On) drawConeT2(ctx);
+
+  // Shadows from T1
+  if (flash1On) {
+    for (const o of SCENE_OBJS) {
+      if (objOn[o.key]) drawShadowPoly(ctx, FLASH1.x, FLASH1.y, o);
+    }
+  }
+  // Shadows from T2 (pointing down)
+  if (flash2On) {
+    for (const o of SCENE_OBJS) {
+      if (objOn[o.key]) drawShadowPoly(ctx, FLASH2.x, FLASH2.y, o);
+    }
+  }
+
+  // Floor
+  ctx.fillStyle='#1a1610'; ctx.fillRect(0,BFLOOR,BW,BH-BFLOOR);
+  ctx.strokeStyle='rgba(255,240,200,0.10)'; ctx.lineWidth=1; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(0,BFLOOR); ctx.lineTo(BW,BFLOOR); ctx.stroke();
+
+  // Objects
+  for (const o of SCENE_OBJS) {
+    if (objOn[o.key]) drawObjB(ctx, o);
+  }
+
+  // ── RAY ANNOTATIONS ──
+
+  // T1 → DIRECT LIGHT (yellow) → observer
+  if (flash1On) {
+    const blocked = isBlocked(FLASH1.x, FLASH1.y, EYE.x, EYE.y, null);
+    if (!blocked) {
+      arrow(ctx, FLASH1.x+16, FLASH1.y, EYE.x-14, EYE.y, 'rgba(255,225,55,0.95)', 2.0);
+      midLabel(ctx, FLASH1.x+16, FLASH1.y, EYE.x-14, EYE.y,
+               'direktes Licht', 'rgba(255,230,80,0.90)', -12);
+    } else {
+      // If blocked: label shows it's blocked
+      midLabel(ctx, FLASH1.x+16, FLASH1.y, EYE.x-14, EYE.y,
+               'direktes Licht (blockiert)', 'rgba(255,180,60,0.55)', -12);
+    }
+  }
+
+  // T2 → object surface → REFLECTED LIGHT (green) → observer
+  if (flash2On) {
+    for (const o of SCENE_OBJS) {
+      if (!objOn[o.key]) continue;
+      const b = getObjBounds(o);
+
+      // Is the object lit by T2 (no other object blocks T2→object)?
+      const objLit = !isBlocked(FLASH2.x, FLASH2.y, b.cx, b.cy, o.key);
+      if (!objLit) continue;
+
+      // Surface point where T2's ray strikes the object boundary
+      const sp = surfaceHitPoint(o, FLASH2.x, FLASH2.y);
+
+      // ── Incoming ray T2 → surface point (bright dashed blue) ──
+      dashedArrow(ctx, FLASH2.x, FLASH2.y+12, sp.x, sp.y,
+                  'rgba(130,195,255,0.88)', 2.0, [6, 5]);
+      midLabel(ctx, FLASH2.x, FLASH2.y+12, sp.x, sp.y,
+               'T2 → '+o.label, 'rgba(130,195,255,0.80)', -10);
+
+      // ── Reflected ray: surface → observer eye (dashed green arrow) ──
+      dashedArrow(ctx, sp.x, sp.y, EYE.x-14, EYE.y, 'rgba(80,215,125,0.92)', 2.0, [7, 5]);
+      midLabel(ctx, sp.x, sp.y, EYE.x-14, EYE.y,
+               'refl. Licht ('+o.label+')', 'rgba(80,215,125,0.88)', -10);
+
+      // Reflection dot at the surface contact point
+      ctx.save();
+      ctx.beginPath(); ctx.arc(sp.x, sp.y, 4.5, 0, Math.PI*2);
+      ctx.fillStyle='rgba(80,215,125,0.85)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // Flashlights
+  if (flash1On || !flash1On) drawFlashT1(ctx, flash1On);
+  if (flash2On || !flash2On) drawFlashT2(ctx, flash2On);
+
+  // Observer
+  drawObserverB(ctx, OBS_X, BFLOOR, EYE);
+
+  // Full-dark overlay when both off
+  if (!flash1On && !flash2On) {
+    ctx.save();
+    ctx.fillStyle='rgba(0,0,0,0.68)'; ctx.fillRect(0,0,BW,BH);
+    ctx.font='500 11px DM Mono,monospace';
+    ctx.fillStyle='rgba(255,240,200,0.18)'; ctx.textAlign='center';
+    ctx.fillText('Keine Lichtquelle — kein Licht — der Beobachter sieht nichts', BW/2, BH/2);
+    ctx.restore();
+  }
+}
+
+// ── Draw object ──
+function drawObjB(ctx, o) {
+  ctx.save();
+  const b = getObjBounds(o);
+  if (o.type === 'circle') {
+    ctx.beginPath(); ctx.arc(b.cx, b.cy, o.r, 0, Math.PI*2);
+    const g = ctx.createRadialGradient(b.cx-11,b.cy-13,2,b.cx+5,b.cy+7,o.r*1.1);
+    g.addColorStop(0,'#f0c880'); g.addColorStop(0.5,o.col); g.addColorStop(1,'#281408');
+    ctx.fillStyle=g; ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=12; ctx.fill();
+    ctx.strokeStyle='rgba(255,220,140,0.18)'; ctx.lineWidth=1.5; ctx.stroke();
+  } else {
+    // Book — neutral gradient (lit by two sources)
+    const lg=ctx.createLinearGradient(b.left,0,b.right,0);
+    lg.addColorStop(0,'#c89050'); lg.addColorStop(1,'#4a2810');
+    ctx.fillStyle=lg; ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=10;
+    ctx.fillRect(b.left,b.top,o.w,o.h);
+    ctx.setLineDash([]);
+    ctx.strokeStyle='rgba(255,220,140,0.10)'; ctx.lineWidth=1;
+    for(let i=1;i<5;i++){
+      const lyny=b.top+(o.h/5)*i;
+      ctx.beginPath();ctx.moveTo(b.left+4,lyny);ctx.lineTo(b.right-4,lyny);ctx.stroke();
+    }
+    ctx.strokeStyle='rgba(255,220,140,0.20)'; ctx.lineWidth=1;
+    ctx.strokeRect(b.left,b.top,o.w,o.h);
+  }
+  ctx.shadowBlur=0;
+  ctx.font='8.5px DM Mono,monospace';
+  ctx.fillStyle='rgba(255,240,200,0.45)'; ctx.textAlign='center';
+  ctx.fillText(o.label, b.cx, b.bot+14);
+  ctx.restore();
+}
+
+// ── T1 flashlight: horizontal, pointing RIGHT ──
+function drawFlashT1(ctx, isOn) {
+  const fx=FLASH1.x, fy=FLASH1.y;
+  ctx.save();
+  const bodyCol = isOn ? '#b88040' : '#444038';
+  const headCol = isOn ? '#ffe880' : '#2e2418';
+  // Body
+  ctx.fillStyle=bodyCol;
+  ctx.shadowColor=isOn?'rgba(220,180,60,0.28)':'transparent'; ctx.shadowBlur=isOn?10:0;
+  const bx=fx-46, by=fy-9;
+  ctx.beginPath();
+  ctx.moveTo(bx+4,by); ctx.lineTo(bx+46,by); ctx.lineTo(bx+46,by+18); ctx.lineTo(bx+4,by+18);
+  ctx.quadraticCurveTo(bx,by+18,bx,by+9); ctx.quadraticCurveTo(bx,by,bx+4,by);
+  ctx.closePath(); ctx.fill();
+  // Head
+  ctx.fillStyle=headCol;
+  ctx.shadowColor=isOn?'rgba(255,230,80,0.85)':'transparent'; ctx.shadowBlur=isOn?22:0;
+  ctx.beginPath();
+  ctx.moveTo(fx,fy-15); ctx.lineTo(fx+16,fy-8); ctx.lineTo(fx+16,fy+8); ctx.lineTo(fx,fy+15);
+  ctx.closePath(); ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.fillStyle=isOn?'#906030':'#383028'; ctx.fillRect(fx-10,fy-11,6,22);
+  // Labels
+  ctx.font='8px DM Mono,monospace';
+  ctx.fillStyle=isOn?'rgba(255,225,100,0.80)':'rgba(140,130,110,0.45)'; ctx.textAlign='center';
+  ctx.fillText('T1 — direktes Licht', fx-20, fy-24);
+  ctx.fillStyle=isOn?'rgba(255,225,100,0.50)':'rgba(140,130,110,0.30)';
+  ctx.fillText(isOn?'(Lichtquelle)':'(aus)', fx-20, fy+30);
+  ctx.restore();
+}
+
+// ── T2 flashlight: upper-right corner, pointing lower-left ──
+function drawFlashT2(ctx, isOn) {
+  const fx = FLASH2.x, fy = FLASH2.y;
+  const rotAng = FLASH2_ANG; // ≈ 2.51 rad → points head toward lower-left (toward objects)
+  ctx.save();
+  ctx.translate(fx, fy);
+  ctx.rotate(rotAng);
+  const bodyCol = isOn ? '#4080b8' : '#383848';
+  const headCol = isOn ? '#b0d8ff' : '#202830';
+  // Body
+  ctx.fillStyle = bodyCol;
+  ctx.shadowColor = isOn ? 'rgba(80,160,255,0.30)' : 'transparent'; ctx.shadowBlur = isOn ? 10 : 0;
+  const bx = -46, by = -9;
+  ctx.beginPath();
+  ctx.moveTo(bx+4, by); ctx.lineTo(bx+46, by); ctx.lineTo(bx+46, by+18); ctx.lineTo(bx+4, by+18);
+  ctx.quadraticCurveTo(bx, by+18, bx, by+9); ctx.quadraticCurveTo(bx, by, bx+4, by);
+  ctx.closePath(); ctx.fill();
+  // Head
+  ctx.fillStyle = headCol;
+  ctx.shadowColor = isOn ? 'rgba(160,210,255,0.90)' : 'transparent'; ctx.shadowBlur = isOn ? 22 : 0;
+  ctx.beginPath();
+  ctx.moveTo(0, -15); ctx.lineTo(16, -8); ctx.lineTo(16, 8); ctx.lineTo(0, 15);
+  ctx.closePath(); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = isOn ? '#305880' : '#303038'; ctx.fillRect(-10, -11, 6, 22);
+  ctx.restore(); // ← back to screen coords
+
+  // Labels in screen coords — T2 is in upper-right corner, labels go to the left
+  ctx.save();
+  ctx.font = '8px DM Mono,monospace'; ctx.textAlign = 'right';
+  ctx.fillStyle = isOn ? 'rgba(130,200,255,0.85)' : 'rgba(120,130,150,0.45)';
+  ctx.fillText('T2 — refl. Licht', fx - 8, fy + 36);
+  ctx.fillStyle = isOn ? 'rgba(130,200,255,0.52)' : 'rgba(120,130,150,0.30)';
+  ctx.fillText(isOn ? '(Lichtquelle)' : '(aus)', fx - 8, fy + 47);
+  ctx.restore();
+}
+
+// ── Observer: stick figure ──
+function drawObserverB(ctx, ox, feetY, eye) {
+  ctx.save();
+  const headR=13, headY=feetY-92;
+  ctx.strokeStyle='rgba(240,220,170,0.72)'; ctx.lineWidth=3; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(ox,headY+headR+2); ctx.lineTo(ox,headY+headR+38); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox-16,headY+headR+14); ctx.lineTo(ox+16,headY+headR+14); ctx.stroke();
+  ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(ox,headY+headR+38); ctx.lineTo(ox-12,feetY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox,headY+headR+38); ctx.lineTo(ox+12,feetY); ctx.stroke();
+  // Head
+  ctx.beginPath(); ctx.arc(ox,headY,headR,0,Math.PI*2);
+  ctx.fillStyle='rgba(240,210,160,0.85)'; ctx.shadowColor='rgba(0,0,0,0.4)'; ctx.shadowBlur=8;
+  ctx.fill(); ctx.shadowBlur=0;
+  ctx.strokeStyle='rgba(200,170,110,0.40)'; ctx.lineWidth=1.5; ctx.stroke();
+  // Eyes
+  ctx.fillStyle='#1a1208';
+  ctx.beginPath(); ctx.arc(ox-4,headY-1,2.5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(ox+4,headY-1,2.5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.beginPath(); ctx.arc(ox-3.2,headY-1.8,0.9,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(ox+4.8,headY-1.8,0.9,0,Math.PI*2); ctx.fill();
+  // Eye target dot
+  ctx.beginPath(); ctx.arc(eye.x,eye.y,4.5,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,240,180,0.18)'; ctx.fill();
+  ctx.strokeStyle='rgba(255,240,180,0.52)'; ctx.lineWidth=1; ctx.stroke();
+  // Labels
+  ctx.font='8.5px DM Mono,monospace'; ctx.fillStyle='rgba(255,240,200,0.50)'; ctx.textAlign='center';
+  ctx.fillText('Beobachter', ox, feetY+16);
+  ctx.fillStyle='rgba(255,240,200,0.28)';
+  ctx.fillText('(Empfänger)', ox, feetY+27);
+  ctx.restore();
+}
+
+drawB();
+</script>
+</body>
+</html>

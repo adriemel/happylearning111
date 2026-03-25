@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brown'sche Molekularbewegung – Spray in Luft</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --panel: rgba(255,255,255,0.06);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.65);
+      --accent: #66d9ff;
+      --spray: #ffd166;
+      --air: rgba(102, 217, 255, 0.18);
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    #wrap {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #controls {
+      background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.15));
+      padding: 12px 14px 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .box {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 2px;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    button:hover {
+      background: rgba(255,255,255,0.10);
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.air { background: rgba(102,217,255,0.75); }
+    .dot.spray { background: rgba(255,209,102,0.95); }
+
+    @media (max-width: 980px) {
+      .row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+
+  <div id="controls">
+    <div class="row">
+      <div class="box">
+        <div class="title">Brown'sche Molekularbewegung (Spray in Luft)</div>
+        <div class="subtitle">
+          Luftteilchen bewegen sich zufällig und stoßen Sprayteilchen an → das Spray breitet sich aus und mischt sich.
+          <br/>Tipp: Erst ohne Wind zeigen, dann Wind dazuschalten.
+        </div>
+        <div class="pill">
+          <span class="dot air"></span> Luftmoleküle
+          <span class="dot spray" style="margin-left:10px;"></span> Spray-Partikel
+        </div>
+      </div>
+
+      <div class="box">
+        <label>
+          Luft-Temperatur (Beweglichkeit)
+          <input id="temp" type="range" min="0" max="100" value="60">
+        </label>
+        <label>
+          Wind (Transport nach rechts)
+          <input id="wind" type="range" min="0" max="100" value="10">
+        </label>
+      </div>
+
+      <div class="box">
+        <label>
+          Spray-Menge pro Sprühstoß
+          <input id="amount" type="range" min="50" max="800" value="240">
+        </label>
+        <label>
+          Spray-Teilchengröße
+          <input id="spraysize" type="range" min="1" max="6" value="3">
+        </label>
+      </div>
+
+      <div class="box">
+        <div class="btns">
+          <button id="sprayBtn">Sprühstoß</button>
+          <button id="toggleAirBtn">Luft anzeigen: AN</button>
+          <button id="resetBtn">Reset</button>
+          <button id="pauseBtn">Pause</button>
+        </div>
+        <div class="subtitle" style="margin-top:8px;">
+          Du kannst auch klicken/tippen, um dort zu sprühen.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Canvas setup
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d", { alpha: true });
+
+  function resize() {
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor((window.innerHeight - document.getElementById("controls").offsetHeight) * dpr);
+    canvas.style.height = (window.innerHeight - document.getElementById("controls").offsetHeight) + "px";
+    canvas.style.width = window.innerWidth + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  // Controls
+  const tempEl = document.getElementById("temp");
+  const windEl = document.getElementById("wind");
+  const amountEl = document.getElementById("amount");
+  const spraySizeEl = document.getElementById("spraysize");
+
+  const sprayBtn = document.getElementById("sprayBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const toggleAirBtn = document.getElementById("toggleAirBtn");
+
+  // Simulation parameters
+  let showAir = true;
+  let paused = false;
+
+  // World
+  const air = [];
+  const spray = [];
+
+  // A simple "room"
+  function W() { return canvas.clientWidth; }
+  function H() { return canvas.clientHeight; }
+
+  // Utility
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+  // Air molecules: many, light, fast
+  const AIR_COUNT = 450; // keep moderate for performance
+  const AIR_RADIUS = 3.2;
+
+  // Brownian "kick" model:
+  // Spray particles receive random small velocity perturbations each step,
+  // stronger when "temperature" is high.
+  // Also, air particles are visual only; the mixing is mainly from the stochastic kicks.
+
+  function initAir() {
+    air.length = 0;
+    for (let i = 0; i < AIR_COUNT; i++) {
+      air.push({
+        x: rand(0, W()),
+        y: rand(0, H()),
+        vx: rand(-1, 1),
+        vy: rand(-1, 1),
+      });
+    }
+  }
+
+  function reset() {
+    spray.length = 0;
+    initAir();
+  }
+
+  initAir();
+
+  // Spray nozzle position
+  let nozzle = { x: Math.min(120, W() * 0.2), y: H() * 0.55 };
+
+  function sprayBurst(x, y) {
+    const n = parseInt(amountEl.value, 10);
+    const size = parseFloat(spraySizeEl.value);
+
+    // Initial puff: mostly forward (to the right) with some spread
+    for (let i = 0; i < n; i++) {
+      const angle = rand(-0.35, 0.35);        // narrow cone
+      const speed = rand(1.5, 5.2);          // initial jet
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+
+      // Start slightly inside a nozzle mouth
+      const ox = rand(-2, 2);
+      const oy = rand(-10, 10);
+
+      spray.push({
+        x: x + ox,
+        y: y + oy,
+        vx,
+        vy,
+        r: size,
+        // lifetime in seconds-ish; we will fade over time
+        life: rand(5.5, 10.0),
+        age: 0,
+      });
+    }
+  }
+
+  // Click/tap to spray
+  function canvasPosFromEvent(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+    const clientY = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    };
+  }
+
+  canvas.addEventListener("mousedown", (e) => {
+    const p = canvasPosFromEvent(e);
+    nozzle = p;
+    sprayBurst(p.x, p.y);
+  });
+  canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    const p = canvasPosFromEvent(e);
+    nozzle = p;
+    sprayBurst(p.x, p.y);
+  }, { passive: false });
+
+  sprayBtn.addEventListener("click", () => sprayBurst(nozzle.x, nozzle.y));
+  resetBtn.addEventListener("click", reset);
+
+  pauseBtn.addEventListener("click", () => {
+    paused = !paused;
+    pauseBtn.textContent = paused ? "Weiter" : "Pause";
+  });
+
+  toggleAirBtn.addEventListener("click", () => {
+    showAir = !showAir;
+    toggleAirBtn.textContent = showAir ? "Luft anzeigen: AN" : "Luft anzeigen: AUS";
+  });
+
+  // Physics
+  function step(dt) {
+    const temp = parseFloat(tempEl.value) / 100; // 0..1
+    const wind = parseFloat(windEl.value) / 100; // 0..1
+
+    // Convert to useful numbers
+    const airSpeed = 0.7 + temp * 2.2;
+    const brownKick = 10 * temp;     // stochastic acceleration for spray
+    const drag = 0.985;              // slows spray
+    const airDrag = 0.995;           // air molecules keep speed
+    const windV = wind * 1.8;        // px/frame-ish
+
+    // Move air molecules (visual + conceptual)
+    for (const a of air) {
+      // random steering
+      a.vx += rand(-0.25, 0.25) * temp;
+      a.vy += rand(-0.25, 0.25) * temp;
+
+      // limit speed
+      const s = Math.hypot(a.vx, a.vy) || 1;
+      const maxS = airSpeed;
+      if (s > maxS) {
+        a.vx = (a.vx / s) * maxS;
+        a.vy = (a.vy / s) * maxS;
+      }
+
+      a.vx = a.vx * airDrag + windV * 0.02;
+      a.x += a.vx * 60 * dt;
+      a.y += a.vy * 60 * dt;
+
+      // bounce
+      if (a.x < 0) { a.x = 0; a.vx *= -1; }
+      if (a.x > W()) { a.x = W(); a.vx *= -1; }
+      if (a.y < 0) { a.y = 0; a.vy *= -1; }
+      if (a.y > H()) { a.y = H(); a.vy *= -1; }
+    }
+
+    // Spray particles
+    for (let i = spray.length - 1; i >= 0; i--) {
+      const p = spray[i];
+
+      // Brownian kicks: random impulses
+      p.vx += rand(-1, 1) * brownKick * dt;
+      p.vy += rand(-1, 1) * brownKick * dt;
+
+      // Wind transport (advection)
+      p.vx += windV * 0.25;
+
+      // Drag (air resistance)
+      p.vx *= Math.pow(drag, 60 * dt);
+      p.vy *= Math.pow(drag, 60 * dt);
+
+      // Move
+      p.x += p.vx * 60 * dt;
+      p.y += p.vy * 60 * dt;
+
+      // Bounce
+      if (p.x < 0) { p.x = 0; p.vx *= -0.6; }
+      if (p.x > W()) { p.x = W(); p.vx *= -0.6; }
+      if (p.y < 0) { p.y = 0; p.vy *= -0.6; }
+      if (p.y > H()) { p.y = H(); p.vy *= -0.6; }
+
+      // Age & fade out
+      p.age += dt;
+      if (p.age > p.life) {
+        spray.splice(i, 1);
+      }
+    }
+  }
+
+  // Rendering
+  function draw() {
+    const w = W(), h = H();
+
+    // Background
+    ctx.clearRect(0, 0, w, h);
+
+    // Subtle room shading
+    const g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, "rgba(255,255,255,0.03)");
+    g.addColorStop(1, "rgba(0,0,0,0.15)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+
+    // Draw nozzle
+    ctx.save();
+    ctx.translate(nozzle.x, nozzle.y);
+    ctx.fillStyle = "rgba(255,255,255,0.20)";
+    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.lineWidth = 2;
+
+    // small spray can / nozzle icon
+    ctx.beginPath();
+    ctx.roundRect(-22, -16, 24, 32, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(255,255,255,0.25)";
+    ctx.beginPath();
+    ctx.roundRect(6, -10, 18, 20, 6);
+    ctx.fill();
+
+    ctx.restore();
+
+    // Air molecules
+    if (showAir) {
+      ctx.fillStyle = "rgba(102, 217, 255, 0.20)";
+      for (const a of air) {
+        ctx.beginPath();
+        ctx.arc(a.x, a.y, AIR_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Spray particles (glow)
+    for (const p of spray) {
+      const t = clamp(1 - p.age / p.life, 0, 1);
+      const alpha = 0.10 + 0.65 * t;
+
+      // Outer glow
+      ctx.fillStyle = `rgba(255, 209, 102, ${0.08 * alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Core
+      ctx.fillStyle = `rgba(255, 209, 102, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Text overlay
+    ctx.save();
+    ctx.font = "13px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillStyle = "rgba(255,255,255,0.75)";
+    ctx.fillText(`Spray-Partikel: ${spray.length}`, 14, 22);
+    ctx.restore();
+  }
+
+  // Polyfill for roundRect in older browsers
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+      r = Math.min(r, w/2, h/2);
+      this.beginPath();
+      this.moveTo(x + r, y);
+      this.arcTo(x + w, y, x + w, y + h, r);
+      this.arcTo(x + w, y + h, x, y + h, r);
+      this.arcTo(x, y + h, x, y, r);
+      this.arcTo(x, y, x + w, y, r);
+      this.closePath();
+      return this;
+    }
+  }
+
+  // Main loop
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+
+    if (!paused) step(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // Start with an initial burst to show immediately
+  setTimeout(() => sprayBurst(nozzle.x, nozzle.y), 250);
+})();
+</script>
+</body>
+</html>

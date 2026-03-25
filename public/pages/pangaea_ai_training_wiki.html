@@ -1,0 +1,627 @@
+<!-- PANGAEA AI Training for Data Curators — MediaWiki version -->
+<!-- Paste everything between these comment tags into the wiki page source (Edit > Source editor) -->
+
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #1A1A1A; line-height: 1.6; max-width: 860px;">
+
+<!-- COVER -->
+<div style="text-align:center; padding: 48px 0 32px; border-bottom: 3px solid #007F8C; margin-bottom: 32px;">
+  <div style="font-size:12px; font-weight:700; letter-spacing:3px; color:#007F8C; text-transform:uppercase;">PANGAEA Data Publisher</div>
+  <div style="font-size: 2.2rem; font-weight:700; color:#003D6B; margin: 10px 0 6px;">AI Training for Data Curators</div>
+  <div style="font-style:italic; color:#555; font-size:1.1rem;">A Practical Guide</div>
+  <p style="color:#555; margin-top:16px; max-width:540px; margin-left:auto; margin-right:auto;">Two courses: from understanding what an LLM is, to deploying coding agents and managing token costs in your daily curation workflow.</p>
+</div>
+
+<!-- COURSE CARDS -->
+<table style="width:100%; border-collapse:collapse; margin: 24px 0;">
+  <tr>
+    <td style="width:50%; padding:20px 24px; background:#003D6B; color:white; border-radius:8px 0 0 8px;">
+      <div style="font-size:13px; font-weight:700; letter-spacing:1px; color:white; margin-bottom:6px;">COURSE 1 · THE BASICS</div>
+      <div style="font-size:13px; opacity:0.8;">LLMs · Chatbots · Prompting · Context Rot · 4-D Framework</div>
+    </td>
+    <td style="width:50%; padding:20px 24px; background:#007F8C; color:white; border-radius:0 8px 8px 0;">
+      <div style="font-size:13px; font-weight:700; letter-spacing:1px; color:white; margin-bottom:6px;">COURSE 2 · IN-DEPTH</div>
+      <div style="font-size:13px; opacity:0.8;">Agents · Compounding Error · RAG · MCP · Skills · Tokens</div>
+    </td>
+  </tr>
+</table>
+
+<p style="text-align:center; color:#555; font-size:0.9rem;">Internal Training Document · March 2026</p>
+
+<!-- ═══ COURSE 1 BANNER ═══ -->
+<div style="text-align:center; padding:24px; border-radius:8px; background:#003D6B; color:white; margin:48px 0 20px;">
+  <div style="font-size:12px; letter-spacing:2px; opacity:0.7;">● COURSE 1</div>
+  <div style="font-size:1.5rem; font-weight:600; color:white; margin:4px 0 0;">The Basics</div>
+</div>
+
+<p><em>Everything you need to use AI chatbots effectively — from what they actually are, to how to ask good questions and avoid the most common pitfalls.</em></p>
+
+<!-- C1-1 -->
+<h2 id="c1-1" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">1 · What Is an LLM?</h2>
+
+<p>A Large Language Model (LLM) is the core system behind modern AI tools, trained on large collections of text — such as books, websites, and scientific literature — to learn patterns in language. Its fundamental mechanism is predicting the next token (a small unit of text) based on the given context, with capabilities shaped further by instruction tuning and human feedback. As a result, LLMs can perform tasks such as summarising documents, generating code, and explaining complex concepts.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">CORE INSIGHT</div>
+  <p>An LLM does not "know" facts or understand information in a human sense; it generates outputs based on statistical patterns rather than verified knowledge. Its responses should therefore be interpreted as plausible constructions, not guaranteed truths, and can include confident but incorrect statements.</p>
+  <p>Performance is sensitive to how prompts are phrased and tends to degrade in tasks requiring precise accuracy, complex multi-step reasoning, or highly specialised, up-to-date domain knowledge.</p>
+</div>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:6px 0 0 6px; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">WHAT LLMs ARE GOOD AT...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Summarising and explaining text<br>→ Drafting, editing, translating<br>→ Writing and checking code<br>→ Answering factual questions (common knowledge)<br>→ Spotting patterns in structured text<br>→ Processing large volumes quickly</div>
+    </td>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:0 6px 6px 0; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">WHAT LLMs STRUGGLE WITH...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Precise arithmetic (without tools)<br>→ Obscure or very recent facts<br>→ Knowing when they're wrong<br>→ Accessing real-time data unless connected to search<br>→ Novel, poorly specified, or long-horizon problems</div>
+    </td>
+  </tr>
+</table>
+
+<div style="background:#E0F2F1; border-left:5px solid #4DB6AC; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#007F8C; margin-bottom:8px;">PANGAEA APPLICATION</div>
+  <p>LLMs can help curators draft parameter descriptions, suggest unit annotations, check that metadata text is clear, or explain unfamiliar scientific terms. They should not be trusted to generate precise coordinate values or date/time entries without human verification.</p>
+</div>
+
+<div style="background:#FFF8E1; border-left:5px solid #FFB300; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#E65100; margin-bottom:8px;">💡 HALLUCINATION</div>
+  <p>When an LLM confidently states something false. This happens more often for obscure topics, specific numbers, or citations. Always verify important facts independently.</p>
+</div>
+
+<details>
+  <summary style="cursor:pointer; font-weight:600; color:#00628E; padding:6px 0;">Domain-Specific Failure Modes (Earth &amp; Environmental Data)</summary>
+  <p>In scientific data curation, AI errors often appear plausible but introduce subtle inconsistencies. Most errors are not random — they are systematic and plausible, making them harder to detect.</p>
+  <table style="width:100%; border-collapse:collapse; margin:12px 0; font-size:0.9rem;">
+    <tr><th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Failure Mode</th><th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Examples</th></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Unit confusion</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">°C vs K, mg/L vs µmol/L — LLMs do not track units as formal objects</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Coordinate errors</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Latitude/longitude swapped, incorrect CRS (e.g. WGS84 vs local projection)</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Time handling</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">UTC vs local time, ambiguous date formats (e.g. 03/04/2020)</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Parameter misclassification</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Similar but distinct variables (e.g. salinity vs conductivity)</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">False standardisation</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">AI "normalises" terms incorrectly to familiar patterns</td></tr>
+  </table>
+</details>
+
+<!-- C1-2 -->
+<h2 id="c1-2" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">2 · What Is a Chatbot?</h2>
+
+<p>A chatbot is the interface you use to talk to an LLM. Think of the LLM as the brain and the chatbot as the mouthpiece — you interact with the mouth, but the brain is doing the work underneath.</p>
+<p>Chatbots accept your text (and sometimes images or files) and return a response. Most modern chatbots maintain the conversation in memory during a session, so you can follow up, correct, and refine across multiple messages.</p>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:6px 0 0 6px; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">HOW A SINGLE MESSAGE WORKS...</div>
+      <div style="font-size:0.9rem; color:#555;">→ You type a message (the prompt)<br>→ The chatbot adds context and system instructions<br>→ Everything goes to the LLM as one combined input<br>→ The LLM generates a response token by token<br>→ The response streams back to your screen</div>
+    </td>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:0 6px 6px 0; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">KEY CONCEPTS...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Prompt — your input message<br>→ Context window — max text the model can hold<br>→ Token — unit text is measured in (~¾ of a word)<br>→ System prompt — hidden instructions set by the app<br>→ Temperature — controls output variability</div>
+    </td>
+  </tr>
+</table>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Temperature</h3>
+
+<p>Temperature is a numerical parameter (typically 0.0–1.0) that controls how the model selects the next token at each step of generation.</p>
+<p><strong>At low temperature (0.0–0.3),</strong> the model strongly favours the highest-probability token at each step. Output is more consistent, predictable, and repeatable. This is preferred for factual tasks, coding, and structured outputs where correctness matters more than variety.</p>
+<p><strong>At higher temperature (0.7–1.0),</strong> the model samples more broadly across probable tokens. Output becomes more varied and less predictable. This is useful for brainstorming, exploring alternative phrasings, or creative tasks.</p>
+<p><strong>Important:</strong> Temperature is set by the platform or via the API — it is not a setting you control in a standard chatbot interface. You cannot reliably set temperature through natural-language instructions like "be more creative." However, the way you phrase your prompt does influence output variability indirectly: open-ended prompts ("suggest several approaches") tend to produce more diverse responses than tightly constrained ones ("give me the single correct unit"), regardless of the temperature setting.</p>
+
+<div style="background:#E0F2F1; border-left:5px solid #4DB6AC; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#007F8C; margin-bottom:8px;">PANGAEA APPLICATION</div>
+  <p>In curation work, chatbots can act as a first pass for writing — drafting dataset descriptions, suggesting parameter labels, or explaining incoming data formats. The curator remains responsible for the final output.</p>
+</div>
+
+<!-- C1-3 -->
+<h2 id="c1-3" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">3 · Which Chatbots Are There?</h2>
+
+<p>Four major chatbots are widely used as of 2026. All are accessible from a browser — no installation required. Each is backed by a different company and serves a somewhat different purpose (the latter is not detailed here because it is subject to rapid change).</p>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Chatbot</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Maker</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Free Tier?</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Models</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">URL</th>
+  </tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Claude</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Anthropic</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Yes</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Haiku, Sonnet, Opus</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">claude.ai</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">ChatGPT</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">OpenAI</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Yes</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">GPT</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">chatgpt.com</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Gemini</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Google</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Yes</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Gemini</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">gemini.google.com</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Perplexity</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Perplexity AI</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Yes</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Various</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">perplexity.ai</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Copilot</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Microsoft</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Yes</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Mostly GPT</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">copilot.microsoft.com</td></tr>
+</table>
+
+<div style="background:#FBE9E7; border-left:5px solid #E57373; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#C62828; margin-bottom:8px;">⚠ CAUTION</div>
+  <p>Never paste real unpublished dataset metadata, personal researcher data, or confidential institutional data into free public chatbot tiers. Check your organisation's data policy before sharing any internal content.</p>
+</div>
+
+<!-- C1-4 -->
+<h2 id="c1-4" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">4 · Data Privacy &amp; Responsible Use</h2>
+
+<p>AI chatbots are powerful tools, but every message you send leaves your device and is processed on external servers. For scientific data curators handling unpublished research data, this creates real obligations.</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">What You Must Not Share</h3>
+<p>Treat every chatbot prompt as if it were a public post. Do not paste: unpublished dataset content or raw data files, personally identifiable information (researcher names, emails, ORCID IDs in combination with unpublished work), confidential institutional documents or internal communications, login credentials, API keys, or access tokens.</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Free vs. Paid Tiers — What Changes</h3>
+<p><strong>Free tiers</strong> of most chatbots may use your conversations as training data. This means your input could, in principle, influence future model outputs. <strong>Paid tiers and API access</strong> typically offer opt-out from training data use, but the specifics vary by provider and change over time. Always check the current terms of service.</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Practical Rules for Curators</h3>
+<p>1. Use anonymised or synthetic examples when testing prompts with real data structures.</p>
+<p>2. Strip identifying metadata (researcher names, campaign-internal codes) before pasting into any chatbot.</p>
+<p>3. For routine curation tasks (drafting descriptions, explaining methods), generic context is usually sufficient — you rarely need to share actual data.</p>
+<p>4. When in doubt, ask: "Would I be comfortable if this text appeared in a public dataset?" If not, do not paste it.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">KEY PRINCIPLE</div>
+  <p>AI tools are external services, not internal infrastructure. Apply the same data hygiene you would use when emailing a colleague outside your organisation.</p>
+</div>
+
+<!-- C1-5 -->
+<h2 id="c1-5" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">5 · The 4-D Framework</h2>
+
+<p>From Anthropic Academy: a practical mental framework for every AI interaction. Apply it in order — rushing to Description without Delegation is the most common source of poor results.</p>
+
+<!-- Step boxes as table rows -->
+<table style="width:100%; border-collapse:collapse; margin:14px 0;">
+  <tr style="border:2px solid #4A90B8; border-radius:6px; overflow:hidden;">
+    <td style="width:56px; background:#003D6B; color:white; text-align:center; font-size:1.3rem; font-weight:700; padding:14px 0; vertical-align:middle;">01</td>
+    <td style="background:#E3EFF7; padding:14px 18px; vertical-align:top;">
+      <div style="font-weight:700; color:#003D6B;">DELEGATION</div>
+      <div style="font-style:italic; color:#555; font-size:0.85rem; margin-bottom:8px;">Set up before you start</div>
+      <div style="font-size:0.9rem; color:#555;">→ What problem am I actually trying to solve?<br>→ What does a good output look like?<br>→ Which parts need human judgment vs. AI speed?<br>→ What mode or tool is right for this task?</div>
+    </td>
+  </tr>
+</table>
+<table style="width:100%; border-collapse:collapse; margin:14px 0;">
+  <tr style="border:2px solid #4A90B8;">
+    <td style="width:56px; background:#003D6B; color:white; text-align:center; font-size:1.3rem; font-weight:700; padding:14px 0; vertical-align:middle;">02</td>
+    <td style="background:#E3EFF7; padding:14px 18px; vertical-align:top;">
+      <div style="font-weight:700; color:#003D6B;">DESCRIPTION</div>
+      <div style="font-style:italic; color:#555; font-size:0.85rem; margin-bottom:8px;">Communicate the full picture</div>
+      <div style="font-size:0.9rem; color:#555;">→ Provide role, context, format, constraints<br>→ Describe the why, not just the what<br>→ Give examples where possible<br>→ Specify language, audience, and detail level</div>
+    </td>
+  </tr>
+</table>
+<table style="width:100%; border-collapse:collapse; margin:14px 0;">
+  <tr style="border:2px solid #4A90B8;">
+    <td style="width:56px; background:#003D6B; color:white; text-align:center; font-size:1.3rem; font-weight:700; padding:14px 0; vertical-align:middle;">03</td>
+    <td style="background:#E3EFF7; padding:14px 18px; vertical-align:top;">
+      <div style="font-weight:700; color:#003D6B;">DISCERNMENT</div>
+      <div style="font-style:italic; color:#555; font-size:0.85rem; margin-bottom:8px;">Evaluate critically</div>
+      <div style="font-size:0.9rem; color:#555;">→ AI is confident even when wrong<br>→ Fact-check statistics and citations always<br>→ Ask for weaknesses: "What's wrong with this?"<br>→ Verify before acting on or publishing</div>
+    </td>
+  </tr>
+</table>
+<table style="width:100%; border-collapse:collapse; margin:14px 0;">
+  <tr style="border:2px solid #4A90B8;">
+    <td style="width:56px; background:#003D6B; color:white; text-align:center; font-size:1.3rem; font-weight:700; padding:14px 0; vertical-align:middle;">04</td>
+    <td style="background:#E3EFF7; padding:14px 18px; vertical-align:top;">
+      <div style="font-weight:700; color:#003D6B;">DILIGENCE</div>
+      <div style="font-style:italic; color:#555; font-size:0.85rem; margin-bottom:8px;">Own the final output</div>
+      <div style="font-size:0.9rem; color:#555;">→ You are accountable for everything you publish<br>→ AI can carry biases from training data<br>→ Never paste sensitive data into public tools<br>→ Keep humans in the loop for consequential decisions</div>
+    </td>
+  </tr>
+</table>
+
+<div style="background:#E0F2F1; border-left:5px solid #4DB6AC; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#007F8C; margin-bottom:8px;">PANGAEA APPLICATION</div>
+  <p>Before asking an AI to help annotate a dataset, run through 4-D: Delegate (what exactly am I asking it to do?), Describe (give it parameter context and examples), Discern (check every suggested annotation against controlled vocabulary), Diligence (you as curator sign off on the final metadata).</p>
+</div>
+
+<!-- C1-6 -->
+<h2 id="c1-6" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">6 · How to Use Chatbots Effectively</h2>
+
+<p>Chatbots are not search engines. The quality of what you get back depends almost entirely on the quality of what you put in. Think of it as working with a very capable but literal-minded colleague who only knows what you tell them.</p>
+
+<p><strong>1. Let the AI help you build a better prompt first —</strong> Before diving into your task, describe what you want to achieve and ask: "I want to [goal]. Help me write a clear, effective prompt I can use for this." Review and adjust its suggestion.</p>
+<p><strong>2. Start with context —</strong> Tell the chatbot who you are and what you need. "I'm a data curator at a scientific database. I need help writing a description for a temperature dataset" gives much better results than just "write a description."</p>
+<p><strong>3. Be specific about the output —</strong> State the format, length, tone, and audience. "Write 2–3 sentences in plain English for a metadata field" prevents a two-page essay.</p>
+<p><strong>4. Treat the first response as a draft —</strong> Follow up: "Make it shorter," "add a note about the measurement method," "use more formal language." This is normal and expected.</p>
+<p><strong>5. Check everything important —</strong> Verify facts, numbers, and citations independently. Chatbots sound confident even when wrong.</p>
+<p><strong>6. Ask for alternatives —</strong> "What are two alternative ways to phrase this?" or "What are the weaknesses of this description?" Comparing options improves results.</p>
+
+<div style="background:#FFF8E1; border-left:5px solid #FFB300; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#E65100; margin-bottom:8px;">💡 TIP</div>
+  <p>The AI never asks clarifying questions unless you tell it to. If your request is ambiguous, the chatbot will make assumptions and proceed — often confidently in the wrong direction. Be explicit.</p>
+</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">"I Corrected the Chatbot — Now It Will Always Give the Correct Answer"</h3>
+<p>This is a common misconception. When you correct a chatbot, your correction only applies to the current conversation. The model adapts its responses within the active context window, but no permanent learning takes place from a single interaction.</p>
+<p>Behind the scenes, providers collect feedback (thumbs up/down, flagged responses, selected conversation logs) and aggregate it over time. This data may eventually feed into evaluation datasets, supervised fine-tuning, or reinforcement learning — but only in future model versions, not in real time.</p>
+<p>Real-time learning is deliberately prevented to avoid manipulation and data poisoning, and to maintain consistent, reproducible model behaviour. Some platforms offer personal memory features that store user-specific preferences across sessions, but these are local workarounds — not global model changes.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">PRACTICAL TAKEAWAY</div>
+  <p>Your correction improves the current chat. Reporting a problem contributes to long-term system improvement. Neither changes the model for other users in real time.</p>
+</div>
+
+<!-- C1-7 -->
+<h2 id="c1-7" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">7 · Prompting — How to Ask Well</h2>
+
+<p>Prompting is the skill of structuring your input so the AI produces the output you actually want. Eight techniques, in order of impact:</p>
+<p><em>Note: with model updates, prompt outputs can change!</em></p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">01 · Give Context</h3>
+<p>Background shapes every word of the response. Tell the AI your role, the purpose, and any relevant constraints.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">I'm a data curator at PANGAEA, preparing a parameter description for publication in a scientific database.</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">02 · Show Examples</h3>
+<p>One good example is worth a paragraph of description. Show the AI what good looks like.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">Here is an existing good description: [paste]. Write a similar one for sea surface salinity.</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">03 · Specify Output Format</h3>
+<p>Define length, structure, language, and audience. Never assume the AI will guess correctly.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">Max 2 sentences. Scientific English. For a metadata field visible to researchers in the database.</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">04 · Assign a Role</h3>
+<p>Telling the AI to adopt a specific persona dramatically shapes its tone and vocabulary.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">You are an expert in oceanographic data curation. Review this parameter annotation and flag any issues.</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">05 · Break into Steps</h3>
+<p>Complex tasks work better when split. Verify each step before moving to the next.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">Step 1: Identify the measurement type. Step 2: Check the unit. Step 3: Write the description.</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">06 · Give Space to Think</h3>
+<p>For hard problems, ask the AI to reason before answering. Reduces confident-but-wrong responses.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">Before answering, consider the possible unit conventions used in this discipline, then respond.</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">07 · Chain-of-Thought</h3>
+<p>For complex tasks, request structured intermediate outputs rather than always exposing full reasoning.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">Think step by step. Show your reasoning at each stage before giving the final answer.</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">08 · Iterate Relentlessly</h3>
+<p>Treat first responses as drafts. The best outputs come from dialogue, not single prompts.</p>
+<div style="background:#F0F4F8; border-left:4px solid #4A90B8; padding:10px 16px; margin:10px 0; font-family:'Courier New',monospace; font-size:0.88rem; color:#555; font-style:italic; border-radius:0 4px 4px 0;">Good, but make it more concise. Remove the third sentence and add the measurement method.</div>
+
+<div style="background:#E0F2F1; border-left:5px solid #4DB6AC; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#007F8C; margin-bottom:8px;">PANGAEA APPLICATION</div>
+  <p>A reusable prompt template with fields for ROLE, TASK, CONTEXT, AUDIENCE, FORMAT, and CONSTRAINTS is available as a Markdown file. Fill in the relevant sections and paste the whole thing as your first message. Saves time and produces consistently better results across different curation tasks.</p>
+</div>
+
+<details>
+  <summary style="cursor:pointer; font-weight:600; color:#00628E; padding:6px 0;">Practical Examples for Curators</summary>
+  <p>→ Formulate emails (with appropriate tone)<br>
+  → Check naming, typos, and abbreviations (works well for chemical elements)<br>
+  → Explain methods — what is the model, the type, what does it do?<br>
+  → Explain parameter/unit — what is it, does the unit make sense?<br>
+  → Rephrase text or abstracts<br>
+  → Write code snippets for Jupyter Notebooks</p>
+</details>
+
+<details>
+  <summary style="cursor:pointer; font-weight:600; color:#00628E; padding:6px 0;">Common Prompting Mistakes (Anti-Patterns)</summary>
+  <table style="width:100%; border-collapse:collapse; margin:12px 0; font-size:0.9rem;">
+    <tr><th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Anti-Pattern</th><th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Problem</th></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Too vague: "Explain this dataset"</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Missing context, unclear goal</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Too many tasks at once</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Leads to incomplete or shallow results</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Implicit assumptions</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Not stating units, domain, or audience — AI fills gaps incorrectly</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">No output specification</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Results vary in length, tone, and usefulness</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Blind trust in first response</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Skips iteration and improvement</td></tr>
+  </table>
+  <div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:10px 0;">
+    <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">KEY PRINCIPLE</div>
+    <p>If the task is unclear to a human colleague, it is unclear to the AI.</p>
+  </div>
+</details>
+
+<!-- C1-8 -->
+<h2 id="c1-8" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">8 · Context Rot — Why Long Conversations Degrade</h2>
+
+<p>Every AI conversation happens inside a context window — a fixed-size memory buffer. The model doesn't remember between sessions; instead, it re-reads the entire conversation on every reply. When that window fills up, something predictable and problematic happens.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">WHEN DOES TEXT FALL OUT OF THE CONTEXT WINDOW?</div>
+  <p>Context windows are measured in tokens (~¾ of a word each). Modern chatbots handle large windows, but long sessions fill them faster than you'd expect:</p>
+  <p>→ <strong>Claude</strong> (claude.ai): ~200,000 token window (up to 1M depending on model). Quality degradation typically sets in well before the hard limit, around 50–100 long exchanges.</p>
+  <p>→ <strong>ChatGPT and Gemini</strong> have similarly large windows (100k–1M tokens). In practice, context rot sets in before the hard limit — it's a gradient, not a cliff.</p>
+  <p><strong>System prompt vs. your first message:</strong> The system prompt is a hidden block of instructions set by the platform — pinned and protected, it never scrolls out. Your first message is a normal user message and can scroll out in long conversations. Re-state important instructions near the end of long sessions, or start a fresh chat.</p>
+</div>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:6px 0 0 6px; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">SYMPTOMS OF CONTEXT ROT...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Contradicts something agreed earlier<br>→ Style instructions silently stop being followed<br>→ Corrected mistakes reappear<br>→ Drifts toward immediate question, away from original goal<br>→ Output quality subtly degrades</div>
+    </td>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:0 6px 6px 0; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">WHAT TO DO ABOUT IT...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Start fresh — new chat for a new task<br>→ Distil before continuing — short summary, not whole conversation<br>→ Anchor key constraints — re-state important rules near current message<br>→ Chunk long tasks — split into self-contained stages<br>→ Spot the symptoms — treat subtle drift as a signal</div>
+    </td>
+  </tr>
+</table>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">KEY PRINCIPLE</div>
+  <p>Context rot is not a bug to be patched. It is a structural consequence of how attention-based AI models work. 200 words of clean, distilled context beats 3,000 words of wandering dialogue every time.</p>
+</div>
+
+<!-- C1-9 -->
+<h2 id="c1-9" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">9 · Trust Boundaries — What to Trust, What to Verify</h2>
+
+<p>AI systems are highly capable, but not uniformly reliable across all types of tasks. In data curation, it is critical to distinguish between outputs that can be used directly and those that require strict verification.</p>
+
+<div style="background:#E0F2F1; border-left:5px solid #4DB6AC; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#2E7D32; margin-bottom:8px;">LOW RISK — Generally Safe</div>
+  <p>Rewriting text for clarity · Summarising documents · Translating between languages · Suggesting alternative phrasings · Formatting and structuring text</p>
+</div>
+
+<div style="background:#FFF8E1; border-left:5px solid #FFB300; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#E65100; margin-bottom:8px;">MEDIUM RISK — Requires Verification</div>
+  <p>Explanations of scientific concepts · Unit interpretations · Parameter descriptions · Code suggestions</p>
+</div>
+
+<div style="background:#FBE9E7; border-left:5px solid #E57373; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#C62828; margin-bottom:8px;">HIGH RISK — Must Always Be Verified</div>
+  <p>Numerical values (coordinates, measurements, timestamps) · Units and unit conversions · Citations and references · Data transformations · Classification into controlled vocabularies</p>
+</div>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">KEY PRINCIPLE</div>
+  <p>The closer an output is to publication-critical data, the less it should be trusted without validation. Unit conversions should be handled by code, not language models.</p>
+</div>
+
+<!-- ═══ COURSE 2 BANNER ═══ -->
+<div style="text-align:center; padding:24px; border-radius:8px; background:#007F8C; color:white; margin:56px 0 20px;">
+  <div style="font-size:12px; letter-spacing:2px; opacity:0.7;">● COURSE 2</div>
+  <div style="font-size:1.5rem; font-weight:600; color:white; margin:4px 0 0;">In-Depth</div>
+</div>
+
+<p><em>For curators ready to go further: coding agents, advanced tools, and the mathematical and practical realities of agentic AI.</em></p>
+<p><em>Note: with model updates, outputs can change!</em></p>
+
+<!-- C2-1 -->
+<h2 id="c2-1" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">1 · Coding Agents</h2>
+
+<p>A coding agent is an AI that doesn't just chat — it takes actions. It can read and write files, run code, call external services, and loop through multiple steps autonomously until a task is complete. The most prominent example is Claude Code, a command-line tool released by Anthropic in early 2025.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">THE KEY DIFFERENCE FROM A CHATBOT</div>
+  <p>A chatbot waits for you to approve each step. A coding agent is given a goal and executes a sequence of actions — file operations, code runs, web fetches — largely autonomously. Agents can execute multi-step actions, often with optional or configurable human oversight.</p>
+</div>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:6px 0 0 6px; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">WHAT CODING AGENTS CAN DO...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Write and run entire Python scripts<br>→ Process batches of files automatically<br>→ Search the web and incorporate results<br>→ Create and update documents, spreadsheets, presentations<br>→ Connect to external services via MCP<br>→ Loop and self-correct until a task is done</div>
+    </td>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:0 6px 6px 0; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">NEW RISKS VS. CHATBOTS...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Irreversible actions — can delete files, send emails<br>→ Prompt injection — malicious text can redirect the agent<br>→ Scope creep — agents sometimes solve adjacent problems too<br>→ Compounding errors — early mistakes propagate through all steps</div>
+    </td>
+  </tr>
+</table>
+
+<div style="background:#E0F2F1; border-left:5px solid #4DB6AC; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#007F8C; margin-bottom:8px;">PANGAEA APPLICATION</div>
+  <p>Example: pyPanTool — a batch file processing mini-desktop application (in development) created with Claude Code. It automates repetitive file operations (format conversion, quality checks, batch renaming) for large files (&gt;600 MB). As a non-programmer, I cannot write Python code myself, but I can now use and adapt my own tool.</p>
+</div>
+
+<!-- C2-2 -->
+<h2 id="c2-2" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">2 · Compounding Error in Sequential AI Tasks</h2>
+
+<p>Every time an AI takes an action, there is some probability it gets it slightly wrong. In a single chatbot exchange, this is manageable — you check the output. But in a long chain of automated steps, small errors compound mathematically.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">PROBABILITY OF A FULLY CORRECT OUTPUT = accuracy<sup>n</sup></div>
+  <p><em>n = number of sequential steps</em></p>
+  <p>99% accuracy × 10 steps → <strong>90.4%</strong> (still high — manageable)<br>
+  99% accuracy × 50 steps → <strong>60.5%</strong> (a coin-flip on correctness)<br>
+  99% accuracy × 100 steps → <strong>36.6%</strong> (likely wrong)<br>
+  95% accuracy × 100 steps → <strong>0.6%</strong> (near-certain failure)<br>
+  99% accuracy × 1,000 steps → <strong>0.004%</strong> (essentially zero)</p>
+</div>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:6px 0 0 6px; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">WHY THIS IS WORSE IN PRACTICE...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Errors are often systematic, not random<br>→ Early mistakes change how later steps are interpreted<br>→ The system builds on its own incorrect assumptions<br>→ Outputs remain plausible, making detection difficult</div>
+    </td>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:0 6px 6px 0; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">DESIGN RESPONSES...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Break workflows into independent, verifiable stages<br>→ Insert human checkpoints at high-impact steps<br>→ Validate critical fields with code, not LLMs<br>→ Use structured outputs to make inconsistencies detectable<br>→ Re-run critical steps with alternative prompts</div>
+    </td>
+  </tr>
+</table>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">BOTTOM LINE</div>
+  <p>This is not a flaw to be fixed — it is a mathematical property of sequential processes. Any workflow design for agentic AI must account for it. Short, verifiable chains with human checkpoints outperform long, fully automated ones.</p>
+</div>
+
+<!-- C2-3 -->
+<h2 id="c2-3" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">3 · Human-in-the-Loop — When and How</h2>
+
+<p>AI systems are most effective when combined with structured human oversight. The right tool and the right level of human involvement depend on whether a task is exploratory (you're figuring things out) or operational (you know what needs to happen and want it automated).</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Choosing the Right Tool</h3>
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Situation</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Best Tool</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Why</th>
+  </tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Draft a parameter description</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Chatbot</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Exploratory, iterative, needs your judgment</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Explain an unfamiliar term or method</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Chatbot</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Single question, conversational</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Check 500 metadata records for format issues</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Coding agent</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">High volume, rule-based — agents excel</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Convert 200 .dat files to tab-delimited</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Coding agent</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Batch processing, defined rule</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Decide if a dataset meets quality criteria</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Human + chatbot</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Requires judgment; chatbot assists, not decides</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Match parameters to controlled vocabulary</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Agent + human review</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">AI suggests; curator approves before publication</td></tr>
+</table>
+
+<div style="background:#FBE9E7; border-left:5px solid #E57373; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#C62828; margin-bottom:8px;">⚠ RULE OF THUMB</div>
+  <p>If a mistake in one step would propagate to 50 other records, build a human checkpoint before that step. Automation multiplies both speed and errors equally.</p>
+</div>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Common Human-in-the-Loop Patterns</h3>
+<p><strong>Draft → Review → Publish —</strong> AI generates a first version (e.g. parameter description). Curator reviews, edits, and approves.</p>
+<p><strong>Suggest → Approve → Apply —</strong> AI proposes classifications or mappings. Curator validates before changes are applied to the database.</p>
+<p><strong>Batch Process → Sample Check → Release —</strong> AI processes large datasets. Curator validates a subset (e.g. 5–10%). Release only if error rate is acceptable.</p>
+<p><strong>Assist → Decide —</strong> AI provides analysis or options. Final decision remains with the curator.</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Why Structure Matters</h3>
+<p>AI increases speed, but also scales errors. Human checkpoints ensure that mistakes do not propagate across datasets. Structured workflows break tasks into stages (planning, execution, validation) and introduce checkpoints — similar to project management or data processing pipelines. This makes intermediate results visible, testable, and correctable before proceeding.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">KEY PRINCIPLE</div>
+  <p>Fully automated workflows are rarely appropriate for scientific data curation. The question is never "chatbot or agent?" but "how much human oversight does this task need?"</p>
+</div>
+
+<!-- C2-4 -->
+<h2 id="c2-4" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">4 · RAG · MCP · Skills — Advanced AI Architecture</h2>
+
+<p>Three concepts that significantly extend what AI tools can do — moving from a chatbot you type at, toward a system that connects to your data and acts on your behalf.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #003D6B; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">📚 RAG — RETRIEVAL-AUGMENTED GENERATION</div>
+  <p>Gives the AI access to your documents. Before generating a response, the system searches a knowledge base for relevant chunks and injects them into the prompt.</p>
+  <p><em>Key property: Passive — content is pre-retrieved before the AI thinks. RAG reduces hallucination risk but does not eliminate it; errors can arise from retrieval and context selection.</em></p>
+</div>
+
+<div style="background:#E0F2F1; border-left:5px solid #007F8C; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#007F8C; margin-bottom:8px;">🔌 MCP — MODEL CONTEXT PROTOCOL</div>
+  <p>Gives the AI the ability to act — calling external tools in real time. MCP is an open protocol, originally proposed by Anthropic, that allows AI systems to connect to external tools — calendars, databases, APIs — without custom wiring for each pair. It is gaining adoption across AI platforms but is not yet a universal standard.</p>
+  <p><em>Key property: Active — the AI decides when and what to trigger, mid-conversation. Adds genuine agency.</em></p>
+</div>
+
+<div style="background:#EDE7F6; border-left:5px solid #00628E; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#00628E; margin-bottom:8px;">🧩 SKILLS — PACKAGED REASONING MODULES</div>
+  <p>Gives the AI specialist behaviour on demand. A skill is a markdown instruction file (e.g. SKILL.md) containing best practices and step-by-step guidance for a specific type of task. When the AI recognises a relevant task, it reads the file before proceeding — encoding expert knowledge you would otherwise re-explain every time. Currently a Claude-specific convention; other AI systems implement similar ideas differently.</p>
+  <p><em>Key property: Reusable — write the expert instructions once, apply them consistently across many tasks.</em></p>
+</div>
+
+<div style="background:#FED8B1; border-left:5px solid #00628E; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#00628E; margin-bottom:8px;">📋 PROJECT CONTEXT FILES — AI ONBOARDING DOCUMENTS</div>
+  <p>Gives the AI persistent background knowledge about a specific project or codebase. These are plain-text files placed in a project folder that the AI reads at the start of a session — covering conventions, architecture decisions, and preferences. Unlike Skills, which encode how to perform a task, project context files encode how this particular project works. This pattern is converging across AI coding tools under different names: CLAUDE.md (Claude / Claude Code), AGENTS.md (OpenAI Codex CLI), .cursorrules (Cursor), .windsurfrules (Windsurf), and .github/copilot-instructions.md (GitHub Copilot). The concept is essentially the same across all of them — a briefing document for the AI agent, written once and reused across sessions.</p>
+  <p><em>Key property: Persistent context — reduces repetition and keeps AI behaviour consistent within a project.</em></p>
+</div>
+
+<div style="background:#E0F2F1; border-left:5px solid #4DB6AC; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#007F8C; margin-bottom:8px;">PANGAEA APPLICATION</div>
+  <p><strong>RAG at PANGAEA — a concrete scenario:</strong> Build a knowledge base by ingesting PANGAEA's parameter vocabulary (~40,000 entries), the curation guidelines wiki, and BSRN station documentation. Documents are chunked into semantic units (e.g. one parameter definition per chunk, one guideline section per chunk) and embedded using a sentence-transformer model.</p>
+  <p><strong>How a curator would use it:</strong> A submitter provides a dataset measuring "SW_down" in "W m⁻²". The curator asks the RAG system: "What is the standard PANGAEA parameter for downward shortwave radiation?" The system retrieves the matching vocabulary entry and returns both the canonical parameter name and its standard unit — grounded in PANGAEA's own controlled vocabulary, not the LLM's general training data.</p>
+  <p><strong>MCP:</strong> Connect the AI directly to the editorial system or parameter database so it can suggest and retrieve entries in real time, without copy-pasting between tools.</p>
+  <p><strong>Skills:</strong> Encode the curation checklist as a SKILL.md file — every new AI-assisted session starts with the same expert context, enforcing consistent quality standards.</p>
+</div>
+
+<details>
+  <summary style="cursor:pointer; font-weight:600; color:#00628E; padding:6px 0;">Practical Considerations for RAG Systems</summary>
+  <p>RAG systems depend heavily on how documents are prepared and retrieved. Poor implementation leads to misleading but confident answers.</p>
+  <table style="width:100%; border-collapse:collapse; margin:12px 0; font-size:0.9rem;">
+    <tr><th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Design Factor</th><th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Details</th></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Chunking strategy</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Documents split into smaller pieces — too large = irrelevant context, too small = loss of meaning</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Retrieval quality</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Must retrieve the right chunks, not just similar ones. Semantic similarity ≠ correctness</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Metadata filtering</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Filtering by dataset, parameter, or domain improves precision</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Version control</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Knowledge bases must be updated and versioned — outdated documents = outdated answers</td></tr>
+    <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Grounding limitations</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Even with correct documents, the model may misinterpret them</td></tr>
+  </table>
+  <div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:14px 18px; margin:10px 0;">
+    <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:6px;">KEY PRINCIPLE</div>
+    <p>RAG improves accuracy, but does not replace validation.</p>
+  </div>
+</details>
+
+<!-- C2-5 -->
+<h2 id="c2-5" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">5 · Evaluating AI Outputs — Benchmarking and Validation</h2>
+
+<p>To use AI reliably in data curation, its performance must be evaluated systematically, not anecdotally. AI outputs vary between runs and model versions. Without measurement, quality cannot be controlled or improved.</p>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">Approach</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">How</th>
+  </tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Gold standard datasets</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Create a small set of manually verified examples. Test AI outputs against them consistently.</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Task-specific evaluation</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Check performance separately for parameter descriptions, unit validation, classification tasks.</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Error tracking</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Log recurring mistakes (e.g. unit confusion). Use them to refine prompts or workflows.</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Sampling strategies</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">For batch tasks, review a fixed percentage (e.g. 5–10%). Estimate overall error rate.</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Reproducibility checks</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Re-run the same prompt and compare outputs. Detect instability or drift.</td></tr>
+</table>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">KEY PRINCIPLE</div>
+  <p>AI quality should be treated like data quality — measurable, monitored, and continuously improved.</p>
+</div>
+
+<!-- C2-6 -->
+<h2 id="c2-6" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">6 · Token Usage — Understanding AI Costs</h2>
+
+<p>Everything in AI is measured in tokens — the basic unit of text that a model processes. Roughly three-quarters of a word, or about four characters. Both what you send (input) and what you receive back (output) count against your token usage and cost.</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">WHY TOKENS MATTER</div>
+  <p>Token limits define how much context you can use in one session. Token costs define how much automated workflows cost to run. Pasting an entire 10,000-row dataset into a prompt is both expensive and likely to cause context rot — there's a better way for every large-data use case.</p>
+</div>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:6px 0 0 6px; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">TOKEN-WASTING HABITS...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Pasting entire files when only a section is needed<br>→ Repeating full context in every message<br>→ Asking Opus for tasks Haiku handles equally well<br>→ Long, unfocused prompts with multiple questions<br>→ Re-running failed prompts without changing the approach</div>
+    </td>
+    <td style="width:50%; vertical-align:top; padding:16px 18px; background:#F5F5F5; border-radius:0 6px 6px 0; border-top:3px solid #4A90B8;">
+      <div style="font-size:0.85rem; font-weight:700; color:#003D6B; margin-bottom:10px;">TOKEN-EFFICIENT HABITS...</div>
+      <div style="font-size:0.9rem; color:#555;">→ Send only the relevant excerpt<br>→ Use a fresh chat per task<br>→ Match model tier to task complexity<br>→ Use RAG to inject only what's needed<br>→ Batch similar tasks in one well-structured prompt</div>
+    </td>
+  </tr>
+</table>
+
+<div style="background:#FFF8E1; border-left:5px solid #FFB300; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#E65100; margin-bottom:8px;">💡 BATCH API</div>
+  <p>For heavy batch processing (hundreds of API calls), many providers offer a Batch API at roughly half the standard cost. Tasks that don't need an immediate response — like processing 500 metadata records overnight — are ideal candidates.</p>
+</div>
+
+<!-- C2-7 -->
+<h2 id="c2-7" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">7 · Structured Outputs and Schema Enforcement</h2>
+
+<p>For AI to be reliably integrated into data curation workflows, outputs must be predictable, consistent, and machine-readable. Free-form text is flexible but difficult to validate, compare, or reuse programmatically.</p>
+<p>Structured outputs constrain the AI to return results in a predefined format — typically JSON, tables, or schema-based records. This enables direct integration with databases, scripts, and validation pipelines.</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Why It Matters</h3>
+<p>Consistent structure allows automated quality checks. Schemas enforce required fields and valid formats. Outputs become reproducible and comparable across runs.</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">How to Apply</h3>
+<p>Explicitly define the output format in the prompt. Provide a schema or example structure. Validate outputs automatically where possible.</p>
+
+<h3 style="font-size:1.1rem; font-weight:600; color:#007F8C; margin:24px 0 10px;">Example</h3>
+<p>Instead of a paragraph description, require a structured record with fixed fields (e.g. parameter name, unit, method, uncertainty).</p>
+
+<div style="background:#E3EFF7; border-left:5px solid #4A90B8; border-radius:6px; padding:16px 20px; margin:18px 0;">
+  <div style="font-weight:700; font-size:0.85rem; color:#003D6B; margin-bottom:8px;">KEY PRINCIPLE</div>
+  <p>Unstructured text supports exploration. Structured outputs enable reliable operations.</p>
+</div>
+
+<!-- GLOSSARY -->
+<h2 id="c2-glossary" style="font-size:1.5rem; font-weight:700; color:#003D6B; margin:40px 0 14px; border-bottom:2px solid #E3EFF7; padding-bottom:8px;">Quick Reference Glossary</h2>
+
+<table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:0.9rem;">
+  <tr>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left; width:30%;">Term</th>
+    <th style="background:#003D6B; color:white; padding:9px 13px; text-align:left;">One-line Definition</th>
+  </tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; font-weight:700; color:#003D6B;">LLM</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Large Language Model — the AI engine trained on text to predict language</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5; font-weight:700; color:#003D6B;">Token</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Basic unit of AI text (~¾ of a word). All costs and limits are in tokens</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; font-weight:700; color:#003D6B;">Context window</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">The fixed-size memory buffer for one session. When full, older content scrolls out permanently</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5; font-weight:700; color:#003D6B;">Hallucination</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">When AI generates confident-sounding but false information</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; font-weight:700; color:#003D6B;">Prompt</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Your input message to an AI. Prompt quality directly determines output quality</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5; font-weight:700; color:#003D6B;">Context rot</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Gradual degradation of AI attention as a conversation grows long</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; font-weight:700; color:#003D6B;">Temperature</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Numerical parameter controlling output variability (0 = deterministic, 1 = diverse)</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5; font-weight:700; color:#003D6B;">RAG</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Retrieval-Augmented Generation — AI looks up your documents before responding</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; font-weight:700; color:#003D6B;">MCP</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Model Context Protocol — standardised way for AI to connect to external tools</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5; font-weight:700; color:#003D6B;">Coding agent</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">AI that takes multi-step actions (file ops, code execution) autonomously</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; font-weight:700; color:#003D6B;">Compounding error</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0;">Small per-step errors that multiply geometrically across long automated chains</td></tr>
+  <tr><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5; font-weight:700; color:#003D6B;">Skill (SKILL.md)</td><td style="padding:9px 13px; border-bottom:1px solid #e0e0e0; background:#F5F5F5;">Reusable expert instructions packaged for a specific task type</td></tr>
+</table>
+
+<!-- FOOTER -->
+<div style="text-align:center; padding:20px 0; margin-top:48px; border-top:2px solid #007F8C; color:#555; font-size:0.85rem;">
+  PANGAEA Data Publisher · AI Training for Data Curators · March 2026 · Internal training use only
+</div>
+
+</div>

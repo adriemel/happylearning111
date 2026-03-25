@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mondphasen – Das kosmische Schauspiel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
+
+  :root {
+    --gold: #f0c060;
+    --moonlight: #d8e8ff;
+    --shadow: #0a0d1a;
+    --glow: #6080ff;
+    --sun-color: #ffdd44;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #030510;
+    color: #c8d8f8;
+    font-family: 'Crimson Pro', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Starfield ── */
+  #stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Layout ── */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 700;
+    text-align: center;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 40px rgba(240,192,96,0.5);
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #8090b8;
+    margin-bottom: 36px;
+  }
+
+  /* ── Orrery (top diagram) ── */
+  #orrery-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  #orrery {
+    position: relative;
+    width: 340px;
+    height: 340px;
+  }
+  #orrery canvas {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    padding: 8px 20px;
+    border: 1px solid #3040a0;
+    background: rgba(20,30,80,0.7);
+    color: var(--moonlight);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .btn:hover { background: rgba(40,60,160,0.8); border-color: var(--glow); box-shadow: 0 0 12px rgba(96,128,255,0.3); }
+  .btn.active { background: rgba(60,90,200,0.7); border-color: var(--gold); color: var(--gold); }
+
+  .speed-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #8090b8;
+  }
+  #speedSlider {
+    -webkit-appearance: none;
+    width: 100px;
+    height: 3px;
+    background: #2030a0;
+    border-radius: 2px;
+    outline: none;
+  }
+  #speedSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+  }
+
+  /* ── Phase grid ── */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  @media(max-width:600px){ .phase-grid { grid-template-columns: repeat(2,1fr); } }
+
+  .phase-card {
+    background: rgba(10,15,40,0.8);
+    border: 1px solid #1a2060;
+    border-radius: 6px;
+    padding: 14px 10px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+    position: relative;
+  }
+  .phase-card:hover { transform: translateY(-3px); border-color: #4060d0; box-shadow: 0 6px 24px rgba(60,80,200,0.25); }
+  .phase-card.active { border-color: var(--gold); box-shadow: 0 0 20px rgba(240,192,96,0.25); }
+
+  .phase-moon-wrap { width: 60px; height: 60px; margin: 0 auto 10px; }
+  .phase-moon-wrap canvas { display: block; }
+
+  .phase-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .phase-day {
+    font-size: 0.72rem;
+    color: #5060a0;
+    margin-bottom: 6px;
+  }
+  .phase-desc {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: #8090c0;
+    font-style: italic;
+  }
+
+  /* ── Big moon display ── */
+  .big-moon-section {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    background: rgba(8,12,35,0.85);
+    border: 1px solid #1a2060;
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+  @media(max-width:600px){ .big-moon-section { flex-direction: column; text-align: center; } }
+
+  #bigMoonCanvas { flex-shrink: 0; display: block; }
+
+  .big-info h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .big-info .day-badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    border: 1px solid #2030a0;
+    padding: 3px 12px;
+    border-radius: 20px;
+    color: #6070b0;
+    margin-bottom: 12px;
+  }
+  .big-info p {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #a0b0d8;
+    margin-bottom: 10px;
+  }
+  .big-info .science-tag {
+    font-size: 0.82rem;
+    color: var(--glow);
+    padding: 6px 14px;
+    border: 1px solid #2030a0;
+    border-radius: 4px;
+    display: inline-block;
+    background: rgba(60,80,200,0.12);
+  }
+
+  /* ── Explainer section ── */
+  .explainer {
+    background: rgba(6,10,30,0.9);
+    border-left: 3px solid var(--gold);
+    padding: 22px 28px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 28px;
+  }
+  .explainer h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 0.06em;
+  }
+  .explainer p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #9090c0;
+    margin-bottom: 8px;
+  }
+  .explainer strong { color: var(--moonlight); }
+
+  /* ── Angle indicator ── */
+  .angle-bar {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #5060a0;
+    margin-bottom: 8px;
+  }
+  .angle-bar span { color: var(--gold); font-family: 'Cinzel', serif; }
+
+  /* ── Daylight indicator pill ── */
+  .daylight-pill {
+    display: flex;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 260px;
+    margin: 0 auto 20px;
+    border: 1px solid #2030a0;
+  }
+  .daylight-lit { background: var(--gold); }
+  .daylight-dark { background: #1a2060; }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="container">
+  <h1>🌙 Die Mondphasen</h1>
+  <p class="subtitle">Warum wechselt der Mond sein Gesicht alle 29,5 Tage?</p>
+
+  <!-- Orrery -->
+  <div id="orrery-wrap">
+    <div id="orrery">
+      <canvas id="orreryCanvas" width="340" height="340" style="width:340px;height:340px"></canvas>
+    </div>
+  </div>
+
+  <div class="angle-bar">Mondwinkel: <span id="angleDisplay">0°</span> &nbsp;|&nbsp; Tag im Mondzyklus: <span id="dayDisplay">0</span></div>
+
+  <div class="daylight-pill">
+    <div class="daylight-lit" id="litPill" style="width:50%"></div>
+    <div class="daylight-dark" id="darkPill" style="width:50%"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="btn" id="btnPlay">▶ Abspielen</button>
+    <button class="btn" id="btnPause">⏸ Pause</button>
+    <button class="btn" id="btnReset">↺ Neustart</button>
+    <div class="speed-wrap">
+      <span>Tempo</span>
+      <input type="range" id="speedSlider" min="0.2" max="4" step="0.1" value="1">
+    </div>
+  </div>
+
+  <!-- Phase grid -->
+  <div class="phase-grid" id="phaseGrid"></div>
+
+  <!-- Big moon -->
+  <div class="big-moon-section">
+    <canvas id="bigMoonCanvas" width="140" height="140"></canvas>
+    <div class="big-info">
+      <h2 id="bigName">–</h2>
+      <div class="day-badge" id="bigDay">Tag – im Zyklus</div>
+      <p id="bigDesc">–</p>
+      <div class="science-tag" id="bigScience">–</div>
+    </div>
+  </div>
+
+  <!-- Explainer -->
+  <div class="explainer">
+    <h3>🔭 Wie funktioniert das wirklich?</h3>
+    <p>Der Mond <strong>leuchtet nicht selbst</strong> – er reflektiert nur das Licht der Sonne. Die Sonne beleuchtet immer genau eine Hälfte des Mondes.</p>
+    <p>Das grüne Männchen im Diagramm bist <strong>Du</strong> – du stehst auf der Erde und schaust zum Mond hin. Die gestrichelte Linie zeigt deinen Blick. Was du siehst, hängt davon ab, wie viel der beleuchteten Mondseite dir zugewandt ist.</p>
+    <p>Ein vollständiger Umlauf dauert <strong>29,5 Tage</strong>. Der Mond dreht sich so, dass wir immer <strong>dieselbe Seite</strong> sehen (gebundene Rotation).</p>
+  </div>
+  <div class="explainer" style="border-left-color:#ff7744;">
+    <h3>☀️ Wie entsteht eine Sonnenfinsternis?</h3>
+    <p>Der Mond wirft bei Neumond einen Schatten Richtung Erde – einen schmalen <strong>Kernschatten</strong> (völlige Dunkelheit) und einen breiteren <strong>Halbschatten</strong> (teilweise Verdunklung). Wer auf der Erde zufällig im Kernschatten steht, erlebt eine <strong>totale Sonnenfinsternis</strong>.</p>
+    <p>Das passiert aber nur selten: Die Mondbahn ist um <strong>~5° geneigt</strong>, deshalb zieht der Mondschatten meistens knapp an der Erde vorbei. Nur wenn Neumond genau an einem der beiden Bahnkreuzungspunkte stattfindet, trifft der Kernschatten die Erde – etwa <strong>2–3 Mal pro Jahr</strong>, und nur auf einem schmalen Streifen der Erdoberfläche sichtbar.</p>
+  </div>
+</div>
+
+<script>
+// ── Stars ──────────────────────────────────────────────
+const starCanvas = document.getElementById('stars');
+const starCtx = starCanvas.getContext('2d');
+function resizeStars() {
+  starCanvas.width = window.innerWidth;
+  starCanvas.height = window.innerHeight;
+  const ctx = starCtx;
+  ctx.clearRect(0,0,starCanvas.width,starCanvas.height);
+  for(let i=0;i<320;i++){
+    const x = Math.random()*starCanvas.width;
+    const y = Math.random()*starCanvas.height;
+    const r = Math.random()*1.3;
+    const a = 0.3+Math.random()*0.7;
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(200,220,255,${a})`;
+    ctx.fill();
+  }
+}
+resizeStars();
+window.addEventListener('resize', resizeStars);
+
+// ── Phase data ─────────────────────────────────────────
+const phases = [
+  {
+    name: "Neumond",
+    day: 0,
+    angle: 0,
+    desc: "Mond und Sonne stehen aus unserer Sicht in derselben Richtung. Die beleuchtete Seite zeigt von uns weg – der Mond ist unsichtbar.",
+    science: "Elongation ≈ 0° · Mond geht mit der Sonne auf",
+    litFraction: 0
+  },
+  {
+    name: "Zunehmende Sichel",
+    day: 4,
+    angle: 45,
+    desc: "Nur ein schmaler Bogen ist beleuchtet, rechts sichtbar. Abends kurz nach Sonnenuntergang am Westhimmel.",
+    science: "Elongation ≈ 45° · sichtbar am Abendhimmel",
+    litFraction: 0.125
+  },
+  {
+    name: "Erstes Viertel",
+    day: 7,
+    angle: 90,
+    desc: "Genau die rechte Hälfte leuchtet. Der Mond steht 90° von der Sonne entfernt – mittags aufgehend, mitternachts untergehend.",
+    science: "Elongation ≈ 90° · Halbmond, rechte Hälfte",
+    litFraction: 0.5
+  },
+  {
+    name: "Zunehmender Gibbous",
+    day: 11,
+    angle: 135,
+    desc: "Mehr als die Hälfte leuchtet. Der Mond ist früh aufgestanden und scheint bis weit nach Mitternacht.",
+    science: "Elongation ≈ 135° · zunehmend, mehr als Hälfte",
+    litFraction: 0.875
+  },
+  {
+    name: "Vollmond",
+    day: 15,
+    angle: 180,
+    desc: "Die gesamte der Erde zugewandte Seite ist beleuchtet. Mond und Sonne stehen sich gegenüber – Aufgang bei Sonnenuntergang.",
+    science: "Elongation ≈ 180° · maximale Helligkeit",
+    litFraction: 1.0
+  },
+  {
+    name: "Abnehmender Gibbous",
+    day: 18,
+    angle: 225,
+    desc: "Der Mond nimmt ab – jetzt leuchtet die linke Seite mehr als die Hälfte. Aufgang nach Mitternacht.",
+    science: "Elongation ≈ 225° · abnehmend, mehr als Hälfte",
+    litFraction: 0.875
+  },
+  {
+    name: "Letztes Viertel",
+    day: 22,
+    angle: 270,
+    desc: "Die linke Hälfte leuchtet – wieder ein Halbmond, diesmal die andere Seite. Steht vor Sonnenaufgang hoch am Himmel.",
+    science: "Elongation ≈ 270° · Halbmond, linke Hälfte",
+    litFraction: 0.5
+  },
+  {
+    name: "Abnehmende Sichel",
+    day: 26,
+    angle: 315,
+    desc: "Nur noch eine schmale Sichel, jetzt links. Morgens kurz vor Sonnenaufgang am Osthimmel sichtbar.",
+    science: "Elongation ≈ 315° · sichtbar am Morgenhimmel",
+    litFraction: 0.125
+  }
+];
+
+// ── State ──────────────────────────────────────────────
+let angle = 0; // 0–360
+let playing = false;
+let speed = 1;
+let animFrame = null;
+let lastTime = null;
+let activePhaseIdx = 0;
+
+// ── Orrery canvas ──────────────────────────────────────
+const oc = document.getElementById('orreryCanvas');
+const octx = oc.getContext('2d');
+// Earth is the center of THIS diagram. Sun sits to the right at fixed position.
+const CX = 170, CY = 170, ORBIT = 100;
+const SUN_X = 310, SUN_Y = 170, SUN_R = 22; // Sun fixed at right
+
+function drawOrrery(ang) {
+  octx.clearRect(0,0,340,340);
+
+  // Parallel sunlight rays coming from the right (Sun direction)
+  // Draw as parallel horizontal bands fading out to the left
+  for(let i = -5; i <= 5; i++) {
+    const y = CY + i * 28;
+    const grad = octx.createLinearGradient(SUN_X - SUN_R, y, CX - ORBIT - 20, y);
+    grad.addColorStop(0, 'rgba(255,220,60,0.22)');
+    grad.addColorStop(1, 'rgba(255,220,60,0)');
+    octx.beginPath();
+    octx.moveTo(SUN_X - SUN_R, y);
+    octx.lineTo(CX - ORBIT - 20, y);
+    octx.strokeStyle = grad;
+    octx.lineWidth = 7;
+    octx.stroke();
+  }
+
+  // Orbit path
+  octx.beginPath();
+  octx.arc(CX, CY, ORBIT, 0, Math.PI*2);
+  octx.strokeStyle = 'rgba(40,60,160,0.45)';
+  octx.lineWidth = 1;
+  octx.setLineDash([4,6]);
+  octx.stroke();
+  octx.setLineDash([]);
+
+  // Moon position
+  // ang=0 → Neumond: Moon to the RIGHT (toward Sun), between Earth and Sun
+  // ang=180 → Vollmond: Moon to the LEFT, away from Sun
+  const rad = -(ang) * Math.PI / 180; // counterclockwise, 0=right
+  const mx = CX + ORBIT * Math.cos(rad);
+  const my = CY + ORBIT * Math.sin(rad);
+
+  // Draw moon on orrery – illumination angle FROM EARTH'S VIEW is `ang`
+  // But in the orrery the mini-moon should show its physically lit side
+  // Sun is at right (angle 0). Moon physical illumination:
+  // The side facing right (toward Sun) is always lit.
+  // We draw the mini-moon with a fixed "sun from right" illumination.
+  drawOrreryMoon(octx, mx, my, 13, ang);
+
+  // Earth
+  // Earth glow
+  const eg = octx.createRadialGradient(CX,CY,8,CX,CY,20);
+  eg.addColorStop(0,'rgba(60,120,255,0.3)');
+  eg.addColorStop(1,'rgba(0,0,0,0)');
+  octx.beginPath(); octx.arc(CX,CY,20,0,Math.PI*2);
+  octx.fillStyle=eg; octx.fill();
+  octx.beginPath();
+  octx.arc(CX,CY,11,0,Math.PI*2);
+  octx.fillStyle = '#2a6de0';
+  octx.fill();
+  // little continent suggestion
+  octx.beginPath();
+  octx.arc(CX-2,CY-2,5,0,Math.PI*2);
+  octx.fillStyle='#3a9040';
+  octx.fill();
+
+  // Sun (fixed right)
+  const sunGrad = octx.createRadialGradient(SUN_X,SUN_Y,0,SUN_X,SUN_Y,SUN_R*1.8);
+  sunGrad.addColorStop(0,'#fffbe0');
+  sunGrad.addColorStop(0.4,'#ffdd44');
+  sunGrad.addColorStop(0.8,'rgba(255,140,0,0.4)');
+  sunGrad.addColorStop(1,'rgba(255,100,0,0)');
+  octx.beginPath();
+  octx.arc(SUN_X,SUN_Y,SUN_R*1.8,0,Math.PI*2);
+  octx.fillStyle=sunGrad; octx.fill();
+  octx.beginPath();
+  octx.arc(SUN_X,SUN_Y,SUN_R,0,Math.PI*2);
+  octx.fillStyle='#ffee66'; octx.fill();
+
+  // ── Observer on Earth surface ──
+  // Observer stands on the side of Earth facing the Moon
+  const observerAngle = rad;
+  const EARTH_R = 11;
+  const obsX = CX + (EARTH_R + 5) * Math.cos(observerAngle);
+  const obsY = CY + (EARTH_R + 5) * Math.sin(observerAngle);
+
+  // Gaze line from observer toward moon (dashed green)
+  octx.save();
+  octx.setLineDash([3,4]);
+  octx.strokeStyle = 'rgba(120,200,120,0.55)';
+  octx.lineWidth = 1.2;
+  octx.beginPath();
+  octx.moveTo(obsX, obsY);
+  const gazeDist = ORBIT - EARTH_R - 18;
+  octx.lineTo(
+    CX + (EARTH_R + 5 + gazeDist) * Math.cos(observerAngle),
+    CY + (EARTH_R + 5 + gazeDist) * Math.sin(observerAngle)
+  );
+  octx.stroke();
+  octx.setLineDash([]);
+  octx.restore();
+
+  // Observer: tiny stick figure
+  octx.save();
+  octx.translate(obsX, obsY);
+  octx.rotate(observerAngle - Math.PI/2); // upright = feet toward earth
+  octx.strokeStyle = '#80ff80';
+  octx.lineWidth = 1.5;
+  octx.beginPath(); octx.moveTo(0,2); octx.lineTo(0,-4); octx.stroke(); // body
+  octx.beginPath(); octx.arc(0,-6,2.2,0,Math.PI*2);
+  octx.fillStyle='#80ff80'; octx.fill(); // head
+  octx.beginPath(); octx.moveTo(-3,0); octx.lineTo(3,0); octx.stroke(); // arms
+  octx.restore();
+
+  // "Du" label
+  const labelOff = 15;
+  octx.font = 'bold 9px Cinzel, serif';
+  octx.fillStyle = '#80ff80';
+  octx.textAlign = 'center';
+  octx.fillText('Du', obsX + Math.cos(observerAngle)*labelOff, obsY + Math.sin(observerAngle)*labelOff + 3);
+
+  // Labels
+  octx.font = '600 10px Cinzel, serif';
+  octx.textAlign = 'center';
+  octx.fillStyle = '#ffdd88';
+  octx.fillText('SONNE', SUN_X, SUN_Y + SUN_R + 14);
+  octx.fillStyle = '#80a0ff';
+  octx.fillText('ERDE', CX, CY + 24);
+
+  // Moon label – position away from center
+  const labelDist = 20;
+  const lx = mx + Math.cos(rad)*labelDist;
+  const ly = my + Math.sin(rad)*labelDist;
+  octx.font = '600 9px Cinzel, serif';
+  octx.fillStyle = '#c0d0ff';
+  octx.textAlign = 'center';
+  octx.fillText('MOND', lx, ly + (ly > CY ? 10 : -4));
+  octx.textAlign = 'center';
+
+  // Arrow showing direction of orbit
+  const arrowAng = rad + 0.35;
+  const ax = CX + ORBIT * Math.cos(arrowAng);
+  const ay = CY + ORBIT * Math.sin(arrowAng);
+  octx.beginPath();
+  octx.arc(CX, CY, ORBIT, arrowAng - 0.3, arrowAng, false);
+  octx.strokeStyle = 'rgba(100,140,255,0.5)';
+  octx.lineWidth = 1.5;
+  octx.setLineDash([]);
+  octx.stroke();
+}
+
+// Mini moon for orrery: physically correct lit side (sun always from right in world space)
+function drawOrreryMoon(ctx, cx, cy, r, ang) {
+  // In world space, sun is at right. The moon's physical illumination:
+  // the side of the moon facing right is always lit.
+  // We rotate the moon drawing so "lit side" always faces sun direction.
+  const PI = Math.PI;
+  const moonRad = -ang * PI / 180; // moon's angle in world space
+  // Direction from moon to sun (sun is at right, moon is at CX+ORBIT*cos(moonRad))
+  // Sun direction from moon = angle of (SUN_X - mx, SUN_Y - my)
+  const mx = CX + ORBIT * Math.cos(moonRad);
+  const my = CY + ORBIT * Math.sin(moonRad);
+  const sunDir = Math.atan2(SUN_Y - my, SUN_X - mx); // angle pointing toward sun
+
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // Dark base
+  ctx.beginPath();
+  ctx.arc(0,0,r,0,PI*2);
+  ctx.fillStyle = '#0a0f20';
+  ctx.fill();
+
+  // Clip
+  ctx.beginPath();
+  ctx.arc(0,0,r,0,PI*2);
+  ctx.clip();
+
+  // Lit half: facing toward sun
+  // Rotate so that the lit right-half always faces sunDir
+  ctx.save();
+  ctx.rotate(sunDir);
+  // Draw right half (lit)
+  ctx.beginPath();
+  ctx.arc(0,0,r,-PI/2,PI/2);
+  ctx.lineTo(0,0);
+  ctx.closePath();
+  ctx.fillStyle = '#d8e4ff';
+  ctx.fill();
+  ctx.restore();
+
+  ctx.restore();
+}
+
+// ── Moon drawing ───────────────────────────────────────
+function drawMoon(ctx, cx, cy, r, angle, orrery=false) {
+  // angle: 0=Neumond (Mond right of sun), 180=Vollmond
+  // Lit fraction and side logic:
+  // The lit portion of the moon seen from Earth.
+  // When angle=0 (Neumond): moon between Earth and Sun (from Earth's view, dark side faces us)
+  // When angle=180 (Vollmond): moon opposite Sun (full lit side faces us)
+
+  const PI = Math.PI;
+  const a = angle * PI / 180; // 0 to 2PI
+
+  // How much is lit (0..1) and which side?
+  // illuminationAngle: 0=new, PI=full, 2PI=new again
+  // litFraction: 0..1
+  // waxing: 0..PI (right side lit), waning: PI..2PI (left side lit)
+  const lit = (1 - Math.cos(a)) / 2; // 0 at new, 1 at full
+  const waxing = angle <= 180;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // Draw full dark moon first
+  ctx.beginPath();
+  ctx.arc(0,0,r,0,PI*2);
+  const moonDark = ctx.createRadialGradient(-r*0.3,-r*0.3,0,0,0,r);
+  moonDark.addColorStop(0,'#1a2040');
+  moonDark.addColorStop(1,'#08101e');
+  ctx.fillStyle = moonDark;
+  ctx.fill();
+
+  // Clip to circle
+  ctx.beginPath();
+  ctx.arc(0,0,r,0,PI*2);
+  ctx.clip();
+
+  // Draw lit portion
+  // The lit half is always the full right or left hemisphere, then an ellipse modifies it.
+  // Standard terminator: the boundary between dark and lit is an ellipse whose x-radius goes 0→r→0
+  // and direction depends on waxing/waning.
+
+  if(lit > 0.001 && lit < 0.999) {
+    // terminator x-scale: maps 0..0.5..1 → -1..0..1 (actually r..0..r)
+    // At lit=0.5 (quarter), ellipse x=0 (straight line)
+    // At lit<0.5: smaller than half → ellipse bulges away from lit side
+    // At lit>0.5: bigger than half
+    const tx = Math.cos(a) * r; // -r..r, 0 at quarters
+
+    // Draw lit region using path construction
+    ctx.beginPath();
+    // Lit side: right when waxing, left when waning
+    if(waxing) {
+      // Right half always lit
+      ctx.arc(0,0,r,-PI/2,PI/2);
+      // Add/subtract ellipse
+      if(lit < 0.5) {
+        // Terminator curves into lit side (right)
+        // ellipse from bottom to top, bulging left
+        ctx.ellipse(0,0,Math.abs(tx),r,0,PI/2,-PI/2,false);
+      } else {
+        // Terminator has passed center; left half also has part lit
+        ctx.ellipse(0,0,Math.abs(tx),r,0,PI/2,-PI/2,true);
+      }
+    } else {
+      // Left half lit
+      ctx.arc(0,0,r,PI/2,3*PI/2);
+      if(lit < 0.5) {
+        ctx.ellipse(0,0,Math.abs(tx),r,0,-PI/2,PI/2,false);
+      } else {
+        ctx.ellipse(0,0,Math.abs(tx),r,0,-PI/2,PI/2,true);
+      }
+    }
+    ctx.closePath();
+
+    const moonLit = ctx.createRadialGradient(-r*0.25,-r*0.25,0,0,0,r*1.1);
+    moonLit.addColorStop(0,'#f0f4ff');
+    moonLit.addColorStop(0.4,'#d0dcff');
+    moonLit.addColorStop(0.8,'#a0b0e0');
+    moonLit.addColorStop(1,'#7080c0');
+    ctx.fillStyle = moonLit;
+    ctx.fill();
+
+  } else if(lit >= 0.999) {
+    // Full moon
+    const g = ctx.createRadialGradient(-r*0.25,-r*0.25,0,0,0,r*1.1);
+    g.addColorStop(0,'#f8faff');
+    g.addColorStop(0.4,'#d8e4ff');
+    g.addColorStop(0.8,'#a0b4e8');
+    g.addColorStop(1,'#7080c0');
+    ctx.beginPath();
+    ctx.arc(0,0,r,0,PI*2);
+    ctx.fillStyle = g;
+    ctx.fill();
+  }
+
+  // Crater hints on lit side (only at larger sizes)
+  if(r >= 30 && lit > 0.05) {
+    ctx.globalAlpha = 0.18;
+    const craters = [[r*0.1,r*0.1,r*0.13],[r*-0.2,r*0.3,r*0.09],[r*0.3,r*-0.25,r*0.07],[r*-0.1,r*-0.3,r*0.08]];
+    craters.forEach(([cx2,cy2,cr])=>{
+      ctx.beginPath();
+      ctx.arc(cx2,cy2,cr,0,PI*2);
+      ctx.fillStyle = '#203060';
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+
+  // Glow
+  if(lit > 0.4) {
+    const glow = ctx.createRadialGradient(cx,cy,r*0.8,cx,cy,r*2.5);
+    glow.addColorStop(0,`rgba(180,200,255,${0.18*lit})`);
+    glow.addColorStop(1,'rgba(180,200,255,0)');
+    ctx.beginPath();
+    ctx.arc(cx,cy,r*2.5,0,PI*2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+  }
+}
+
+function drawMiniMoon(ctx, cx, cy, r, angle, orrery=false) {
+  drawMoon(ctx, cx, cy, r, angle, orrery);
+}
+
+// ── Build phase cards ──────────────────────────────────
+const grid = document.getElementById('phaseGrid');
+phases.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'phase-card';
+  card.innerHTML = `
+    <div class="phase-moon-wrap"><canvas id="phaseC${i}" width="60" height="60"></canvas></div>
+    <div class="phase-name">${p.name}</div>
+    <div class="phase-day">Tag ${p.day}</div>
+    <div class="phase-desc">${p.desc.substring(0,70)}…</div>
+  `;
+  card.addEventListener('click', () => jumpToPhase(i));
+  grid.appendChild(card);
+
+  // Draw card moon
+  const cc = document.getElementById(`phaseC${i}`);
+  const cctx = cc.getContext('2d');
+  drawMoon(cctx, 30, 30, 22, p.angle);
+});
+
+// ── Big moon ───────────────────────────────────────────
+const bigCanvas = document.getElementById('bigMoonCanvas');
+const bigCtx = bigCanvas.getContext('2d');
+
+function updateBigMoon(ang) {
+  bigCtx.clearRect(0,0,140,140);
+  // Dark background
+  bigCtx.beginPath();
+  bigCtx.arc(70,70,60,0,Math.PI*2);
+  bigCtx.fillStyle = '#050810';
+  bigCtx.fill();
+  drawMoon(bigCtx, 70, 70, 55, ang);
+}
+
+// ── Find closest phase ─────────────────────────────────
+function closestPhase(ang) {
+  let best = 0, bestDiff = 999;
+  phases.forEach((p,i) => {
+    let diff = Math.abs(ang - p.angle);
+    if(diff > 180) diff = 360 - diff;
+    if(diff < bestDiff) { bestDiff = diff; best = i; }
+  });
+  return best;
+}
+
+// ── Update all displays ────────────────────────────────
+function updateAll(ang) {
+  // Orrery
+  drawOrrery(ang);
+
+  // Angle + day display
+  const day = Math.round((ang/360)*29.5);
+  document.getElementById('angleDisplay').textContent = Math.round(ang) + '°';
+  document.getElementById('dayDisplay').textContent = day;
+
+  // Lit fraction pill
+  const lit = (1 - Math.cos(ang * Math.PI/180)) / 2;
+  document.getElementById('litPill').style.width = (lit*100)+'%';
+  document.getElementById('darkPill').style.width = ((1-lit)*100)+'%';
+
+  // Big moon
+  updateBigMoon(ang);
+
+  // Active phase
+  const idx = closestPhase(ang);
+  if(idx !== activePhaseIdx) {
+    document.querySelectorAll('.phase-card').forEach((c,i) => c.classList.toggle('active', i===idx));
+    activePhaseIdx = idx;
+    const p = phases[idx];
+    document.getElementById('bigName').textContent = p.name;
+    document.getElementById('bigDay').textContent = `Tag ${p.day} im Mondzyklus`;
+    document.getElementById('bigDesc').textContent = p.desc;
+    document.getElementById('bigScience').textContent = p.science;
+  }
+}
+
+// ── Animation loop ─────────────────────────────────────
+function loop(ts) {
+  if(!playing) return;
+  if(lastTime === null) lastTime = ts;
+  const dt = ts - lastTime;
+  lastTime = ts;
+  angle = (angle + dt * 0.012 * speed) % 360;
+  updateAll(angle);
+  animFrame = requestAnimationFrame(loop);
+}
+
+// ── Controls ───────────────────────────────────────────
+document.getElementById('btnPlay').addEventListener('click', () => {
+  if(playing) return;
+  playing = true;
+  lastTime = null;
+  animFrame = requestAnimationFrame(loop);
+});
+document.getElementById('btnPause').addEventListener('click', () => {
+  playing = false;
+  if(animFrame) cancelAnimationFrame(animFrame);
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  playing = false;
+  if(animFrame) cancelAnimationFrame(animFrame);
+  angle = 0;
+  updateAll(0);
+});
+document.getElementById('speedSlider').addEventListener('input', e => {
+  speed = parseFloat(e.target.value);
+});
+
+function jumpToPhase(i) {
+  playing = false;
+  if(animFrame) cancelAnimationFrame(animFrame);
+  angle = phases[i].angle;
+  updateAll(angle);
+}
+
+// ── Drag on orrery ─────────────────────────────────────
+let dragging = false;
+oc.addEventListener('mousedown', e => { dragging = true; playing = false; if(animFrame) cancelAnimationFrame(animFrame); });
+window.addEventListener('mouseup', () => { dragging = false; });
+oc.addEventListener('mousemove', e => {
+  if(!dragging) return;
+  const rect = oc.getBoundingClientRect();
+  const x = e.clientX - rect.left - CX;
+  const y = e.clientY - rect.top - CY;
+  let a = Math.atan2(y, x) * 180/Math.PI + 90;
+  if(a < 0) a += 360;
+  angle = a % 360;
+  updateAll(angle);
+});
+oc.addEventListener('touchstart', e => { dragging = true; playing = false; if(animFrame) cancelAnimationFrame(animFrame); }, {passive:true});
+window.addEventListener('touchend', () => { dragging = false; });
+oc.addEventListener('touchmove', e => {
+  if(!dragging) return;
+  const rect = oc.getBoundingClientRect();
+  const touch = e.touches[0];
+  const x = touch.clientX - rect.left - CX;
+  const y = touch.clientY - rect.top - CY;
+  let a = Math.atan2(y, x) * 180/Math.PI + 90;
+  if(a < 0) a += 360;
+  angle = a % 360;
+  updateAll(angle);
+}, {passive:true});
+
+// ── Init ───────────────────────────────────────────────
+updateAll(0);
+document.querySelectorAll('.phase-card')[0].classList.add('active');
+</script>
+</body>
+</html>

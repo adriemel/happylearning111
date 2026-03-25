@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fabulator ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:        #FF6B35;
+      --orange-light:  #FFF3EE;
+      --orange-mid:    #FFD8C4;
+      --green:         #3DAA72;
+      --green-light:   #E6F5EE;
+      --purple:        #7553FF;
+      --cream:         #FFFBF2;
+      --white:         #FFFFFF;
+      --text:          #262626;
+      --text-mid:      #666;
+      --text-light:    #AAA;
+      --border:        #E8E0D4;
+      --shadow-sm:     0 2px 10px rgba(0,0,0,0.07);
+      --shadow-md:     0 6px 28px rgba(0,0,0,0.11);
+      --r-sm:  10px;
+      --r-md:  16px;
+      --r-lg:  24px;
+    }
+
+    body {
+      font-family: 'Baloo 2', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(6px);
+      z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      padding: 44px 40px 36px;
+      max-width: 460px; width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      animation: pop .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes pop {
+      from { transform: scale(.88); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .modal-big-emoji { font-size: 3.2rem; margin-bottom: 14px; }
+    .modal h2 { font-size: 1.65rem; font-weight: 800; margin-bottom: 12px; }
+    .modal p  { color: var(--text-mid); line-height: 1.65; font-size: .95rem; margin-bottom: 8px; }
+    .modal-link { color: var(--orange); font-weight: 700; text-decoration: none; }
+    .modal-link:hover { text-decoration: underline; }
+    .modal-input {
+      width: 100%; border: 2px solid var(--border);
+      border-radius: var(--r-sm); padding: 13px 16px;
+      font-family: 'Baloo 2', sans-serif; font-size: 1rem;
+      margin: 18px 0 20px; outline: none;
+      transition: border-color .2s;
+      letter-spacing: 1px;
+    }
+    .modal-input:focus { border-color: var(--orange); }
+    .btn-save {
+      background: var(--orange); color: #fff; border: none;
+      border-radius: 50px; padding: 15px 0; width: 100%;
+      font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; transition: transform .15s, box-shadow .15s;
+    }
+    .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(255,107,53,.38); }
+    .modal-err { color: #C62828; font-size: .85rem; margin-top: 10px; min-height: 20px; }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 940px; margin: 0 auto; padding: 0 18px 100px; }
+
+    /* ── HEADER ── */
+    .header { text-align: center; padding: 52px 0 24px; position: relative; }
+    .header-title {
+      font-size: clamp(2.4rem, 5.5vw, 3.4rem);
+      font-weight: 800; letter-spacing: -.5px; line-height: 1.1;
+    }
+    .bounce { display: inline-block; animation: bounce 2.4s ease-in-out infinite; }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      45%     { transform: translateY(-7px); }
+      60%     { transform: translateY(-3px); }
+    }
+    .header-sub { margin-top: 8px; color: var(--text-mid); font-size: 1.05rem; }
+    .btn-key-header {
+      position: absolute; top: 52px; right: 0;
+      background: none; border: 2px solid var(--border);
+      border-radius: 50px; padding: 6px 14px;
+      font-family: 'Baloo 2', sans-serif;
+      font-size: .8rem; color: var(--text-light); cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-key-header:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ── PROGRESS DOTS ── */
+    .progress { display: flex; gap: 7px; justify-content: center; margin: 6px 0 22px; }
+    .pdot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--border); transition: background .3s, transform .3s;
+    }
+    .pdot.on { background: var(--orange); transform: scale(1.2); }
+
+    /* ── SECTIONS GRID ── */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 580px) {
+      .sections-grid { grid-template-columns: 1fr; }
+      .btn-key-header { top: auto; bottom: -36px; right: 50%; transform: translateX(50%); }
+    }
+
+    /* ── SECTION BOX ── */
+    .section {
+      background: var(--white);
+      border-radius: var(--r-md);
+      padding: 18px 18px 14px;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid transparent;
+      transition: border-color .25s;
+    }
+    .section.done { border-color: var(--orange); }
+
+    .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .section-icon { font-size: 1.2rem; line-height: 1; flex-shrink: 0; }
+    .section-title { font-size: .95rem; font-weight: 700; }
+    .section-sel {
+      margin-left: auto; font-size: .82rem; color: var(--orange);
+      font-weight: 600; max-width: 120px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-align: right;
+    }
+
+    /* ── CARD ROW (wrapping grid, alles sichtbar) ── */
+    .card-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 2px 1px 4px;
+    }
+
+    /* ── EMOJI CARD ── */
+    .card {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 62px; padding: 9px 4px 8px;
+      border-radius: var(--r-sm); border: 2px solid var(--border);
+      background: var(--white); cursor: pointer;
+      transition: all .13s; user-select: none; position: relative;
+    }
+    .card:hover { border-color: var(--orange); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .card.sel { border-color: var(--orange); background: var(--orange-light); }
+    .card.sel::after {
+      content: '✓';
+      position: absolute; top: -7px; right: -7px;
+      background: var(--orange); color: #fff;
+      width: 17px; height: 17px; border-radius: 50%;
+      font-size: 9px; font-weight: 800;
+      line-height: 17px; text-align: center;
+    }
+    .card-emoji  { font-size: 1.7rem; line-height: 1; margin-bottom: 4px; }
+    .card-name   { font-size: .63rem; font-weight: 600; color: var(--text-mid); text-align: center; line-height: 1.2; }
+    .card.sel .card-name { color: var(--orange); }
+
+    /* ── TEXT CARD (Lehre) ── */
+    .tcard {
+      width: calc(50% - 4px);
+      padding: 9px 11px;
+      border-radius: var(--r-sm); border: 2px solid var(--border);
+      background: var(--white); cursor: pointer;
+      font-size: .78rem; font-weight: 600; line-height: 1.45; color: var(--text);
+      transition: all .13s; user-select: none; position: relative;
+    }
+    .tcard:hover { border-color: var(--orange); transform: translateY(-1px); }
+    .tcard.sel { border-color: var(--orange); background: var(--orange-light); color: var(--orange); }
+    .tcard.sel::after {
+      content: '✓';
+      position: absolute; top: -7px; right: -7px;
+      background: var(--orange); color: #fff;
+      width: 17px; height: 17px; border-radius: 50%;
+      font-size: 9px; font-weight: 800;
+      line-height: 17px; text-align: center;
+    }
+
+    /* ── BUTTONS ── */
+    .generate-area {
+      display: flex; gap: 12px; align-items: center;
+      justify-content: center; flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .btn-random {
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: 50px; padding: 14px 28px;
+      font-family: 'Baloo 2', sans-serif; font-size: 1rem; font-weight: 700;
+      color: var(--text); cursor: pointer; transition: all .2s;
+    }
+    .btn-random:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); }
+    .btn-random:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .btn-generate {
+      background: linear-gradient(135deg, #FF6B35, #FF8F42);
+      color: #fff; border: none; border-radius: 50px;
+      padding: 16px 44px;
+      font-family: 'Baloo 2', sans-serif; font-size: 1.15rem; font-weight: 800;
+      cursor: pointer; transition: all .2s;
+      box-shadow: 0 4px 22px rgba(255,107,53,.32);
+      letter-spacing: .2px;
+    }
+    .btn-generate:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(255,107,53,.46);
+    }
+    .btn-generate:disabled {
+      background: linear-gradient(135deg, #C8C8C8, #B8B8B8);
+      box-shadow: none; cursor: not-allowed;
+    }
+    .btn-generate.pulse { animation: glow 1.4s ease-in-out infinite; }
+    @keyframes glow {
+      0%,100% { box-shadow: 0 4px 22px rgba(255,107,53,.32); }
+      50%      { box-shadow: 0 6px 32px rgba(255,107,53,.6); }
+    }
+
+    /* ── LOADING ── */
+    .loading-wrap {
+      text-align: center; padding: 48px 20px 20px;
+      animation: fadeIn .3s;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .loading-animals {
+      display: flex; align-items: center; justify-content: center;
+      gap: 18px; font-size: 2.8rem; margin-bottom: 18px;
+    }
+    .wobble { animation: wobble 0.9s ease-in-out infinite; }
+    .wobble2 { animation: wobble 0.9s ease-in-out infinite; animation-delay: .35s; }
+    @keyframes wobble {
+      0%,100% { transform: rotate(-12deg); }
+      50%      { transform: rotate(12deg); }
+    }
+    .loading-arrow { font-size: 1.6rem; color: var(--text-light); }
+    .loading-txt { font-size: 1.05rem; font-weight: 600; color: var(--text-mid); }
+    .dot-anim::after {
+      content: '';
+      animation: dotdot 1.6s steps(4,end) infinite;
+    }
+    @keyframes dotdot {
+      0%  { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+    }
+
+    /* ── RESULT ── */
+    .result-wrap {
+      margin-top: 32px;
+      background: var(--white);
+      border-radius: var(--r-lg);
+      padding: 36px 40px 32px;
+      box-shadow: var(--shadow-md);
+      position: relative; overflow: hidden;
+      animation: slideUp .4s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .result-wrap::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, #FF6B35, #FF9F42, #FFD060);
+    }
+    @media (max-width: 580px) {
+      .result-wrap { padding: 28px 22px 24px; }
+    }
+    .result-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .result-head-emoji { font-size: 2rem; }
+    .result-head h2 { font-size: 1.45rem; font-weight: 800; }
+    .result-chips {
+      display: flex; flex-wrap: wrap; gap: 7px;
+      margin-bottom: 20px;
+    }
+    .chip {
+      background: var(--orange-light); color: var(--orange);
+      border-radius: 50px; padding: 4px 11px;
+      font-size: .78rem; font-weight: 700;
+    }
+    .story-box {
+      background: var(--cream);
+      border-left: 4px solid var(--orange);
+      border-radius: 0 var(--r-sm) var(--r-sm) 0;
+      padding: 22px 26px;
+      font-size: 1.08rem; line-height: 1.9;
+      font-style: italic; color: var(--text);
+    }
+    .result-actions {
+      display: flex; gap: 12px; justify-content: flex-end;
+      margin-top: 22px; flex-wrap: wrap;
+    }
+    .btn-again {
+      background: none; border: 2px solid var(--border);
+      border-radius: 50px; padding: 10px 24px;
+      font-family: 'Baloo 2', sans-serif; font-size: .95rem; font-weight: 700;
+      color: var(--text); cursor: pointer; transition: all .2s;
+    }
+    .btn-again:hover { border-color: var(--orange); color: var(--orange); }
+    .btn-copy {
+      background: var(--orange); color: #fff; border: none;
+      border-radius: 50px; padding: 10px 24px;
+      font-family: 'Baloo 2', sans-serif; font-size: .95rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-copy:hover { background: #e0561e; transform: translateY(-1px); }
+    .btn-copy.copied { background: var(--green); }
+
+    /* ── ERROR ── */
+    .error-box {
+      margin-top: 18px; background: #FFF0EE; border: 2px solid #FFCCBB;
+      border-radius: var(--r-sm); padding: 16px 20px;
+      color: #B71C1C; font-size: .9rem; text-align: center;
+      animation: fadeIn .3s;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ API KEY MODAL ════════════════ -->
+<div id="keyModal" class="modal-backdrop" style="display:none">
+  <div class="modal">
+    <div class="modal-big-emoji">🔑</div>
+    <h2>Google Gemini API-Schlüssel</h2>
+    <p>Fabulator braucht einen <strong>Google Gemini API-Schlüssel</strong>, um Fabeln zu schreiben.</p>
+    <p style="margin-top:8px;">
+      Kostenlos erstellen bei
+      <a class="modal-link" href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>
+      — klick auf „Create API key".
+    </p>
+    <input class="modal-input" type="password" id="apiKeyInput"
+           placeholder="AIzaSy..." autocomplete="off" spellcheck="false" />
+    <select id="modelSelect" style="width:100%;border:2px solid #E8E0D4;border-radius:10px;padding:11px 14px;font-family:'Baloo 2',sans-serif;font-size:.95rem;margin-bottom:18px;outline:none;background:#fff;color:#262626;cursor:pointer;">
+      <option value="gemini-2.5-flash">gemini-2.5-flash ✅ — empfohlen (aktuell)</option>
+      <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite — sehr schnell &amp; günstig</option>
+      <option value="gemini-2.0-flash">gemini-2.0-flash — läuft bis Juni 2026</option>
+    </select>
+    <button class="btn-save" id="saveKeyBtn">✅ Speichern &amp; loslegen</button>
+    <div class="modal-err" id="keyErr"></div>
+  </div>
+</div>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-title"><span class="bounce">📚</span> Fabulator</div>
+    <div class="header-sub">Wähle deine Zutaten — erschaffe deine eigene Fabel!</div>
+    <button class="btn-key-header" id="changeKeyBtn">🔑 API-Schlüssel</button>
+  </header>
+
+  <!-- PROGRESS -->
+  <div class="progress" aria-hidden="true">
+    <div class="pdot" id="pd0"></div>
+    <div class="pdot" id="pd1"></div>
+    <div class="pdot" id="pd2"></div>
+    <div class="pdot" id="pd3"></div>
+    <div class="pdot" id="pd4"></div>
+    <div class="pdot" id="pd5"></div>
+  </div>
+
+  <!-- SELECTION GRID -->
+  <div class="sections-grid">
+
+    <div class="section" id="sec-t1">
+      <div class="section-header">
+        <span class="section-icon">🐾</span>
+        <span class="section-title">Hauptfigur — Tier 1</span>
+        <span class="section-sel" id="ss-t1">—</span>
+      </div>
+      <div class="card-row" id="row-t1"></div>
+    </div>
+
+    <div class="section" id="sec-t2">
+      <div class="section-header">
+        <span class="section-icon">🐾</span>
+        <span class="section-title">Zweite Figur — Tier 2</span>
+        <span class="section-sel" id="ss-t2">—</span>
+      </div>
+      <div class="card-row" id="row-t2"></div>
+    </div>
+
+    <div class="section" id="sec-e1">
+      <div class="section-header">
+        <span class="section-icon">✨</span>
+        <span class="section-title">Eigenschaft von Tier 1</span>
+        <span class="section-sel" id="ss-e1">—</span>
+      </div>
+      <div class="card-row" id="row-e1"></div>
+    </div>
+
+    <div class="section" id="sec-e2">
+      <div class="section-header">
+        <span class="section-icon">✨</span>
+        <span class="section-title">Eigenschaft von Tier 2</span>
+        <span class="section-sel" id="ss-e2">—</span>
+      </div>
+      <div class="card-row" id="row-e2"></div>
+    </div>
+
+    <div class="section" id="sec-ort">
+      <div class="section-header">
+        <span class="section-icon">🗺️</span>
+        <span class="section-title">Ort der Geschichte</span>
+        <span class="section-sel" id="ss-ort">—</span>
+      </div>
+      <div class="card-row" id="row-ort"></div>
+    </div>
+
+    <div class="section" id="sec-lehre">
+      <div class="section-header">
+        <span class="section-icon">💬</span>
+        <span class="section-title">Moral der Geschichte</span>
+        <span class="section-sel" id="ss-lehre">—</span>
+      </div>
+      <div class="card-row" id="row-lehre"></div>
+    </div>
+
+  </div><!-- /sections-grid -->
+
+  <!-- BUTTONS -->
+  <div class="generate-area">
+    <button class="btn-random" id="randomBtn">🎲 Zufalls-Fabel</button>
+    <button class="btn-generate" id="generateBtn" disabled>✨ Fabel erstellen (0/6)</button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loadingArea" style="display:none">
+    <div class="loading-wrap">
+      <div class="loading-animals">
+        <span id="la1" class="wobble">🦁</span>
+        <span class="loading-arrow">↔</span>
+        <span id="la2" class="wobble2">🐭</span>
+      </div>
+      <div class="loading-txt">Die Fabel entsteht gerade<span class="dot-anim"></span></div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="resultArea" style="display:none">
+    <div class="result-wrap">
+      <div class="result-head">
+        <span class="result-head-emoji">📖</span>
+        <h2>Deine Fabel</h2>
+      </div>
+      <div class="result-chips" id="resultChips"></div>
+      <div class="story-box" id="storyText"></div>
+      <div class="result-actions">
+        <button class="btn-again" id="againBtn">🔄 Nochmal</button>
+        <button class="btn-copy"  id="copyBtn">📋 Kopieren</button>
+      </div>
+    </div>
+    <div class="error-box" id="errBox" style="display:none"></div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ════════════════ SCRIPT ════════════════ -->
+<script>
+'use strict';
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const TIERE = [
+  { n:'Löwe',          e:'🦁' }, { n:'Maus',         e:'🐭' },
+  { n:'Fuchs',         e:'🦊' }, { n:'Esel',          e:'🐴' },
+  { n:'Adler',         e:'🦅' }, { n:'Hase',          e:'🐰' },
+  { n:'Schildkröte',   e:'🐢' }, { n:'Wolf',          e:'🐺' },
+  { n:'Bär',           e:'🐻' }, { n:'Elefant',       e:'🐘' },
+  { n:'Eule',          e:'🦉' }, { n:'Frosch',        e:'🐸' },
+  { n:'Schmetterling', e:'🦋' }, { n:'Ameise',        e:'🐜' },
+  { n:'Hund',          e:'🐶' }, { n:'Katze',         e:'🐱' },
+  { n:'Pferd',         e:'🐎' }, { n:'Schnecke',      e:'🐌' },
+  { n:'Storch',        e:'🦩' }, { n:'Igel',          e:'🦔' },
+];
+
+const EIGENSCHAFTEN = [
+  { n:'mutig',         e:'💪' }, { n:'listig',        e:'🧠' },
+  { n:'arrogant',      e:'👑' }, { n:'geduldig',      e:'⏳' },
+  { n:'ängstlich',     e:'😨' }, { n:'hilfsbereit',   e:'🤝' },
+  { n:'egoistisch',    e:'🙈' }, { n:'fleißig',       e:'⚙️' },
+  { n:'faul',          e:'😴' }, { n:'neugierig',     e:'🔍' },
+  { n:'großzügig',     e:'🎁' }, { n:'neidisch',      e:'😒' },
+  { n:'ehrlich',       e:'✅' }, { n:'stur',          e:'🪨' },
+  { n:'sanft',         e:'🌸' }, { n:'clever',        e:'💡' },
+  { n:'tollpatschig',  e:'🤪' }, { n:'fröhlich',      e:'😄' },
+  { n:'griesgrämig',   e:'😤' }, { n:'tapfer',        e:'🛡️' },
+];
+
+const ORTE = [
+  { n:'Wald',          e:'🌲' }, { n:'Wüste',         e:'🏜️' },
+  { n:'Garten',        e:'🌻' }, { n:'Teich',         e:'🪷' },
+  { n:'Scheune',       e:'🏚️' }, { n:'Marktplatz',    e:'🏪' },
+  { n:'Gebirge',       e:'⛰️' }, { n:'Wiese',         e:'🌿' },
+  { n:'Höhle',         e:'🕳️' }, { n:'Dorf',          e:'🏘️' },
+  { n:'Fluss',         e:'🏞️' }, { n:'Meer',          e:'🌊' },
+  { n:'Insel',         e:'🏝️' }, { n:'Park',          e:'🌳' },
+  { n:'Burg',          e:'🏰' }, { n:'Bauernhof',     e:'🚜' },
+  { n:'Vulkan',        e:'🌋' }, { n:'Sumpf',         e:'🐊' },
+  { n:'Schnee',        e:'❄️' }, { n:'Blumenfeld',    e:'🌺' },
+];
+
+const LEHREN = [
+  'Größe allein entscheidet nicht.',
+  'Wer anderen eine Grube gräbt, fällt selbst hinein.',
+  'Ehrlichkeit zahlt sich aus.',
+  'Gemeinsam ist man stärker.',
+  'Hochmut kommt vor dem Fall.',
+  'Geduld führt zum Ziel.',
+  'Wahre Freundschaft zeigt sich in der Not.',
+  'Kleines kann Großes bewirken.',
+  'Wer viel verspricht, hält wenig.',
+  'Langsam aber sicher gewinnt das Rennen.',
+  'Hilf anderen — dann helfen sie dir.',
+  'Der Schein trügt oft.',
+  'Neid macht unglücklich.',
+  'Wer teilt, hat doppelt so viel.',
+  'Mut lohnt sich.',
+  'Aus Fehlern lernt man.',
+  'Was Du heute kannst besorgen, das verschiebe nicht auf Morgen.',
+  'Zusammenarbeit schlägt Einzeltalent.',
+  'Man erntet, was man sät.',
+  'Vertrauen muss verdient werden.',
+];
+
+// Bedeutungen für idiomatische Sprichwörter — damit das Modell sie nicht wörtlich nimmt
+const LEHREN_BEDEUTUNG = {
+  'Wer anderen eine Grube gräbt, fällt selbst hinein.':
+    'Wer einen anderen durch List oder Gemeinheit schädigen will, schadet am Ende sich selbst.',
+  'Hochmut kommt vor dem Fall.':
+    'Wer sich für unbesiegbar hält und andere unterschätzt, erlebt früher oder später eine peinliche Niederlage.',
+  'Man erntet, was man sät.':
+    'Wer anderen Gutes tut, bekommt Gutes zurück — wer anderen schadet, bekommt Schaden zurück.',
+  'Der Schein trügt oft.':
+    'Was von außen beeindruckend oder harmlos wirkt, ist es innerlich nicht immer.',
+  'Langsam aber sicher gewinnt das Rennen.':
+    'Beständiges, ruhiges Weitermachen schlägt hastige Ungeduld — auch wenn es länger dauert.',
+  'Wer viel verspricht, hält wenig.':
+    'Große Versprechen ohne Taten sind wertlos — man erkennt jemanden an dem, was er wirklich tut.',
+  'Was Du heute kannst besorgen, das verschiebe nicht auf Morgen.':
+    'Wer wichtige Aufgaben immer wieder aufschiebt, häuft Probleme an und verliert Chancen — wer dagegen sofort handelt, lebt leichter und freier. Der Aufschub selbst ist die Falle: er fühlt sich wie Erleichterung an, ist aber das genaue Gegenteil.',
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+const sel = { t1:null, t2:null, e1:null, e2:null, ort:null, lehre:null };
+let apiKey     = localStorage.getItem('fab_api_key')    || '';
+// Veraltete Modelle zurücksetzen (1.5-Familie ist komplett abgestellt → 404)
+const _storedModel = localStorage.getItem('fab_model') || '';
+const _validModels = ['gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.0-flash'];
+let geminiModel = _validModels.includes(_storedModel) ? _storedModel : 'gemini-2.5-flash';
+let isGenerating = false;
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildEmojiRow('row-t1', TIERE,        't1');
+  buildEmojiRow('row-t2', TIERE,        't2');
+  buildEmojiRow('row-e1', EIGENSCHAFTEN,'e1');
+  buildEmojiRow('row-e2', EIGENSCHAFTEN,'e2');
+  buildEmojiRow('row-ort', ORTE,        'ort');
+  buildTextRow ('row-lehre', LEHREN,    'lehre');
+
+  if (!apiKey) showKeyModal();
+
+  document.getElementById('saveKeyBtn') .addEventListener('click', saveKey);
+  document.getElementById('changeKeyBtn').addEventListener('click', showKeyModal);
+  document.getElementById('generateBtn') .addEventListener('click', generate);
+  document.getElementById('randomBtn')   .addEventListener('click', randomFable);
+  document.getElementById('againBtn')    .addEventListener('click', generate);
+  document.getElementById('copyBtn')     .addEventListener('click', copyFable);
+  document.getElementById('apiKeyInput') .addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveKey();
+  });
+});
+
+// ── BUILD CARDS ───────────────────────────────────────────────────────────────
+
+function buildEmojiRow(rowId, data, key) {
+  const row = document.getElementById(rowId);
+  data.forEach((item, i) => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.innerHTML = `<span class="card-emoji">${item.e}</span><span class="card-name">${item.n}</span>`;
+    c.addEventListener('click', () => pickEmoji(key, i));
+    row.appendChild(c);
+  });
+}
+
+function buildTextRow(rowId, data, key) {
+  const row = document.getElementById(rowId);
+  data.forEach((text, i) => {
+    const c = document.createElement('div');
+    c.className = 'tcard';
+    c.textContent = text;
+    c.addEventListener('click', () => pickText(key, i));
+    row.appendChild(c);
+  });
+}
+
+// ── SELECTION ─────────────────────────────────────────────────────────────────
+
+function pickEmoji(key, idx) {
+  const data = { t1:TIERE, t2:TIERE, e1:EIGENSCHAFTEN, e2:EIGENSCHAFTEN, ort:ORTE }[key];
+  sel[key] = data[idx];
+
+  const row = document.getElementById(`row-${key}`);
+  row.querySelectorAll('.card').forEach((c, i) => c.classList.toggle('sel', i === idx));
+
+  const sEl = document.getElementById(`ss-${key}`);
+  if (sEl) sEl.textContent = `${data[idx].e} ${data[idx].n}`;
+
+  document.getElementById(`sec-${key}`).classList.add('done');
+  updateProgress();
+}
+
+function pickText(key, idx) {
+  sel[key] = LEHREN[idx];
+
+  const row = document.getElementById(`row-${key}`);
+  row.querySelectorAll('.tcard').forEach((c, i) => c.classList.toggle('sel', i === idx));
+
+  const sEl = document.getElementById(`ss-${key}`);
+  const s = LEHREN[idx];
+  if (sEl) sEl.textContent = s.length > 22 ? s.slice(0, 20) + '…' : s;
+
+  document.getElementById(`sec-${key}`).classList.add('done');
+  updateProgress();
+}
+
+function updateProgress() {
+  const keys = ['t1','t2','e1','e2','ort','lehre'];
+  const n = keys.filter(k => sel[k] !== null).length;
+
+  keys.forEach((k, i) => {
+    document.getElementById(`pd${i}`).classList.toggle('on', sel[k] !== null);
+  });
+
+  const btn = document.getElementById('generateBtn');
+  if (n === 6) {
+    btn.disabled = false;
+    btn.textContent = '✨ Fabel erstellen';
+    btn.classList.add('pulse');
+  } else {
+    btn.disabled = true;
+    btn.textContent = `✨ Fabel erstellen (${n}/6)`;
+    btn.classList.remove('pulse');
+  }
+}
+
+// ── API KEY ───────────────────────────────────────────────────────────────────
+
+function showKeyModal() {
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('keyErr').textContent = '';
+  document.getElementById('modelSelect').value = geminiModel;
+  document.getElementById('keyModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('apiKeyInput').focus(), 80);
+}
+
+function saveKey() {
+  const v = document.getElementById('apiKeyInput').value.trim();
+  const errEl = document.getElementById('keyErr');
+  if (!v || v.length < 15) {
+    errEl.textContent = 'Bitte einen gültigen Schlüssel eingeben (beginnt mit AIza…).';
+    return;
+  }
+  apiKey      = v;
+  geminiModel = document.getElementById('modelSelect').value;
+  localStorage.setItem('fab_api_key', v);
+  localStorage.setItem('fab_model',   geminiModel);
+  document.getElementById('keyModal').style.display = 'none';
+}
+
+// ── RANDOM ────────────────────────────────────────────────────────────────────
+
+async function randomFable() {
+  if (isGenerating) return;
+  const rBtn = document.getElementById('randomBtn');
+  rBtn.disabled = true;
+
+  // Slot-machine effect: rapid random flashes, slowing down
+  for (let i = 0; i < 14; i++) {
+    const delay = 55 + i * 22;
+    pickEmoji('t1',  rnd(TIERE.length));
+    pickEmoji('t2',  rnd(TIERE.length));
+    pickEmoji('e1',  rnd(EIGENSCHAFTEN.length));
+    pickEmoji('e2',  rnd(EIGENSCHAFTEN.length));
+    pickEmoji('ort', rnd(ORTE.length));
+    pickText ('lehre', rnd(LEHREN.length));
+    await sleep(delay);
+  }
+
+  rBtn.disabled = false;
+  await generate();
+}
+
+function rnd(n) { return Math.floor(Math.random() * n); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── GENERATE ──────────────────────────────────────────────────────────────────
+
+async function generate() {
+  if (isGenerating) return;
+  const { t1, t2, e1, e2, ort, lehre } = sel;
+  if (!t1 || !t2 || !e1 || !e2 || !ort || !lehre) return;
+
+  if (!apiKey) { showKeyModal(); return; }
+
+  isGenerating = true;
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('generateBtn').classList.remove('pulse');
+  document.getElementById('randomBtn').disabled = true;
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('errBox').style.display = 'none';
+
+  // Update loading animal emojis
+  document.getElementById('la1').textContent = t1.e;
+  document.getElementById('la2').textContent = t2.e;
+
+  document.getElementById('loadingArea').style.display = 'block';
+  document.getElementById('loadingArea').scrollIntoView({ behavior:'smooth', block:'center' });
+
+  try {
+    const story = await callGemini(t1.n, t2.n, e1.n, e2.n, ort.n, lehre);
+    document.getElementById('loadingArea').style.display = 'none';
+
+    // Build chips
+    const chips = document.getElementById('resultChips');
+    chips.innerHTML = [
+      `${t1.e} ${t1.n} · ${e1.n}`,
+      `${t2.e} ${t2.n} · ${e2.n}`,
+      `📍 ${ort.e} ${ort.n}`,
+    ].map(s => `<span class="chip">${s}</span>`).join('');
+
+    document.getElementById('storyText').textContent = story;
+    document.getElementById('copyBtn').textContent = '📋 Kopieren';
+    document.getElementById('copyBtn').classList.remove('copied');
+    document.getElementById('resultArea').style.display = 'block';
+    document.getElementById('resultArea').scrollIntoView({ behavior:'smooth', block:'start' });
+
+  } catch (err) {
+    document.getElementById('loadingArea').style.display = 'none';
+    document.getElementById('resultArea').style.display = 'block';
+    document.getElementById('storyText').textContent = '';
+
+    const errBox = document.getElementById('errBox');
+    errBox.style.display = 'block';
+
+    const msg = err.message || '';
+    const msgL = msg.toLowerCase();
+    if (msgL.includes('api_key_invalid') || msgL.includes('invalid api key') || msgL.includes('api key not valid')) {
+      errBox.innerHTML = '⚠️ Der API-Schlüssel ist ungültig. <button onclick="showKeyModal()" style="background:none;border:none;color:#B71C1C;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:underline;">Jetzt korrigieren →</button>';
+    } else if (msgL.includes('not found') || msgL.includes('404')) {
+      errBox.innerHTML = `⚠️ Modell nicht gefunden (404) — wahrscheinlich ist das gewählte Modell abgestellt worden.<br>
+        <small style="opacity:.7;display:block;margin-top:4px">Technisch: ${msg}</small>
+        <small style="display:block;margin-top:6px">Tipp: Klick auf 🔑 API-Schlüssel und wähle <strong>gemini-2.5-flash</strong> — das ist das aktuell empfohlene Modell.</small>
+        <button onclick="showKeyModal()" style="margin-top:8px;background:none;border:2px solid #B71C1C;border-radius:20px;padding:5px 14px;color:#B71C1C;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;">🔑 Modell wechseln →</button>`;
+    } else if (msgL.includes('quota') || msgL.includes('resource_exhausted') || msgL.includes('429')) {
+      errBox.innerHTML = `⚠️ Kontingent überschritten — der automatische Retry hat leider nicht geholfen.<br>
+        <small style="opacity:.7;display:block;margin-top:6px">Technisch: ${msg}</small>
+        <small style="display:block;margin-top:8px;line-height:1.5">
+          <strong>Was tun?</strong><br>
+          1. Prüfe ob in deinem <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#B71C1C">Google AI Studio</a>-Projekt die Abrechnung aktiviert ist — ohne Billing ist das Kontingent bei neuen API-Schlüsseln auf 0 gesetzt.<br>
+          2. Oder wechsle auf <strong>gemini-2.5-flash-lite</strong> (günstiger, teils höhere Freikontingente).
+        </small>`;
+    } else {
+      errBox.innerHTML = `⚠️ Fehler von Google: <em>${msg}</em><br><small style="opacity:.7">Tipp: Schlüssel prüfen unter aistudio.google.com → API keys</small>`;
+    }
+  }
+
+  isGenerating = false;
+  updateProgress();
+  document.getElementById('randomBtn').disabled = false;
+}
+
+// ── GEMINI API ────────────────────────────────────────────────────────────────
+
+async function callGemini(t1, t2, e1, e2, ort, lehre, _retry = 0) {
+  // Wenn die Moral ein idiomatisches Sprichwort ist, dessen Bedeutung erklären
+  const bedeutung = LEHREN_BEDEUTUNG[lehre];
+  const lehreBlock = bedeutung
+    ? `Moral: „${lehre}"\nBedeutung dieses Sprichworts: ${bedeutung}\nWICHTIG: Zeige diese Bedeutung durch die Handlung — nimm das Sprichwort NICHT wörtlich.`
+    : `Moral: „${lehre}"`;
+
+  const prompt =
+`Du bist Äsop — der große griechische Fabelschreiber der Antike, dessen Geschichten seit 2.500 Jahren überdauern, weil sie so klar und treffsicher sind wie ein Hammerschlag.
+
+Äsops Stil hat vier Merkmale, die du vollständig verkörperst:
+1. KÜRZE: Kein unnötiges Wort. Jeder Satz trägt die Geschichte einen Schritt weiter.
+2. TIERE ALS SPIEGEL: Jedes Tier steht für einen menschlichen Charakter — der Fuchs für List, der Löwe für Stärke, der Hase für Überheblichkeit. Die Eigenschaft ist keine Verzierung, sie IST das Tier.
+3. UNAUSWEICHLICHE LOGIK: Was eine Figur tut, folgt zwingend aus dem, was sie ist. Das Ergebnis überrascht nicht — es ist unvermeidlich. Das ist der Trick: der Leser ahnt es, und genau deshalb trifft es.
+4. MORAL ALS SCHLUSSSTEIN: Die letzte Zeile fasst zusammen, was die Geschichte bewiesen hat. Kurz, direkt, unvergesslich.
+
+Was eine echte Fabel ausmacht: Die Eigenschaft jedes Tieres ist der GRUND für alles, was passiert — sie verursacht den Konflikt und bestimmt das Ergebnis. Die Moral folgt dann zwingend aus dem Geschehen; sie fühlt sich verdient an, nicht angehängt.
+
+Kausale Kette: [Tier handelt wegen seiner Eigenschaft] → [das führt zu einem Konflikt oder einer Begegnung] → [die Konsequenz ergibt sich direkt daraus] → [die Moral fasst zusammen, was man daraus lernt]
+
+Zwei echte Fabeln als Vorbild:
+
+▸ Figuren: Fuchs (listig), Rabe (eitel) | Ort: Wald | Moral: „Schmeichelei macht blind für die Wahrheit."
+„Im Wald saß ein Rabe auf einem Ast und hielt stolz ein Stück Käse im Schnabel. Ein listiger Fuchs sah das und rief bewundernd: ‚Was für eine wunderbare Stimme du haben musst — sing doch für mich!' Geschmeichelt öffnete der Rabe den Schnabel — und der Käse fiel hinunter. Flink schnappte der Fuchs ihn und lief lachend davon. Der Rabe schaute beschämt hinterher. Wer sich von Schmeichelei blenden lässt, verliert leicht, was er hat."
+
+▸ Figuren: Schildkröte (geduldig), Hase (arrogant) | Ort: Wiese | Moral: „Hochmut kommt vor dem Fall."
+„Ein arroganter Hase prahlte vor allen Tieren: ‚Niemand ist schneller als ich!' Die geduldige Schildkröte antwortete ruhig: ‚Dann lass uns ein Wettrennen machen.' Der Hase lachte und legte sich unterwegs in die Sonne — wer würde ihn je einholen? Doch die Schildkröte schritt gleichmäßig weiter, Schritt für Schritt, und erreichte als Erste das Ziel. Hochmut kommt vor dem Fall."
+
+Schreibe jetzt eine neue Fabel mit diesen Zutaten:
+- ${t1} (${e1}) und ${t2} (${e2})
+- Schauplatz: ${ort}
+- ${lehreBlock}
+
+Achte darauf:
+- Die Eigenschaft von ${t1} muss direkt eine Handlung oder Entscheidung auslösen
+- Die Eigenschaft von ${t2} muss die Konsequenz mitbestimmen — nicht nur dekorativ erwähnt werden
+- Beide Tiere interagieren miteinander
+- Die Moral „${lehre}" folgt zwingend aus dem, was die Tiere getan haben — als letzter Satz, klar und kindgerecht
+- Zielgruppe: Kinder 6–12 Jahre | Ton: einfach, lebendig, warm, leicht humorvoll
+- Länge: 5–8 Sätze, alles in einem Absatz
+- Kein Titel, keine Überschrift, kein Kommentar davor oder danach`;
+
+  // v1beta unterstützt alle aktuellen Modelle (2.5, 2.0) zuverlässig
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.78,
+          // Bei Retry wegen MAX_TOKENS das Limit verdoppeln
+          maxOutputTokens: _retry > 0 ? 2400 : 1200,
+          // Thinking deaktivieren — für eine Kinderfabel nicht nötig,
+          // würde sonst einen Großteil des Token-Budgets aufbrauchen
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+        safetySettings: [
+          { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+          { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+        ],
+      }),
+    }
+  );
+
+  // ── Auto-Retry bei Rate-Limit (429) ──────────────────────────────────────
+  if (res.status === 429 && _retry < 3) {
+    const d = await res.json().catch(() => ({}));
+    const errMsg = d?.error?.message || '';
+    // Die API nennt die genaue Wartezeit im Text: "Please retry in 4.1s"
+    const retryMatch = errMsg.match(/retry in ([\d.]+)s/i);
+    const waitMs = retryMatch
+      ? Math.ceil(parseFloat(retryMatch[1]) * 1000) + 800   // +800ms Puffer
+      : (2 ** _retry) * 4000;                                // sonst 4 / 8 / 16 s
+    // Ladetext aktualisieren
+    document.querySelector('.loading-txt').innerHTML =
+      `Kurz warten, gleich geht's weiter<span class="dot-anim"></span>`;
+    await sleep(waitMs);
+    document.querySelector('.loading-txt').innerHTML =
+      `Die Fabel entsteht gerade<span class="dot-anim"></span>`;
+    return callGemini(t1, t2, e1, e2, ort, lehre, _retry + 1);
+  }
+
+  if (!res.ok) {
+    const d = await res.json().catch(() => ({}));
+    throw new Error(d?.error?.message || `HTTP ${res.status}`);
+  }
+
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+
+  const candidate = data.candidates?.[0];
+  const text = candidate?.content?.parts?.[0]?.text;
+
+  if (!text) {
+    throw new Error('Das Modell hat keine Antwort zurückgegeben. Bitte nochmal versuchen.');
+  }
+
+  // MAX_TOKENS = Thinking-Budget hat den Platz für den Text aufgebraucht.
+  // Einmal automatisch nochmal versuchen mit höherem Limit.
+  if (candidate?.finishReason === 'MAX_TOKENS' && _retry < 2) {
+    document.querySelector('.loading-txt').innerHTML =
+      `Nochmal versuchen, gleich fertig<span class="dot-anim"></span>`;
+    // Limit für den nächsten Versuch dynamisch anheben
+    return callGemini(t1, t2, e1, e2, ort, lehre, _retry + 1);
+  }
+
+  return text.trim();
+}
+
+// ── COPY ──────────────────────────────────────────────────────────────────────
+
+async function copyFable() {
+  const text = document.getElementById('storyText').textContent;
+  if (!text) return;
+
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = '✅ Kopiert!';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = '📋 Kopieren';
+    btn.classList.remove('copied');
+  }, 2200);
+}
+</script>
+</body>
+</html>

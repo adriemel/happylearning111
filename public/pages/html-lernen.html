@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Lernen – Schreib es selbst</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;600&family=Literata:ital,wght@0,400;0,500;1,400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1916;
+    --surface2: #242220;
+    --border: #2e2c28;
+    --text: #f0ebe0;
+    --muted: #7a7568;
+    --accent: #e8c547;
+    --accent2: #5fcf8a;
+    --accent3: #e87a4a;
+    --red: #e85c5c;
+    --radius: 6px;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Syne', sans-serif;
+    --body: 'Literata', serif;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── LAYOUT ── */
+  .app {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .logo span { color: var(--muted); font-weight: 400; }
+
+  .progress-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .lesson-counter {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    display: grid;
+    grid-template-columns: 340px 1fr 1fr;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background: var(--surface);
+  }
+
+  .lesson-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 99px;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    text-transform: uppercase;
+  }
+
+  .lesson-title {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .lesson-desc {
+    font-family: var(--body);
+    font-size: 0.92rem;
+    color: #b0a898;
+    line-height: 1.7;
+  }
+
+  .concept-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .concept-box h4 {
+    font-family: var(--display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .concept-code {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent2);
+    line-height: 1.9;
+  }
+  .concept-code .tag { color: var(--accent3); }
+  .concept-code .attr { color: var(--accent); }
+  .concept-code .val { color: var(--accent2); }
+
+  .task-box {
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .task-box h4 {
+    font-family: var(--display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .task-box p {
+    font-size: 0.9rem;
+    color: #c8c0a8;
+    line-height: 1.65;
+  }
+  .task-box code {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+
+  button {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-prev {
+    flex: 1;
+    padding: 10px 14px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-prev:hover { color: var(--text); border-color: var(--muted); }
+
+  .btn-next {
+    flex: 2;
+    padding: 10px 14px;
+    background: var(--accent);
+    color: #0f0e0c;
+  }
+  .btn-next:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-next:active { transform: translateY(0); }
+  .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* ── EDITOR ── */
+  .editor-panel {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    flex-shrink: 0;
+  }
+
+  .panel-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .dot-editor { background: var(--accent3); }
+  .dot-preview { background: var(--accent2); }
+
+  .status-indicator {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  .status-pending { background: color-mix(in srgb, var(--muted) 15%, transparent); color: var(--muted); }
+  .status-ok { background: color-mix(in srgb, var(--accent2) 15%, transparent); color: var(--accent2); }
+  .status-error { background: color-mix(in srgb, var(--red) 15%, transparent); color: var(--red); }
+
+  .editor-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* The highlight layer sits behind the textarea */
+  #highlight-layer {
+    position: absolute;
+    inset: 0;
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    line-height: 1.8;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow: hidden;
+    pointer-events: none;
+    color: transparent; /* text itself invisible, only spans show color */
+    tab-size: 2;
+    word-break: keep-all;
+  }
+
+  textarea {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    line-height: 1.8;
+    border: none;
+    outline: none;
+    padding: 20px;
+    resize: none;
+    tab-size: 2;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: auto;
+    overflow-y: auto;
+    z-index: 2;
+    spellcheck: false;
+  }
+
+  textarea::selection { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+
+  /* Syntax highlight colors */
+  .hl-bracket  { color: #7a6f5a; }          /* <  >  /  = */
+  .hl-tagname  { color: #e87a4a; }          /* h1, p, div … */
+  .hl-attr     { color: #e8c547; }          /* href, style, class … */
+  .hl-value    { color: #5fcf8a; }          /* "…" attribute values */
+  .hl-text     { color: #d4cfc5; }          /* plain text content */
+  .hl-comment  { color: #5a5548; font-style: italic; } /* <!-- --> */
+  .hl-doctype  { color: #9b8fcf; }          /* <!DOCTYPE …> */
+
+  .reset-btn {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 3px 9px;
+    border-radius: var(--radius);
+    font-weight: 400;
+  }
+  .reset-btn:hover { color: var(--red); border-color: var(--red); }
+
+  /* ── PREVIEW ── */
+  .preview-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .preview-body {
+    flex: 1;
+    background: white;
+    color: #111;
+    padding: 20px;
+    overflow-y: auto;
+    font-family: sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── SUCCESS overlay ── */
+  .success-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--accent2);
+    color: #0f1a12;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 28px;
+    border-radius: 99px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+    z-index: 100;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .success-toast.visible { transform: translateX(-50%) translateY(0); }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  .btn-download {
+    width: 100%;
+    padding: 11px 14px;
+    background: color-mix(in srgb, var(--accent2) 15%, transparent);
+    color: var(--accent2);
+    border: 1px solid color-mix(in srgb, var(--accent2) 40%, transparent);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    font-family: var(--display);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-download:hover {
+    background: color-mix(in srgb, var(--accent2) 25%, transparent);
+    transform: translateY(-1px);
+  }
+
+  /* ── Lesson map (final screen) ── */
+  .done-screen {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 40px;
+  }
+  .done-screen h2 {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+  }
+  .done-screen p {
+    max-width: 520px;
+    color: #b0a898;
+    font-size: 1rem;
+  }
+  .tags-learned {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .tag-chip {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--accent3);
+    padding: 6px 14px;
+    border-radius: 99px;
+  }
+  .restart-btn {
+    padding: 14px 32px;
+    background: var(--accent);
+    color: #0f0e0c;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    margin-top: 8px;
+  }
+  .restart-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <header>
+    <div class="logo">html<span>.lernen</span></div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="lesson-counter" id="lessonCounter">1 / 10</div>
+  </header>
+
+  <div class="main" id="mainArea">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div>
+        <div class="lesson-badge" id="lessonBadge">⬡ Lektion 1</div>
+        <h2 class="lesson-title" id="lessonTitle"></h2>
+      </div>
+      <p class="lesson-desc" id="lessonDesc"></p>
+      <div class="concept-box" id="conceptBox"></div>
+      <div class="task-box" id="taskBox"></div>
+      <p class="hint" id="hintText"></p>
+      <div class="nav-buttons">
+        <button class="btn-prev" id="btnPrev" onclick="go(-1)">← zurück</button>
+        <button class="btn-next" id="btnNext" onclick="go(1)">Weiter →</button>
+      </div>
+      <div id="downloadWrap" style="display:none; margin-top:8px;">
+        <button class="btn-download" onclick="downloadCode()">⬇ Meine Webseite herunterladen</button>
+      </div>
+    </aside>
+
+    <!-- EDITOR -->
+    <div class="editor-panel">
+      <div class="panel-header">
+        <div class="panel-label"><span class="dot dot-editor"></span>Editor</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="status-indicator status-pending" id="statusBadge">schreib etwas</span>
+          <button class="reset-btn" onclick="resetEditor()">↺ reset</button>
+        </div>
+      </div>
+      <div class="editor-wrap">
+        <div id="highlight-layer" aria-hidden="true"></div>
+        <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" oninput="onEdit()" onscroll="syncScroll()"></textarea>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-panel">
+      <div class="panel-header">
+        <div class="panel-label"><span class="dot dot-preview"></span>Vorschau</div>
+      </div>
+      <div class="preview-body" id="preview"></div>
+    </div>
+
+  </div><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- SUCCESS TOAST -->
+<div class="success-toast" id="toast">✓ Perfekt! Weiter!</div>
+
+<script>
+// ─── LESSONS ───────────────────────────────────────────────────────────────
+const lessons = [
+  {
+    title: "Dein erstes HTML",
+    desc: "HTML besteht aus Tags. Ein Tag sieht so aus: <code>&lt;tagname&gt;</code>. Fast alle Tags haben einen öffnenden und einen schließenden Tag. Zwischen den Tags steht der Inhalt.",
+    concept: `<span class="tag">&lt;h1&gt;</span>Mein Titel<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;p&gt;</span>Ein Absatz Text.<span class="tag">&lt;/p&gt;</span>`,
+    task: `Schreib eine Überschrift mit <code>&lt;h1&gt;</code> und darunter einen Absatz mit <code>&lt;p&gt;</code>. Schreib was du möchtest!`,
+    hint: "💡 Nicht vergessen: Jeden Tag schließen mit &lt;/h1&gt; und &lt;/p&gt;",
+    starter: `<h1>Hallo Welt</h1>\n<p>Mein erster Absatz.</p>`,
+    check: code => /<h1>.*<\/h1>/i.test(code) && /<p>.*<\/p>/i.test(code)
+  },
+  {
+    title: "Überschriften-Größen",
+    desc: "HTML hat 6 Überschriften-Ebenen: h1 bis h6. h1 ist die größte, h6 die kleinste – wie Kapitel, Abschnitte, Unterabschnitte.",
+    concept: `<span class="tag">&lt;h1&gt;</span>Riesig<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;h2&gt;</span>Groß<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;h3&gt;</span>Mittel<span class="tag">&lt;/h3&gt;</span>
+<span class="tag">&lt;h6&gt;</span>Winzig<span class="tag">&lt;/h6&gt;</span>`,
+    task: `Schreib mindestens drei Überschriften unterschiedlicher Größe (h1, h2, h3). Gib ihnen sinnvolle Texte – z.B. ein Rezept, eine Geschichte, eine Gliederung.`,
+    hint: "💡 Probiere alle sechs durch – schau wie sie schrumpfen!",
+    starter: `<h1>Meine Webseite</h1>\n<h2>Kapitel 1</h2>\n<h3>Abschnitt 1.1</h3>`,
+    check: code => /<h1>.*<\/h1>/i.test(code) && /<h2>.*<\/h2>/i.test(code) && /<h3>.*<\/h3>/i.test(code)
+  },
+  {
+    title: "Fett & Kursiv",
+    desc: "Mit <strong> machst du Text fett (inhaltlich wichtig) und mit <em> kursiv (Betonung). Sie funktionieren innerhalb von Absätzen.",
+    concept: `<span class="tag">&lt;p&gt;</span>Das ist 
+  <span class="tag">&lt;strong&gt;</span>wichtig<span class="tag">&lt;/strong&gt;</span>
+  und das ist
+  <span class="tag">&lt;em&gt;</span>betont<span class="tag">&lt;/em&gt;</span>.
+<span class="tag">&lt;/p&gt;</span>`,
+    task: `Schreib einen Absatz, in dem du mindestens ein Wort mit <code>&lt;strong&gt;</code> und ein Wort mit <code>&lt;em&gt;</code> auszeichnest.`,
+    hint: "💡 Tags können ineinander stecken: &lt;p&gt;&lt;strong&gt;fett&lt;/strong&gt;&lt;/p&gt;",
+    starter: `<p>HTML ist eine <strong>tolle</strong> Sprache, finde ich <em>wirklich</em>.</p>`,
+    check: code => /<strong>.*<\/strong>/i.test(code) && /<em>.*<\/em>/i.test(code)
+  },
+  {
+    title: "Listen",
+    desc: "Es gibt geordnete Listen (ol = ordered list, mit Nummern) und ungeordnete Listen (ul = unordered list, mit Punkten). Jeder Eintrag ist ein li (list item).",
+    concept: `<span class="tag">&lt;ul&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Milch<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Eier<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span>
+
+<span class="tag">&lt;ol&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Schritt 1<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Schritt 2<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ol&gt;</span>`,
+    task: `Erstelle eine Einkaufsliste mit <code>&lt;ul&gt;</code> (mindestens 3 Einträge) und eine nummerierte To-do-Liste mit <code>&lt;ol&gt;</code> (mindestens 2 Einträge).`,
+    hint: "💡 ul und ol sind Container. li-Einträge kommen immer drinnen.",
+    starter: `<ul>\n  <li>Äpfel</li>\n  <li>Butter</li>\n  <li>Brot</li>\n</ul>\n\n<ol>\n  <li>Aufstehen</li>\n  <li>Kaffee kochen</li>\n</ol>`,
+    check: code => /<ul>[\s\S]*<li>[\s\S]*<\/li>[\s\S]*<\/ul>/i.test(code) && /<ol>[\s\S]*<li>[\s\S]*<\/li>[\s\S]*<\/ol>/i.test(code)
+  },
+  {
+    title: "Links",
+    desc: "Mit dem a-Tag (anchor = Anker) erstellst du klickbare Links. Der Ziel-URL kommt in ein Attribut namens href. Attribute stehen immer im öffnenden Tag.",
+    concept: `<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="val">"https://wikipedia.org"</span><span class="tag">&gt;</span>
+  Wikipedia besuchen
+<span class="tag">&lt;/a&gt;</span>`,
+    task: `Erstelle zwei Links: einen zu deiner Lieblingswebseite und einen zu <code>https://developer.mozilla.org</code>. Gib beiden einen beschreibenden Text.`,
+    hint: '💡 href steht für "hypertext reference". Vergiss die Anführungszeichen nicht!',
+    starter: `<a href="https://www.wikipedia.org">Wikipedia</a>\n<br>\n<a href="https://developer.mozilla.org">MDN – HTML-Dokumentation</a>`,
+    check: code => (code.match(/<a\s+href=/gi) || []).length >= 2
+  },
+  {
+    title: "Bilder",
+    desc: "Das img-Tag zeigt Bilder an. Es ist ein selbstschließendes Tag – es braucht kein </img>. src gibt die Bild-URL an, alt gibt einen Beschreibungstext für Screenreader.",
+    concept: `<span class="tag">&lt;img</span> 
+  <span class="attr">src</span>=<span class="val">"bild.jpg"</span>
+  <span class="attr">alt</span>=<span class="val">"Beschreibung"</span>
+<span class="tag">&gt;</span>`,
+    task: `Binde zwei Bilder ein. Nutze diese URL für ein Platzhalterbild: <code>https://picsum.photos/300/200</code> – ändere die Zahlen für verschiedene Größen! Vergiss das alt-Attribut nicht.`,
+    hint: "💡 ?random=1 und ?random=2 am Ende der URL geben verschiedene Bilder.",
+    starter: `<img src="https://picsum.photos/300/200?random=1" alt="Ein zufälliges Bild">\n<br>\n<img src="https://picsum.photos/300/200?random=2" alt="Noch ein Bild">`,
+    check: code => (code.match(/<img/gi) || []).length >= 2 && /alt=/i.test(code)
+  },
+  {
+    title: "Strukturierung",
+    desc: "div und span sind unsichtbare Container. div ist ein Block-Element (neue Zeile), span ist inline (mitten im Text). Sie helfen, Inhalte zu gruppieren.",
+    concept: `<span class="tag">&lt;div&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>Bereich 1<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;p&gt;</span>Text hier...<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">&lt;p&gt;</span>Das Wort 
+<span class="tag">&lt;span&gt;</span>rot<span class="tag">&lt;/span&gt;</span> 
+sticht raus.<span class="tag">&lt;/p&gt;</span>`,
+    task: `Erstelle zwei <code>&lt;div&gt;</code>-Bereiche, jeder mit einer h2-Überschrift und einem Absatz. Hebe in einem Absatz ein Wort mit <code>&lt;span&gt;</code> hervor.`,
+    hint: "💡 div allein ist unsichtbar – aber in der Vorschau siehst du die Struktur!",
+    starter: `<div>\n  <h2>Mein erster Bereich</h2>\n  <p>Hier steht etwas <span>wichtiges</span>.</p>\n</div>\n\n<div>\n  <h2>Zweiter Bereich</h2>\n  <p>Noch mehr Inhalt.</p>\n</div>`,
+    check: code => (code.match(/<div>/gi) || []).length >= 2 && /<span>/i.test(code)
+  },
+  {
+    title: "Tabellen",
+    desc: "Tabellen bestehen aus Zeilen (tr = table row) und Zellen (td = table data). Kopfzellen heißen th (table header). Alles steckt in einem table-Tag.",
+    concept: `<span class="tag">&lt;table&gt;</span>
+  <span class="tag">&lt;tr&gt;</span>
+    <span class="tag">&lt;th&gt;</span>Name<span class="tag">&lt;/th&gt;</span>
+    <span class="tag">&lt;th&gt;</span>Alter<span class="tag">&lt;/th&gt;</span>
+  <span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;tr&gt;</span>
+    <span class="tag">&lt;td&gt;</span>Anna<span class="tag">&lt;/td&gt;</span>
+    <span class="tag">&lt;td&gt;</span>12<span class="tag">&lt;/td&gt;</span>
+  <span class="tag">&lt;/tr&gt;</span>
+<span class="tag">&lt;/table&gt;</span>`,
+    task: `Erstelle eine Tabelle mit 3 Spalten und mindestens 2 Datenzeilen. Thema: was du möchtest (Schüler, Planeten, Rezepte...).`,
+    hint: "💡 border='1' im table-Tag macht die Linien sichtbar: &lt;table border='1'&gt;",
+    starter: `<table border="1">\n  <tr>\n    <th>Planet</th>\n    <th>Abstand (km)</th>\n    <th>Monde</th>\n  </tr>\n  <tr>\n    <td>Erde</td>\n    <td>149.600.000</td>\n    <td>1</td>\n  </tr>\n  <tr>\n    <td>Mars</td>\n    <td>227.900.000</td>\n    <td>2</td>\n  </tr>\n</table>`,
+    check: code => /<table/i.test(code) && (code.match(/<tr>/gi) || []).length >= 3 && /<td>/i.test(code)
+  },
+  {
+    title: "Formulare",
+    desc: "Mit form, input und button kannst du Formulare bauen. Das type-Attribut bei input bestimmt den Feldtyp: text, email, number, checkbox...",
+    concept: `<span class="tag">&lt;form&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"text"</span> <span class="attr">placeholder</span>=<span class="val">"Dein Name"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="val">"email"</span> <span class="attr">placeholder</span>=<span class="val">"E-Mail"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;button&gt;</span>Absenden<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span>`,
+    task: `Baue ein Kontaktformular mit: einem Textfeld für den Namen, einem E-Mail-Feld und einem Button. Optional: füge eine Checkbox hinzu ("Ich stimme zu").`,
+    hint: "💡 placeholder='...' zeigt grauen Hinweistext im leeren Feld.",
+    starter: `<form>\n  <p><input type="text" placeholder="Dein Name"></p>\n  <p><input type="email" placeholder="E-Mail-Adresse"></p>\n  <p><input type="checkbox"> Ich stimme den Bedingungen zu</p>\n  <button>Absenden</button>\n</form>`,
+    check: code => /<form>/i.test(code) && /<input/i.test(code) && /<button>/i.test(code)
+  },
+  {
+    title: "Das komplette HTML-Gerüst",
+    desc: "Jede echte HTML-Datei hat eine feste Grundstruktur: DOCTYPE-Deklaration, html-Tag, head (unsichtbare Infos wie Titel) und body (der sichtbare Inhalt).",
+    concept: `<span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Meine Seite<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Hallo!<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span>`,
+    task: `Schreib das komplette HTML-Grundgerüst selbst. Gib deiner Seite einen Titel im &lt;title&gt;-Tag, und füge im body eine Überschrift und einen Absatz ein.`,
+    hint: "💡 Der &lt;title&gt;-Text erscheint im Browser-Tab – probier es in der Vorschau!",
+    starter: `<!DOCTYPE html>\n<html>\n  <head>\n    <title>Meine erste Webseite</title>\n  </head>\n  <body>\n    <h1>Willkommen!</h1>\n    <p>Das ist meine eigene Webseite.</p>\n  </body>\n</html>`,
+    check: code => /<!DOCTYPE html>/i.test(code) && /<html>/i.test(code) && /<head>/i.test(code) && /<title>/i.test(code) && /<body>/i.test(code)
+  },
+  {
+    title: "CSS: Farben",
+    desc: "CSS (Cascading Style Sheets) macht deine Seite schön. Mit dem <code>style</code>-Attribut kannst du einzelne Elemente direkt einfärben: Textfarbe mit <code>color</code>, Hintergrundfarbe mit <code>background-color</code>.",
+    concept: `<span class="tag">&lt;h1</span> <span class="attr">style</span>=<span class="val">"color: royalblue"</span><span class="tag">&gt;</span>
+  Blauer Titel
+<span class="tag">&lt;/h1&gt;</span>
+
+<span class="tag">&lt;p</span> <span class="attr">style</span>=<span class="val">"background-color: #ffe066; color: #333"</span><span class="tag">&gt;</span>
+  Gelber Hintergrund
+<span class="tag">&lt;/p&gt;</span>`,
+    task: `Färbe mindestens eine Überschrift mit <code>color</code> ein und einen Absatz mit <code>background-color</code>. Probiere Farbnamen (red, navy, coral...) oder Hex-Codes (#ff6600).`,
+    hint: `💡 Mehrere CSS-Eigenschaften trennt man mit Semikolon: style="color: red; background-color: yellow"<br><br>🎨 Alle verfügbaren Farbnamen (140 Stück!) auf einen Blick: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/named-color" target="_blank" style="color:#5fcf8a">MDN CSS Farbnamen</a>`,
+    starter: `<h1 style="color: royalblue">Meine bunte Seite</h1>\n<p style="background-color: #ffe066; color: #333; padding: 8px">\n  Dieser Absatz hat einen gelben Hintergrund.\n</p>\n<p style="color: coral">\n  Und dieser Text ist korallrot.\n</p>`,
+    check: code => /color\s*:/i.test(code) && /background-color\s*:/i.test(code)
+  },
+  {
+    title: "CSS: Schrift & Abstände",
+    desc: "Mit CSS steuerst du Schriftgröße (<code>font-size</code>), Schriftart (<code>font-family</code>), innere Abstände (<code>padding</code>) und äußere Abstände (<code>margin</code>).",
+    concept: `<span class="tag">&lt;p</span> <span class="attr">style</span>=<span class="val">"
+  font-size: 20px;
+  font-family: Georgia, serif;
+  padding: 16px;
+  margin: 8px;
+  background-color: #f0f0f0"</span><span class="tag">&gt;</span>
+  Gestalteter Text
+<span class="tag">&lt;/p&gt;</span>`,
+    task: `Erstelle einen Absatz mit mindestens 4 CSS-Eigenschaften gleichzeitig: <code>font-size</code>, <code>font-family</code>, <code>background-color</code> und <code>padding</code>. Füge eine Überschrift mit anderer Schriftgröße hinzu.`,
+    hint: "💡 Schriftarten: Georgia, Arial, Courier New, Verdana. Größen in Pixel: 14px, 20px, 36px.",
+    starter: `<h1 style="font-size: 36px; color: #2c3e50; font-family: Georgia, serif">\n  Typografie macht den Unterschied\n</h1>\n\n<p style="font-size: 18px; font-family: Verdana, sans-serif; background-color: #ecf0f1; padding: 20px; color: #555;">\n  Abstände und Schrift machen Seiten lesbar und angenehm.\n</p>`,
+    check: code => /font-size\s*:/i.test(code) && /font-family\s*:/i.test(code) && /padding\s*:/i.test(code) && /background-color\s*:/i.test(code)
+  },
+  {
+    title: "Deine eigene Webseite",
+    desc: "Jetzt kommt alles zusammen: HTML-Gerüst, Inhalt und CSS-Styling. Den Code dieser Lektion kannst du am Ende als Datei herunterladen und im Browser öffnen — deine erste echte Webseite!",
+    concept: `Im &lt;head&gt; kommt ein &lt;style&gt;-Block:
+
+<span class="tag">&lt;style&gt;</span>
+  body { background-color: #f5f5f5; }
+  h1   { color: royalblue; }
+  p    { font-size: 18px; }
+<span class="tag">&lt;/style&gt;</span>
+
+Dieses CSS gilt dann für die <em>ganze Seite</em>!`,
+    task: `Baue deine eigene Seite mit vollständigem HTML-Gerüst und einem &lt;style&gt;-Block im &lt;head&gt;. Gestalte mindestens body, h1 und p. Inhalt: was du möchtest! Danach kannst du sie herunterladen. 🎉`,
+    hint: `💡 Im &lt;style&gt;-Tag: Selektor ohne Anführungszeichen, Eigenschaften in { geschweifte Klammern }. Z.B.: h1 { color: red; }<br><br>🎨 Alle CSS-Farbnamen findest du hier: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/named-color" target="_blank" style="color:#5fcf8a">MDN Farbnamen-Liste</a> — dort siehst du woher "royalblue" kommt!`,
+    starter: `<!DOCTYPE html>\n<html>\n<head>\n  <title>Meine Webseite</title>\n  <style>\n    body {\n      background-color: #fdf6e3;\n      font-family: Georgia, serif;\n      max-width: 700px;\n      margin: 40px auto;\n      padding: 20px;\n      color: #333;\n    }\n    h1 {\n      color: royalblue;\n      border-bottom: 3px solid royalblue;\n      padding-bottom: 8px;\n    }\n    h2 {\n      color: coral;\n      margin-top: 28px;\n    }\n    p {\n      line-height: 1.8;\n      font-size: 17px;\n    }\n    ul {\n      background-color: #e8f4fb;\n      padding: 16px 32px;\n      border-radius: 8px;\n      line-height: 2;\n    }\n    a {\n      color: royalblue;\n    }\n    .highlight {\n      background-color: #ffe066;\n      padding: 2px 6px;\n      border-radius: 4px;\n    }\n  </style>\n</head>\n<body>\n\n  <h1>🌍 Über mich</h1>\n\n  <p>\n    Willkommen auf meiner ersten eigenen Webseite!\n    Ich habe sie mit <strong>HTML</strong> und <em>CSS</em> gebaut.\n  </p>\n\n  <h2>⭐ Meine Interessen</h2>\n  <ul>\n    <li>🎨 Kreativ sein</li>\n    <li>📚 Neues lernen</li>\n    <li>💻 Webseiten bauen</li>\n    <li>🌱 Draußen in der Natur</li>\n  </ul>\n\n  <h2>🔗 Mein Lieblingslink</h2>\n  <p>\n    Ich lerne HTML auf\n    <a href="https://developer.mozilla.org" target="_blank">MDN Web Docs</a> —\n    dort gibt es alles was man wissen muss!\n  </p>\n\n  <p>\n    Das ist <span class="highlight">mein erstes Highlight</span> mit CSS!\n  </p>\n\n</body>\n</html>`,
+    check: code => /<!DOCTYPE html>/i.test(code) && /<style>/i.test(code) && /color\s*:/i.test(code) && /<body>/i.test(code),
+    downloadable: true
+  }
+];
+
+// ─── SYNTAX HIGHLIGHTER ─────────────────────────────────────────────────────
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlight(code) {
+  // We tokenize character by character tracking state
+  let out = '';
+  let i = 0;
+  const len = code.length;
+
+  while (i < len) {
+    // HTML comment
+    if (code.startsWith('<!--', i)) {
+      const end = code.indexOf('-->', i);
+      const chunk = end === -1 ? code.slice(i) : code.slice(i, end + 3);
+      out += `<span class="hl-comment">${escapeHtml(chunk)}</span>`;
+      i += chunk.length;
+      continue;
+    }
+    // DOCTYPE
+    if (code.startsWith('<!', i) && !code.startsWith('<!--', i)) {
+      const end = code.indexOf('>', i);
+      const chunk = end === -1 ? code.slice(i) : code.slice(i, end + 1);
+      out += `<span class="hl-doctype">${escapeHtml(chunk)}</span>`;
+      i += chunk.length;
+      continue;
+    }
+    // Tag
+    if (code[i] === '<') {
+      const end = code.indexOf('>', i);
+      if (end === -1) { out += escapeHtml(code.slice(i)); i = len; continue; }
+      const raw = code.slice(i, end + 1); // e.g. <h1 class="x">
+      out += highlightTag(raw);
+      i += raw.length;
+      continue;
+    }
+    // Text node – collect until next <
+    const next = code.indexOf('<', i);
+    const text = next === -1 ? code.slice(i) : code.slice(i, next);
+    out += `<span class="hl-text">${escapeHtml(text)}</span>`;
+    i += text.length;
+  }
+  return out;
+}
+
+function highlightTag(raw) {
+  // raw = "<tagname attr="val" ...>" or "</tagname>"
+  let out = '<span class="hl-bracket">&lt;</span>';
+  let rest = raw.slice(1, raw.length - 1); // strip < >
+
+  // closing slash
+  let closingSlash = '';
+  if (rest.startsWith('/')) { closingSlash = '<span class="hl-bracket">/</span>'; rest = rest.slice(1); }
+
+  // self-closing slash at end
+  let selfClose = '';
+  if (rest.endsWith('/')) { selfClose = '<span class="hl-bracket">/</span>'; rest = rest.slice(0, -1).trimEnd(); }
+
+  // tag name (first word)
+  const nameMatch = rest.match(/^([a-zA-Z0-9!]+)/);
+  if (!nameMatch) { return escapeHtml(raw); }
+  const name = nameMatch[1];
+  out += closingSlash + `<span class="hl-tagname">${escapeHtml(name)}</span>`;
+  rest = rest.slice(name.length);
+
+  // attributes
+  out += highlightAttrs(rest);
+  out += selfClose + '<span class="hl-bracket">&gt;</span>';
+  return out;
+}
+
+function highlightAttrs(s) {
+  // match: attrname="value" or attrname='value' or standalone attr
+  let out = '';
+  let i = 0;
+  while (i < s.length) {
+    // whitespace
+    if (/\s/.test(s[i])) { out += s[i++]; continue; }
+    // attr name
+    const nameMatch = s.slice(i).match(/^[^\s=>"'/]+/);
+    if (!nameMatch) { out += escapeHtml(s[i++]); continue; }
+    out += `<span class="hl-attr">${escapeHtml(nameMatch[0])}</span>`;
+    i += nameMatch[0].length;
+    if (s[i] !== '=') continue;
+    out += '<span class="hl-bracket">=</span>';
+    i++;
+    // value
+    const q = s[i];
+    if (q === '"' || q === "'") {
+      const end = s.indexOf(q, i + 1);
+      if (end === -1) { out += escapeHtml(s.slice(i)); i = s.length; continue; }
+      const val = s.slice(i, end + 1);
+      out += `<span class="hl-value">${escapeHtml(val)}</span>`;
+      i += val.length;
+    } else {
+      const vm = s.slice(i).match(/^[^\s>]+/);
+      if (vm) { out += `<span class="hl-value">${escapeHtml(vm[0])}</span>`; i += vm[0].length; }
+    }
+  }
+  return out;
+}
+
+function refreshHighlight() {
+  const code = document.getElementById('editor').value;
+  document.getElementById('highlight-layer').innerHTML = highlight(code) + '\n'; // trailing \n prevents jump
+}
+
+function syncScroll() {
+  const ta = document.getElementById('editor');
+  const hl = document.getElementById('highlight-layer');
+  hl.scrollTop = ta.scrollTop;
+  hl.scrollLeft = ta.scrollLeft;
+}
+
+
+let current = 0;
+let solved = new Array(lessons.length).fill(false);
+let toastTimeout;
+
+// ─── RENDER ─────────────────────────────────────────────────────────────────
+function render() {
+  const l = lessons[current];
+
+  document.getElementById('lessonBadge').textContent = `⬡ Lektion ${current + 1}`;
+  document.getElementById('lessonTitle').textContent = l.title;
+  document.getElementById('lessonCounter').textContent = `${current + 1} / ${lessons.length}`;
+  document.getElementById('lessonDesc').textContent = '';
+
+  // desc with inline code
+  const descEl = document.getElementById('lessonDesc');
+  descEl.innerHTML = l.desc;
+
+  // concept box
+  document.getElementById('conceptBox').innerHTML = `<h4>So sieht es aus</h4><div class="concept-code">${l.concept}</div>`;
+
+  // task box
+  document.getElementById('taskBox').innerHTML = `<h4>Deine Aufgabe</h4><p>${l.task}</p>`;
+
+  // hint
+  document.getElementById('hintText').innerHTML = l.hint;
+
+  // editor
+  const editor = document.getElementById('editor');
+  editor.value = l.starter;
+  refreshHighlight();
+  updatePreview();
+  checkCode();
+
+  // nav
+  document.getElementById('btnPrev').disabled = current === 0;
+  document.getElementById('btnNext').disabled = !solved[current];
+
+  // download button – only on downloadable lessons
+  document.getElementById('downloadWrap').style.display = l.downloadable ? 'block' : 'none';
+
+  // progress
+  const pct = (solved.filter(Boolean).length / lessons.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function onEdit() {
+  lastEditorCode = document.getElementById('editor').value;
+  refreshHighlight();
+  updatePreview();
+  checkCode();
+}
+
+function updatePreview() {
+  const code = document.getElementById('editor').value;
+  const preview = document.getElementById('preview');
+  // Extract body content if full HTML document, otherwise render directly
+  const bodyMatch = code.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  preview.innerHTML = bodyMatch ? bodyMatch[1] : code;
+}
+
+function checkCode() {
+  const code = document.getElementById('editor').value;
+  const l = lessons[current];
+  const ok = l.check(code);
+  const badge = document.getElementById('statusBadge');
+  const btn = document.getElementById('btnNext');
+
+  if (ok) {
+    badge.textContent = '✓ gelöst';
+    badge.className = 'status-indicator status-ok';
+    btn.disabled = false;
+    if (!solved[current]) {
+      solved[current] = true;
+      showToast();
+      updateProgress();
+      // show download button if this lesson is downloadable
+      if (lessons[current].downloadable) {
+        document.getElementById('downloadWrap').style.display = 'block';
+      }
+    }
+  } else {
+    badge.textContent = 'schreib etwas';
+    badge.className = 'status-indicator status-pending';
+    if (!solved[current]) btn.disabled = true;
+  }
+}
+
+function updateProgress() {
+  const pct = (solved.filter(Boolean).length / lessons.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function showToast() {
+  const messages = [
+    '✓ Perfekt! Weiter so!',
+    '✓ Klasse! Das saß!',
+    '✓ HTML-Profi!',
+    '✓ Sehr gut!',
+    '✓ Jawohl! Tag gemeistert!'
+  ];
+  const toast = document.getElementById('toast');
+  toast.textContent = messages[Math.floor(Math.random() * messages.length)];
+  toast.classList.add('visible');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove('visible'), 2500);
+}
+
+let lastEditorCode = '';
+
+function downloadCode() {
+  const code = document.getElementById('editor').value;
+  triggerDownload(code);
+}
+
+function downloadLast() {
+  triggerDownload(lastEditorCode || lessons[lessons.length - 1].starter);
+}
+
+function triggerDownload(code) {
+  const blob = new Blob([code], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'meine-webseite.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function go(dir) {
+  const next = current + dir;
+  if (next < 0) return;
+  if (next >= lessons.length) {
+    showDone();
+    return;
+  }
+  current = next;
+  render();
+}
+
+function resetEditor() {
+  document.getElementById('editor').value = lessons[current].starter;
+  solved[current] = false;
+  refreshHighlight();
+  onEdit();
+}
+
+function showDone() {
+  const tags = ['h1–h6','p','strong','em','ul / ol','li','a','img','div','span','table','form','input','button','!DOCTYPE','style','color','background-color','font-size','padding'];
+  document.getElementById('mainArea').innerHTML = `
+    <div class="done-screen">
+      <div style="font-size:3rem">🎉</div>
+      <h2>Du hast es geschafft!</h2>
+      <p>Du kennst jetzt die wichtigsten HTML- und CSS-Grundlagen: Struktur, Verlinkung, Bilder, Listen, Tabellen, Formulare – und wie man alles mit CSS einfärbt und gestaltet.</p>
+      <div class="tags-learned">
+        ${tags.map(t => `<span class="tag-chip">${t}</span>`).join('')}
+      </div>
+      <p style="margin-top:8px;">Lade deine fertige Seite herunter und öffne sie im Browser!</p>
+      <button class="btn-next restart-btn" style="background:var(--accent2);color:#0f1a12" onclick="downloadLast()">⬇ Meine Webseite herunterladen</button>
+      <button class="btn-next restart-btn" onclick="restart()">↺ Von vorne beginnen</button>
+    </div>`;
+}
+
+function restart() {
+  current = 0;
+  solved = new Array(lessons.length).fill(false);
+  location.reload();
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

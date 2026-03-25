@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stoffgemische-Labor</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --solid: #d97a2b;
+  --solid-light: #fef3e8;
+  --solid-bg: #fcd9b8;
+  --liquid: #2e86d6;
+  --liquid-light: #e6f1fd;
+  --liquid-bg: #b3d4f5;
+  --gas: #7c4fc4;
+  --gas-light: #f0e8fd;
+  --gas-bg: #d1c0f0;
+  --bg: #f4f0e6;
+  --card: #fffcf5;
+  --text: #2d2418;
+  --text-light: #7a6e5e;
+  --success: #22c55e;
+  --mix-btn: #f59e0b;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(217,122,43,0.05) 0%, transparent 50%),
+    radial-gradient(circle at 85% 20%, rgba(46,134,214,0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(124,79,196,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.app { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+
+.header { text-align: center; margin-bottom: 24px; }
+.header h1 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--solid), var(--liquid), var(--gas));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header p { font-size: 0.92rem; color: var(--text-light); font-weight: 600; margin-top: 2px; }
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.shelf {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.shelf + .shelf { margin-top: 12px; }
+
+.shelf-title {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.shelf-title .dot { width: 9px; height: 9px; border-radius: 50%; }
+.shelf--solid .shelf-title { color: var(--solid); }
+.shelf--solid .dot { background: var(--solid); }
+.shelf--liquid .shelf-title { color: var(--liquid); }
+.shelf--liquid .dot { background: var(--liquid); }
+.shelf--gas .shelf-title { color: var(--gas); }
+.shelf--gas .dot { background: var(--gas); }
+
+.substances { display: flex; flex-direction: column; gap: 7px; }
+
+.substance {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text);
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
+.substance .emoji { font-size: 1.3rem; width: 30px; text-align: center; flex-shrink: 0; }
+.substance:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.07); }
+
+.substance--solid { background: var(--solid-light); }
+.substance--solid:hover, .substance--solid.selected { border-color: var(--solid); background: var(--solid-bg); }
+.substance--liquid { background: var(--liquid-light); }
+.substance--liquid:hover, .substance--liquid.selected { border-color: var(--liquid); background: var(--liquid-bg); }
+.substance--gas { background: var(--gas-light); }
+.substance--gas:hover, .substance--gas.selected { border-color: var(--gas); background: var(--gas-bg); }
+
+.substance.selected { transform: scale(0.97); box-shadow: inset 0 2px 6px rgba(0,0,0,0.1); }
+
+.substance .check {
+  display: none;
+  position: absolute;
+  right: 9px;
+  width: 19px; height: 19px;
+  border-radius: 50%;
+  color: white;
+  font-size: 0.65rem;
+  line-height: 19px;
+  text-align: center;
+  font-weight: 800;
+}
+.substance.selected .check { display: block; }
+.substance--solid .check { background: var(--solid); }
+.substance--liquid .check { background: var(--liquid); }
+.substance--gas .check { background: var(--gas); }
+
+.mix-zone { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+.beaker-area { position: relative; width: 190px; height: 230px; }
+.beaker-svg { width: 100%; height: 100%; }
+.beaker-glass { fill: rgba(200,220,240,0.13); stroke: #b0c4d8; stroke-width: 2.5; }
+.beaker-rim { fill: none; stroke: #8aa8c0; stroke-width: 3; stroke-linecap: round; }
+.beaker-scale { stroke: #c0d0e0; stroke-width: 1; }
+
+.beaker-slots {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 135px;
+}
+
+.beaker-slot {
+  width: 100%;
+  height: 38px;
+  border-radius: 10px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.73rem;
+  color: #aaa;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.5);
+}
+.beaker-slot.filled { border-style: solid; background: white; color: var(--text); font-size: 0.78rem; box-shadow: 0 2px 6px rgba(0,0,0,0.07); }
+.beaker-slot.filled--solid { border-color: var(--solid); }
+.beaker-slot.filled--liquid { border-color: var(--liquid); }
+.beaker-slot.filled--gas { border-color: var(--gas); }
+
+.beaker-plus {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ccc;
+  transition: color 0.3s;
+}
+.beaker-plus.active { color: var(--mix-btn); }
+
+.mix-btn {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 11px 30px;
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: linear-gradient(135deg, #e0d8cc, #d5cdbf);
+  color: #999;
+  pointer-events: none;
+}
+.mix-btn.ready { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; pointer-events: all; box-shadow: 0 4px 14px rgba(251,191,36,0.4); }
+.mix-btn.ready:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 18px rgba(251,191,36,0.5); }
+.mix-btn.ready:active { transform: scale(0.97); }
+
+.reset-btn {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 5px 16px;
+  border: 2px solid #ddd;
+  border-radius: 9px;
+  cursor: pointer;
+  background: white;
+  color: var(--text-light);
+  transition: all 0.2s;
+}
+.reset-btn:hover { border-color: #bbb; color: var(--text); }
+
+/* Hint for single gas */
+.gas-hint {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  text-align: center;
+  margin-top: 6px;
+  font-style: italic;
+  line-height: 1.4;
+  padding: 0 4px;
+}
+
+.result-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  animation: fadeIn 0.25s ease;
+}
+.result-overlay.visible { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.result-card {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 28px 28px 24px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  animation: cardPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  overflow: hidden;
+}
+@keyframes cardPop { from { transform: scale(0.8) translateY(18px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+
+.result-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: #ddd; }
+.result-card[data-type="Gemenge"]::before { background: linear-gradient(90deg, var(--solid), #5aad5a); }
+.result-card[data-type="Suspension"]::before { background: linear-gradient(90deg, var(--liquid), var(--solid)); }
+.result-card[data-type="Emulsion"]::before { background: linear-gradient(90deg, var(--liquid), #e8c840); }
+.result-card[data-type="Rauch"]::before { background: linear-gradient(90deg, var(--gas), var(--solid)); }
+.result-card[data-type="Nebel"]::before { background: linear-gradient(90deg, var(--gas), var(--liquid)); }
+.result-card[data-type="Schaum"]::before { background: linear-gradient(90deg, var(--liquid), var(--gas)); }
+.result-card[data-type="Lösung (homogen)"]::before, .result-card[data-type="Lösung"]::before { background: linear-gradient(90deg, #22c55e, #3b82f6); }
+
+.particle-canvas {
+  display: block;
+  width: 120px; height: 120px;
+  margin: 0 auto 10px;
+  border-radius: 14px;
+  border: 2px solid #e8e2d6;
+  background: white;
+}
+
+.result-type {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 3px;
+}
+
+.result-recipe {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.result-phases { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+.phase-tag {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  font-size: 0.72rem;
+  padding: 3px 11px;
+  border-radius: 18px;
+  color: white;
+}
+.phase-tag--solid { background: var(--solid); }
+.phase-tag--liquid { background: var(--liquid); }
+.phase-tag--gas { background: var(--gas); }
+
+.result-explanation {
+  background: #f8f5ee;
+  border-radius: 13px;
+  padding: 14px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.result-example {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.result-close {
+  display: block;
+  margin: 0 auto;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 9px 28px;
+  border: none;
+  border-radius: 11px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--success), #16a34a);
+  color: white;
+  transition: all 0.2s;
+}
+.result-close:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(34,197,94,0.35); }
+
+.info-section {
+  margin-top: 28px;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.info-section h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.matrix-wrap { overflow-x: auto; }
+
+.matrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 0.78rem;
+  min-width: 380px;
+}
+.matrix-table th, .matrix-table td {
+  padding: 10px 8px;
+  text-align: center;
+  border-radius: 7px;
+  font-weight: 600;
+}
+.matrix-table thead th { font-family: 'Fredoka', sans-serif; color: white; font-weight: 600; }
+.matrix-table th.col-solid { background: var(--solid); }
+.matrix-table th.col-liquid { background: var(--liquid); }
+.matrix-table th.col-gas { background: var(--gas); }
+.matrix-table tbody th { font-family: 'Fredoka', sans-serif; color: white; }
+
+.matrix-table td {
+  background: #f8f5ee;
+  transition: all 0.2s;
+  font-size: 0.76rem;
+  color: #bbb;
+}
+.matrix-table td.discovered { background: #dcfce7; color: #166534; cursor: pointer; }
+.matrix-table td.discovered:hover { background: #bbf7d0; transform: scale(1.04); }
+.matrix-table td.na { background: #f0ece3; color: #c0b8a8; font-style: italic; font-size: 0.68rem; }
+
+.matrix-table .corner {
+  background: transparent;
+  font-size: 0.62rem;
+  color: var(--text-light);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+
+.discovery-counter {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-light);
+}
+.discovery-counter span { color: var(--success); font-family: 'Fredoka', sans-serif; font-size: 1.05rem; }
+
+/* Homogen info box */
+.homogen-note {
+  margin-top: 14px;
+  background: #f0e8fd;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.8rem;
+  color: #5a3d8a;
+  line-height: 1.5;
+  text-align: center;
+}
+.homogen-note strong { color: #4a2d7a; }
+
+/* Lösung warning in result example */
+.loesung-warning {
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+  border-radius: 11px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  color: #92400e;
+  line-height: 1.5;
+  font-style: normal;
+  text-align: left;
+}
+
+/* Banner above particle canvas for Lösung */
+.nicht-heterogen-banner {
+  display: none;
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+  border-radius: 11px;
+  padding: 8px 14px;
+  margin-bottom: 10px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #b91c1c;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+.nicht-heterogen-banner.visible { display: block; }
+
+@media (max-width: 860px) {
+  .lab-layout { grid-template-columns: 1fr; gap: 14px; }
+  .mix-zone { order: -1; }
+  .header h1 { font-size: 1.5rem; }
+  .beaker-area { width: 160px; height: 200px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>🧪 Finde heterogene Stoffgemische</h1>
+    <p>Wähle zwei Stoffe und mische sie zusammen!</p>
+  </div>
+
+  <div class="lab-layout">
+    <div>
+      <div class="shelf shelf--solid">
+        <div class="shelf-title"><span class="dot"></span>Feststoffe</div>
+        <div class="substances" id="solids"></div>
+      </div>
+      <div class="shelf shelf--liquid">
+        <div class="shelf-title"><span class="dot"></span>Flüssigkeiten</div>
+        <div class="substances" id="liquids"></div>
+      </div>
+    </div>
+
+    <div class="mix-zone">
+      <div class="beaker-area">
+        <svg class="beaker-svg" viewBox="0 0 200 240">
+          <path class="beaker-glass" d="M40,50 L30,210 Q30,225 45,225 L155,225 Q170,225 170,210 L160,50" />
+          <path class="beaker-rim" d="M30,50 L170,50" />
+          <line class="beaker-scale" x1="38" y1="100" x2="55" y2="100"/>
+          <line class="beaker-scale" x1="36" y1="140" x2="55" y2="140"/>
+          <line class="beaker-scale" x1="34" y1="180" x2="55" y2="180"/>
+        </svg>
+        <div class="beaker-slots">
+          <div class="beaker-slot" id="slot1">Stoff 1</div>
+          <div class="beaker-plus" id="plusSign">+</div>
+          <div class="beaker-slot" id="slot2">Stoff 2</div>
+        </div>
+      </div>
+      <button class="mix-btn" id="mixBtn">🔬 Mischen!</button>
+      <button class="reset-btn" id="resetBtn">↺ Zurücksetzen</button>
+    </div>
+
+    <div>
+      <div class="shelf shelf--gas">
+        <div class="shelf-title"><span class="dot"></span>Gas</div>
+        <div class="substances" id="gases"></div>
+        <div class="gas-hint">Luft ist das wichtigste Gas-Beispiel für heterogene Gemische. Kombiniere es mit Feststoffen oder Flüssigkeiten!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2>📋 Die 6 heterogenen Stoffgemische</h2>
+    <div class="matrix-wrap">
+      <table class="matrix-table" id="matrix">
+        <thead>
+          <tr>
+            <th class="corner">↓ und →</th>
+            <th class="col-solid">fest</th>
+            <th class="col-liquid">flüssig</th>
+            <th class="col-gas">gasförmig</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="col-solid">fest</th>
+            <td id="cell-ss">?</td>
+            <td id="cell-sl" class="na">—</td>
+            <td id="cell-sg" class="na">—</td>
+          </tr>
+          <tr>
+            <th class="col-liquid">flüssig</th>
+            <td id="cell-ls">?</td>
+            <td id="cell-ll">?</td>
+            <td id="cell-lg">?</td>
+          </tr>
+          <tr>
+            <th class="col-gas">gasförmig</th>
+            <td id="cell-gs">?</td>
+            <td id="cell-gl">?</td>
+            <td id="cell-gg" class="na">homogen</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="discovery-counter">Entdeckt: <span id="counter">0</span> / 6</div>
+    <div class="homogen-note">
+      💡 <strong>Wo ist die Lösung?</strong> Eine Lösung (z.B. Salz vollständig in Wasser aufgelöst) ist ein <strong>homogenes</strong> Gemisch – die Teilchen sind so fein verteilt, dass man sie nicht mehr unterscheiden kann. Deshalb taucht sie hier nicht auf!
+    </div>
+  </div>
+</div>
+
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-card" id="resultCard">
+    <div class="nicht-heterogen-banner" id="nichtHeterogenBanner">⚠️ Das ist kein heterogenes Stoffgemisch!</div>
+    <canvas class="particle-canvas" id="particleCanvas" width="240" height="240"></canvas>
+    <div class="result-type" id="resultType"></div>
+    <div class="result-recipe" id="resultRecipe"></div>
+    <div class="result-phases" id="resultPhases"></div>
+    <div class="result-explanation" id="resultExplanation"></div>
+    <div class="result-example" id="resultExample"></div>
+    <button class="result-close" id="resultClose">✓ Verstanden!</button>
+  </div>
+</div>
+
+<script>
+const substances = {
+  solid: [
+    { id: 's1', name: 'Zucker',       emoji: '🍬', phase: 'solid' },
+    { id: 's2', name: 'Salz',         emoji: '🧂', phase: 'solid' },
+    { id: 's3', name: 'Ruß',          emoji: '⬛', phase: 'solid' },
+    { id: 's4', name: 'Kakaopulver',  emoji: '🍫', phase: 'solid' },
+  ],
+  liquid: [
+    { id: 'l1', name: 'Wasser',       emoji: '💧', phase: 'liquid' },
+    { id: 'l2', name: 'Speiseöl',     emoji: '🫒', phase: 'liquid' },
+    { id: 'l3', name: 'Milch',        emoji: '🥛', phase: 'liquid' },
+    { id: 'l4', name: 'Essig',        emoji: '🍶', phase: 'liquid' },
+  ],
+  gas: [
+    { id: 'g1', name: 'Luft',         emoji: '💨', phase: 'gas' },
+  ]
+};
+
+const mixtures = {
+  'solid+solid': {
+    type: 'Gemenge',
+    cellId: 'cell-ss',
+    explanation: 'Wenn du zwei <strong>Feststoffe</strong> mischst, entsteht ein <strong>Gemenge</strong>. Die Bestandteile bleiben einzeln erhalten – man kann sie mit bloßem Auge oder einfachen Methoden (Sieben, Magnet, Auslesen) wieder trennen.',
+    example: '💡 Beispiele: Zucker und Salz, Müsli, Müll, Studentenfutter',
+    particleType: 'gemenge'
+  },
+  'liquid+solid': {
+    type: 'Suspension',
+    cellId: 'cell-ls',
+    explanation: 'Wenn feste Teilchen in einer <strong>Flüssigkeit</strong> verteilt sind, ohne sich aufzulösen, entsteht eine <strong>Suspension</strong>. Mit der Zeit setzen sich die Feststoffteilchen am Boden ab.',
+    example: '💡 Beispiele: Kakaopulver in Milch, Schlamm, Orangensaft mit Fruchtfleisch',
+    particleType: 'suspension'
+  },
+  'gas+solid': {
+    type: 'Rauch',
+    cellId: 'cell-gs',
+    explanation: 'Wenn winzige <strong>Feststoff</strong>-Teilchen in einem <strong>Gas</strong> schweben, entsteht <strong>Rauch</strong>. Das Schulbuch-Beispiel ist Luft und Ruß. Man nennt das auch ein festes Aerosol.',
+    example: '💡 Beispiele: Luft und Ruß (= Rauch), Staub in der Luft, Vulkanasche',
+    particleType: 'rauch'
+  },
+  'liquid+liquid': {
+    type: 'Emulsion',
+    cellId: 'cell-ll',
+    explanation: 'Wenn sich zwei <strong>Flüssigkeiten</strong> nicht ineinander lösen und die eine als feine Tröpfchen in der anderen verteilt ist, entsteht eine <strong>Emulsion</strong>.',
+    example: '💡 Beispiele: Wasser und Öl, Milch, Mayonnaise, Vinaigrette',
+    particleType: 'emulsion'
+  },
+  'liquid+gas': {
+    type: 'Schaum',
+    cellId: 'cell-lg',
+    explanation: 'Wenn <strong>Gasblasen</strong> in einer <strong>Flüssigkeit</strong> eingeschlossen werden, entsteht <strong>Schaum</strong>. Die Flüssigkeit bildet dünne Wände um die Gasblasen.',
+    example: '💡 Beispiele: Wasser und Luft (= Schaum), Seifenschaum, Bierschaum, Sahne',
+    particleType: 'schaum'
+  },
+  'gas+liquid': {
+    type: 'Nebel',
+    cellId: 'cell-gl',
+    explanation: 'Wenn feine <strong>Flüssigkeits</strong>-Tröpfchen in einem <strong>Gas</strong> schweben, entsteht <strong>Nebel</strong>. Man nennt das auch ein flüssiges Aerosol.',
+    example: '💡 Beispiele: Luft und Wasser (= Nebel), Wolken, Sprühnebel, Haarspray',
+    particleType: 'nebel'
+  }
+};
+
+function getMixtureKey(p1, p2) {
+  if (p1 === 'solid' && p2 === 'solid') return 'solid+solid';
+  if (p1 === 'liquid' && p2 === 'liquid') return 'liquid+liquid';
+  if ((p1 === 'solid' && p2 === 'liquid') || (p1 === 'liquid' && p2 === 'solid')) return 'liquid+solid';
+  if ((p1 === 'solid' && p2 === 'gas') || (p1 === 'gas' && p2 === 'solid')) return 'gas+solid';
+  if (p1 === 'liquid' && p2 === 'gas') return 'liquid+gas';
+  if (p1 === 'gas' && p2 === 'liquid') return 'gas+liquid';
+  return null;
+}
+
+const specificFacts = {
+  // solid + solid
+  's1+s2': 'Zucker und Salz sehen fast gleich aus! Schmecken hilft – aber in der Chemie trennt man sie z.B. durch Auflösen in Wasser, denn sie lösen sich unterschiedlich gut.',
+  's1+s3': 'Zucker (hell) und Ruß (schwarz) – schon an der Farbe leicht zu unterscheiden!',
+  's1+s4': 'Zucker und Kakaopulver – genau wie die Mischung in der Kakao-Tüte! Ein typisches Gemenge.',
+  's2+s3': 'Salz und Ruß: Salz löst sich in Wasser, Ruß nicht – so kann man sie trennen!',
+  's2+s4': 'Salz und Kakao – zwei Pulver, die man z.B. durch Auflösen und Filtern trennen könnte.',
+  's3+s4': 'Ruß und Kakao sind beide dunkel – schwer zu unterscheiden! Aber Kakao riecht lecker, Ruß nicht.',
+  // solid + liquid
+  's1+l1': '⚠️ <strong>Achtung – kein heterogenes Gemisch!</strong> Zucker löst sich in Wasser vollständig auf. Es entsteht eine <em>Lösung</em> – ein <strong>homogenes</strong> Gemisch. Die Zuckerteilchen sind auf Molekülebene verteilt und nicht mehr sichtbar. Hier gibt es nichts zu trennen!',
+  's2+l1': '⚠️ <strong>Achtung – kein heterogenes Gemisch!</strong> Salz löst sich in Wasser vollständig auf und bildet eine <em>Salzlösung</em> – ein <strong>homogenes</strong> Gemisch. Erst wenn man sehr viel Salz hinzugibt (über die Sättigungsgrenze), bleibt ein Rest ungelöst und es wird zur Suspension.',
+  's3+l1': 'Ruß schwimmt auf dem Wasser und macht es dunkel. Er löst sich nicht auf – eine echte Suspension.',
+  's4+l1': 'Kakaopulver in Wasser – es löst sich nicht richtig auf und sinkt langsam ab. Klassische Suspension!',
+  's1+l2': 'Zucker löst sich in Öl fast gar nicht – die Körnchen sinken auf den Boden.',
+  's2+l2': 'Salz in Öl? Löst sich nicht! Die Kristalle sinken nach unten.',
+  's3+l2': 'Ruß in Öl – so ähnlich sieht altes, dreckiges Motoröl aus.',
+  's4+l2': 'Kakaopulver in Öl – wird eine braune, trübe Suspension.',
+  's1+l3': 'Zucker in Milch – wenn er sich auflöst, wird es eine Lösung. Milch selbst bleibt aber eine Emulsion.',
+  's2+l3': 'Salz in Milch – die Salzkristalle schweben als feste Teilchen in der Flüssigkeit.',
+  's3+l3': 'Ruß in Milch – dunkle Teilchen schweben in der weißen Flüssigkeit.',
+  's4+l3': '🍫 Kakaopulver in Milch = Kakao! Das ist ein Paradebeispiel für eine Suspension. Das Pulver schwebt in der Milch und setzt sich langsam ab.',
+  's1+l4': 'Zucker löst sich in Essig auf – es entsteht eine Lösung, kein heterogenes Gemisch.',
+  's2+l4': 'Salz löst sich in Essig auf – auch hier entsteht eine Lösung.',
+  's3+l4': 'Ruß in Essig – Ruß löst sich nicht auf und bleibt als feste Teilchen verteilt. Eine Suspension.',
+  's4+l4': 'Kakaopulver in Essig – das Pulver löst sich nicht auf. Eine trübe Suspension.',
+  // solid + gas
+  's1+g1': 'Zuckerstaub in der Luft – in Zuckerfabriken kann das sogar explosiv werden! Aber ja, feine Feststoffteilchen in Gas = Rauch (Aerosol).',
+  's2+g1': 'Salzstaub in der Luft – kennst du als salzige Meeresluft an der Küste! Auch das ist ein Aerosol.',
+  's3+g1': '🔥 Ruß in Luft = Rauch! DAS Paradebeispiel aus dem Schulbuch. Beim Verbrennen steigen winzige Rußteilchen in die Luft auf.',
+  's4+g1': 'Feines Kakaopulver in der Luft – wer schon mal Kakao umgeschüttet hat, kennt die braune Wolke! Auch das ist ein Aerosol wie Rauch.',
+  // liquid + liquid
+  'l1+l2': 'Wasser und Öl: DAS Paradebeispiel für eine Emulsion! Öl schwimmt oben, weil es leichter ist. Schütteln hilft kurz, dann trennt es sich wieder.',
+  'l1+l3': '⚠️ <strong>Achtung – kein echtes Mischen!</strong> Milch ist <em>bereits selbst</em> eine fertige Emulsion – winzige Fettröpfchen in Wasser. Gibt man mehr Wasser dazu, verdünnt man diese Emulsion nur. Es entsteht <em>keine neue</em> Emulsion, sondern eine dünnere Variante der vorhandenen.',
+  'l1+l4': '⚠️ <strong>Achtung – kein heterogenes Gemisch!</strong> Essig (Essigsäure) und Wasser mischen sich vollständig. Es entsteht eine <em>Lösung</em> – ein <strong>homogenes</strong> Gemisch. Man kann die beiden Flüssigkeiten nicht mehr sehen oder trennen.',
+  'l2+l3': 'Öl und Milch – Milch enthält bereits Fett, dazu kommt noch mehr Öl. Wird eine trübe Emulsion.',
+  'l2+l4': 'Öl und Essig – wie eine Vinaigrette! Die beiden mischen sich nicht dauerhaft. Ein echtes Emulsions-Beispiel aus der Küche.',
+  'l3+l4': 'Essig und Milch – die Säure lässt die Milch gerinnen (Casein flockt aus). Es entstehen feste Flocken in Flüssigkeit: eine Suspension!',
+  // liquid + gas
+  'l1+g1': 'Luft in Wasser eingeschlossen = Schaum! Wie beim kräftigen Umrühren oder Blubbern mit dem Strohhalm.',
+  'l2+g1': 'Luftblasen in Öl – wie beim Frittieren! Die Luft blubbert durch das heiße Öl.',
+  'l3+g1': '☕ Luft in Milch = Milchschaum! Genau wie beim Cappuccino – die aufgeschäumte Milch ist Schaum.',
+  'l4+g1': 'Luft in Essig – blubbert kurz, dann steigen die Blasen auf. Schüttelt man kräftig, entsteht kurzlebiger Essigschaum.',
+  // gas + liquid (= Nebel)
+  'g1+l1': '🌫️ Wassertröpfchen in Luft = Nebel! DAS Paradebeispiel. Auch Wolken sind nichts anderes als Nebel hoch oben am Himmel.',
+  'g1+l2': 'Öltröpfchen in der Luft – wie der feine Dunst, der beim Braten aufsteigt.',
+  'g1+l3': 'Milchtröpfchen in der Luft – wie ein feiner Sprühnebel aus einer Sprühflasche.',
+  'g1+l4': 'Essig-Tröpfchen in der Luft – wie beim Sprühen von Essigwasser zum Putzen. Ein saurer Nebel!',
+};
+
+// ─── STATE ───
+let selected = [];
+let discovered = new Set();
+
+function renderSubstances() {
+  ['solid', 'liquid', 'gas'].forEach(phase => {
+    const id = phase === 'solid' ? 'solids' : phase === 'liquid' ? 'liquids' : 'gases';
+    const container = document.getElementById(id);
+    container.innerHTML = '';
+    substances[phase].forEach(sub => {
+      const btn = document.createElement('button');
+      btn.className = `substance substance--${phase}`;
+      btn.dataset.id = sub.id;
+      btn.innerHTML = `
+        <span class="emoji">${sub.emoji}</span>
+        <span>${sub.name}</span>
+        <span class="check">✓</span>
+      `;
+      btn.addEventListener('click', () => toggleSelect(sub));
+      container.appendChild(btn);
+    });
+  });
+}
+
+function toggleSelect(sub) {
+  const idx = selected.findIndex(s => s.id === sub.id);
+  if (idx >= 0) {
+    selected.splice(idx, 1);
+  } else {
+    if (selected.length >= 2) selected.shift();
+    selected.push(sub);
+  }
+  updateUI();
+}
+
+function updateUI() {
+  document.querySelectorAll('.substance').forEach(btn => {
+    btn.classList.toggle('selected', selected.some(s => s.id === btn.dataset.id));
+  });
+  const slot1 = document.getElementById('slot1');
+  const slot2 = document.getElementById('slot2');
+  const plus = document.getElementById('plusSign');
+
+  if (selected[0]) {
+    slot1.textContent = `${selected[0].emoji} ${selected[0].name}`;
+    slot1.className = `beaker-slot filled filled--${selected[0].phase}`;
+  } else { slot1.textContent = 'Stoff 1'; slot1.className = 'beaker-slot'; }
+
+  if (selected[1]) {
+    slot2.textContent = `${selected[1].emoji} ${selected[1].name}`;
+    slot2.className = `beaker-slot filled filled--${selected[1].phase}`;
+  } else { slot2.textContent = 'Stoff 2'; slot2.className = 'beaker-slot'; }
+
+  plus.classList.toggle('active', selected.length === 2);
+  document.getElementById('mixBtn').classList.toggle('ready', selected.length === 2);
+}
+
+// ─── PARTICLE MODEL ───
+function drawParticles(type) {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  function ball(x, y, r, col, hi) {
+    const g = ctx.createRadialGradient(x-r*0.3, y-r*0.3, r*0.08, x, y, r);
+    g.addColorStop(0, hi||'#fff');
+    g.addColorStop(0.45, col);
+    g.addColorStop(1, col);
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=g; ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.5; ctx.stroke();
+  }
+
+  const A='#d97a2b', hA='#f5c89a', B='#4a9a4a', hB='#a0dca0';
+  const LIQ='#5aade0', hL='#a8d8f5', OIL='#e0c840', hO='#f5eda0';
+  const DK='#3a3a3a', hD='#888';
+
+  switch(type) {
+    case 'gemenge': {
+      const r=14;
+      for(let row=0;row<7;row++) for(let col=0;col<7;col++){
+        const x=22+col*30+(row%2?15:0), y=22+row*28;
+        if(x>w-12||y>h-12)continue;
+        const a=Math.random()>0.45;
+        ball(x,y,r, a?A:B, a?hA:hB);
+      }
+      break;
+    }
+    case 'suspension': {
+      const r=13;
+      for(let row=0;row<7;row++) for(let col=0;col<7;col++){
+        const x=22+col*30+(row%2?15:0), y=22+row*28;
+        if(x>w-12||y>h-12)continue;
+        const s=Math.random()>0.72;
+        ball(x,y,r, s?B:LIQ, s?hB:hL);
+      }
+      break;
+    }
+    case 'rauch': {
+      for(let i=0;i<28;i++){
+        ball(18+Math.random()*(w-36),18+Math.random()*(h-36),11,LIQ,hL);
+      }
+      for(let i=0;i<14;i++){
+        ball(22+Math.random()*(w-44),22+Math.random()*(h-44),7,DK,hD);
+      }
+      break;
+    }
+    case 'emulsion': {
+      const r=13;
+      for(let row=0;row<7;row++) for(let col=0;col<7;col++){
+        const x=22+col*30+(row%2?15:0), y=22+row*28;
+        if(x>w-12||y>h-12)continue;
+        const o=Math.random()>0.62;
+        ball(x,y,r, o?OIL:LIQ, o?hO:hL);
+      }
+      break;
+    }
+    case 'schaum': {
+      ctx.fillStyle='rgba(90,173,224,0.12)'; ctx.fillRect(0,0,w,h);
+      [[65,48,32],[155,50,28],[40,110,24],[110,95,36],[175,110,22],[60,170,28],[130,165,30],[170,185,20],[95,195,22],[35,55,16],[190,55,18]]
+      .forEach(([bx,by,br])=>{
+        ctx.beginPath(); ctx.arc(bx,by,br+5,0,Math.PI*2);
+        ctx.fillStyle='rgba(90,173,224,0.25)'; ctx.fill();
+        const g=ctx.createRadialGradient(bx-br*0.2,by-br*0.2,br*0.08,bx,by,br);
+        g.addColorStop(0,'rgba(255,255,255,0.92)');
+        g.addColorStop(0.5,'rgba(210,230,248,0.4)');
+        g.addColorStop(1,'rgba(180,210,240,0.15)');
+        ctx.beginPath(); ctx.arc(bx,by,br,0,Math.PI*2);
+        ctx.fillStyle=g; ctx.fill();
+        ctx.strokeStyle='rgba(90,173,224,0.35)'; ctx.lineWidth=1.5; ctx.stroke();
+      });
+      break;
+    }
+    case 'nebel': {
+      for(let i=0;i<22;i++){
+        ball(18+Math.random()*(w-36),18+Math.random()*(h-36),10,'#d0c4e8','#ece6f5');
+      }
+      [[140,135],[75,75],[170,60],[55,180]].forEach(([cx,cy])=>{
+        for(let i=0;i<5;i++){
+          ball(cx+(Math.random()-0.5)*35, cy+(Math.random()-0.5)*35, 10+Math.random()*6, '#1a5aa0','#5090d0');
+        }
+      });
+      break;
+    }
+    default: {
+      ctx.font='bold 50px serif'; ctx.textAlign='center';
+      ctx.fillText('🤔',w/2,h/2+16);
+    }
+  }
+}
+
+// ─── LÖSUNG special cases ───
+const loesungPairs = new Set(['l1+s1','l1+s2','s1+l1','s2+l1','l1+l4','l4+l1']);
+
+// ─── MIX ───
+document.getElementById('mixBtn').addEventListener('click', () => {
+  if (selected.length !== 2) return;
+  const [a, b] = selected;
+  const ids = [a.id, b.id].sort().join('+');
+
+  // Check for Lösung special case
+  if (loesungPairs.has(ids)) {
+    showLoesungResult(a, b, specificFacts[ids] || '');
+    return;
+  }
+
+  const key = getMixtureKey(a.phase, b.phase);
+  if (!key || !mixtures[key]) return;
+
+  discovered.add(key);
+  updateMatrix();
+
+  showResult(mixtures[key], a, b, specificFacts[ids] || '');
+});
+
+function showLoesungResult(a, b) {
+  const ids = [a.id, b.id].sort().join('+');
+  const fact = specificFacts[ids] || '';
+  const card = document.getElementById('resultCard');
+  card.setAttribute('data-type', 'Lösung');
+
+  // Draw a special "homogen" particle pattern
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(99,179,237,0.08)';
+  ctx.fillRect(0, 0, w, h);
+  // Evenly distributed small particles = homogen
+  for (let i = 0; i < 60; i++) {
+    const x = 12 + Math.random() * (w - 24);
+    const y = 12 + Math.random() * (h - 24);
+    const r = 4 + Math.random() * 3;
+    const g2 = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
+    g2.addColorStop(0, '#a8d8f5');
+    g2.addColorStop(1, '#3a8ec4');
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = g2; ctx.fill();
+  }
+
+  document.getElementById('resultType').textContent = 'Lösung (homogen)';
+  document.getElementById('resultRecipe').textContent = `${a.emoji} ${a.name}  +  ${b.emoji} ${b.name}`;
+
+  const pd = document.getElementById('resultPhases');
+  pd.innerHTML = '<span class="phase-tag phase-tag--liquid" style="background:#22c55e">homogen</span>';
+
+  document.getElementById('resultExplanation').innerHTML =
+    'Eine <strong>Lösung</strong> ist ein <strong>homogenes Gemisch</strong> – die Teilchen verteilen sich so gleichmäßig auf Molekülebene, dass man sie nicht mehr sehen kann. Es gibt keine sichtbaren Grenzen zwischen den Bestandteilen. Das ist das Gegenteil von heterogen!';
+
+  document.getElementById('resultExample').innerHTML =
+    `<div class="loesung-warning">${fact}</div>` +
+    '💡 Andere Lösungen: Meerwasser, Limonade, Alkohol in Wasser, Fruchtsaft (klar)';
+
+  document.getElementById('resultOverlay').classList.add('visible');
+  document.getElementById('nichtHeterogenBanner').classList.add('visible');
+}
+
+function showResult(mix, a, b, fact) {
+  document.getElementById('nichtHeterogenBanner').classList.remove('visible');
+  const card = document.getElementById('resultCard');
+  card.setAttribute('data-type', mix.type);
+  drawParticles(mix.particleType);
+
+  document.getElementById('resultType').textContent = mix.type;
+  document.getElementById('resultRecipe').textContent = `${a.emoji} ${a.name}  +  ${b.emoji} ${b.name}`;
+
+  const pd = document.getElementById('resultPhases');
+  pd.innerHTML = '';
+  const key = getMixtureKey(a.phase, b.phase);
+  key.split('+').forEach(p => {
+    const t = document.createElement('span');
+    t.className = `phase-tag phase-tag--${p}`;
+    t.textContent = p==='solid'?'fest':p==='liquid'?'flüssig':'gasförmig';
+    pd.appendChild(t);
+  });
+
+  document.getElementById('resultExplanation').innerHTML = mix.explanation;
+
+  // Wrap warning facts in styled div
+  const isWarning = fact && fact.startsWith('⚠️');
+  const factHtml = fact
+    ? (isWarning ? `<div class="loesung-warning">${fact}</div>` : `🔎 ${fact}<br><br>`)
+    : '';
+  document.getElementById('resultExample').innerHTML = factHtml + mix.example;
+
+  document.getElementById('resultOverlay').classList.add('visible');
+}
+
+// ─── CLOSE / RESET ───
+document.getElementById('resultClose').addEventListener('click', closeResult);
+document.getElementById('resultOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeResult(); });
+function closeResult() {
+  document.getElementById('resultOverlay').classList.remove('visible');
+  document.getElementById('nichtHeterogenBanner').classList.remove('visible');
+}
+document.getElementById('resetBtn').addEventListener('click', () => { selected=[]; updateUI(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeResult(); });
+
+// ─── MATRIX ───
+function updateMatrix() {
+  discovered.forEach(key => {
+    const mix = mixtures[key];
+    if (!mix) return;
+    const cell = document.getElementById(mix.cellId);
+    if (cell) { cell.textContent=mix.type; cell.classList.remove('na'); cell.classList.add('discovered'); cell.dataset.key=key; }
+    // Symmetric
+    if (key==='liquid+solid') {
+      const c=document.getElementById('cell-sl');
+      if(c){c.textContent='Suspension';c.classList.remove('na');c.classList.add('discovered');c.dataset.key=key;}
+    }
+    if (key==='gas+solid') {
+      const c=document.getElementById('cell-sg');
+      if(c){c.textContent='Rauch';c.classList.remove('na');c.classList.add('discovered');c.dataset.key=key;}
+    }
+  });
+  document.getElementById('counter').textContent = discovered.size;
+}
+
+document.querySelectorAll('.matrix-table td').forEach(cell => {
+  cell.addEventListener('click', () => {
+    if (!cell.classList.contains('discovered') || !cell.dataset.key) return;
+    const mix = mixtures[cell.dataset.key];
+    if (!mix) return;
+
+    document.getElementById('resultCard').setAttribute('data-type', mix.type);
+    drawParticles(mix.particleType);
+    document.getElementById('resultType').textContent = mix.type;
+
+    const phases = cell.dataset.key.split('+');
+    document.getElementById('resultRecipe').textContent =
+      phases.map(p=>p==='solid'?'Feststoff':p==='liquid'?'Flüssigkeit':'Gas').join(' + ');
+
+    const pd = document.getElementById('resultPhases');
+    pd.innerHTML = '';
+    phases.forEach(p => {
+      const t = document.createElement('span');
+      t.className = `phase-tag phase-tag--${p}`;
+      t.textContent = p==='solid'?'fest':p==='liquid'?'flüssig':'gasförmig';
+      pd.appendChild(t);
+    });
+
+    document.getElementById('resultExplanation').innerHTML = mix.explanation;
+    document.getElementById('resultExample').innerHTML = mix.example;
+    document.getElementById('resultOverlay').classList.add('visible');
+  });
+});
+
+renderSubstances();
+updateUI();
+</script>
+</body>
+</html>
