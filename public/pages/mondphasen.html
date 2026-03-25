@@ -318,6 +318,11 @@
     <h3>☀️ Wie entsteht eine Sonnenfinsternis?</h3>
     <p>Der Mond wirft bei Neumond einen Schatten Richtung Erde – einen schmalen <strong>Kernschatten</strong> (völlige Dunkelheit) und einen breiteren <strong>Halbschatten</strong> (teilweise Verdunklung). Wer auf der Erde zufällig im Kernschatten steht, erlebt eine <strong>totale Sonnenfinsternis</strong>.</p>
     <p>Das passiert aber nur selten: Die Mondbahn ist um <strong>~5° geneigt</strong>, deshalb zieht der Mondschatten meistens knapp an der Erde vorbei. Nur wenn Neumond genau an einem der beiden Bahnkreuzungspunkte stattfindet, trifft der Kernschatten die Erde – etwa <strong>2–3 Mal pro Jahr</strong>, und nur auf einem schmalen Streifen der Erdoberfläche sichtbar.</p>
+
+    <!-- Solar eclipse diagram -->
+    <div style="margin-top:22px; display:flex; justify-content:center;">
+      <canvas id="eclipseCanvas" width="680" height="260" style="max-width:100%; border-radius:6px; display:block;"></canvas>
+    </div>
   </div>
 </div>
 
@@ -666,22 +671,20 @@ function drawMoon(ctx, cx, cy, r, angle, orrery=false) {
     if(waxing) {
       // Right half always lit
       ctx.arc(0,0,r,-PI/2,PI/2);
-      // Add/subtract ellipse
+      // Terminator ellipse: for crescent (lit<0.5), ellipse bulges INTO lit side → ccw (true)
+      // For gibbous (lit>0.5), ellipse extends lit into dark side → cw (false)
       if(lit < 0.5) {
-        // Terminator curves into lit side (right)
-        // ellipse from bottom to top, bulging left
-        ctx.ellipse(0,0,Math.abs(tx),r,0,PI/2,-PI/2,false);
-      } else {
-        // Terminator has passed center; left half also has part lit
         ctx.ellipse(0,0,Math.abs(tx),r,0,PI/2,-PI/2,true);
+      } else {
+        ctx.ellipse(0,0,Math.abs(tx),r,0,PI/2,-PI/2,false);
       }
     } else {
       // Left half lit
       ctx.arc(0,0,r,PI/2,3*PI/2);
       if(lit < 0.5) {
-        ctx.ellipse(0,0,Math.abs(tx),r,0,-PI/2,PI/2,false);
-      } else {
         ctx.ellipse(0,0,Math.abs(tx),r,0,-PI/2,PI/2,true);
+      } else {
+        ctx.ellipse(0,0,Math.abs(tx),r,0,-PI/2,PI/2,false);
       }
     }
     ctx.closePath();
@@ -884,6 +887,305 @@ oc.addEventListener('touchmove', e => {
 // ── Init ───────────────────────────────────────────────
 updateAll(0);
 document.querySelectorAll('.phase-card')[0].classList.add('active');
+
+// ── Solar Eclipse Diagram ───────────────────────────────
+(function drawEclipseDiagram() {
+  const ec = document.getElementById('eclipseCanvas');
+  if (!ec) return;
+  const ctx = ec.getContext('2d');
+  const W = 680, H = 260;
+  ec.width  = W;
+  ec.height = H;
+  const PI = Math.PI;
+
+  // ── Geometry ──
+  // Moon placed very close to Earth so the Kernschatten tip falls
+  // clearly before Earth's surface and the spot is visible on the disk.
+  const SUN_X   = 44,  SUN_Y   = H/2, SUN_R   = 50;
+  const MOON_X  = 480, MOON_Y  = H/2, MOON_R  = 8;
+  const EARTH_X = 603, EARTH_Y = H/2, EARTH_R = 28;
+
+  const moonSunDist  = MOON_X - SUN_X;
+  const umbraTipDist = MOON_R / (SUN_R - MOON_R) * moonSunDist;
+  const TIP_X        = MOON_X + umbraTipDist;   // converging tip — falls before Earth surface
+
+  // Line interpolation helper
+  function lineY(ax, ay, bx, by, x) {
+    return ay + (by - ay) * (x - ax) / (bx - ax);
+  }
+
+  // ── Inner tangents (Kernschatten / Umbra) ──
+  // Sun-top scrapes Moon-bottom → converge to tip
+  // Sun-bot scrapes Moon-top   → converge to tip
+  const U_SUN_TOP  = SUN_Y  - SUN_R;
+  const U_MOON_BOT = MOON_Y + MOON_R;
+  const U_SUN_BOT  = SUN_Y  + SUN_R;
+  const U_MOON_TOP = MOON_Y - MOON_R;
+
+  // ── Outer tangents (Halbschatten / Penumbra) ──
+  // Sun-top → Moon-top → diverges outward
+  // Sun-bot → Moon-bot → diverges outward
+  const P_SUN_TOP  = SUN_Y  - SUN_R;
+  const P_MOON_TOP = MOON_Y - MOON_R;
+  const P_SUN_BOT  = SUN_Y  + SUN_R;
+  const P_MOON_BOT = MOON_Y + MOON_R;
+
+  // Where penumbra lines hit the left edge of Earth
+  const penTopAtEarth = lineY(SUN_X, P_SUN_TOP, MOON_X, P_MOON_TOP, EARTH_X - EARTH_R);
+  const penBotAtEarth = lineY(SUN_X, P_SUN_BOT, MOON_X, P_MOON_BOT, EARTH_X - EARTH_R);
+
+  // Where umbra cone lines (post-tip, re-expanding) hit Earth's left face
+  // Direction from tip outward = same direction as Moon-limb → tip
+  const utDx = TIP_X - MOON_X;
+  const ut1Dy = SUN_Y - U_MOON_BOT;  // line 1 (was going down to Moon-bot, now re-expands upward)
+  const ut2Dy = SUN_Y - U_MOON_TOP;  // line 2 (re-expands downward)
+  // y at Earth left face
+  const umbraTopAtEarth = SUN_Y + ut1Dy * ((EARTH_X - EARTH_R - TIP_X) / utDx);
+  const umbraBotAtEarth = SUN_Y + ut2Dy * ((EARTH_X - EARTH_R - TIP_X) / utDx);
+  const spotCenterY = (umbraTopAtEarth + umbraBotAtEarth) / 2;
+  const spotHalfR   = Math.abs(umbraBotAtEarth - umbraTopAtEarth) / 2;
+
+  // ── Background ──
+  ctx.fillStyle = '#06091a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Stars (deterministic)
+  const rng = (s) => { let x=s*2654435761>>>0; x=(x^x>>16)*2246822519>>>0; x=(x^x>>13)*3266489917>>>0; return (x>>>0)/0xFFFFFFFF; };
+  for (let i = 0; i < 100; i++) {
+    const sx = rng(i*7+1)*W, sy = rng(i*7+3)*H;
+    if (Math.hypot(sx-SUN_X,   sy-SUN_Y)   < SUN_R+14) continue;
+    if (Math.hypot(sx-MOON_X,  sy-MOON_Y)  < MOON_R+5) continue;
+    if (Math.hypot(sx-EARTH_X, sy-EARTH_Y) < EARTH_R+5) continue;
+    ctx.beginPath(); ctx.arc(sx, sy, 0.4+rng(i*7+5)*0.9, 0, PI*2);
+    ctx.fillStyle = `rgba(200,220,255,${0.2+rng(i*7+6)*0.65})`; ctx.fill();
+  }
+
+  // ── Penumbra fill (clipped to stop at Earth left face) ──
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(SUN_X, P_SUN_TOP);
+  ctx.lineTo(EARTH_X - EARTH_R, penTopAtEarth);   // stop at Earth surface
+  ctx.lineTo(EARTH_X - EARTH_R, penBotAtEarth);
+  ctx.lineTo(SUN_X, P_SUN_BOT);
+  ctx.arc(SUN_X, SUN_Y, SUN_R, PI/2, -PI/2, true);
+  ctx.closePath();
+  ctx.clip();
+  const penGrad = ctx.createLinearGradient(MOON_X, H/2, EARTH_X, H/2);
+  penGrad.addColorStop(0,    'rgba(50,65,160,0.0)');
+  penGrad.addColorStop(0.3,  'rgba(50,65,160,0.14)');
+  penGrad.addColorStop(1,    'rgba(50,65,160,0.30)');
+  ctx.fillStyle = penGrad;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+
+  // ── Penumbra boundary lines — orange dashed, stop at Earth ──
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,160,60,0.85)';
+  ctx.lineWidth   = 1.5;
+  ctx.setLineDash([6, 5]);
+  ctx.beginPath();
+  ctx.moveTo(SUN_X, P_SUN_TOP);
+  ctx.lineTo(EARTH_X - EARTH_R, penTopAtEarth);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(SUN_X, P_SUN_BOT);
+  ctx.lineTo(EARTH_X - EARTH_R, penBotAtEarth);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // ── Umbra fill (converging cone Moon→tip, clipped to stop at Earth left face) ──
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(MOON_X, U_MOON_BOT);
+  ctx.lineTo(TIP_X,  SUN_Y);
+  ctx.lineTo(MOON_X, U_MOON_TOP);
+  ctx.lineTo(SUN_X,  U_SUN_BOT);
+  ctx.arc(SUN_X, SUN_Y, SUN_R, PI/2, -PI/2, true);
+  ctx.closePath();
+  // Also clip right edge to Earth surface so shadow doesn't go past it
+  ctx.rect(0, 0, EARTH_X - EARTH_R + 1, H);
+  // Can't intersect clips easily — use save/restore approach with a mask instead
+  ctx.restore();
+
+  ctx.save();
+  // Build umbra cone polygon, right edge capped at Earth left face
+  const umbraTopAtEarthStop = SUN_Y + ut1Dy * ((EARTH_X - EARTH_R - TIP_X) / utDx);
+  const umbraBotAtEarthStop = SUN_Y + ut2Dy * ((EARTH_X - EARTH_R - TIP_X) / utDx);
+  ctx.beginPath();
+  ctx.moveTo(MOON_X, U_MOON_BOT);           // Moon bottom
+  ctx.lineTo(TIP_X,  SUN_Y);                // tip
+  ctx.lineTo(MOON_X, U_MOON_TOP);           // Moon top
+  ctx.lineTo(SUN_X,  U_SUN_BOT);            // Sun bottom tangent
+  ctx.arc(SUN_X, SUN_Y, SUN_R, PI/2, -PI/2, true);
+  ctx.closePath();
+  ctx.clip();
+  // Secondary clip: only draw up to Earth's left face
+  ctx.beginPath();
+  ctx.rect(0, 0, EARTH_X - EARTH_R, H);
+  ctx.clip();
+  const umbraGrad = ctx.createLinearGradient(MOON_X, H/2, TIP_X, H/2);
+  umbraGrad.addColorStop(0, 'rgba(4,6,22,0.95)');
+  umbraGrad.addColorStop(1, 'rgba(4,6,22,0.08)');
+  ctx.fillStyle = umbraGrad;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+
+  // ── Umbra boundary lines — orange dashed, stop at Earth ──
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,160,60,0.9)';
+  ctx.lineWidth   = 1.5;
+  ctx.setLineDash([6, 5]);
+  // Ray 1: Sun-top → Moon-bot → tip
+  ctx.beginPath();
+  ctx.moveTo(SUN_X,   U_SUN_TOP);
+  ctx.lineTo(MOON_X,  U_MOON_BOT);
+  ctx.lineTo(TIP_X,   SUN_Y);
+  ctx.stroke();
+  // Ray 2: Sun-bot → Moon-top → tip
+  ctx.beginPath();
+  ctx.moveTo(SUN_X,   U_SUN_BOT);
+  ctx.lineTo(MOON_X,  U_MOON_TOP);
+  ctx.lineTo(TIP_X,   SUN_Y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // ── Earth ──
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(EARTH_X, EARTH_Y, EARTH_R, 0, PI*2);
+  ctx.clip();
+
+  // Base sphere
+  const earthGrad = ctx.createRadialGradient(EARTH_X-8, EARTH_Y-8, 2, EARTH_X, EARTH_Y, EARTH_R);
+  earthGrad.addColorStop(0,   '#4a90e0');
+  earthGrad.addColorStop(0.5, '#2a65b8');
+  earthGrad.addColorStop(1,   '#142a60');
+  ctx.fillStyle = earthGrad;
+  ctx.fillRect(EARTH_X-EARTH_R-1, EARTH_Y-EARTH_R-1, EARTH_R*2+2, EARTH_R*2+2);
+
+  // Landmass
+  ctx.fillStyle = '#3a9045';
+  ctx.beginPath(); ctx.ellipse(EARTH_X-5, EARTH_Y-6, 9, 7, -0.5, 0, PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(EARTH_X+9, EARTH_Y+5, 5, 8,  0.3, 0, PI*2); ctx.fill();
+
+  // Halbschatten on Earth — soft band where penumbra hits
+  ctx.save();
+  const pShadGrad = ctx.createLinearGradient(EARTH_X-EARTH_R, 0, EARTH_X-EARTH_R, H);
+  pShadGrad.addColorStop(0,    'rgba(8,12,50,0)');
+  pShadGrad.addColorStop(0.35, 'rgba(8,12,50,0.32)');
+  pShadGrad.addColorStop(0.5,  'rgba(8,12,50,0.40)');
+  pShadGrad.addColorStop(0.65, 'rgba(8,12,50,0.32)');
+  pShadGrad.addColorStop(1,    'rgba(8,12,50,0)');
+  ctx.fillStyle = pShadGrad;
+  ctx.fillRect(EARTH_X-EARTH_R-1, EARTH_Y-EARTH_R-1, EARTH_R*2+2, EARTH_R*2+2);
+  ctx.restore();
+
+  // Kernschatten spot — small, sharp, on Earth's left face
+  const spotR = Math.max(spotHalfR, 4);
+  const spotG = ctx.createRadialGradient(EARTH_X-EARTH_R+spotR*0.5, spotCenterY, 0,
+                                          EARTH_X-EARTH_R+spotR*0.5, spotCenterY, spotR*2.4);
+  spotG.addColorStop(0,    'rgba(2,3,14,0.99)');
+  spotG.addColorStop(0.4,  'rgba(2,3,14,0.92)');
+  spotG.addColorStop(0.75, 'rgba(2,3,14,0.45)');
+  spotG.addColorStop(1,    'rgba(2,3,14,0)');
+  ctx.beginPath();
+  ctx.arc(EARTH_X-EARTH_R+spotR*0.5, spotCenterY, spotR*2.4, 0, PI*2);
+  ctx.fillStyle = spotG;
+  ctx.fill();
+
+  ctx.restore(); // end Earth clip
+
+  // Earth rim
+  ctx.beginPath();
+  ctx.arc(EARTH_X, EARTH_Y, EARTH_R, 0, PI*2);
+  ctx.strokeStyle = 'rgba(80,120,200,0.6)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // ── Moon ──
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(MOON_X, MOON_Y, MOON_R, 0, PI*2);
+  const moonGrad = ctx.createRadialGradient(MOON_X-3, MOON_Y-3, 1, MOON_X, MOON_Y, MOON_R);
+  moonGrad.addColorStop(0, '#1c2448');
+  moonGrad.addColorStop(1, '#060a18');
+  ctx.fillStyle = moonGrad; ctx.fill();
+  ctx.beginPath(); ctx.arc(MOON_X, MOON_Y, MOON_R, -PI/2, PI/2);
+  ctx.strokeStyle = 'rgba(240,210,110,0.3)'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(MOON_X, MOON_Y, MOON_R, 0, PI*2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // ── Sun ──
+  const sunGlow = ctx.createRadialGradient(SUN_X, SUN_Y, SUN_R*0.5, SUN_X, SUN_Y, SUN_R*2.4);
+  sunGlow.addColorStop(0, 'rgba(255,230,80,0.32)');
+  sunGlow.addColorStop(0.5, 'rgba(255,150,30,0.12)');
+  sunGlow.addColorStop(1, 'rgba(255,80,0,0)');
+  ctx.beginPath(); ctx.arc(SUN_X, SUN_Y, SUN_R*2.4, 0, PI*2);
+  ctx.fillStyle = sunGlow; ctx.fill();
+  const sunGrad = ctx.createRadialGradient(SUN_X-SUN_R*0.3, SUN_Y-SUN_R*0.3, 2, SUN_X, SUN_Y, SUN_R);
+  sunGrad.addColorStop(0, '#fffce0'); sunGrad.addColorStop(0.5, '#ffdc44'); sunGrad.addColorStop(1, '#ff9200');
+  ctx.beginPath(); ctx.arc(SUN_X, SUN_Y, SUN_R, 0, PI*2);
+  ctx.fillStyle = sunGrad; ctx.fill();
+
+  // ── Arrow helper ──
+  function arrow(x1, y1, x2, y2, col) {
+    const dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy);
+    const ux = dx/len, uy = dy/len;
+    ctx.save();
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    // arrowhead
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ux*6 + uy*3, y2 - uy*6 - ux*3);
+    ctx.lineTo(x2 - ux*6 - uy*3, y2 - uy*6 + ux*3);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  // ── Labels with arrows ──
+  ctx.font = 'bold 10px Cinzel, serif';
+  ctx.textAlign = 'center';
+
+  // SONNE / MOND / ERDE
+  ctx.fillStyle = '#ffdd88';
+  ctx.fillText('SONNE', SUN_X, SUN_Y + SUN_R + 15);
+  ctx.fillStyle = '#aabcff';
+  ctx.fillText('MOND', MOON_X, MOON_Y - MOON_R - 8);
+  ctx.fillStyle = '#80a8e0';
+  ctx.fillText('ERDE', EARTH_X, EARTH_Y + EARTH_R + 15);
+
+  // Kernschatten — label above, arrow down into cone
+  const ksLabelX = (MOON_X + TIP_X) / 2;
+  const ksLabelY = H/2 - 32;
+  ctx.font = '600 10px Cinzel, serif';
+  ctx.fillStyle = 'rgba(220,225,255,0.95)';
+  ctx.fillText('Kernschatten', ksLabelX, ksLabelY);
+  arrow(ksLabelX, ksLabelY+3, ksLabelX, H/2 - 8, 'rgba(220,225,255,0.8)');
+
+  // Halbschatten bottom only — label below penumbra, arrow up to dashed line
+  const hsLabelX = MOON_X + (EARTH_X - MOON_X) * 0.42;
+  const penBotAtHsLabel = lineY(SUN_X, P_SUN_BOT, MOON_X, P_MOON_BOT, hsLabelX);
+  const hsBotLabelY = penBotAtHsLabel + 28;
+  ctx.fillStyle = 'rgba(255,160,60,0.95)';
+  ctx.fillText('Halbschatten', hsLabelX, hsBotLabelY);
+  arrow(hsLabelX, hsBotLabelY - 12, hsLabelX, penBotAtHsLabel + 4, 'rgba(255,160,60,0.85)');
+
+  // Totale Finsternis — label above Earth, arrow down to spot
+  const tfLabelX = EARTH_X - EARTH_R + 4;
+  const tfLabelY = EARTH_Y - EARTH_R - 22;
+  ctx.fillStyle = 'rgba(255,200,80,0.97)';
+  ctx.fillText('Totale Finsternis', tfLabelX, tfLabelY);
+  arrow(tfLabelX, tfLabelY+3, EARTH_X-EARTH_R+spotR*0.5, spotCenterY - spotR*1.2, 'rgba(255,200,80,0.85)');
+
+  // Umbra tip dot
+  ctx.beginPath(); ctx.arc(TIP_X, SUN_Y, 2.5, 0, PI*2);
+  ctx.fillStyle = 'rgba(255,160,60,0.7)'; ctx.fill();
+
+})();
 </script>
 </body>
 </html>
