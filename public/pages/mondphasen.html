@@ -271,7 +271,7 @@
   <!-- Orrery -->
   <div id="orrery-wrap">
     <div id="orrery">
-      <canvas id="orreryCanvas" width="340" height="340" style="width:340px;height:340px"></canvas>
+      <canvas id="orreryCanvas" width="440" height="340" style="width:440px;height:340px"></canvas>
     </div>
   </div>
 
@@ -430,10 +430,10 @@ const oc = document.getElementById('orreryCanvas');
 const octx = oc.getContext('2d');
 // Earth is the center of THIS diagram. Sun sits to the right at fixed position.
 const CX = 170, CY = 170, ORBIT = 100;
-const SUN_X = 310, SUN_Y = 170, SUN_R = 22; // Sun fixed at right
+const SUN_X = 400, SUN_Y = 170, SUN_R = 36; // Sun fixed at right
 
 function drawOrrery(ang) {
-  octx.clearRect(0,0,340,340);
+  octx.clearRect(0,0,440,340);
 
   // Parallel sunlight rays coming from the right (Sun direction)
   // Draw as parallel horizontal bands fading out to the left
