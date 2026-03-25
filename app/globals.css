@@ -256,12 +256,20 @@ body {
 
 .wave-arm {
   transform-origin: 0px 0px;
-  animation: wave-arm 0.9s ease-in-out infinite;
+  animation: wave-arm 7s ease-in-out infinite;
 }
 
 @keyframes wave-arm {
-  0%, 100% { transform: rotate(25deg); }
-  50%       { transform: rotate(-55deg); }
+  0%    { transform: rotate(25deg); }
+  3.5%  { transform: rotate(-30deg); }
+  7%    { transform: rotate(25deg); }
+  10.5% { transform: rotate(-30deg); }
+  14%   { transform: rotate(25deg); }
+  17.5% { transform: rotate(-30deg); }
+  21%   { transform: rotate(25deg); }
+  24.5% { transform: rotate(-30deg); }
+  28.5% { transform: rotate(25deg); }
+  100%  { transform: rotate(25deg); }
 }
 
 @keyframes figure-bounce {
