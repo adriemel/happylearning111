@@ -244,7 +244,7 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 0.6rem;
+  gap: 2rem;
   margin-bottom: 1rem;
 }
 
@@ -260,8 +260,8 @@ body {
 }
 
 @keyframes wave-arm {
-  0%, 100% { transform: rotate(10deg); }
-  50%       { transform: rotate(-65deg); }
+  0%, 100% { transform: rotate(25deg); }
+  50%       { transform: rotate(-55deg); }
 }
 
 @keyframes figure-bounce {

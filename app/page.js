@@ -14,9 +14,9 @@ export default function Home() {
           </h1>
           <svg
             className="stick-figure"
-            width="38"
-            height="56"
-            viewBox="0 0 38 56"
+            width="44"
+            height="58"
+            viewBox="0 0 44 58"
             fill="none"
             stroke="#b5f23d"
             strokeWidth="2.5"
@@ -27,11 +27,15 @@ export default function Home() {
             <circle cx="19" cy="7" r="6" />
             {/* body */}
             <line x1="19" y1="13" x2="19" y2="34" />
-            {/* left arm */}
-            <line x1="19" y1="21" x2="9" y2="29" />
-            {/* right arm — waving, origin at shoulder (19,21) */}
-            <g transform="translate(19,21)" className="wave-arm">
-              <line x1="0" y1="0" x2="11" y2="-8" />
+            {/* left arm — static */}
+            <line x1="19" y1="22" x2="8" y2="27" />
+            {/* right arm — outer g ONLY translates (no CSS on it),
+                inner g ONLY rotates (no SVG transform on it).
+                This avoids CSS overriding the SVG translate. */}
+            <g transform="translate(19,22)">
+              <g className="wave-arm">
+                <line x1="0" y1="0" x2="11" y2="-3" />
+              </g>
             </g>
             {/* left leg */}
             <line x1="19" y1="34" x2="11" y2="48" />
