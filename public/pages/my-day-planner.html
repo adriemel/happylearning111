@@ -519,6 +519,71 @@ body::before {
   100% { opacity: 0; }
 }
 
+/* ── Block editor popup (mobile tap-to-edit) ────────────── */
+#blockEditorOverlay {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.6);
+  align-items: flex-end;
+  justify-content: center;
+}
+#blockEditorOverlay.open { display: flex; }
+#blockEditorPopup {
+  background: var(--p2);
+  border: 1px solid var(--border);
+  border-radius: 14px 14px 0 0;
+  padding: 20px 20px 32px;
+  width: 100%;
+  max-width: 440px;
+}
+.bed-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 9px;
+  margin-bottom: 20px;
+}
+.bed-title-icon { font-size: 20px; }
+.bed-row {
+  display: flex; align-items: center;
+  margin-bottom: 12px; gap: 10px;
+}
+.bed-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+  width: 42px; flex-shrink: 0;
+}
+.bed-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px; font-weight: 500;
+  color: var(--text);
+  flex: 1; text-align: center;
+}
+.bed-btns { display: flex; gap: 8px; }
+.bed-btn {
+  width: 38px; height: 38px;
+  background: var(--p3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--cyan); font-size: 20px; font-weight: 700;
+  cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .1s;
+}
+.bed-btn:active { background: var(--border); }
+.bed-done {
+  width: 100%; margin-top: 20px; padding: 13px;
+  background: var(--cyan); color: #000; border: none;
+  border-radius: 8px;
+  font-family: 'Orbitron', monospace;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  cursor: pointer;
+}
+.bed-done:active { opacity: 0.8; }
+
 /* ── Screenshot mode (expand grid) ──────────────────────── */
 .screenshot-mode .grid-wrap {
   height: auto !important;
@@ -589,7 +654,7 @@ body::before {
       <button class="shot-btn" id="shotBtn">📸&nbsp; SAVE AS IMAGE</button>
       <button class="comic-btn" id="comicBtn">💥&nbsp; CREATE COMIC</button>
     </div>
-    <div class="hint-text">drag activities onto the timeline &nbsp;·&nbsp; drag ↕ top edge to shift start &nbsp;·&nbsp; drag ↕ bottom edge to shift end &nbsp;·&nbsp; hover & tap × to delete</div>
+    <div class="hint-text">drag activities onto the timeline &nbsp;·&nbsp; drag ↕ edges to resize &nbsp;·&nbsp; tap block to edit times &nbsp;·&nbsp; hover &amp; tap × to delete</div>
   </div>
 
 
@@ -607,6 +672,33 @@ body::before {
   </div>
 </div>
 </div><!-- #app -->
+
+<!-- Block editor popup (mobile) -->
+<div id="blockEditorOverlay">
+  <div id="blockEditorPopup">
+    <div class="bed-title">
+      <span class="bed-title-icon" id="bedIcon"></span>
+      <span id="bedName"></span>
+    </div>
+    <div class="bed-row">
+      <span class="bed-label">START</span>
+      <span class="bed-time" id="bedStartTime"></span>
+      <div class="bed-btns">
+        <button class="bed-btn" id="bedStartMinus">−</button>
+        <button class="bed-btn" id="bedStartPlus">+</button>
+      </div>
+    </div>
+    <div class="bed-row">
+      <span class="bed-label">END</span>
+      <span class="bed-time" id="bedEndTime"></span>
+      <div class="bed-btns">
+        <button class="bed-btn" id="bedEndMinus">−</button>
+        <button class="bed-btn" id="bedEndPlus">+</button>
+      </div>
+    </div>
+    <button class="bed-done" id="bedDone">DONE</button>
+  </div>
+</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════
@@ -973,10 +1065,6 @@ function renderBlocks() {
       e.preventDefault(); e.stopPropagation();
       startResizeTop(blk.id, e.clientY, blk.startSlot, blk.numSlots);
     });
-    rsTopHnd.addEventListener('touchstart', (e) => {
-      e.preventDefault(); e.stopPropagation();
-      startResizeTop(blk.id, e.touches[0].clientY, blk.startSlot, blk.numSlots);
-    }, { passive: false });
 
     // Bottom resize handle (drag to change end time, start stays fixed)
     const rsHnd = document.createElement('div');
@@ -985,10 +1073,20 @@ function renderBlocks() {
       e.preventDefault(); e.stopPropagation();
       startResize(blk.id, e.clientY, blk.numSlots, blk.startSlot);
     });
-    rsHnd.addEventListener('touchstart', (e) => {
-      e.preventDefault(); e.stopPropagation();
-      startResize(blk.id, e.touches[0].clientY, blk.numSlots, blk.startSlot);
-    }, { passive: false });
+
+    // Tap to edit (mobile): short touch on the block body opens the popup
+    let tapY0 = 0, tapT0 = 0;
+    el.addEventListener('touchstart', (e) => {
+      tapY0 = e.touches[0].clientY;
+      tapT0 = Date.now();
+    }, { passive: true });
+    el.addEventListener('touchend', (e) => {
+      const moved = Math.abs(e.changedTouches[0].clientY - tapY0);
+      if (moved < 10 && Date.now() - tapT0 < 400) {
+        e.stopPropagation();
+        showBlockEditor(blk.id);
+      }
+    });
 
     el.appendChild(rsTopHnd);
     el.appendChild(topRow);
@@ -1073,6 +1171,76 @@ function onResizeTopEnd() {
   document.removeEventListener('touchmove', onResizeTopMove);
   document.removeEventListener('touchend',  onResizeTopEnd);
 }
+
+/* ═══════════════════════════════════════════════════════
+   BLOCK EDITOR POPUP (mobile tap-to-edit)
+═══════════════════════════════════════════════════════ */
+let editorBlkId = null;
+
+function refreshBedTimes() {
+  const blk = schedule[currentDay].find(b => b.id === editorBlkId);
+  if (!blk) return;
+  const endSlot = blk.startSlot + blk.numSlots;
+  document.getElementById('bedStartTime').textContent = slotToTime(blk.startSlot);
+  document.getElementById('bedEndTime').textContent   = slotToTime(endSlot);
+}
+
+function showBlockEditor(blkId) {
+  const blk = schedule[currentDay].find(b => b.id === blkId);
+  if (!blk) return;
+  const act = getAct(blk.actId);
+  editorBlkId = blkId;
+
+  document.getElementById('bedIcon').textContent = act.icon;
+  document.getElementById('bedName').textContent = act.name.toUpperCase();
+  refreshBedTimes();
+
+  document.getElementById('blockEditorOverlay').classList.add('open');
+}
+
+function closeBlockEditor() {
+  editorBlkId = null;
+  document.getElementById('blockEditorOverlay').classList.remove('open');
+}
+
+// Start −/+
+document.getElementById('bedStartMinus').addEventListener('click', () => {
+  const blk = schedule[currentDay].find(b => b.id === editorBlkId);
+  if (!blk || blk.startSlot <= 0) return;
+  blk.startSlot--;
+  blk.numSlots++;
+  renderBlocks();
+  refreshBedTimes();
+});
+document.getElementById('bedStartPlus').addEventListener('click', () => {
+  const blk = schedule[currentDay].find(b => b.id === editorBlkId);
+  if (!blk || blk.numSlots <= 1) return;
+  blk.startSlot++;
+  blk.numSlots--;
+  renderBlocks();
+  refreshBedTimes();
+});
+// End −/+
+document.getElementById('bedEndMinus').addEventListener('click', () => {
+  const blk = schedule[currentDay].find(b => b.id === editorBlkId);
+  if (!blk || blk.numSlots <= 1) return;
+  blk.numSlots--;
+  renderBlocks();
+  refreshBedTimes();
+});
+document.getElementById('bedEndPlus').addEventListener('click', () => {
+  const blk = schedule[currentDay].find(b => b.id === editorBlkId);
+  if (!blk || blk.startSlot + blk.numSlots >= N_SLOTS) return;
+  blk.numSlots++;
+  renderBlocks();
+  refreshBedTimes();
+});
+
+document.getElementById('bedDone').addEventListener('click', closeBlockEditor);
+// Tap backdrop to close
+document.getElementById('blockEditorOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('blockEditorOverlay')) closeBlockEditor();
+});
 
 /* ═══════════════════════════════════════════════════════
    SCREENSHOT
