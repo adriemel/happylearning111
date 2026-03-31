@@ -1,0 +1,3042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY DAY — PLANNER</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Orbitron:wght@700;900&family=DM+Mono:wght@400;500&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root {
+  --bg:      #07090F;
+  --p1:      #0C1018;
+  --p2:      #111825;
+  --p3:      #19243A;
+  --border:  #1C2B40;
+  --cyan:    #00E5FF;
+  --lime:    #BFFF00;
+  --hot:     #FF2D78;
+  --text:    #D4EEFF;
+  --dim:     #3E5870;
+  --slot-h:  26px;
+  --radius:  10px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  height: 100%;
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── Background ─────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(ellipse 90% 55% at 50% -5%, rgba(0,229,255,0.06) 0%, transparent 70%),
+    radial-gradient(circle at 1px 1px, rgba(0,229,255,0.035) 1px, transparent 0);
+  background-size: 100% 100%, 30px 30px;
+}
+
+/* ── App shell ──────────────────────────────────────────── */
+#app {
+  position: relative; z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px 24px;
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--cyan);
+  text-shadow: 0 0 24px rgba(0,229,255,0.45);
+  user-select: none;
+}
+.logo em { font-style: normal; color: var(--lime); }
+
+/* ── Day tabs ────────────────────────────────────────────── */
+.days {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.day-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 7px 11px;
+  background: var(--p1);
+  color: var(--dim);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .18s;
+  position: relative;
+}
+.day-btn:hover { color: var(--cyan); border-color: var(--cyan); }
+.day-btn.active {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #000;
+  box-shadow: 0 0 14px rgba(0,229,255,0.4);
+}
+.day-btn .today-dot {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 5px; height: 5px;
+  background: var(--lime);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--lime);
+}
+
+/* ── Main layout ─────────────────────────────────────────── */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 12px;
+  align-items: start;
+}
+
+/* ── Panel shell ─────────────────────────────────────────── */
+.panel {
+  background: var(--p1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--p2);
+}
+.panel-head-left {
+  display: flex; align-items: center; gap: 8px;
+}
+.panel-dot {
+  width: 7px; height: 7px;
+  border-radius: 2px;
+  background: var(--lime);
+  box-shadow: 0 0 7px var(--lime);
+  flex-shrink: 0;
+}
+.panel-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text);
+}
+.clear-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--dim);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: all .15s;
+  letter-spacing: 0.5px;
+}
+.clear-btn:hover { color: var(--hot); border-color: var(--hot); }
+
+/* ── Time grid ───────────────────────────────────────────── */
+.grid-wrap {
+  height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+.grid-wrap::-webkit-scrollbar { width: 5px; }
+.grid-wrap::-webkit-scrollbar-track { background: var(--p1); }
+.grid-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.grid-wrap::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+.time-grid {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+}
+
+/* ── Time labels ─────────────────────────────────────────── */
+.t-labels { }
+.t-label {
+  height: var(--slot-h);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 3px 8px 0 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  color: transparent; /* half-hour labels invisible */
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+.t-label.full-hour {
+  color: var(--cyan);
+  font-size: 9.5px;
+  font-weight: 500;
+}
+.t-label.noon { color: var(--lime); }
+
+/* ── Slots area ──────────────────────────────────────────── */
+#slotsArea {
+  position: relative;
+}
+.slot-row {
+  height: var(--slot-h);
+  border-bottom: 1px dashed rgba(30,43,64,0.45);
+  transition: background .08s;
+}
+.slot-row.drag-over  { background: rgba(0,229,255,0.07) !important; }
+
+/* Hour marker lines — rendered on top of blocks so always visible */
+.hour-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: rgba(0,229,255,0.55);
+  box-shadow: 0 0 4px rgba(0,229,255,0.3);
+  z-index: 18;
+  pointer-events: none;
+}
+.hour-line.noon {
+  background: rgba(191,255,0,0.7);
+  box-shadow: 0 0 5px rgba(191,255,0,0.35);
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.empty-hint {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.28;
+  transition: opacity .3s;
+}
+.empty-hint span {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+.empty-hint p {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--cyan);
+}
+
+/* ── Drag ghost ──────────────────────────────────────────── */
+#dragGhost {
+  position: absolute;
+  left: 3px; right: 3px;
+  height: calc(var(--slot-h) * 2 - 2px);
+  border: 2px dashed var(--cyan);
+  border-radius: 7px;
+  background: rgba(0,229,255,0.06);
+  pointer-events: none;
+  z-index: 5;
+  display: none;
+  transition: top .05s;
+}
+
+/* ── Placed blocks ───────────────────────────────────────── */
+.placed-block {
+  position: absolute;
+  left: 3px; right: 3px;
+  border-radius: 6px;
+  padding: 7px 28px 8px 6px; /* top: room for top-resize handle; right: room for delete btn */
+  cursor: default;
+  overflow: hidden;
+  z-index: 10;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  transition: box-shadow .15s, opacity .15s;
+}
+.placed-block:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  z-index: 20;
+}
+/* Glossy sheen */
+.placed-block::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 45%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.14), transparent);
+  border-radius: 6px 6px 0 0;
+  pointer-events: none;
+}
+
+/* Top row: icon + name always side by side */
+.blk-top {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px; /* always visible, fits in a 26px slot */
+  min-height: 24px;
+  padding-top: 2px;
+}
+.blk-icon  { font-size: 12px; line-height: 1; flex-shrink: 0; }
+.blk-name  {
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(0,0,0,0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+.blk-time  {
+  font-family: 'DM Mono', monospace;
+  font-size: 8.5px;
+  color: rgba(0,0,0,0.55);
+  padding-left: 2px;
+  margin-top: 1px;
+}
+
+/* Delete ×  */
+.blk-del {
+  position: absolute;
+  top: 2px; right: 3px;
+  width: 15px; height: 15px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 900;
+  color: rgba(0,0,0,0.75);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .18s;
+  z-index: 30;
+  line-height: 1;
+}
+.placed-block:hover .blk-del { opacity: 1; }
+.blk-del:hover { background: rgba(220,0,0,0.45); color: #fff; }
+
+/* Resize handle (bottom — changes end time) */
+.blk-resize {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 7px;
+  cursor: ns-resize;
+  background: rgba(0,0,0,0.22);
+  border-radius: 0 0 6px 6px;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 25;
+}
+.blk-resize::after {
+  content: '⋯';
+  font-size: 7px;
+  color: rgba(0,0,0,0.4);
+  line-height: 1;
+}
+
+/* Resize handle (top — changes start time) */
+.blk-resize-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 7px;
+  cursor: ns-resize;
+  background: rgba(0,0,0,0.18);
+  border-radius: 6px 6px 0 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 25;
+}
+.blk-resize-top::after {
+  content: '⋯';
+  font-size: 7px;
+  color: rgba(0,0,0,0.4);
+  line-height: 1;
+}
+
+/* ── Activity palette ─────────────────────────────────────── */
+.palette-panel {
+  position: sticky;
+  top: 20px;
+}
+.palette-scroll {
+  max-height: 570px;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.palette-scroll::-webkit-scrollbar { width: 4px; }
+.palette-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.act-card {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: grab;
+  background: var(--p2);
+  border: 1px solid transparent;
+  transition: all .15s;
+  user-select: none;
+}
+.act-card:hover {
+  background: var(--p3);
+  border-color: currentColor;
+  transform: translateX(-2px);
+  box-shadow: 2px 0 10px -4px currentColor;
+}
+.act-card:active { cursor: grabbing; opacity: 0.65; }
+.act-card.is-dragging { opacity: 0.35; }
+
+.act-swatch {
+  width: 4px; height: 22px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.act-emoji { font-size: 15px; line-height: 1; }
+.act-name  { font-size: 11px; font-weight: 800; flex: 1; }
+
+/* ── Bottom bar ──────────────────────────────────────────── */
+.bottom-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.shot-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, var(--lime) 0%, #80ff00 100%);
+  color: #000;
+  border: none;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  padding: 13px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(191,255,0,0.28);
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.shot-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.18), transparent);
+  pointer-events: none;
+}
+.shot-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 36px rgba(191,255,0,0.5);
+}
+.shot-btn:active { transform: translateY(0); }
+
+.hint-text {
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* ── Comic button ────────────────────────────────────────── */
+.comic-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: #CC1122;
+  color: #fff;
+  border: none;
+  font-family: 'Bangers', 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  padding: 13px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000, 0 0 18px rgba(204,17,34,0.35);
+  transition: all .15s;
+  position: relative;
+  overflow: hidden;
+}
+.comic-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+  pointer-events: none;
+}
+.comic-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #000, 0 0 30px rgba(204,17,34,0.55);
+}
+.comic-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+/* ── Camera flash ────────────────────────────────────────── */
+.flash-overlay {
+  position: fixed; inset: 0;
+  background: #fff;
+  pointer-events: none;
+  z-index: 9999;
+  animation: flash-out .45s ease-out forwards;
+}
+@keyframes flash-out {
+  0%   { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+/* ── Screenshot mode (expand grid) ──────────────────────── */
+.screenshot-mode .grid-wrap {
+  height: auto !important;
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* ── Staggered palette entrance ──────────────────────────── */
+.act-card { animation: slide-in .3s ease-out both; }
+@keyframes slide-in {
+  from { opacity:0; transform: translateX(20px); }
+  to   { opacity:1; transform: translateX(0); }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="logo">MY<em>DAY</em></div>
+    <div class="days" id="dayTabs"></div>
+  </div>
+
+  <!-- Main 2-col layout -->
+  <div class="main" id="mainContent">
+
+    <!-- Planner panel -->
+    <div class="panel" id="plannerPanel">
+      <div class="panel-head">
+        <div class="panel-head-left">
+          <div class="panel-dot"></div>
+          <div class="panel-label" id="planLabel">MONDAY — SCHEDULE</div>
+        </div>
+        <button class="clear-btn" id="clearBtn">CLEAR DAY</button>
+      </div>
+      <div class="grid-wrap" id="gridWrap">
+        <div class="time-grid" id="timeGrid">
+          <div id="tLabels"></div>
+          <div id="slotsArea">
+            <div class="empty-hint" id="emptyHint">
+              <span>🗓️</span>
+              <p>DRAG ACTIVITIES HERE</p>
+            </div>
+            <div id="dragGhost"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity palette -->
+    <div class="panel palette-panel">
+      <div class="panel-head">
+        <div class="panel-head-left">
+          <div class="panel-dot" style="background:var(--hot);box-shadow:0 0 7px var(--hot)"></div>
+          <div class="panel-label">ACTIVITIES</div>
+        </div>
+      </div>
+      <div class="palette-scroll" id="palette"></div>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+      <button class="shot-btn" id="shotBtn">📸&nbsp; SAVE AS IMAGE</button>
+      <button class="comic-btn" id="comicBtn">💥&nbsp; CREATE COMIC</button>
+    </div>
+    <div class="hint-text">drag activities onto the timeline &nbsp;·&nbsp; drag ↕ top edge to shift start &nbsp;·&nbsp; drag ↕ bottom edge to shift end &nbsp;·&nbsp; hover & tap × to delete</div>
+  </div>
+
+
+<!-- Comic preview overlay -->
+<div id="comicOverlay" style="display:none;position:fixed;inset:0;z-index:9999;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px;overflow-y:auto;background:rgba(7,9,15,0.93);">
+  <div style="max-width:1100px;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-family:'Bangers',monospace;font-size:22px;letter-spacing:3px;color:#00E5FF;">COMIC PREVIEW</div>
+      <div style="display:flex;gap:10px;">
+        <button id="comicDownBtn" style="font-family:'Bangers',sans-serif;font-size:18px;letter-spacing:2px;background:#5BE12C;color:#000;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;box-shadow:3px 3px 0 #000;">⬇ DOWNLOAD</button>
+        <button id="comicCloseBtn" style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;background:#CC1122;color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;box-shadow:3px 3px 0 #000;">✕ CLOSE</button>
+      </div>
+    </div>
+    <img id="comicPreviewImg" src="" alt="" style="max-width:100%;border:4px solid #000;box-shadow:8px 8px 0 #000;border-radius:4px;display:block;">
+  </div>
+</div>
+</div><!-- #app -->
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════════════════ */
+const SLOT_H    = 26;   // px per 30-min slot (must match --slot-h)
+const N_SLOTS   = 32;   // 6:00 AM → 10:00 PM
+const START_H   = 6;    // 6 AM
+
+const DAYS_SHORT = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const DAYS_FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+// JS getDay(): 0=Sun … 6=Sat → convert to Mon=0…Sun=6
+const todayJsDay = new Date().getDay();
+const todayIdx   = (todayJsDay + 6) % 7;
+
+const ACTS = [
+  { id:'school',   name:'School',        icon:'🏫', color:'#3399FF' },
+  { id:'eating',   name:'Eating',        icon:'🍕', color:'#FF6B35' },
+  { id:'homework', name:'Homework',      icon:'📝', color:'#FFD600' },
+  { id:'studying', name:'Studying',      icon:'📚', color:'#00E5B0' },
+  { id:'gaming',   name:'Gaming',        icon:'🎮', color:'#FF2D78' },
+  { id:'bag',      name:'School Bag',    icon:'🎒', color:'#7EC8E3' },
+  { id:'sleep',    name:'Sleep',         icon:'😴', color:'#9B6DFF' },
+  { id:'chilling', name:'Chilling',      icon:'😎', color:'#00CC88' },
+  { id:'soccer',   name:'Soccer',        icon:'⚽', color:'#5BE12C' },
+  { id:'friends',  name:'Friends',       icon:'👥', color:'#FFAA22' },
+  { id:'doctor',   name:'Doctor',        icon:'🩺', color:'#FF4D6D' },
+  { id:'shower',   name:'Shower',        icon:'🚿', color:'#48CAE4' },
+  { id:'sports',   name:'Sports',        icon:'🏃', color:'#FF8C00' },
+];
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+// schedule[dayIdx] = [ { id, activityId, startSlot, numSlots }, … ]
+const schedule = Array.from({length:7}, ()=>[]);
+let currentDay = todayIdx;
+let blockId    = 0;
+
+// Drag
+let dragActId   = null;   // which activity is being dragged in
+let ghostSlot   = -1;
+
+// Resize (bottom edge — adjusts end time)
+let rsState = null; // { id, startY, origSlots, startSlot }
+
+// Resize (top edge — adjusts start time, keeping end time fixed)
+let rsTopState = null; // { id, startY, origStartSlot, origNumSlots }
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+function slotToTime(slot) {
+  const mins = START_H * 60 + slot * 30;
+  const h24  = Math.floor(mins / 60) % 24;
+  const m    = mins % 60;
+  const ampm = h24 >= 12 ? 'PM' : 'AM';
+  const h12  = h24 % 12 || 12;
+  return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
+}
+
+function getAct(id) { return ACTS.find(a => a.id === id); }
+
+function lightenHex(hex, pct) {
+  // pct 0–1, returns a slightly lighter version for gradient
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  const mix = v => Math.min(255, Math.round(v + (255-v)*pct));
+  return `rgb(${mix(r)},${mix(g)},${mix(b)})`;
+}
+
+function armCol(hex){
+  // Returns a 30% darker shade for sleeves — visually separates arms from torso
+  try {
+    const r=parseInt(hex.slice(1,3),16);
+    const g=parseInt(hex.slice(3,5),16);
+    const b=parseInt(hex.slice(5,7),16);
+    const d=v=>Math.max(0,Math.round(v*0.68));
+    return `rgb(${d(r)},${d(g)},${d(b)})`;
+  } catch(e){ return hex; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   DAY TABS
+═══════════════════════════════════════════════════════ */
+function buildDayTabs() {
+  const el = document.getElementById('dayTabs');
+  DAYS_SHORT.forEach((d, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'day-btn' + (i === currentDay ? ' active' : '');
+    btn.textContent = d;
+    if (i === todayIdx) {
+      const dot = document.createElement('span');
+      dot.className = 'today-dot';
+      btn.appendChild(dot);
+    }
+    btn.addEventListener('click', () => switchDay(i));
+    el.appendChild(btn);
+  });
+}
+
+function switchDay(idx) {
+  currentDay = idx;
+  document.querySelectorAll('.day-btn').forEach((b,i)=>b.classList.toggle('active', i===idx));
+  document.getElementById('planLabel').textContent = `${DAYS_FULL[idx].toUpperCase()} — SCHEDULE`;
+  renderBlocks();
+}
+
+/* ═══════════════════════════════════════════════════════
+   TIME GRID BUILD
+═══════════════════════════════════════════════════════ */
+function buildGrid() {
+  const labelsEl = document.getElementById('tLabels');
+  const slotsEl  = document.getElementById('slotsArea');
+  // Set the slotsArea total height explicitly so absolute children work
+  slotsEl.style.height = `${N_SLOTS * SLOT_H}px`;
+
+  for (let i = 0; i < N_SLOTS; i++) {
+    // Label
+    const lbl = document.createElement('div');
+    const isHour = (i % 2 === 0);
+    const isNoon = (i === 12);
+    lbl.className = 't-label' + (isHour ? ' full-hour' : '') + (isNoon ? ' noon' : '');
+    lbl.textContent = isHour ? slotToTime(i) : '';
+    labelsEl.appendChild(lbl);
+
+    // Slot row
+    const row = document.createElement('div');
+    row.className = 'slot-row';
+    row.dataset.slot = i;
+    slotsEl.insertBefore(row, document.getElementById('dragGhost'));
+  }
+
+  // Hour lines — absolutely positioned ON TOP of blocks so always visible
+  for (let i = 0; i < N_SLOTS; i++) {
+    if (i % 2 !== 0) continue; // full hours only
+    const line = document.createElement('div');
+    line.className = 'hour-line' + (i === 12 ? ' noon' : '');
+    line.style.top = `${i * SLOT_H}px`;
+    slotsEl.appendChild(line);
+  }
+
+  // Attach drag events to the entire slotsArea
+  slotsEl.addEventListener('dragover', onSlotsDragOver);
+  slotsEl.addEventListener('dragleave', onSlotsDragLeave);
+  slotsEl.addEventListener('drop', onSlotsDrop);
+}
+
+/* ═══════════════════════════════════════════════════════
+   PALETTE BUILD
+═══════════════════════════════════════════════════════ */
+function buildPalette() {
+  const el = document.getElementById('palette');
+  ACTS.forEach((act, i) => {
+    const card = document.createElement('div');
+    card.className = 'act-card';
+    card.draggable = true;
+    card.style.color = act.color;
+    card.style.animationDelay = `${i * 0.04}s`;
+
+    const swatch = document.createElement('div');
+    swatch.className = 'act-swatch';
+    swatch.style.background = act.color;
+    swatch.style.boxShadow = `0 0 6px ${act.color}66`;
+
+    const emoji = document.createElement('span');
+    emoji.className = 'act-emoji';
+    emoji.textContent = act.icon;
+
+    const name = document.createElement('span');
+    name.className = 'act-name';
+    name.textContent = act.name;
+
+    card.appendChild(swatch);
+    card.appendChild(emoji);
+    card.appendChild(name);
+
+    card.addEventListener('dragstart', (e) => {
+      dragActId = act.id;
+      e.dataTransfer.setData('text/plain', act.id);
+      e.dataTransfer.effectAllowed = 'copy';
+      card.classList.add('is-dragging');
+      setTimeout(() => showGhost(0), 0);
+    });
+    card.addEventListener('dragend', () => {
+      dragActId = null;
+      card.classList.remove('is-dragging');
+      hideGhost();
+    });
+
+    el.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   DRAG GHOST
+═══════════════════════════════════════════════════════ */
+function slotFromEvent(e) {
+  const slotsEl = document.getElementById('slotsArea');
+  const rect    = slotsEl.getBoundingClientRect();
+  const y       = e.clientY - rect.top;
+  return Math.max(0, Math.min(N_SLOTS - 1, Math.floor(y / SLOT_H)));
+}
+
+function showGhost(slot) {
+  const ghost = document.getElementById('dragGhost');
+  ghost.style.display = 'block';
+  ghost.style.top     = `${slot * SLOT_H}px`;
+  ghostSlot = slot;
+}
+
+function hideGhost() {
+  document.getElementById('dragGhost').style.display = 'none';
+  ghostSlot = -1;
+}
+
+/* ═══════════════════════════════════════════════════════
+   DRAG OVER / DROP
+═══════════════════════════════════════════════════════ */
+function onSlotsDragOver(e) {
+  if (!dragActId) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  const slot = slotFromEvent(e);
+  if (slot !== ghostSlot) showGhost(slot);
+}
+
+function onSlotsDragLeave(e) {
+  // Only hide if leaving the slotsArea entirely
+  const slotsEl = document.getElementById('slotsArea');
+  if (!slotsEl.contains(e.relatedTarget)) hideGhost();
+}
+
+function onSlotsDrop(e) {
+  e.preventDefault();
+  const actId = dragActId || e.dataTransfer.getData('text/plain');
+  if (!actId) { hideGhost(); return; }
+  const slot = slotFromEvent(e);
+  addBlock(actId, slot);
+  dragActId = null;
+  hideGhost();
+}
+
+/* ═══════════════════════════════════════════════════════
+   BLOCK CRUD
+═══════════════════════════════════════════════════════ */
+function addBlock(actId, startSlot) {
+  const id = ++blockId;
+  // Default 2 slots (1 hr), clamped so it fits
+  const numSlots = Math.min(2, N_SLOTS - startSlot);
+  schedule[currentDay].push({ id, actId, startSlot, numSlots });
+  renderBlocks();
+}
+
+function removeBlock(id) {
+  schedule[currentDay] = schedule[currentDay].filter(b => b.id !== id);
+  renderBlocks();
+}
+
+function clearDay() {
+  schedule[currentDay] = [];
+  renderBlocks();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER BLOCKS
+═══════════════════════════════════════════════════════ */
+function renderBlocks() {
+  const slotsEl = document.getElementById('slotsArea');
+  // Remove existing blocks
+  slotsEl.querySelectorAll('.placed-block').forEach(el => el.remove());
+
+  const dayBlocks = schedule[currentDay];
+  document.getElementById('emptyHint').style.opacity = dayBlocks.length ? '0' : '0.28';
+
+  dayBlocks.forEach(blk => {
+    const act = getAct(blk.actId);
+    if (!act) return;
+
+    const el = document.createElement('div');
+    el.className = 'placed-block';
+    el.dataset.blockId = blk.id;
+
+    const top = blk.startSlot * SLOT_H;
+    const h   = blk.numSlots  * SLOT_H - 2;
+    el.style.top    = `${top}px`;
+    el.style.height = `${h}px`;
+    el.style.background = `linear-gradient(150deg, ${act.color} 0%, ${lightenHex(act.color, 0.15)} 100%)`;
+    el.style.borderColor = `rgba(255,255,255,0.18)`;
+    el.style.boxShadow   = `0 3px 14px ${act.color}44, inset 0 1px 0 rgba(255,255,255,0.15)`;
+
+    // Top row: icon + name always side by side
+    const topRow = document.createElement('div');
+    topRow.className = 'blk-top';
+
+    const iconEl = document.createElement('span');
+    iconEl.className = 'blk-icon';
+    iconEl.textContent = act.icon;
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'blk-name';
+    nameEl.textContent = act.name;
+
+    topRow.appendChild(iconEl);
+    topRow.appendChild(nameEl);
+
+    // Time label — shows the actual start time of this block
+    // (the .blk-time CSS class was defined but never wired up — this is the fix)
+    const timeEl = document.createElement('div');
+    timeEl.className = 'blk-time';
+    const endSlot = blk.startSlot + blk.numSlots;
+    timeEl.textContent = slotToTime(blk.startSlot) + ' – ' + slotToTime(endSlot);
+
+    // Delete button
+    const delBtn = document.createElement('div');
+    delBtn.className = 'blk-del';
+    delBtn.innerHTML = '&times;';
+    delBtn.addEventListener('click', (e) => { e.stopPropagation(); removeBlock(blk.id); });
+
+    // Top resize handle (drag to change start time, end stays fixed)
+    const rsTopHnd = document.createElement('div');
+    rsTopHnd.className = 'blk-resize-top';
+    rsTopHnd.addEventListener('mousedown', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      startResizeTop(blk.id, e.clientY, blk.startSlot, blk.numSlots);
+    });
+
+    // Bottom resize handle (drag to change end time, start stays fixed)
+    const rsHnd = document.createElement('div');
+    rsHnd.className = 'blk-resize';
+    rsHnd.addEventListener('mousedown', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      startResize(blk.id, e.clientY, blk.numSlots, blk.startSlot);
+    });
+
+    el.appendChild(rsTopHnd);
+    el.appendChild(topRow);
+    el.appendChild(timeEl);
+    el.appendChild(delBtn);
+    el.appendChild(rsHnd);
+
+    slotsEl.appendChild(el);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESIZE
+═══════════════════════════════════════════════════════ */
+function startResize(id, startY, origSlots, startSlot) {
+  rsState = { id, startY, origSlots, startSlot };
+  document.body.style.cursor = 'ns-resize';
+  document.body.style.userSelect = 'none';
+  document.addEventListener('mousemove', onResizeMove);
+  document.addEventListener('mouseup',   onResizeEnd);
+}
+
+function onResizeMove(e) {
+  if (!rsState) return;
+  const delta     = e.clientY - rsState.startY;
+  const deltaSlots= Math.round(delta / SLOT_H);
+  const newSlots  = Math.max(1, Math.min(N_SLOTS - rsState.startSlot, rsState.origSlots + deltaSlots));
+  const blk = schedule[currentDay].find(b => b.id === rsState.id);
+  if (blk && blk.numSlots !== newSlots) {
+    blk.numSlots = newSlots;
+    renderBlocks();
+  }
+}
+
+function onResizeEnd() {
+  rsState = null;
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+  document.removeEventListener('mousemove', onResizeMove);
+  document.removeEventListener('mouseup',   onResizeEnd);
+}
+
+/* ── Top-edge resize: drag to shift start time (end time stays fixed) ── */
+function startResizeTop(id, startY, origStartSlot, origNumSlots) {
+  rsTopState = { id, startY, origStartSlot, origNumSlots };
+  document.body.style.cursor = 'ns-resize';
+  document.body.style.userSelect = 'none';
+  document.addEventListener('mousemove', onResizeTopMove);
+  document.addEventListener('mouseup',   onResizeTopEnd);
+}
+
+function onResizeTopMove(e) {
+  if (!rsTopState) return;
+  const delta      = e.clientY - rsTopState.startY;
+  const deltaSlots = Math.round(delta / SLOT_H);
+  // End slot stays fixed; moving top up/down shrinks/grows the block
+  const endSlot    = rsTopState.origStartSlot + rsTopState.origNumSlots;
+  const newStart   = Math.max(0, Math.min(endSlot - 1, rsTopState.origStartSlot + deltaSlots));
+  const newSlots   = Math.max(1, endSlot - newStart);
+  const blk = schedule[currentDay].find(b => b.id === rsTopState.id);
+  if (blk && (blk.startSlot !== newStart || blk.numSlots !== newSlots)) {
+    blk.startSlot = newStart;
+    blk.numSlots  = newSlots;
+    renderBlocks();
+  }
+}
+
+function onResizeTopEnd() {
+  rsTopState = null;
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+  document.removeEventListener('mousemove', onResizeTopMove);
+  document.removeEventListener('mouseup',   onResizeTopEnd);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SCREENSHOT
+═══════════════════════════════════════════════════════ */
+document.getElementById('shotBtn').addEventListener('click', async () => {
+  const wrap       = document.getElementById('gridWrap');
+  const origH      = wrap.style.height;
+  const origOvf    = wrap.style.overflow;
+  const origMaxH   = wrap.style.maxHeight;
+
+  // Expand grid to full height
+  wrap.style.height    = `${N_SLOTS * SLOT_H + 4}px`;
+  wrap.style.overflow  = 'visible';
+  wrap.style.maxHeight = 'none';
+  wrap.scrollTop = 0;
+
+  // Wait a frame for layout
+  await new Promise(r => setTimeout(r, 120));
+
+  try {
+    const canvas = await html2canvas(document.getElementById('app'), {
+      backgroundColor: '#07090F',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      ignoreElements: (el) => el.classList && el.classList.contains('bottom-bar'),
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight,
+    });
+
+    // Restore
+    wrap.style.height    = origH;
+    wrap.style.overflow  = origOvf;
+    wrap.style.maxHeight = origMaxH;
+
+    // Flash effect
+    const fl = document.createElement('div');
+    fl.className = 'flash-overlay';
+    document.body.appendChild(fl);
+    fl.addEventListener('animationend', () => fl.remove());
+
+    // Download
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = `myday-${DAYS_SHORT[currentDay].toLowerCase()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+
+  } catch(err) {
+    // Restore on error
+    wrap.style.height    = origH;
+    wrap.style.overflow  = origOvf;
+    wrap.style.maxHeight = origMaxH;
+    alert('Screenshot failed: ' + err.message);
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+buildDayTabs();
+buildGrid();
+buildPalette();
+switchDay(currentDay);
+
+// Scroll grid to 7 AM by default (2 slots in)
+document.getElementById('gridWrap').scrollTop = 2 * SLOT_H;
+
+// Clear day button
+document.getElementById('clearBtn').addEventListener('click', clearDay);
+
+/* ═══════════════════════════════════════════════════════
+   COMIC GENERATOR v2 — Silver Age Marvel style
+═══════════════════════════════════════════════════════ */
+
+const COMIC_META = {
+  school:   { sfx:'RING!',      sfxCol:'#FFD600', bubble:'Off to school!',    sfxAng:-0.18 },
+  eating:   { sfx:'CHOMP!',     sfxCol:'#FF6B35', bubble:'Yum yum!',          sfxAng:-0.12 },
+  homework: { sfx:'SCRIBBLE!',  sfxCol:'#3399FF', bubble:'Almost done!',      sfxAng:-0.22 },
+  studying: { sfx:'FOCUS!',     sfxCol:'#00CC88', bubble:'Super smart!',      sfxAng:-0.15 },
+  gaming:   { sfx:'ZAPP!',      sfxCol:'#FF2D78', bubble:'Level up!',         sfxAng:-0.20 },
+  bag:      { sfx:'ZIP!',       sfxCol:'#7EC8E3', bubble:'Ready to go!',      sfxAng:-0.10 },
+  sleep:    { sfx:'ZZZZ!',      sfxCol:'#9B6DFF', bubble:'Sweet dreams...',   sfxAng:-0.08 },
+  chilling: { sfx:'AHHH!',      sfxCol:'#00CC88', bubble:'Chill mode ON!',    sfxAng:-0.25 },
+  soccer:   { sfx:'KICK!',      sfxCol:'#5BE12C', bubble:'GOAAAL!',           sfxAng:-0.18 },
+  friends:  { sfx:'YO!',        sfxCol:'#FFAA22', bubble:'Hanging out!',      sfxAng:-0.14 },
+  doctor:   { sfx:'OUCH!',      sfxCol:'#FF4D6D', bubble:'All healthy!',      sfxAng:-0.20 },
+  shower:   { sfx:'SPLASH!',    sfxCol:'#48CAE4', bubble:'Squeaky clean!',    sfxAng:-0.16 },
+  sports:   { sfx:'GO GO GO!',  sfxCol:'#FF8C00', bubble:"Let's go!",         sfxAng:-0.18 },
+};
+
+// Drawing palette
+const SK='#FFD5A8', HR='#2A1508', PT='#1A3A8A', SH='#111111', OLC='#1a1a1a';
+const LW=2.5; // standard outline width
+
+/* ═══════════════════════════════════════════════════════════════
+   SVG CHARACTER FACE SYSTEM — v2
+   Six pre-drawn SVG faces. viewBox 0 0 100 120;
+   face oval centred at (50, 58) → maps to canvas (cx,cy).
+   ═══════════════════════════════════════════════════════════════ */
+
+const FACE_SVGS = {
+  happy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+
+  <!-- hair back mass -->
+  <path d="M16,45 Q50,2 84,45 L84,58 Q50,28 16,58 Z" fill="#5C3010"/>
+
+  <!-- ears behind face -->
+  <circle cx="24" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="76" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- head outline -->
+  <ellipse cx="50" cy="58" rx="26" ry="32" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- skin fill -->
+  <ellipse cx="50" cy="58" rx="25" ry="31" fill="#FFD5A8"/>
+  <!-- cel shadow -->
+  <path d="M50,26 A25,31 0 0 1 75,58 L50,58 Z" fill="#e6b98c"/>
+
+  <!-- hair front zigzag fringe -->
+  <path d="M18,42
+    Q22,14 26,34
+    Q29,16 33,32
+    Q36,18 40,30
+    Q43,20 47,28
+    Q50,22 53,28
+    Q57,20 60,30
+    Q64,18 67,32
+    Q71,16 75,34
+    Q79,14 82,42
+    Q66,34 50,36 Q34,34 18,42 Z"
+    fill="#5C3010" stroke="#1a1a1a" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- brows -->
+  <path d="M28,44 Q35,40 42,44" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+  <path d="M58,44 Q65,40 72,44" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+
+  <!-- LEFT EYE -->
+  <ellipse cx="37" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="37" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="37" cy="51" r="5.7" fill="#3D8B45"/>
+  <path d="M33.5 47.8 Q37 45.8 40.5 47.8" fill="none" stroke="white" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="37" cy="51" r="2.9" fill="#1a1a1a"/>
+  <path d="M28.4,51 Q37,41.5 45.6,51 Q37,46.5 28.4,51 Z" fill="#1a1a1a"/>
+  <circle cx="34" cy="47.8" r="2.3" fill="white"/>
+  <circle cx="39.5" cy="54.5" r="1.1" fill="white"/>
+
+  <!-- RIGHT EYE -->
+  <ellipse cx="63" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="63" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="63" cy="51" r="5.7" fill="#3D8B45"/>
+  <path d="M59.5 47.8 Q63 45.8 66.5 47.8" fill="none" stroke="white" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="63" cy="51" r="2.9" fill="#1a1a1a"/>
+  <path d="M54.4,51 Q63,41.5 71.6,51 Q63,46.5 54.4,51 Z" fill="#1a1a1a"/>
+  <circle cx="60" cy="47.8" r="2.3" fill="white"/>
+  <circle cx="65.5" cy="54.5" r="1.1" fill="white"/>
+
+  <!-- nose -->
+  <path d="M50,58 Q52,64 50,66" stroke="#1a1a1a" fill="none"/>
+  <!-- blush -->
+  <circle cx="30" cy="66" r="3" fill="#f2a1a1"/>
+  <circle cx="70" cy="66" r="3" fill="#f2a1a1"/>
+  <!-- mouth -->
+  <path d="M35,73 Q50,83 65,73 Q50,88 35,73 Z" fill="#A81515" stroke="#1a1a1a"/>
+
+</svg>`,
+
+  excited: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+
+  <!-- hair back mass -->
+  <path d="M16,45 Q50,2 84,45 L84,58 Q50,28 16,58 Z" fill="#5C3010"/>
+
+  <!-- ears behind face -->
+  <circle cx="24" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="76" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- head outline -->
+  <ellipse cx="50" cy="58" rx="26" ry="32" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- skin fill -->
+  <ellipse cx="50" cy="58" rx="25" ry="31" fill="#FFD5A8"/>
+  <!-- cel shadow -->
+  <path d="M50,26 A25,31 0 0 1 75,58 L50,58 Z" fill="#e6b98c"/>
+
+  <!-- hair front zigzag fringe -->
+  <path d="M18,42
+    Q22,14 26,34
+    Q29,16 33,32
+    Q36,18 40,30
+    Q43,20 47,28
+    Q50,22 53,28
+    Q57,20 60,30
+    Q64,18 67,32
+    Q71,16 75,34
+    Q79,14 82,42
+    Q66,34 50,36 Q34,34 18,42 Z"
+    fill="#5C3010" stroke="#1a1a1a" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- brows — SHOT UP HIGH, strongly arched -->
+  <path d="M26,37 Q35,31 44,37" stroke="#1a1a1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M56,37 Q65,31 74,37" stroke="#1a1a1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+
+  <!-- LEFT EYE — wide open, no upper-lid shadow -->
+  <ellipse cx="37" cy="51" rx="9.2" ry="11.5" fill="#1a1a1a"/>
+  <ellipse cx="37" cy="51" rx="8.4" ry="10.7" fill="white"/>
+  <circle cx="37" cy="51" r="6.1" fill="#3D8B45"/>
+  <path d="M33.5 47.2 Q37 45.0 40.5 47.2" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="37" cy="51" r="3.1" fill="#1a1a1a"/>
+  <!-- no eyelid shadow — eyes fully open -->
+  <circle cx="33.5" cy="46.8" r="2.6" fill="white"/>
+  <circle cx="39.8" cy="55" r="1.2" fill="white"/>
+
+  <!-- RIGHT EYE — wide open -->
+  <ellipse cx="63" cy="51" rx="9.2" ry="11.5" fill="#1a1a1a"/>
+  <ellipse cx="63" cy="51" rx="8.4" ry="10.7" fill="white"/>
+  <circle cx="63" cy="51" r="6.1" fill="#3D8B45"/>
+  <path d="M59.5 47.2 Q63 45.0 66.5 47.2" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="63" cy="51" r="3.1" fill="#1a1a1a"/>
+  <!-- no eyelid shadow -->
+  <circle cx="59.5" cy="46.8" r="2.6" fill="white"/>
+  <circle cx="65.8" cy="55" r="1.2" fill="white"/>
+
+  <!-- nose -->
+  <path d="M50,58 Q52,64 50,66" stroke="#1a1a1a" fill="none"/>
+
+  <!-- blush — small and airy -->
+  <circle cx="27" cy="65" r="3" fill="#f2a1a1" opacity="0.45"/>
+  <circle cx="73" cy="65" r="3" fill="#f2a1a1" opacity="0.45"/>
+
+  <!-- open smile — dark red outer frame, white cavity inside -->
+  <path d="M30,73 Q50,93 70,73 Q50,86 30,73 Z"
+    fill="#A81515" stroke="#1a1a1a" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M33,73 Q50,89 67,73 Q50,78 33,73 Z" fill="white"/>
+
+  <!-- sparkle stars — 4-point, gold -->
+  <path d="M11,37 L12.5,32 L14,37 L19,38.5 L14,40 L12.5,45 L11,40 L6,38.5 Z" fill="#FFD700"/>
+  <path d="M88,30 L89.2,26 L90.4,30 L94.4,31.2 L90.4,32.4 L89.2,36.4 L88,32.4 L84,31.2 Z" fill="#FFD700"/>
+
+</svg>`,
+
+  concentrate: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+
+  <!-- hair back mass -->
+  <path d="M16,45 Q50,2 84,45 L84,58 Q50,28 16,58 Z" fill="#5C3010"/>
+
+  <!-- ears behind face -->
+  <circle cx="24" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="76" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- head outline -->
+  <ellipse cx="50" cy="58" rx="26" ry="32" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- skin fill -->
+  <ellipse cx="50" cy="58" rx="25" ry="31" fill="#FFD5A8"/>
+  <!-- cel shadow -->
+  <path d="M50,26 A25,31 0 0 1 75,58 L50,58 Z" fill="#e6b98c"/>
+
+  <!-- hair front zigzag fringe -->
+  <path d="M18,42
+    Q22,14 26,34
+    Q29,16 33,32
+    Q36,18 40,30
+    Q43,20 47,28
+    Q50,22 53,28
+    Q57,20 60,30
+    Q64,18 67,32
+    Q71,16 75,34
+    Q79,14 82,42
+    Q66,34 50,36 Q34,34 18,42 Z"
+    fill="#5C3010" stroke="#1a1a1a" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- brows — FURROWED, inner ends pulled sharply downward -->
+  <path d="M28,42 Q35,45 42,48" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M58,48 Q65,45 72,42" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- LEFT EYE — iris/pupil dropped, deep eyelid shadow -->
+  <ellipse cx="37" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="37" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="36.5" cy="54" r="5.7" fill="#3D8B45"/>
+  <circle cx="36.5" cy="54" r="2.9" fill="#1a1a1a"/>
+  <!-- heavy upper lid shadow — pushed down to reveal only bottom iris strip -->
+  <path d="M28.4,54 Q37,41.5 45.6,54 Q37,48 28.4,54 Z" fill="#1a1a1a"/>
+  <!-- small highlight just below eyelid -->
+  <circle cx="35.5" cy="56.5" r="1.3" fill="white"/>
+
+  <!-- RIGHT EYE — mirrored -->
+  <ellipse cx="63" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="63" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="63.5" cy="54" r="5.7" fill="#3D8B45"/>
+  <circle cx="63.5" cy="54" r="2.9" fill="#1a1a1a"/>
+  <path d="M54.4,54 Q63,41.5 71.6,54 Q63,48 54.4,54 Z" fill="#1a1a1a"/>
+  <circle cx="62.5" cy="56.5" r="1.3" fill="white"/>
+
+  <!-- nose -->
+  <path d="M50,58 Q52,64 50,66" stroke="#1a1a1a" fill="none"/>
+
+  <!-- no blush — sharp focus -->
+
+  <!-- mouth — tight, slightly downturned -->
+  <path d="M40,74 Q50,71 60,74 Q50,76.5 40,74 Z"
+    fill="#9a5540" stroke="#1a1a1a" stroke-width="1.6" stroke-linejoin="round"/>
+
+</svg>`,
+
+  sleep: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+
+  <!-- hair back mass -->
+  <path d="M16,45 Q50,2 84,45 L84,58 Q50,28 16,58 Z" fill="#5C3010"/>
+
+  <!-- ears behind face -->
+  <circle cx="24" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="76" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- head outline -->
+  <ellipse cx="50" cy="58" rx="26" ry="32" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- skin fill -->
+  <ellipse cx="50" cy="58" rx="25" ry="31" fill="#FFD5A8"/>
+  <!-- cel shadow -->
+  <path d="M50,26 A25,31 0 0 1 75,58 L50,58 Z" fill="#e6b98c"/>
+
+  <!-- hair front zigzag fringe -->
+  <path d="M18,42
+    Q22,14 26,34
+    Q29,16 33,32
+    Q36,18 40,30
+    Q43,20 47,28
+    Q50,22 53,28
+    Q57,20 60,30
+    Q64,18 67,32
+    Q71,16 75,34
+    Q79,14 82,42
+    Q66,34 50,36 Q34,34 18,42 Z"
+    fill="#5C3010" stroke="#1a1a1a" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- brows — relaxed, slightly low, soft weight -->
+  <path d="M28,47 Q35,45 42,47" stroke="#1a1a1a" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+  <path d="M58,47 Q65,45 72,47" stroke="#1a1a1a" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+
+  <!-- LEFT EYE — closed, gentle downward crescent -->
+  <path d="M28,52 Q37,59 46,52" stroke="#1a1a1a" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <!-- subtle upper eyelid line -->
+  <path d="M28,52 Q37,47 46,52" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- RIGHT EYE — closed, mirrored -->
+  <path d="M54,52 Q63,59 72,52" stroke="#1a1a1a" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <path d="M54,52 Q63,47 72,52" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- nose -->
+  <path d="M50,58 Q52,64 50,66" stroke="#1a1a1a" fill="none"/>
+
+  <!-- blush — soft and warm, slightly lower -->
+  <circle cx="29" cy="67" r="4.5" fill="#f2a1a1" opacity="0.7"/>
+  <circle cx="71" cy="67" r="4.5" fill="#f2a1a1" opacity="0.7"/>
+
+  <!-- mouth — small oval, slightly open (slack jaw in sleep) -->
+  <ellipse cx="50" cy="77" rx="5" ry="3.5" fill="#7a3030" stroke="#1a1a1a" stroke-width="1.4"/>
+
+  <!-- floating z's — stairstepped up and growing -->
+  <text x="69" y="50" font-size="8"  font-family="sans-serif" font-weight="bold" fill="#8888bb" opacity="0.85">z</text>
+  <text x="76" y="39" font-size="10" font-family="sans-serif" font-weight="bold" fill="#8888bb" opacity="0.75">z</text>
+  <text x="84" y="26" font-size="13" font-family="sans-serif" font-weight="bold" fill="#8888bb" opacity="0.65">z</text>
+
+</svg>`,
+
+  smug: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+
+  <!-- hair back mass -->
+  <path d="M16,45 Q50,2 84,45 L84,58 Q50,28 16,58 Z" fill="#5C3010"/>
+
+  <!-- ears behind face -->
+  <circle cx="24" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="76" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- head outline -->
+  <ellipse cx="50" cy="58" rx="26" ry="32" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- skin fill -->
+  <ellipse cx="50" cy="58" rx="25" ry="31" fill="#FFD5A8"/>
+  <!-- cel shadow -->
+  <path d="M50,26 A25,31 0 0 1 75,58 L50,58 Z" fill="#e6b98c"/>
+
+  <!-- hair front zigzag fringe -->
+  <path d="M18,42
+    Q22,14 26,34
+    Q29,16 33,32
+    Q36,18 40,30
+    Q43,20 47,28
+    Q50,22 53,28
+    Q57,20 60,30
+    Q64,18 67,32
+    Q71,16 75,34
+    Q79,14 82,42
+    Q66,34 50,36 Q34,34 18,42 Z"
+    fill="#5C3010" stroke="#1a1a1a" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- brows — LEFT: flat/neutral · RIGHT: arched high (the smug skeptic brow) -->
+  <path d="M28,44 Q35,42 42,44" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M58,37 Q65,32 72,37" stroke="#1a1a1a" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+
+  <!-- LEFT EYE — moderately half-lidded -->
+  <ellipse cx="37" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="37" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="37" cy="52.5" r="5.7" fill="#3D8B45"/>
+  <circle cx="37" cy="52.5" r="2.9" fill="#1a1a1a"/>
+  <path d="M28.4,52.5 Q37,41.5 45.6,52.5 Q37,47 28.4,52.5 Z" fill="#1a1a1a"/>
+  <circle cx="35" cy="55" r="1.2" fill="white"/>
+
+  <!-- RIGHT EYE — same half-lidded, under the raised brow -->
+  <ellipse cx="63" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="63" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="63" cy="52.5" r="5.7" fill="#3D8B45"/>
+  <circle cx="63" cy="52.5" r="2.9" fill="#1a1a1a"/>
+  <path d="M54.4,52.5 Q63,41.5 71.6,52.5 Q63,47 54.4,52.5 Z" fill="#1a1a1a"/>
+  <circle cx="61" cy="55" r="1.2" fill="white"/>
+
+  <!-- nose -->
+  <path d="M50,58 Q52,64 50,66" stroke="#1a1a1a" fill="none"/>
+
+  <!-- no blush — too cool for that -->
+
+  <!-- smirk — turns upward on the character's right (viewer's left) -->
+  <path d="M38,77 Q46,70 60,73 Q52,81 38,81 Z"
+    fill="#A81515" stroke="#1a1a1a" stroke-width="1.5" stroke-linejoin="round"/>
+
+</svg>`,
+
+  neutral: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+
+  <!-- hair back mass -->
+  <path d="M16,45 Q50,2 84,45 L84,58 Q50,28 16,58 Z" fill="#5C3010"/>
+
+  <!-- ears behind face -->
+  <circle cx="24" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="76" cy="58" r="6" fill="#FFD5A8" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- head outline -->
+  <ellipse cx="50" cy="58" rx="26" ry="32" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- skin fill -->
+  <ellipse cx="50" cy="58" rx="25" ry="31" fill="#FFD5A8"/>
+  <!-- cel shadow -->
+  <path d="M50,26 A25,31 0 0 1 75,58 L50,58 Z" fill="#e6b98c"/>
+
+  <!-- hair front zigzag fringe -->
+  <path d="M18,42
+    Q22,14 26,34
+    Q29,16 33,32
+    Q36,18 40,30
+    Q43,20 47,28
+    Q50,22 53,28
+    Q57,20 60,30
+    Q64,18 67,32
+    Q71,16 75,34
+    Q79,14 82,42
+    Q66,34 50,36 Q34,34 18,42 Z"
+    fill="#5C3010" stroke="#1a1a1a" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- brows — flat, low-energy, perfectly level -->
+  <path d="M28,44 Q35,43 42,44" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M58,44 Q65,43 72,44" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- LEFT EYE — same as happy baseline -->
+  <ellipse cx="37" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="37" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="37" cy="51" r="5.7" fill="#3D8B45"/>
+  <path d="M33.5 47.8 Q37 45.8 40.5 47.8" fill="none" stroke="white" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="37" cy="51" r="2.9" fill="#1a1a1a"/>
+  <path d="M28.4,51 Q37,41.5 45.6,51 Q37,46.5 28.4,51 Z" fill="#1a1a1a"/>
+  <circle cx="34" cy="47.8" r="2.3" fill="white"/>
+  <circle cx="39.5" cy="54.5" r="1.1" fill="white"/>
+
+  <!-- RIGHT EYE — same as happy baseline -->
+  <ellipse cx="63" cy="51" rx="8.8" ry="11" fill="#1a1a1a"/>
+  <ellipse cx="63" cy="51" rx="8" ry="10.2" fill="white"/>
+  <circle cx="63" cy="51" r="5.7" fill="#3D8B45"/>
+  <path d="M59.5 47.8 Q63 45.8 66.5 47.8" fill="none" stroke="white" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="63" cy="51" r="2.9" fill="#1a1a1a"/>
+  <path d="M54.4,51 Q63,41.5 71.6,51 Q63,46.5 54.4,51 Z" fill="#1a1a1a"/>
+  <circle cx="60" cy="47.8" r="2.3" fill="white"/>
+  <circle cx="65.5" cy="54.5" r="1.1" fill="white"/>
+
+  <!-- nose -->
+  <path d="M50,58 Q52,64 50,66" stroke="#1a1a1a" fill="none"/>
+
+  <!-- no blush -->
+
+  <!-- mouth — flat ruled line, barely a lip -->
+  <path d="M38,74 Q50,75.5 62,74 Q50,74.5 38,74 Z"
+    fill="#b07060" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg>`,
+
+};
+
+function buildFaceSVG(exp){
+  return FACE_SVGS[exp] || FACE_SVGS.happy;
+}
+
+/* Pre-load all 6 expression images at startup.
+   Using data URIs keeps everything in one self-contained file. */
+const _FI = {};
+(function(){
+  ['happy','excited','concentrate','sleep','smug','neutral'].forEach(e=>{
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,'
+             + encodeURIComponent(buildFaceSVG(e));
+    _FI[e] = img;
+  });
+})();
+
+/* ── drawFaceW: replaces the old canvas-drawing face function ─ */
+/* Scale factor: face oval height = 64 SVG units → 2r canvas px */
+function drawFaceW(ctx, cx, cy, r, exp){
+  exp = (_FI[exp]) ? exp : 'happy';
+  const img = _FI[exp];
+  if(!img || !img.complete || !img.naturalWidth) return;
+  const s = r / 32;          /* 32 = half of face-oval height in SVG */
+  ctx.drawImage(img, cx-50*s, cy-58*s, 100*s, 120*s);
+}
+
+
+
+/* ── Core helpers (kept from v1) ─────────────────────────── */
+function rrect(ctx,x,y,w,h,r){
+  r=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+function fs(ctx,fc,sc,lw){ ctx.fillStyle=fc; ctx.fill(); ctx.strokeStyle=sc||OLC; ctx.lineWidth=lw||LW; ctx.stroke(); }
+
+// Tapered limb: filled rounded shape between two points, r1/r2 = half-width at each end
+function drawLimb(ctx,x1,y1,x2,y2,r1,r2,col){
+  const dx=x2-x1, dy=y2-y1;
+  const len=Math.sqrt(dx*dx+dy*dy); if(len<1) return;
+  const ux=dx/len, uy=dy/len, px=-uy, py=ux;
+  ctx.beginPath();
+  ctx.moveTo(x1+px*r1, y1+py*r1);
+  ctx.lineTo(x2+px*r2, y2+py*r2);
+  ctx.arc(x2,y2,r2,Math.atan2(py,px),Math.atan2(-py,-px),false);
+  ctx.lineTo(x1-px*r1, y1-py*r1);
+  ctx.arc(x1,y1,r1,Math.atan2(-py,-px),Math.atan2(py,px),true);
+  ctx.closePath();
+  ctx.fillStyle=col; ctx.fill();
+  // Only outline leg segments (pants colour) — arms merge seamlessly into pullover
+  if(col===PT){ ctx.strokeStyle=OLC; ctx.lineWidth=LW; ctx.stroke(); }
+}
+
+// Halftone dots clipped to a rect
+function cHalftone(ctx,x,y,w,h,sp,col){
+  ctx.save();
+  ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
+  ctx.fillStyle=col;
+  for(let gx=x+sp/2;gx<x+w;gx+=sp)
+    for(let gy=y+sp/2;gy<y+h;gy+=sp){
+      ctx.beginPath(); ctx.arc(gx,gy,sp*0.26,0,Math.PI*2); ctx.fill();
+    }
+  ctx.restore();
+}
+
+// Time stamp — clean DM Mono, no playful fonts
+function cTimeStamp(ctx,x,y,t){
+  ctx.save();
+  ctx.font='bold 13px "DM Mono",monospace';
+  const tw=ctx.measureText(t).width, bw=tw+16, bh=22;
+  ctx.fillStyle='#111'; ctx.fillRect(x,y,bw,bh);
+  ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText(t,x+8,y+bh/2);
+  ctx.restore();
+}
+
+function textWrap(ctx,text,maxW){
+  const words=text.split(' '), lines=[]; let line='';
+  for(const w of words){
+    const t=line?line+' '+w:w;
+    if(ctx.measureText(t).width>maxW&&line){ lines.push(line); line=w; } else line=t;
+  }
+  if(line) lines.push(line); return lines;
+}
+
+function cBubble(ctx,bx,by,bw,text){
+  ctx.save();
+  ctx.font='bold 26px Bangers,Impact,sans-serif';
+  const lines=textWrap(ctx,text,bw-28), lh=32, bh=lines.length*lh+28, br=24;
+  ctx.fillStyle='rgba(0,0,0,0.18)'; rrect(ctx,bx+4,by+4,bw,bh,br); ctx.fill();
+  ctx.fillStyle='#fff'; rrect(ctx,bx,by,bw,bh,br); ctx.fill();
+  ctx.strokeStyle=OLC; ctx.lineWidth=3.5; ctx.stroke();
+  const tx=bx+bw*0.3;
+  ctx.beginPath(); ctx.moveTo(tx-13,by+bh); ctx.lineTo(tx,by+bh+24); ctx.lineTo(tx+13,by+bh);
+  ctx.fillStyle='#fff'; ctx.fill(); ctx.strokeStyle=OLC; ctx.lineWidth=3.5; ctx.stroke();
+  ctx.fillStyle='#fff'; ctx.fillRect(tx-11,by+bh-4,24,7);
+  ctx.fillStyle='#1a1a1a'; ctx.textAlign='center'; ctx.textBaseline='top';
+  lines.forEach((l,i)=>ctx.fillText(l,bx+bw/2,by+13+i*lh));
+  ctx.restore();
+}
+
+function cSFX(ctx,x,y,text,col,ang){
+  ctx.save();
+  ctx.translate(x,y); ctx.rotate(ang||-0.15);
+  // Starburst — 12-point star
+  ctx.beginPath();
+  for(let i=0;i<24;i++){
+    const a=i*Math.PI/12, r=i%2===0?46:28;
+    if(i===0) ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r);
+    else ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);
+  }
+  ctx.closePath();
+  ctx.fillStyle='#FFF176'; ctx.fill();
+  ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=2.5; ctx.stroke();
+  // Text
+  ctx.font='bold 30px Bangers,Impact,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.strokeStyle='#000'; ctx.lineWidth=6; ctx.strokeText(text,0,0);
+  ctx.fillStyle=col; ctx.fillText(text,0,0);
+  ctx.restore();
+}
+
+/* ── Body helpers ─────────────────────────────────────────── */
+// Trapezoid torso: wider at shoulders (top), narrower at waist (bottom)
+function drawTorso(ctx,cx,cy,col){
+  ctx.beginPath();
+  ctx.moveTo(cx-27,cy-58); ctx.lineTo(cx+27,cy-58); // shoulder line
+  ctx.quadraticCurveTo(cx+30,cy-34,cx+21,cy+2);     // right side with slight inward curve
+  ctx.lineTo(cx-21,cy+2);                            // waist bottom
+  ctx.quadraticCurveTo(cx-30,cy-34,cx-27,cy-58);    // left side
+  ctx.closePath();
+  ctx.fillStyle=col; ctx.fill(); // no outline — pullover looks seamless
+}
+
+// Neck
+function drawNeck(ctx,cx,cy){
+  rrect(ctx,cx-6,cy-66,12,12,4); fs(ctx,SK);
+}
+
+// Shoe (ellipse at foot position)
+function drawShoe(ctx,x,y,flip){
+  ctx.save(); ctx.translate(x,y);
+  if(flip) ctx.scale(-1,1);
+  ctx.beginPath();
+  ctx.ellipse(4,0,16,7,0,0,Math.PI*2); fs(ctx,SH);
+  ctx.restore();
+}
+
+/* ══ 13 FIGURE FUNCTIONS ══════════════════════════════════ */
+// All use (ctx, cx, cy, col) where cy = waist level
+
+// ── Standard standing pose ────────────────────────────────
+function drawStandKid(ctx,cx,cy,col,exp){
+  const ac=armCol(col);
+  // Back arm (right) drawn first (behind torso when leaning)
+  drawLimb(ctx,cx+24,cy-54, cx+36,cy-26, 12,10,ac);
+  drawLimb(ctx,cx+36,cy-26, cx+30,cy-2,  10,8, ac);
+  ctx.beginPath(); ctx.arc(cx+30,cy-2,9,0,Math.PI*2); fs(ctx,SK);
+  // Legs
+  drawLimb(ctx,cx-14,cy+10, cx-16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx-16,cy+42, cx-15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+  drawLimb(ctx,cx+14,cy+10, cx+16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx+16,cy+42, cx+15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx+18,cy+78,true);
+  // Torso + neck
+  drawTorso(ctx,cx,cy,col);
+  drawNeck(ctx,cx,cy);
+  // Front arm (left) on top of torso
+  drawLimb(ctx,cx-24,cy-54, cx-36,cy-26, 12,10,ac);
+  drawLimb(ctx,cx-36,cy-26, cx-30,cy-2,  10,8, ac);
+  ctx.beginPath(); ctx.arc(cx-30,cy-2,9,0,Math.PI*2); fs(ctx,SK);
+  // Head
+  drawFaceW(ctx,cx,cy-90,27,exp||'happy');
+}
+
+// ── SCHOOL ────────────────────────────────────────────────
+function figSchool(ctx,cx,cy,col){
+  // Scene: building silhouette in background
+  ctx.fillStyle='rgba(200,210,255,0.25)';
+  ctx.fillRect(cx+60,cy-130,80,110);
+  ctx.fillStyle='rgba(150,160,200,0.3)';
+  ctx.fillRect(cx+68,cy-110,18,28); ctx.fillRect(cx+94,cy-110,18,28); // windows
+  ctx.fillStyle='rgba(150,160,200,0.3)';
+  ctx.beginPath(); ctx.moveTo(cx+60,cy-130); ctx.lineTo(cx+100,cy-155); ctx.lineTo(cx+140,cy-130); ctx.fill();
+  // flag pole
+  ctx.strokeStyle='rgba(100,110,150,0.4)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx+100,cy-155); ctx.lineTo(cx+100,cy-175); ctx.stroke();
+  ctx.fillStyle='rgba(200,50,50,0.4)';
+  ctx.fillRect(cx+100,cy-175,14,10);
+  // Ground line
+  ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-80,cy+72); ctx.lineTo(cx+160,cy+72); ctx.stroke();
+
+  // ── Four background chairs (in perspective, behind the figures) ──
+  [cx-68,cx-38,cx-8,cx+22].forEach((chx,i)=>{
+    const chCol='rgba(120,90,50,0.45)', chDark='rgba(80,55,25,0.5)';
+    const chy=cy+10;
+    // seat
+    ctx.fillStyle=chCol; ctx.fillRect(chx,chy,22,6); ctx.fillRect(chx,chy,22,6);
+    ctx.strokeStyle=chDark; ctx.lineWidth=1; ctx.strokeRect(chx,chy,22,6);
+    // back
+    ctx.fillStyle=chCol; ctx.fillRect(chx+2,chy-18,18,20);
+    ctx.strokeStyle=chDark; ctx.strokeRect(chx+2,chy-18,18,20);
+    // legs (two visible)
+    ctx.fillStyle=chDark;
+    ctx.fillRect(chx+1,chy+6,4,16); ctx.fillRect(chx+17,chy+6,4,16);
+  });
+
+  // ── Second figure: full-size kid to the RIGHT of the main figure ──
+  {
+    const f2x=cx+76, fCol='#FF8844';
+    // Backpack drawn first so torso overlaps it naturally
+    rrect(ctx,f2x+20,cy-72,24,44,8); fs(ctx,'#226622');
+    rrect(ctx,f2x+22,cy-42,18,22,5); fs(ctx,'#338833');
+    ctx.beginPath(); ctx.moveTo(f2x+24,cy-70);
+    ctx.bezierCurveTo(f2x+18,cy-80,f2x+6,cy-74,f2x+8,cy-56);
+    ctx.strokeStyle='#114411'; ctx.lineWidth=4; ctx.lineCap='round'; ctx.stroke();
+    // Right arm (swings back — drawn before torso)
+    drawLimb(ctx,f2x+24,cy-54, f2x+32,cy-22, 12,10,armCol(fCol));
+    drawLimb(ctx,f2x+32,cy-22, f2x+26,cy-2,  10,8,  armCol(fCol));
+    ctx.beginPath(); ctx.arc(f2x+26,cy-2,9,0,Math.PI*2); fs(ctx,SK);
+    // Legs (walking pose, mirrored vs main figure)
+    drawLimb(ctx,f2x+14,cy+10, f2x+18,cy+42, 14,12,PT);
+    drawLimb(ctx,f2x+18,cy+42, f2x+24,cy+72, 12,10,PT);
+    drawShoe(ctx,f2x+28,cy+78,true);
+    drawLimb(ctx,f2x-14,cy+10, f2x-20,cy+42, 14,12,PT);
+    drawLimb(ctx,f2x-20,cy+42, f2x-16,cy+72, 12,10,PT);
+    drawShoe(ctx,f2x-18,cy+78,false);
+    // Torso covers bag edge
+    drawTorso(ctx,f2x,cy,fCol);
+    drawNeck(ctx,f2x,cy);
+    // Left arm forward — holding books
+    drawLimb(ctx,f2x-24,cy-54, f2x-18,cy-24, 12,10,armCol(fCol));
+    drawLimb(ctx,f2x-18,cy-24, f2x-14,cy+4,  10,8,  armCol(fCol));
+    ctx.beginPath(); ctx.arc(f2x-14,cy+4,9,0,Math.PI*2); fs(ctx,SK);
+    // Book stack
+    rrect(ctx,f2x-36,cy-14,36,9,2); fs(ctx,'#1155CC');
+    rrect(ctx,f2x-34,cy-5, 34,9,2); fs(ctx,'#FF9900');
+    rrect(ctx,f2x-35,cy+4, 35,9,2); fs(ctx,'#CC1122');
+    drawFaceW(ctx,f2x,cy-90,27,'happy');
+  }
+
+  // ── Main figure ──
+  // Backpack drawn BEFORE torso+arm so the arm naturally overlaps it (bag sits on the back)
+  rrect(ctx,cx+24,cy-72,24,44,8); fs(ctx,'#881111');
+  rrect(ctx,cx+26,cy-42,18,22,5); fs(ctx,'#AA0011');
+  // Strap goes from top of bag up and over the right shoulder
+  ctx.beginPath(); ctx.moveTo(cx+28,cy-70);
+  ctx.bezierCurveTo(cx+22,cy-80,cx+10,cy-74,cx+12,cy-56);
+  ctx.strokeStyle='#660011'; ctx.lineWidth=4; ctx.lineCap='round'; ctx.stroke();
+
+  // Right arm swings back (drawn before torso → appears behind it)
+  drawLimb(ctx,cx+24,cy-54, cx+32,cy-22, 12,10,armCol('#3399FF'));
+  drawLimb(ctx,cx+32,cy-22, cx+26,cy-2,  10,8, armCol('#3399FF'));
+  ctx.beginPath(); ctx.arc(cx+26,cy-2,9,0,Math.PI*2); fs(ctx,SK);
+
+  // Right leg (forward, slightly bent)
+  drawLimb(ctx,cx+14,cy+10, cx+18,cy+42, 14,12,PT);
+  drawLimb(ctx,cx+18,cy+42, cx+24,cy+72, 12,10,PT);
+  drawShoe(ctx,cx+28,cy+78,true);
+  // Left leg (back, behind)
+  drawLimb(ctx,cx-14,cy+10, cx-20,cy+42, 14,12,PT);
+  drawLimb(ctx,cx-20,cy+42, cx-16,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+
+  // Torso goes on top of bag left edge — bag looks tucked on the back
+  drawTorso(ctx,cx,cy,'#3399FF');
+  drawNeck(ctx,cx,cy);
+
+  // Left arm swings forward — holding books
+  drawLimb(ctx,cx-24,cy-54, cx-18,cy-24, 12,10,armCol('#3399FF'));
+  drawLimb(ctx,cx-18,cy-24, cx-14,cy+4,  10,8, armCol('#3399FF'));
+  ctx.beginPath(); ctx.arc(cx-14,cy+4,9,0,Math.PI*2); fs(ctx,SK);
+  // Book stack in arm
+  rrect(ctx,cx-36,cy-14,36,9,2); fs(ctx,'#CC1122');
+  rrect(ctx,cx-34,cy-5, 34,9,2); fs(ctx,'#FFD600');
+  rrect(ctx,cx-35,cy+4, 35,9,2); fs(ctx,'#00CC88');
+
+  drawFaceW(ctx,cx,cy-90,27,'happy');
+}
+
+// ── EATING ────────────────────────────────────────────────
+function figEating(ctx,cx,cy,col){
+  // Legs drawn FIRST so the table top covers them — gives a seated-behind-table look
+  drawLimb(ctx,cx-14,cy+10, cx-16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx-16,cy+42, cx-15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+  drawLimb(ctx,cx+14,cy+10, cx+16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx+16,cy+42, cx+15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx+18,cy+78,true);
+
+  // Table drawn over legs (seated illusion)
+  rrect(ctx,cx-70,cy+20,140,12,4); fs(ctx,'#8B5010');
+  rrect(ctx,cx-62,cy+32,10,42,2); fs(ctx,'#6B3D0C');
+  rrect(ctx,cx+52,cy+32,10,42,2); fs(ctx,'#6B3D0C');
+
+  // Arms drawn before torso so torso covers the shoulder joints
+  // Left arm resting down
+  drawLimb(ctx,cx+24,cy-54, cx+36,cy-22, 12,10,armCol(col));
+  drawLimb(ctx,cx+36,cy-22, cx+38,cy+6,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx+38,cy+6,9,0,Math.PI*2); fs(ctx,SK);
+  // Right arm with fork, bent up
+  drawLimb(ctx,cx-24,cy-54, cx-36,cy-22, 12,10,armCol(col));
+  drawLimb(ctx,cx-36,cy-22, cx-44,cy-42, 10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx-44,cy-42,9,0,Math.PI*2); fs(ctx,SK);
+  // Fork
+  ctx.save(); ctx.translate(cx-50,cy-58); ctx.rotate(-0.2);
+  rrect(ctx,-3,0,6,32,2); fs(ctx,'#C0C0C0');
+  [-4,0,4].forEach(t=>{rrect(ctx,t-1,-10,2,12,1); fs(ctx,'#C0C0C0');});
+  ctx.restore();
+
+  drawTorso(ctx,cx,cy,col);
+  drawNeck(ctx,cx,cy);
+  drawFaceW(ctx,cx,cy-90,27,'excited');
+
+  // Bowl drawn LAST — sits in front of everything including the torso
+  // Center at cy-2, radius 22 → bottom of arc lands exactly on the table surface (cy+20)
+  const bx=cx-6, by=cy-2, r=22;
+  // Bowl body: arc from 0→π clockwise traces the BOTTOM semicircle (∪ shape)
+  ctx.beginPath(); ctx.arc(bx,by,r,0,Math.PI);
+  ctx.fillStyle='#FFFFFF'; ctx.fill();
+  ctx.strokeStyle='#222222'; ctx.lineWidth=2; ctx.stroke();
+  // Bowl rim: oval at the opening
+  ctx.beginPath(); ctx.ellipse(bx,by,r,6,0,0,Math.PI*2);
+  ctx.fillStyle='#FFFFFF'; ctx.fill();
+  ctx.strokeStyle='#222222'; ctx.lineWidth=2; ctx.stroke();
+  // Steam — three wiggly lines rising from inside the bowl
+  ctx.strokeStyle='rgba(160,160,160,0.9)'; ctx.lineWidth=2.5; ctx.lineCap='round';
+  [[bx-10,by-4],[bx,by-5],[bx+10,by-4]].forEach(([sx,sy])=>{
+    ctx.beginPath(); ctx.moveTo(sx,sy);
+    ctx.bezierCurveTo(sx-4,sy-10,sx+4,sy-20,sx,sy-30); ctx.stroke();
+  });
+}
+
+// ── HOMEWORK ──────────────────────────────────────────────
+function figHomework(ctx,cx,cy,col){
+  // Desk
+  rrect(ctx,cx-72,cy+14,144,14,4); fs(ctx,'#8B6914');
+  rrect(ctx,cx-64,cy+28,10,44,2); fs(ctx,'#6B5010');
+  rrect(ctx,cx+54,cy+28,10,44,2); fs(ctx,'#6B5010');
+  // Lamp on desk
+  ctx.strokeStyle='#888'; ctx.lineWidth=3; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(cx+52,cy+14); ctx.lineTo(cx+52,cy-30); ctx.lineTo(cx+36,cy-30); ctx.stroke();
+  rrect(ctx,cx+24,cy-42,26,14,4); fs(ctx,'#FFD600');
+  // Lamp light glow
+  ctx.fillStyle='rgba(255,220,50,0.12)';
+  ctx.beginPath(); ctx.moveTo(cx+37,cy-28); ctx.lineTo(cx+12,cy+14); ctx.lineTo(cx+62,cy+14); ctx.closePath(); ctx.fill();
+  // Paper on desk
+  rrect(ctx,cx-50,cy-10,78,28,2); fs(ctx,'#fff');
+  ctx.strokeStyle='#ccc'; ctx.lineWidth=1.5;
+  [0,1,2].forEach(i=>{ctx.beginPath(); ctx.moveTo(cx-44,cy-2+i*8); ctx.lineTo(cx+20,cy-2+i*8); ctx.stroke();});
+  // Eraser
+  rrect(ctx,cx+22,cy+2,14,10,3); fs(ctx,'#FF99AA');
+
+  // Body leaned forward
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(0.2);
+  drawTorso(ctx,0,0,col); ctx.restore();
+
+  // Left arm on desk (supporting)
+  drawLimb(ctx,cx-24,cy-54, cx-30,cy-18, 12,10,armCol(col));
+  drawLimb(ctx,cx-30,cy-18, cx-20,cy+12, 10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx-20,cy+12,9,0,Math.PI*2); fs(ctx,SK);
+
+  // Right arm writing (angled down to paper)
+  drawLimb(ctx,cx+24,cy-54, cx+32,cy-20, 12,10,armCol(col));
+  drawLimb(ctx,cx+32,cy-20, cx+36,cy+4,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx+36,cy+4,9,0,Math.PI*2); fs(ctx,SK);
+  // Pencil
+  ctx.save(); ctx.translate(cx+42,cy-4); ctx.rotate(-0.5);
+  rrect(ctx,-3,-30,6,32,1); fs(ctx,'#FFD600');
+  rrect(ctx,-3,-38,6,10,1); fs(ctx,'#FF9900');
+  ctx.beginPath(); ctx.moveTo(-3,-38); ctx.lineTo(0,-46); ctx.lineTo(3,-38);
+  fs(ctx,SK); ctx.restore();
+
+  drawNeck(ctx,cx,cy);
+  // Head tilted down toward paper
+  ctx.save(); ctx.translate(cx-4,cy-88); ctx.rotate(0.22);
+  drawFaceW(ctx,0,0,27,'concentrate'); ctx.restore();
+}
+
+// ── STUDYING ──────────────────────────────────────────────
+function figStudying(ctx,cx,cy,col){
+  // Bookshelf silhouette in background
+  ctx.fillStyle='rgba(100,60,20,0.15)';
+  ctx.fillRect(cx-90,cy-140,30,140); ctx.fillRect(cx+60,cy-140,30,140);
+  ctx.fillRect(cx-90,cy-145,180,10);
+  [0,1,2].forEach(i=>{
+    ctx.fillStyle=`rgba(${[200,60,30][i]},${[50,120,80][i]},${[30,30,80][i]},0.2)`;
+    ctx.fillRect(cx-82,cy-130+i*44,22,38);
+    ctx.fillStyle=`rgba(${[40,200,30][i]},${[80,60,180][i]},${[200,30,80][i]},0.2)`;
+    ctx.fillRect(cx+66,cy-130+i*44,22,38);
+  });
+
+  // Legs
+  drawLimb(ctx,cx-14,cy+10, cx-16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx-16,cy+42, cx-15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+  drawLimb(ctx,cx+14,cy+10, cx+16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx+16,cy+42, cx+15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx+18,cy+78,true);
+
+  drawTorso(ctx,cx,cy,col);
+  drawNeck(ctx,cx,cy);
+
+  // Both arms angled down, holding open book in front of belly
+  drawLimb(ctx,cx-27,cy-56, cx-44,cy-28, 12,10,armCol(col));
+  drawLimb(ctx,cx-44,cy-28, cx-42,cy-4,  10,8, armCol(col));
+
+  drawLimb(ctx,cx+27,cy-56, cx+44,cy-28, 12,10,armCol(col));
+  drawLimb(ctx,cx+44,cy-28, cx+42,cy-4,  10,8, armCol(col));
+
+  // Open book held at belly level
+  ctx.save(); ctx.translate(cx,cy-14);
+  rrect(ctx,-38,-6,76,46,4); fs(ctx,'#CC1122');
+  ctx.beginPath(); ctx.moveTo(0,-6); ctx.lineTo(0,40);
+  ctx.strokeStyle='#991111'; ctx.lineWidth=3; ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=1.5;
+  [0,1,2,3,4].forEach(i=>{
+    ctx.beginPath(); ctx.moveTo(-32,4+i*7); ctx.lineTo(-4,4+i*7); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(4,4+i*7);  ctx.lineTo(32,4+i*7);  ctx.stroke();
+  });
+  ctx.restore();
+
+  // Hands resting on book edges
+  ctx.beginPath(); ctx.arc(cx-42,cy-4,9,0,Math.PI*2); fs(ctx,SK);
+  ctx.beginPath(); ctx.arc(cx+42,cy-4,9,0,Math.PI*2); fs(ctx,SK);
+
+  drawFaceW(ctx,cx,cy-90,27,'excited');
+}
+
+// ── GAMING ────────────────────────────────────────────────
+function figGaming(ctx,cx,cy,col){
+  // TV/screen glow in background
+  ctx.fillStyle='rgba(40,120,255,0.08)';
+  rrect(ctx,cx-60,cy-160,120,88,8); ctx.fill();
+  ctx.strokeStyle='rgba(40,120,255,0.3)'; ctx.lineWidth=3;
+  rrect(ctx,cx-60,cy-160,120,88,8); ctx.stroke();
+  // screen content (simple pixel art suggestion)
+  ctx.fillStyle='rgba(255,50,50,0.4)'; ctx.fillRect(cx-20,cy-140,14,14);
+  ctx.fillStyle='rgba(50,255,100,0.4)'; ctx.fillRect(cx+6,cy-140,14,14);
+  ctx.fillStyle='rgba(255,200,0,0.5)'; ctx.fillRect(cx-8,cy-122,16,8);
+  // TV stand
+  ctx.strokeStyle='rgba(80,80,120,0.4)'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.moveTo(cx,cy-72); ctx.lineTo(cx,cy-62); ctx.stroke();
+
+  // Couch
+  rrect(ctx,cx-68,cy+16,136,22,8); fs(ctx,'#5544AA');
+  rrect(ctx,cx-68,cy-12,18,30,6); fs(ctx,'#5544AA');
+  rrect(ctx,cx+50,cy-12,18,30,6); fs(ctx,'#5544AA');
+
+  // Seated cross-legged
+  drawLimb(ctx,cx-14,cy+10, cx-38,cy+20, 14,12,PT); // left thigh horizontal
+  drawLimb(ctx,cx-38,cy+20,cx-20,cy+38, 12,10,PT);
+  drawShoe(ctx,cx-24,cy+42,false);
+  drawLimb(ctx,cx+14,cy+10, cx+38,cy+20, 14,12,PT);
+  drawLimb(ctx,cx+38,cy+20,cx+20,cy+38, 12,10,PT);
+  drawShoe(ctx,cx+24,cy+42,true);
+
+  drawTorso(ctx,cx,cy,col);
+  drawNeck(ctx,cx,cy);
+
+  // Left arm reaching to controller
+  drawLimb(ctx,cx-27,cy-54, cx-44,cy-26, 12,10,armCol(col));
+  drawLimb(ctx,cx-44,cy-26, cx-46,cy+8,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx-46,cy+8,9,0,Math.PI*2); fs(ctx,SK);
+  // Right arm reaching
+  drawLimb(ctx,cx+27,cy-54, cx+44,cy-26, 12,10,armCol(col));
+  drawLimb(ctx,cx+44,cy-26, cx+46,cy+8,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx+46,cy+8,9,0,Math.PI*2); fs(ctx,SK);
+
+  // Controller between hands
+  ctx.save(); ctx.translate(cx,cy+14);
+  rrect(ctx,-30,-12,60,24,10); fs(ctx,'#222');
+  rrect(ctx,-24,-6,20,12,4); fs(ctx,'#333'); // left grip
+  rrect(ctx,4,-6,20,12,4); fs(ctx,'#333');   // right grip
+  // D-pad
+  rrect(ctx,-20,-4,6,12,2); fs(ctx,'#555');
+  rrect(ctx,-24,0,14,4,2);  fs(ctx,'#555');
+  // Buttons
+  ctx.beginPath(); ctx.arc(16,-4,3.5,0,Math.PI*2); fs(ctx,'#FF2D78');
+  ctx.beginPath(); ctx.arc(14,3, 3.5,0,Math.PI*2); fs(ctx,'#3399FF');
+  ctx.beginPath(); ctx.arc(22,3, 3.5,0,Math.PI*2); fs(ctx,'#5BE12C');
+  ctx.restore();
+
+  drawFaceW(ctx,cx,cy-90,27,'excited');
+}
+
+// ── BAG ───────────────────────────────────────────────────
+function figBag(ctx,cx,cy,col){
+  // Standard upright standing pose
+  drawLimb(ctx,cx-14,cy+10, cx-16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx-16,cy+42, cx-15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+  drawLimb(ctx,cx+14,cy+10, cx+16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx+16,cy+42, cx+15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx+18,cy+78,true);
+
+  drawTorso(ctx,cx,cy,col);
+  drawNeck(ctx,cx,cy);
+
+  // Arms relaxed at sides
+  drawLimb(ctx,cx-27,cy-54, cx-36,cy-26, 12,10,armCol(col));
+  drawLimb(ctx,cx-36,cy-26, cx-30,cy-2,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx-30,cy-2,9,0,Math.PI*2); fs(ctx,SK);
+  drawLimb(ctx,cx+27,cy-54, cx+36,cy-26, 12,10,armCol(col));
+  drawLimb(ctx,cx+36,cy-26, cx+30,cy-2,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx+30,cy-2,9,0,Math.PI*2); fs(ctx,SK);
+
+  // === Backpack sitting on the floor (right of character) ===
+  const bx=cx+28, by=cy+18;
+  // Bag body
+  rrect(ctx,bx,by,50,52,10); fs(ctx,'#CC1122');
+  // Front pocket
+  rrect(ctx,bx+4,by+28,38,20,6); fs(ctx,'#AA0011');
+  // Top pocket
+  rrect(ctx,bx+4,by+4,38,17,5); fs(ctx,'#991111');
+  // Zippers
+  ctx.strokeStyle='#FFD600'; ctx.lineWidth=2.5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(bx+5,by+37); ctx.lineTo(bx+43,by+37); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bx+5,by+15); ctx.lineTo(bx+43,by+15); ctx.stroke();
+  // Zipper pulls
+  ctx.beginPath(); ctx.arc(bx+23,by+37,4,0,Math.PI*2); fs(ctx,'#FFD600');
+  ctx.beginPath(); ctx.arc(bx+23,by+15,4,0,Math.PI*2); fs(ctx,'#FFD600');
+  // Straps lying loose on floor
+  ctx.strokeStyle='#880011'; ctx.lineWidth=5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(bx+8,by+2); ctx.bezierCurveTo(bx-2,by+18,bx-8,by+38,bx-4,by+54); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bx+20,by+2); ctx.bezierCurveTo(bx+12,by+16,bx+6,by+36,bx+10,by+54); ctx.stroke();
+
+  // === Open book on the floor beside the bag ===
+  const bkx=bx+58, bky=cy+36;
+  ctx.save(); ctx.translate(bkx+14, bky+16); ctx.rotate(0.12);
+  // Book spine
+  rrect(ctx,-3,-18,6,36,2); fs(ctx,'#1a3a8a');
+  // Left page
+  rrect(ctx,-3,-18,26,36,2); fs(ctx,'#3399FF');
+  // Right page (open, slightly lighter)
+  rrect(ctx,-3,-18,28,36,2); fs(ctx,'#f5f9ff');
+  ctx.strokeStyle='#ccc'; ctx.lineWidth=0.8;
+  for(let l=0;l<4;l++){
+    ctx.beginPath(); ctx.moveTo(2,-10+l*8); ctx.lineTo(22,-10+l*8); ctx.stroke();
+  }
+  // Left page text lines
+  ctx.strokeStyle='rgba(50,100,220,0.5)'; ctx.lineWidth=0.8;
+  for(let l=0;l<4;l++){
+    ctx.beginPath(); ctx.moveTo(-26,-10+l*8); ctx.lineTo(-6,-10+l*8); ctx.stroke();
+  }
+  ctx.restore();
+
+  drawFaceW(ctx,cx,cy-90,27,'happy');
+}
+
+// ── SLEEP ─────────────────────────────────────────────────
+function figSleep(ctx,cx,cy,col){
+  // Bed / ground
+  rrect(ctx,cx-90,cy+52,180,18,6); fs(ctx,'#A08060');
+  // Pillow
+  rrect(ctx,cx-80,cy-12,66,42,20); fs(ctx,'#E8DED0');
+  // Pillow shading
+  ctx.fillStyle='rgba(0,0,0,0.06)';
+  ctx.beginPath(); ctx.ellipse(cx-54,cy+8,28,14,0,0,Math.PI*2); ctx.fill();
+  // Blanket (figure lying in it)
+  rrect(ctx,cx-82,cy+4,168,50,16); fs(ctx,col);
+  // Blanket fold/highlights
+  ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-70,cy+20); ctx.bezierCurveTo(cx-30,cy+12,cx+30,cy+28,cx+70,cy+18); ctx.stroke();
+  // Blanket outline tuck near head
+  rrect(ctx,cx-82,cy+2,28,20,8); fs(ctx,col);
+
+  // Figure lying horizontal: just head visible above blanket
+  // Head on pillow
+  ctx.beginPath(); ctx.arc(cx-52,cy+8,28,0,Math.PI*2); ctx.fillStyle=HR; ctx.fill(); ctx.strokeStyle=OLC; ctx.lineWidth=LW; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx-52,cy+8,24,0,Math.PI*2); fs(ctx,SK);
+  // Cheeks
+  ctx.fillStyle='rgba(255,140,100,0.28)';
+  ctx.beginPath(); ctx.arc(cx-62,cy+12,8,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx-42,cy+12,8,0,Math.PI*2); ctx.fill();
+  // Closed eyes
+  ctx.strokeStyle=OLC; ctx.lineWidth=2.5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.arc(cx-60,cy+6,8,Math.PI,0); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx-44,cy+6,8,Math.PI,0); ctx.stroke();
+  // Eyelashes
+  [cx-66,cx-62,cx-58,cx-50,cx-46,cx-42].forEach((lx,i)=>{
+    ctx.beginPath(); ctx.moveTo(lx,i<3?cy-2:cy-2); ctx.lineTo(lx+(i<3?-1:1),i<3?cy-8:cy-8); ctx.stroke();
+  });
+  // Smile (sleeping)
+  ctx.beginPath(); ctx.arc(cx-52,cy+18,8,0.2,Math.PI-0.2); ctx.stroke();
+
+  // ZZZ bubbles (ascending)
+  const zData=[[cx+6,cy-16,18],[cx+24,cy-38,24],[cx+46,cy-64,30]];
+  zData.forEach(([zx,zy,fsz])=>{
+    ctx.font=`bold ${fsz}px Bangers,sans-serif`;
+    ctx.strokeStyle='#000'; ctx.lineWidth=4; ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.strokeText('Z',zx,zy);
+    ctx.fillStyle='#9B6DFF'; ctx.fillText('Z',zx,zy);
+  });
+}
+
+// ── CHILLING ──────────────────────────────────────────────
+function figChilling(ctx,cx,cy,col){
+  // Couch — same as Gaming pose so the body matches
+  rrect(ctx,cx-68,cy+16,136,22,8); fs(ctx,'#5544AA');
+  rrect(ctx,cx-68,cy-12,18,30,6); fs(ctx,'#5544AA');
+  rrect(ctx,cx+50,cy-12,18,30,6); fs(ctx,'#5544AA');
+
+  // Seated cross-legged — identical to Gaming
+  drawLimb(ctx,cx-14,cy+10, cx-38,cy+20, 14,12,PT);
+  drawLimb(ctx,cx-38,cy+20,cx-20,cy+38, 12,10,PT);
+  drawShoe(ctx,cx-24,cy+42,false);
+  drawLimb(ctx,cx+14,cy+10, cx+38,cy+20, 14,12,PT);
+  drawLimb(ctx,cx+38,cy+20,cx+20,cy+38, 12,10,PT);
+  drawShoe(ctx,cx+24,cy+42,true);
+
+  drawTorso(ctx,cx,cy,col);
+  drawNeck(ctx,cx,cy);
+
+  // Arms relaxed on knees (Gaming arm angle, no controller)
+  drawLimb(ctx,cx-27,cy-54, cx-44,cy-26, 12,10,armCol(col));
+  drawLimb(ctx,cx-44,cy-26, cx-40,cy+8,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx-40,cy+8,9,0,Math.PI*2); fs(ctx,SK);
+  drawLimb(ctx,cx+27,cy-54, cx+44,cy-26, 12,10,armCol(col));
+  drawLimb(ctx,cx+44,cy-26, cx+40,cy+8,  10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx+40,cy+8,9,0,Math.PI*2); fs(ctx,SK);
+
+  // Head — smug face + sunglasses from original chilling
+  drawFaceW(ctx,cx,cy-90,27,'smug');
+  ctx.save(); ctx.translate(cx,cy-94);
+  rrect(ctx,-26,-10,22,16,4); fs(ctx,'#111');
+  rrect(ctx,4,-10,22,16,4); fs(ctx,'#111');
+  ctx.beginPath(); ctx.moveTo(-4,-3); ctx.lineTo(4,-3); ctx.strokeStyle='#444'; ctx.lineWidth=2.5; ctx.stroke();
+  // Frame tint (reflection)
+  ctx.fillStyle='rgba(0,200,255,0.18)';
+  rrect(ctx,-25,-9,20,14,3); ctx.fill();
+  rrect(ctx,5,-9,20,14,3); ctx.fill();
+  ctx.restore();
+}
+
+// ── SOCCER ────────────────────────────────────────────────
+function figSoccer(ctx,cx,cy,col){
+  // Goal post in background
+  ctx.strokeStyle='rgba(200,200,220,0.4)'; ctx.lineWidth=4; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(cx+55,cy+70); ctx.lineTo(cx+55,cy-90); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+55,cy-90); ctx.lineTo(cx+110,cy-90); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+110,cy-90); ctx.lineTo(cx+110,cy+70); ctx.stroke();
+  // Net lines
+  ctx.strokeStyle='rgba(200,200,220,0.2)'; ctx.lineWidth=1.5;
+  [cy-60,cy-30,cy].forEach(y=>{
+    ctx.beginPath(); ctx.moveTo(cx+55,y); ctx.lineTo(cx+110,y); ctx.stroke();
+  });
+  [cx+75,cx+90].forEach(x=>{
+    ctx.beginPath(); ctx.moveTo(x,cy-90); ctx.lineTo(x,cy+70); ctx.stroke();
+  });
+  // Ground
+  ctx.strokeStyle='rgba(0,0,0,0.12)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-90,cy+72); ctx.lineTo(cx+120,cy+72); ctx.stroke();
+
+  // Standing / support leg (left, planted)
+  drawLimb(ctx,cx-14,cy+10, cx-18,cy+44, 14,12,PT);
+  drawLimb(ctx,cx-18,cy+44, cx-16,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+
+  // Kicking leg (right) — upper thigh only (behind torso)
+  const kx=cx+50, ky=cy+16;
+  drawLimb(ctx,cx+14,cy+10, cx+26,cy-2, 14,12,PT);
+
+  // Body (slight lean into kick)
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(-0.18);
+  drawTorso(ctx,0,0,col); ctx.restore();
+  drawNeck(ctx,cx,cy);
+
+  // Kicking leg (right) — lower shin + shoe (in front of torso = knee visible)
+  drawLimb(ctx,cx+26,cy-2, kx,ky, 12,10,PT);
+  drawShoe(ctx,kx+10,ky-2,true);
+
+  // Left arm up (balance)
+  drawLimb(ctx,cx-27,cy-54, cx-48,cy-80, 12,10,armCol(col));
+  drawLimb(ctx,cx-48,cy-80, cx-44,cy-106,10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx-44,cy-106,9,0,Math.PI*2); fs(ctx,SK);
+  // Right arm back (wind-up)
+  drawLimb(ctx,cx+27,cy-54, cx+48,cy-36, 12,10,armCol(col));
+  drawLimb(ctx,cx+48,cy-36, cx+52,cy-12, 10,8, armCol(col));
+  ctx.beginPath(); ctx.arc(cx+52,cy-12,9,0,Math.PI*2); fs(ctx,SK);
+
+  // Soccer ball (in air, near kick — kept lower to match leg)
+  ctx.save(); ctx.translate(cx+68,cy-18);
+  ctx.beginPath(); ctx.arc(0,0,22,0,Math.PI*2); fs(ctx,'#fff');
+  ctx.fillStyle='#111'; ctx.strokeStyle='#111'; ctx.lineWidth=1;
+  [[0,-12],[11,8],[-11,8]].forEach(([bx,by])=>{
+    ctx.beginPath(); ctx.arc(bx,by,6,0,Math.PI*2); ctx.fill();
+  });
+  // Motion blur arcs
+  ctx.strokeStyle='rgba(100,100,100,0.35)'; ctx.lineWidth=2.5; ctx.lineCap='round';
+  [[-30,-6],[-36,0],[-30,6]].forEach(([lx,ly])=>{
+    ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(lx+12,ly); ctx.stroke();
+  });
+  ctx.restore();
+
+  drawFaceW(ctx,cx,cy-90,27,'excited');
+}
+
+// ── FRIENDS ───────────────────────────────────────────────
+function figFriends(ctx,cx,cy,col){
+  // Two figures, slightly smaller, high-fiving
+  const drawFriend=(ox,faceX,sc,exp,highFiveRight)=>{
+    const S=0.82;
+    // Legs
+    drawLimb(ctx,ox-12*S,cy+10, ox-14*S,cy+8+30*S, 12*S,10*S,PT);
+    drawLimb(ctx,ox-14*S,cy+8+30*S, ox-13*S,cy+8+58*S, 10*S,8*S,PT);
+    drawShoe(ctx,ox-14*S,cy+8+64*S,false);
+    drawLimb(ctx,ox+12*S,cy+10, ox+14*S,cy+8+30*S, 12*S,10*S,PT);
+    drawLimb(ctx,ox+14*S,cy+8+30*S, ox+13*S,cy+8+58*S, 10*S,8*S,PT);
+    drawShoe(ctx,ox+14*S,cy+8+64*S,true);
+    // Torso (simplified)
+    ctx.beginPath();
+    ctx.moveTo(ox-22*S,cy-52*S); ctx.lineTo(ox+22*S,cy-52*S);
+    ctx.quadraticCurveTo(ox+24*S,cy-28*S,ox+17*S,cy+2);
+    ctx.lineTo(ox-17*S,cy+2);
+    ctx.quadraticCurveTo(ox-24*S,cy-28*S,ox-22*S,cy-52*S);
+    ctx.closePath(); fs(ctx,sc);
+    drawNeck(ctx,ox,cy);
+    const asc=armCol(sc);
+    // Arms — only draw the low arm on the OPPOSITE side of the high-five arm
+    if(highFiveRight){
+      // low arm on left (away from high-five)
+      drawLimb(ctx,ox-22*S,cy-50*S, ox-32*S,cy-24*S, 10*S,8*S,asc);
+      drawLimb(ctx,ox-32*S,cy-24*S, ox-28*S,cy, 8*S,7*S,asc);
+      ctx.beginPath(); ctx.arc(ox-28*S,cy,7*S,0,Math.PI*2); fs(ctx,SK);
+      // high-five arm on right
+      drawLimb(ctx,ox+22*S,cy-50*S, ox+40*S,cy-80*S, 10*S,8*S,asc);
+      drawLimb(ctx,ox+40*S,cy-80*S, ox+50*S,cy-108*S, 8*S,7*S,asc);
+      ctx.beginPath(); ctx.arc(ox+50*S,cy-108*S,7*S,0,Math.PI*2); fs(ctx,SK);
+    } else {
+      // high-five arm on left
+      drawLimb(ctx,ox-22*S,cy-50*S, ox-40*S,cy-80*S, 10*S,8*S,asc);
+      drawLimb(ctx,ox-40*S,cy-80*S, ox-50*S,cy-108*S, 8*S,7*S,asc);
+      ctx.beginPath(); ctx.arc(ox-50*S,cy-108*S,7*S,0,Math.PI*2); fs(ctx,SK);
+      // low arm on right (away from high-five)
+      drawLimb(ctx,ox+22*S,cy-50*S, ox+32*S,cy-24*S, 10*S,8*S,asc);
+      drawLimb(ctx,ox+32*S,cy-24*S, ox+28*S,cy, 8*S,7*S,asc);
+      ctx.beginPath(); ctx.arc(ox+28*S,cy,7*S,0,Math.PI*2); fs(ctx,SK);
+    }
+    drawFaceW(ctx,faceX,cy-82*S,22*S,exp);
+  };
+
+  drawFriend(cx-38,cx-38,'#3399FF','excited',false);
+  drawFriend(cx+38,cx+38,col,'excited',true);
+
+  // Third friend — just standing calmly to the right, no waving
+  {
+    const S=0.82, ox=cx+118, sc='#FF8844';
+    // Legs
+    drawLimb(ctx,ox-12*S,cy+10, ox-14*S,cy+8+30*S, 12*S,10*S,PT);
+    drawLimb(ctx,ox-14*S,cy+8+30*S, ox-13*S,cy+8+58*S, 10*S,8*S,PT);
+    drawShoe(ctx,ox-14*S,cy+8+64*S,false);
+    drawLimb(ctx,ox+12*S,cy+10, ox+14*S,cy+8+30*S, 12*S,10*S,PT);
+    drawLimb(ctx,ox+14*S,cy+8+30*S, ox+13*S,cy+8+58*S, 10*S,8*S,PT);
+    drawShoe(ctx,ox+14*S,cy+8+64*S,true);
+    // Torso
+    ctx.beginPath();
+    ctx.moveTo(ox-22*S,cy-52*S); ctx.lineTo(ox+22*S,cy-52*S);
+    ctx.quadraticCurveTo(ox+24*S,cy-28*S,ox+17*S,cy+2);
+    ctx.lineTo(ox-17*S,cy+2);
+    ctx.quadraticCurveTo(ox-24*S,cy-28*S,ox-22*S,cy-52*S);
+    ctx.closePath(); fs(ctx,sc);
+    drawNeck(ctx,ox,cy);
+    const asc=armCol(sc);
+    // Both arms hanging relaxed at sides
+    drawLimb(ctx,ox-22*S,cy-50*S, ox-28*S,cy-20*S, 10*S,8*S,asc);
+    drawLimb(ctx,ox-28*S,cy-20*S, ox-26*S,cy+6*S,  8*S,7*S,asc);
+    ctx.beginPath(); ctx.arc(ox-26*S,cy+6*S,7*S,0,Math.PI*2); fs(ctx,SK);
+    drawLimb(ctx,ox+22*S,cy-50*S, ox+28*S,cy-20*S, 10*S,8*S,asc);
+    drawLimb(ctx,ox+28*S,cy-20*S, ox+26*S,cy+6*S,  8*S,7*S,asc);
+    ctx.beginPath(); ctx.arc(ox+26*S,cy+6*S,7*S,0,Math.PI*2); fs(ctx,SK);
+    drawFaceW(ctx,ox,cy-82*S,22*S,'happy');
+  }
+
+  // High-five spark
+  ctx.save(); ctx.translate(cx,cy-108);
+  ctx.fillStyle='#FFD600';
+  for(let i=0;i<10;i++){
+    const a=(i/10)*Math.PI*2, r1=10,r2=22;
+    ctx.beginPath(); ctx.moveTo(Math.cos(a)*r1,Math.sin(a)*r1);
+    ctx.lineTo(Math.cos(a)*r2,Math.sin(a)*r2);
+    ctx.strokeStyle='#FFD600'; ctx.lineWidth=2.5; ctx.stroke();
+  }
+  ctx.beginPath(); ctx.arc(0,0,7,0,Math.PI*2); fs(ctx,'#FFD600');
+  // Stars
+  [[14,-8],[-12,-10],[10,10]].forEach(([sx,sy])=>{
+    ctx.font='bold 14px sans-serif'; ctx.fillStyle='#FFD600';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('★',sx,sy);
+  });
+  ctx.restore();
+}
+
+// ── DOCTOR ────────────────────────────────────────────────
+function figDoctor(ctx,cx,cy,col){
+  // Medical cross in background
+  ctx.fillStyle='rgba(255,80,100,0.14)';
+  ctx.fillRect(cx-60,cy-130,16,48); ctx.fillRect(cx-68,cy-118,32,24);
+
+  drawLimb(ctx,cx-14,cy+10, cx-16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx-16,cy+42, cx-15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+  drawLimb(ctx,cx+14,cy+10, cx+16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx+16,cy+42, cx+15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx+18,cy+78,true);
+
+  // White coat torso
+  drawTorso(ctx,cx,cy,'#ffffff');
+  // Coat colour lapels
+  ctx.fillStyle=col;
+  ctx.beginPath(); ctx.moveTo(cx-6,cy-58); ctx.lineTo(cx-18,cy-40); ctx.lineTo(cx-8,cy); ctx.lineTo(cx,cy-10); ctx.lineTo(cx-6,cy-58); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx+6,cy-58); ctx.lineTo(cx+18,cy-40); ctx.lineTo(cx+8,cy);  ctx.lineTo(cx,cy-10); ctx.lineTo(cx+6,cy-58); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=OLC; ctx.lineWidth=LW;
+  rrect(ctx,cx-27,cy-58,54,60,8); ctx.stroke(); // re-outline coat
+
+  drawNeck(ctx,cx,cy);
+
+  // Left arm holding clipboard
+  drawLimb(ctx,cx-27,cy-54, cx-40,cy-26, 12,10,armCol('#ffffff'));
+  drawLimb(ctx,cx-40,cy-26, cx-46,cy+4,  10,8, armCol('#ffffff'));
+  ctx.beginPath(); ctx.arc(cx-46,cy+4,9,0,Math.PI*2); fs(ctx,SK);
+  // Clipboard
+  rrect(ctx,cx-68,cy-46,32,42,3); fs(ctx,'#F5F0E0');
+  rrect(ctx,cx-60,cy-50,14,8,3); fs(ctx,'#888'); // clip
+  ctx.strokeStyle='#ccc'; ctx.lineWidth=1.5;
+  [0,1,2,3].forEach(i=>{
+    ctx.beginPath(); ctx.moveTo(cx-64,cy-36+i*8); ctx.lineTo(cx-40,cy-36+i*8); ctx.stroke();
+  });
+  ctx.fillStyle='#CC1122'; ctx.fillRect(cx-56,cy-36,10,6); // signature line accent
+
+  // Right arm — stethoscope
+  drawLimb(ctx,cx+27,cy-54, cx+42,cy-24, 12,10,armCol('#ffffff'));
+  drawLimb(ctx,cx+42,cy-24, cx+48,cy+6,  10,8, armCol('#ffffff'));
+  ctx.beginPath(); ctx.arc(cx+48,cy+6,9,0,Math.PI*2); fs(ctx,SK);
+  // Stethoscope
+  ctx.save(); ctx.translate(cx+24,cy-42);
+  ctx.strokeStyle='#888'; ctx.lineWidth=4; ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.bezierCurveTo(24,4,24,38,4,46);
+  ctx.bezierCurveTo(-16,54,-34,34,-26,16);
+  ctx.stroke();
+  ctx.beginPath(); ctx.arc(-26,16,8,0,Math.PI*2); fs(ctx,'#C0C0C0');
+  ctx.fillStyle='rgba(0,200,255,0.3)';
+  ctx.beginPath(); ctx.arc(-26,16,5,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  drawFaceW(ctx,cx,cy-90,27,'happy');
+}
+
+// ── SHOWER ────────────────────────────────────────────────
+function figShower(ctx,cx,cy,col){
+  // Shower curtain (partial) — extended upward so hardware is fully visible
+  ctx.fillStyle='rgba(200,230,255,0.2)';
+  ctx.fillRect(cx+38,cy-175,42,215);
+  ctx.strokeStyle='rgba(150,190,220,0.4)'; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(cx+38,cy-180); ctx.lineTo(cx+38,cy+70); ctx.stroke();
+  // Curtain rings
+  for(let i=0;i<5;i++){
+    ctx.beginPath(); ctx.arc(cx+42+i*8,cy-180,4,0,Math.PI*2);
+    ctx.fillStyle='rgba(150,180,200,0.5)'; ctx.fill();
+  }
+  // Shower arm + head — raised 35px higher than before
+  rrect(ctx,cx+24,cy-187,46,12,4); fs(ctx,'#B0B0B0');
+  ctx.strokeStyle='#999'; ctx.lineWidth=7; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(cx+26,cy-187); ctx.lineTo(cx-4,cy-153); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx-4,cy-153,18,0,Math.PI*2); fs(ctx,'#C0C0C0');
+  ctx.fillStyle='rgba(200,240,255,0.6)'; ctx.beginPath(); ctx.arc(cx-4,cy-153,14,0,Math.PI*2); ctx.fill();
+  // Spray nozzle holes
+  ctx.fillStyle='#888';
+  for(let r2=0;r2<2;r2++) for(let c=0;c<4;c++){
+    ctx.beginPath(); ctx.arc(cx-14+c*7,cy-159+r2*6,2,0,Math.PI*2); ctx.fill();
+  }
+  // Water drops (shifted up to fall from new head position)
+  const drops=[[-20,-125],[-4,-133],[12,-119],[-10,-107],[18,-103],[-26,-93],[4,-87],[14,-77],[-16,-73]];
+  drops.forEach(([dx,dy])=>{
+    ctx.fillStyle='#48CAE4'; ctx.strokeStyle='#2299CC'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(cx+dx,cy+dy,4,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='rgba(72,202,228,0.5)';
+    ctx.beginPath(); ctx.moveTo(cx+dx-2,cy+dy-4); ctx.lineTo(cx+dx,cy+dy-12); ctx.lineTo(cx+dx+2,cy+dy-4); ctx.closePath(); ctx.fill();
+  });
+  // Figure — legs (pants)
+  drawLimb(ctx,cx-14,cy+10, cx-16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx-16,cy+42, cx-15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx-18,cy+78,false);
+  drawLimb(ctx,cx+14,cy+10, cx+16,cy+42, 14,12,PT);
+  drawLimb(ctx,cx+16,cy+42, cx+15,cy+72, 12,10,PT);
+  drawShoe(ctx,cx+18,cy+78,true);
+  // Torso skin-colored (no shirt — it's shower time)
+  drawTorso(ctx,cx,cy,SK);
+  drawNeck(ctx,cx,cy);
+  // Arms raised V-shape — same skin color as torso
+  const sac=SK;
+  drawLimb(ctx,cx-27,cy-56, cx-48,cy-92, 12,10,sac);
+  drawLimb(ctx,cx-48,cy-92, cx-44,cy-120,10,8, sac);
+  ctx.beginPath(); ctx.arc(cx-44,cy-120,9,0,Math.PI*2); fs(ctx,SK);
+  drawLimb(ctx,cx+27,cy-56, cx+48,cy-92, 12,10,sac);
+  drawLimb(ctx,cx+48,cy-92, cx+44,cy-120,10,8, sac);
+  ctx.beginPath(); ctx.arc(cx+44,cy-120,9,0,Math.PI*2); fs(ctx,SK);
+  drawFaceW(ctx,cx,cy-90,27,'excited');
+}
+
+// ── SPORTS ────────────────────────────────────────────────
+function figSports(ctx,cx,cy,col){
+  // Pull-up bar mounted to wall
+  const barY=cy-132;
+  // Wall brackets
+  ctx.fillStyle='#666';
+  ctx.fillRect(cx-46,barY-18,10,20); ctx.strokeStyle='#444'; ctx.lineWidth=1.5; ctx.strokeRect(cx-46,barY-18,10,20);
+  ctx.fillRect(cx+36,barY-18,10,20); ctx.strokeStyle='#444'; ctx.strokeRect(cx+36,barY-18,10,20);
+  // Bar (thick steel)
+  ctx.strokeStyle='#444'; ctx.lineWidth=16; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(cx-42,barY); ctx.lineTo(cx+42,barY); ctx.stroke();
+  ctx.strokeStyle='#999'; ctx.lineWidth=7;
+  ctx.beginPath(); ctx.moveTo(cx-42,barY); ctx.lineTo(cx+42,barY); ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(cx-40,barY-2); ctx.lineTo(cx+40,barY-2); ctx.stroke();
+
+  // Legs hanging (slightly bent, effort pose)
+  drawLimb(ctx,cx-14,cy+10, cx-16,cy+44, 14,12,PT);
+  drawLimb(ctx,cx-16,cy+44, cx-14,cy+74, 12,10,PT);
+  drawShoe(ctx,cx-16,cy+80,false);
+  drawLimb(ctx,cx+14,cy+10, cx+16,cy+44, 14,12,PT);
+  drawLimb(ctx,cx+16,cy+44, cx+14,cy+74, 12,10,PT);
+  drawShoe(ctx,cx+16,cy+80,true);
+
+  // Torso
+  drawTorso(ctx,cx,cy,col);
+  drawNeck(ctx,cx,cy);
+
+  // Arms reaching straight UP to bar
+  drawLimb(ctx,cx-24,cy-56, cx-26,cy-94,  12,10,armCol(col));
+  drawLimb(ctx,cx-26,cy-94, cx-24,cy-130, 10,8,  armCol(col));
+  // Hands gripping bar
+  ctx.beginPath(); ctx.arc(cx-24,barY,10,0,Math.PI*2); fs(ctx,SK);
+  ctx.strokeStyle='#666'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.arc(cx-24,barY,10,0,Math.PI*2); ctx.stroke();
+
+  drawLimb(ctx,cx+24,cy-56, cx+26,cy-94,  12,10,armCol(col));
+  drawLimb(ctx,cx+26,cy-94, cx+24,cy-130, 10,8,  armCol(col));
+  ctx.beginPath(); ctx.arc(cx+24,barY,10,0,Math.PI*2); fs(ctx,SK);
+  ctx.strokeStyle='#666'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.arc(cx+24,barY,10,0,Math.PI*2); ctx.stroke();
+
+  // Head — straining face with sweatband
+  drawFaceW(ctx,cx,cy-90,27,'concentrate');
+  ctx.fillStyle='#FF8C00';
+  ctx.beginPath(); ctx.arc(cx,cy-90,27,Math.PI*1.1,Math.PI*0.1,false);
+  ctx.arc(cx,cy-90,20,Math.PI*0.1,Math.PI*1.1,true);
+  ctx.closePath(); ctx.fill(); ctx.strokeStyle=OLC; ctx.lineWidth=1.5; ctx.stroke();
+
+  // Effort sweat drops
+  ctx.fillStyle='#48CAE4';
+  [[cx-36,cy-106],[cx+36,cy-110],[cx-42,cy-90]].forEach(([sx,sy])=>{
+    ctx.beginPath(); ctx.arc(sx,sy,4,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(72,202,228,0.5)';
+    ctx.beginPath(); ctx.moveTo(sx-2,sy-4); ctx.lineTo(sx,sy-10); ctx.lineTo(sx+2,sy-4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#48CAE4';
+  });
+}
+
+/* ── Figure dispatch ──────────────────────────────────────── */
+const FIGURE_FNS = {
+  school:figSchool, eating:figEating, homework:figHomework, studying:figStudying,
+  gaming:figGaming, bag:figBag, sleep:figSleep, chilling:figChilling,
+  soccer:figSoccer, friends:figFriends, doctor:figDoctor, shower:figShower,
+  sports:figSports,
+};
+
+function drawFigure(ctx,actId,cx,cy,col){
+  const fn=FIGURE_FNS[actId]||function(c,x,y,cl){drawStandKid(c,x,y,cl,'happy');};
+  fn(ctx,cx,cy,col);
+}
+
+
+/* ── Tiny background character (for school/friends/sports panels) ── */
+function drawTinyKid(ctx,cx,cy,sc,shirtCol){
+  sc=sc||0.4;
+  ctx.save(); ctx.translate(cx,cy);
+  const r=9*sc;
+  // Body
+  ctx.fillStyle=shirtCol||'#3399FF';
+  ctx.beginPath(); ctx.rect(-8*sc,-34*sc,16*sc,26*sc); ctx.fill();
+  ctx.strokeStyle=OLC; ctx.lineWidth=1; ctx.stroke();
+  // Pants
+  ctx.fillStyle=PT;
+  ctx.beginPath(); ctx.rect(-9*sc,-9*sc,8*sc,26*sc); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.rect(1*sc,-9*sc,8*sc,26*sc); ctx.fill(); ctx.stroke();
+  // Arms
+  ctx.fillStyle=shirtCol||'#3399FF';
+  ctx.beginPath(); ctx.rect(-16*sc,-32*sc,8*sc,18*sc); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.rect(8*sc,-32*sc,8*sc,18*sc); ctx.fill(); ctx.stroke();
+  // Head
+  ctx.fillStyle=SK;
+  ctx.beginPath(); ctx.ellipse(0,-42*sc,r*0.9,r,0,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle=OLC; ctx.lineWidth=1; ctx.stroke();
+  // Hair
+  ctx.fillStyle=HR;
+  ctx.beginPath(); ctx.ellipse(0,-47*sc,r*0.9,r*0.5,0,Math.PI,Math.PI*2); ctx.fill();
+  // Eyes (dots)
+  ctx.fillStyle='#1a1a1a';
+  ctx.beginPath(); ctx.arc(-4*sc,-42*sc,1.4*sc,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(4*sc,-42*sc,1.4*sc,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+/* ── Room background functions ────────────────────────────────── */
+function bgClassroom(ctx,px,py,pw,ph){
+  // Wall
+  ctx.fillStyle='#EDE8D5'; ctx.fillRect(px,py,pw,ph);
+  // Floor (wood)
+  ctx.fillStyle='#C4A882'; ctx.fillRect(px,py+ph*0.7,pw,ph*0.3);
+  ctx.strokeStyle='#A88A60'; ctx.lineWidth=1;
+  for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(px+i*pw*0.33,py+ph*0.7);ctx.lineTo(px+i*pw*0.33,py+ph);ctx.stroke();}
+  // Chalkboard (left)
+  ctx.fillStyle='#2B4F18'; ctx.fillRect(px+8,py+8,pw*0.4,ph*0.48);
+  ctx.strokeStyle='#1A3A0A'; ctx.lineWidth=3; ctx.strokeRect(px+8,py+8,pw*0.4,ph*0.48);
+  ctx.fillStyle='#3A6820'; ctx.fillRect(px+10,py+10,pw*0.38,ph*0.44);
+  // Chalk writing
+  ctx.strokeStyle='rgba(230,230,200,0.55)'; ctx.lineWidth=1.5;
+  for(let l=0;l<4;l++){ctx.beginPath();ctx.moveTo(px+18,py+22+l*16);ctx.lineTo(px+18+Math.random()*60+30,py+22+l*16);ctx.stroke();}
+  ctx.fillStyle='rgba(220,220,190,0.7)'; ctx.font='bold 10px monospace'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText('2x+4=10',px+16,py+72);
+  // Window (right)
+  ctx.fillStyle='#BDE0F8'; ctx.fillRect(px+pw*0.62,py+8,pw*0.32,ph*0.44);
+  ctx.strokeStyle='#8899AA'; ctx.lineWidth=2.5; ctx.strokeRect(px+pw*0.62,py+8,pw*0.32,ph*0.44);
+  ctx.strokeStyle='#8899AA'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(px+pw*0.78,py+8); ctx.lineTo(px+pw*0.78,py+ph*0.52); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px+pw*0.62,py+ph*0.25); ctx.lineTo(px+pw*0.94,py+ph*0.25); ctx.stroke();
+  // Student desks (perspective, back of room)
+  for(let d=0;d<3;d++){
+    const dx=px+pw*0.08+d*(pw*0.28), dy=py+ph*0.54;
+    ctx.fillStyle='#D4BC84'; ctx.fillRect(dx,dy,pw*0.2,ph*0.1); ctx.strokeStyle='#A08850'; ctx.lineWidth=1.2; ctx.strokeRect(dx,dy,pw*0.2,ph*0.1);
+  }
+  // Background students at desks
+  drawTinyKid(ctx,px+pw*0.18,py+ph*0.64,0.46,'#E87020');
+  drawTinyKid(ctx,px+pw*0.46,py+ph*0.62,0.42,'#CC3344');
+}
+
+function bgBedroom(ctx,px,py,pw,ph){
+  // Wall with subtle wallpaper
+  ctx.fillStyle='#E8EEF4'; ctx.fillRect(px,py,pw,ph);
+  ctx.fillStyle='rgba(90,120,170,0.05)';
+  for(let wy=py+10;wy<py+ph*0.72;wy+=22) for(let wx=px+10;wx<px+pw;wx+=22){ctx.beginPath();ctx.arc(wx,wy,2,0,Math.PI*2);ctx.fill();}
+  // Floor (wood)
+  ctx.fillStyle='#C8A87C'; ctx.fillRect(px,py+ph*0.72,pw,ph*0.28);
+  ctx.strokeStyle='#A88860'; ctx.lineWidth=1;
+  for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(px,py+ph*0.72+i*13);ctx.lineTo(px+pw,py+ph*0.72+i*13);ctx.stroke();}
+  // Window (right)
+  ctx.fillStyle='#C8E8F8'; ctx.fillRect(px+pw*0.58,py+10,pw*0.35,ph*0.42);
+  ctx.strokeStyle='#7788AA'; ctx.lineWidth=2.5; ctx.strokeRect(px+pw*0.58,py+10,pw*0.35,ph*0.42);
+  ctx.strokeStyle='#7788AA'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(px+pw*0.755,py+10);ctx.lineTo(px+pw*0.755,py+ph*0.52);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(px+pw*0.58,py+ph*0.23);ctx.lineTo(px+pw*0.93,py+ph*0.23);ctx.stroke();
+  // Bookshelf (left)
+  ctx.fillStyle='#9A7250'; ctx.fillRect(px+6,py+8,pw*0.26,ph*0.52);
+  ctx.strokeStyle='#6A4A28'; ctx.lineWidth=2; ctx.strokeRect(px+6,py+8,pw*0.26,ph*0.52);
+  const bCols=['#D44','#44A','#4A4','#AA4','#A44','#44D'];
+  for(let b=0;b<6;b++){ctx.fillStyle=bCols[b];ctx.fillRect(px+10+b*16,py+14,12,ph*0.22);ctx.strokeStyle='#333';ctx.lineWidth=0.6;ctx.strokeRect(px+10+b*16,py+14,12,ph*0.22);}
+  ctx.fillStyle='#6A4A28'; ctx.fillRect(px+6,py+14+ph*0.22,pw*0.26,4);
+  for(let b=0;b<4;b++){ctx.fillStyle=bCols[(b+2)%6];ctx.fillRect(px+10+b*19,py+20+ph*0.22,14,ph*0.2);ctx.strokeStyle='#333';ctx.lineWidth=0.6;ctx.strokeRect(px+10+b*19,py+20+ph*0.22,14,ph*0.2);}
+  ctx.fillStyle='#6A4A28'; ctx.fillRect(px+6,py+20+ph*0.43,pw*0.26,4);
+  // Soccer poster (right of window) — height reduced so bottom edge sits well above the figure's head
+  ctx.fillStyle='#E44'; ctx.fillRect(px+pw*0.36,py+10,pw*0.18,ph*0.14);
+  ctx.strokeStyle='#333'; ctx.lineWidth=1.5; ctx.strokeRect(px+pw*0.36,py+10,pw*0.18,ph*0.14);
+  ctx.fillStyle='#fff'; ctx.font='bold 9px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('GOAL!',px+pw*0.45,py+ph*0.07);
+  ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(px+pw*0.45,py+ph*0.12,8,0,Math.PI*2); ctx.stroke();
+}
+
+function bgKitchen(ctx,px,py,pw,ph){
+  ctx.fillStyle='#F5F0E8'; ctx.fillRect(px,py,pw,ph);
+  // Tile backsplash
+  ctx.fillStyle='#E2D8C8'; ctx.fillRect(px,py+ph*0.42,pw,ph*0.2);
+  ctx.strokeStyle='#C8C0B0'; ctx.lineWidth=0.7;
+  for(let tx=px;tx<px+pw;tx+=26){ctx.beginPath();ctx.moveTo(tx,py+ph*0.42);ctx.lineTo(tx,py+ph*0.62);ctx.stroke();}
+  for(let ty=py+ph*0.42;ty<py+ph*0.62;ty+=18){ctx.beginPath();ctx.moveTo(px,ty);ctx.lineTo(px+pw,ty);ctx.stroke();}
+  // Counter
+  ctx.fillStyle='#7E848C'; ctx.fillRect(px,py+ph*0.62,pw,ph*0.06);
+  ctx.fillStyle='#6A6E74'; ctx.fillRect(px,py+ph*0.67,pw,ph*0.33);
+  for(let c=0;c<3;c++){ctx.fillStyle='#8C7254';ctx.fillRect(px+c*(pw/3)+4,py+ph*0.68,pw/3-8,ph*0.29);ctx.strokeStyle='#6A5238';ctx.lineWidth=1.5;ctx.strokeRect(px+c*(pw/3)+4,py+ph*0.68,pw/3-8,ph*0.29);ctx.fillStyle='#CCC';ctx.fillRect(px+c*(pw/3)+pw/6-6,py+ph*0.8,12,3);}
+  // Upper cabinets
+  for(let c=0;c<2;c++){ctx.fillStyle='#A08060';ctx.fillRect(px+c*(pw/2)+6,py+8,pw/2-12,ph*0.34);ctx.strokeStyle='#786040';ctx.lineWidth=1.5;ctx.strokeRect(px+c*(pw/2)+6,py+8,pw/2-12,ph*0.34);ctx.fillStyle='#888';ctx.fillRect(px+c*(pw/2)+pw/4-6,py+ph*0.22,12,3);}
+  // Window above counter
+  ctx.fillStyle='#C4E4F8'; ctx.fillRect(px+pw*0.3,py+8,pw*0.4,ph*0.32);
+  ctx.strokeStyle='#8899AA'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.3,py+8,pw*0.4,ph*0.32);
+  ctx.strokeStyle='#8899AA'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(px+pw*0.5,py+8);ctx.lineTo(px+pw*0.5,py+ph*0.4);ctx.stroke();
+  // Plant on counter
+  ctx.fillStyle='#4A8A2A'; ctx.beginPath(); ctx.arc(px+pw*0.82,py+ph*0.58,10,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(px+pw*0.78,py+ph*0.56,8,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#CC8844'; ctx.fillRect(px+pw*0.795,py+ph*0.6,14,10);
+  ctx.strokeStyle='#AA6622'; ctx.lineWidth=1; ctx.strokeRect(px+pw*0.795,py+ph*0.6,14,10);
+}
+
+function bgLivingRoom(ctx,px,py,pw,ph){
+  ctx.fillStyle='#EDE6D6'; ctx.fillRect(px,py,pw,ph);
+  ctx.fillStyle='#C4A882'; ctx.fillRect(px,py+ph*0.68,pw,ph*0.32);
+  // TV (left of center)
+  ctx.fillStyle='#111'; ctx.fillRect(px+pw*0.06,py+ph*0.04,pw*0.44,ph*0.4);
+  ctx.strokeStyle='#333'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.06,py+ph*0.04,pw*0.44,ph*0.4);
+  const tvg=ctx.createLinearGradient(px+pw*0.08,py+ph*0.06,px+pw*0.48,py+ph*0.42);
+  tvg.addColorStop(0,'#0A1A3A'); tvg.addColorStop(1,'#1A3A70');
+  ctx.fillStyle=tvg; ctx.fillRect(px+pw*0.08,py+ph*0.06,pw*0.4,ph*0.36);
+  ctx.strokeStyle='rgba(0,200,255,0.35)'; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.arc(px+pw*0.28,py+ph*0.24,26,0,Math.PI*2); ctx.stroke();
+  ctx.fillStyle='#00E5FF'; ctx.font='bold 9px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('PLAY',px+pw*0.28,py+ph*0.24);
+  ctx.fillStyle='#444'; ctx.fillRect(px+pw*0.24,py+ph*0.44,pw*0.08,ph*0.04);
+  ctx.fillStyle='#333'; ctx.fillRect(px+pw*0.2,py+ph*0.47,pw*0.16,ph*0.015);
+  // Couch (right)
+  ctx.fillStyle='#A08060'; ctx.fillRect(px+pw*0.54,py+ph*0.38,pw*0.42,ph*0.14);
+  ctx.strokeStyle='#7A6040'; ctx.lineWidth=1.8; ctx.strokeRect(px+pw*0.54,py+ph*0.38,pw*0.42,ph*0.14);
+  ctx.fillStyle='#8B6F4E'; ctx.fillRect(px+pw*0.54,py+ph*0.5,pw*0.42,ph*0.22);
+  ctx.strokeStyle='#6A5038'; ctx.lineWidth=1.8; ctx.strokeRect(px+pw*0.54,py+ph*0.5,pw*0.42,ph*0.22);
+  ctx.fillStyle='#8B6F4E'; ctx.fillRect(px+pw*0.54,py+ph*0.38,pw*0.05,ph*0.34); ctx.fillRect(px+pw*0.91,py+ph*0.38,pw*0.05,ph*0.34);
+  ctx.fillStyle='#C4A882'; ctx.fillRect(px+pw*0.61,py+ph*0.52,pw*0.14,ph*0.16); ctx.strokeStyle='#A08860'; ctx.lineWidth=1; ctx.strokeRect(px+pw*0.61,py+ph*0.52,pw*0.14,ph*0.16);
+  ctx.fillRect(px+pw*0.77,py+ph*0.52,pw*0.12,ph*0.16); ctx.strokeRect(px+pw*0.77,py+ph*0.52,pw*0.12,ph*0.16);
+  // Window (right wall)
+  ctx.fillStyle='#C8E8F8'; ctx.fillRect(px+pw*0.56,py+8,pw*0.36,ph*0.28);
+  ctx.strokeStyle='#8899AA'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.56,py+8,pw*0.36,ph*0.28);
+}
+
+function bgGaming(ctx,px,py,pw,ph){
+  const ng=ctx.createLinearGradient(px,py,px,py+ph);
+  ng.addColorStop(0,'#06061A'); ng.addColorStop(1,'#10101E');
+  ctx.fillStyle=ng; ctx.fillRect(px,py,pw,ph);
+  // Dark carpet
+  ctx.fillStyle='#14142A'; ctx.fillRect(px,py+ph*0.7,pw,ph*0.3);
+  // Screen glow
+  const glow=ctx.createRadialGradient(px+pw*0.5,py+ph*0.28,8,px+pw*0.5,py+ph*0.28,pw*0.55);
+  glow.addColorStop(0,'rgba(0,120,255,0.35)'); glow.addColorStop(0.6,'rgba(80,0,180,0.12)'); glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow; ctx.fillRect(px,py,pw,ph);
+  // Monitor
+  ctx.fillStyle='#111'; ctx.fillRect(px+pw*0.2,py+ph*0.04,pw*0.6,ph*0.46);
+  ctx.strokeStyle='#333'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.2,py+ph*0.04,pw*0.6,ph*0.46);
+  const sg=ctx.createLinearGradient(px+pw*0.22,py+ph*0.06,px+pw*0.78,py+ph*0.48);
+  sg.addColorStop(0,'#080E22'); sg.addColorStop(1,'#0E2048');
+  ctx.fillStyle=sg; ctx.fillRect(px+pw*0.22,py+ph*0.06,pw*0.56,ph*0.42);
+  ctx.fillStyle='#00E5FF'; ctx.font='bold 11px "DM Mono",monospace'; ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('LEVEL 7',px+pw*0.5,py+ph*0.1);
+  ctx.strokeStyle='#00FF88'; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.arc(px+pw*0.5,py+ph*0.22,20,0,Math.PI*2); ctx.stroke();
+  ctx.fillStyle='rgba(0,200,255,0.15)'; ctx.fillRect(px+pw*0.22,py+ph*0.06,pw*0.56,ph*0.42);
+  ctx.fillStyle='#FF4444'; ctx.fillRect(px+pw*0.34,py+ph*0.34,6,6);
+  ctx.fillStyle='#44FF44'; ctx.fillRect(px+pw*0.6,py+ph*0.34,6,6);
+  // Monitor stand
+  ctx.fillStyle='#222'; ctx.fillRect(px+pw*0.42,py+ph*0.5,pw*0.16,ph*0.045);
+  ctx.fillRect(px+pw*0.38,py+ph*0.54,pw*0.24,ph*0.012);
+  // RGB keyboard glow (on desk)
+  const kb=ctx.createLinearGradient(px+pw*0.18,0,px+pw*0.82,0);
+  kb.addColorStop(0,'#FF0066'); kb.addColorStop(0.5,'#00FFAA'); kb.addColorStop(1,'#0066FF');
+  ctx.fillStyle=kb; ctx.fillRect(px+pw*0.18,py+ph*0.58,pw*0.64,ph*0.025); ctx.globalAlpha=0.6; ctx.fillRect(px+pw*0.18,py+ph*0.58,pw*0.64,ph*0.025); ctx.globalAlpha=1;
+  ctx.fillStyle='#1A1A1A'; ctx.fillRect(px+pw*0.18,py+ph*0.58,pw*0.64,ph*0.05);
+  ctx.strokeStyle='rgba(100,200,255,0.3)'; ctx.lineWidth=0.8; ctx.strokeRect(px+pw*0.18,py+ph*0.58,pw*0.64,ph*0.05);
+  // Controller (floor)
+  ctx.fillStyle='#1C1C2A'; ctx.fillRect(px+pw*0.65,py+ph*0.74,32,18);
+  ctx.strokeStyle='#333'; ctx.lineWidth=1; ctx.strokeRect(px+pw*0.65,py+ph*0.74,32,18);
+  ctx.fillStyle='#0F0'; ctx.beginPath(); ctx.arc(px+pw*0.65+24,py+ph*0.74+6,3,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#F00'; ctx.beginPath(); ctx.arc(px+pw*0.65+24,py+ph*0.74+13,3,0,Math.PI*2); ctx.fill();
+}
+
+function bgSleep(ctx,px,py,pw,ph){
+  const ng=ctx.createLinearGradient(px,py,px,py+ph);
+  ng.addColorStop(0,'#080822'); ng.addColorStop(1,'#141436');
+  ctx.fillStyle=ng; ctx.fillRect(px,py,pw,ph);
+  // Floor
+  ctx.fillStyle='#101030'; ctx.fillRect(px,py+ph*0.78,pw,ph*0.22);
+  // Moon window (left)
+  ctx.fillStyle='#0A1428'; ctx.fillRect(px+10,py+8,pw*0.34,ph*0.46);
+  ctx.strokeStyle='#334'; ctx.lineWidth=2; ctx.strokeRect(px+10,py+8,pw*0.34,ph*0.46);
+  // Moon
+  ctx.fillStyle='#E8E0C2'; ctx.beginPath(); ctx.arc(px+pw*0.22,py+ph*0.18,16,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#C8C0A4'; ctx.beginPath(); ctx.arc(px+pw*0.25,py+ph*0.16,12,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#E8E0C2'; ctx.beginPath(); ctx.arc(px+pw*0.22,py+ph*0.18,16,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#D0C8B0'; ctx.beginPath(); ctx.arc(px+pw*0.25,py+ph*0.14,10,0,Math.PI*2); ctx.fill();
+  // Stars
+  ctx.fillStyle='rgba(255,255,210,0.9)';
+  [[px+22,py+16],[px+45,py+24],[px+32,py+38],[px+10+pw*0.34-12,py+16]].forEach(([sx,sy])=>{ctx.beginPath();ctx.arc(sx,sy,1.5,0,Math.PI*2);ctx.fill();});
+  const mg=ctx.createRadialGradient(px+pw*0.22,py+ph*0.18,16,px+pw*0.22,py+ph*0.18,55);
+  mg.addColorStop(0,'rgba(200,200,140,0.32)'); mg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=mg; ctx.fillRect(px+10,py+8,pw*0.34,ph*0.46);
+  // Bed headboard (right)
+  ctx.fillStyle='#32220E'; ctx.fillRect(px+pw*0.44,py+ph*0.06,pw*0.5,ph*0.32);
+  ctx.strokeStyle='#1E1508'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.44,py+ph*0.06,pw*0.5,ph*0.32);
+  // Mattress
+  ctx.fillStyle='#E0D8D0'; ctx.fillRect(px+pw*0.44,py+ph*0.36,pw*0.5,ph*0.44);
+  ctx.strokeStyle='#B0A8A0'; ctx.lineWidth=1.5; ctx.strokeRect(px+pw*0.44,py+ph*0.36,pw*0.5,ph*0.44);
+  // Pillow
+  ctx.fillStyle='#F0ECE8'; ctx.fillRect(px+pw*0.48,py+ph*0.38,pw*0.2,ph*0.16);
+  ctx.strokeStyle='#C8C4C0'; ctx.lineWidth=1; ctx.strokeRect(px+pw*0.48,py+ph*0.38,pw*0.2,ph*0.16);
+  // Blanket
+  ctx.fillStyle='#2A4A90'; ctx.fillRect(px+pw*0.44,py+ph*0.52,pw*0.5,ph*0.28);
+  ctx.strokeStyle='#1A2E60'; ctx.lineWidth=1.5; ctx.strokeRect(px+pw*0.44,py+ph*0.52,pw*0.5,ph*0.28);
+  ctx.fillStyle='#3860B0'; ctx.fillRect(px+pw*0.44,py+ph*0.52,pw*0.5,ph*0.04);
+  // Z letters
+  ctx.fillStyle='rgba(160,190,255,0.55)'; ctx.font='bold 26px Bangers,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('Z',px+pw*0.66,py+ph*0.16);
+  ctx.font='bold 18px Bangers,sans-serif'; ctx.fillStyle='rgba(160,190,255,0.4)';
+  ctx.fillText('z',px+pw*0.76,py+ph*0.09);
+  ctx.font='bold 12px Bangers,sans-serif'; ctx.fillStyle='rgba(160,190,255,0.3)';
+  ctx.fillText('z',px+pw*0.84,py+ph*0.04);
+}
+
+function bgOutdoor(ctx,px,py,pw,ph){
+  const sg=ctx.createLinearGradient(px,py,px,py+ph*0.62);
+  sg.addColorStop(0,'#1A5FBE'); sg.addColorStop(0.5,'#4A9CDE'); sg.addColorStop(1,'#A8D8F0');
+  ctx.fillStyle=sg; ctx.fillRect(px,py,pw,ph*0.62);
+  const gg=ctx.createLinearGradient(px,py+ph*0.62,px,py+ph);
+  gg.addColorStop(0,'#55A030'); gg.addColorStop(1,'#44881C');
+  ctx.fillStyle=gg; ctx.fillRect(px,py+ph*0.62,pw,ph*0.38);
+  ctx.strokeStyle='#366810'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(px,py+ph*0.62); ctx.lineTo(px+pw,py+ph*0.62); ctx.stroke();
+  // Distant treeline silhouette at horizon
+  const treeLine = py+ph*0.62;
+  ctx.fillStyle='#1E5C08';
+  for(let ti=0;ti<8;ti++){
+    const tx=px+ti*(pw/8)+pw*0.02;
+    const th=28+[18,24,14,20,16,22,12,26][ti];
+    ctx.beginPath();
+    ctx.arc(tx,treeLine-th*0.55,th*0.32,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(tx-th*0.18,treeLine-th*0.38,th*0.24,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(tx+th*0.18,treeLine-th*0.38,th*0.24,0,Math.PI*2); ctx.fill();
+    ctx.fillRect(tx-3,treeLine-th*0.28,6,th*0.28);
+  }
+  // Clouds
+  ctx.fillStyle='rgba(255,255,255,0.88)';
+  function cloud(ccx,ccy,s){ctx.beginPath();ctx.arc(ccx,ccy,s*1.2,0,Math.PI*2);ctx.arc(ccx+s*1.6,ccy-s*0.3,s,0,Math.PI*2);ctx.arc(ccx+s*2.9,ccy,s*1.1,0,Math.PI*2);ctx.fill();}
+  cloud(px+55,py+28,13); cloud(px+pw*0.58,py+20,15);
+  // Soccer goal post
+  ctx.strokeStyle='rgba(240,240,240,0.92)'; ctx.lineWidth=4; ctx.lineCap='square';
+  ctx.beginPath();
+  ctx.moveTo(px+pw*0.74,py+ph*0.62); ctx.lineTo(px+pw*0.74,py+ph*0.33);
+  ctx.lineTo(px+pw*0.95,py+ph*0.33); ctx.lineTo(px+pw*0.95,py+ph*0.62);
+  ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.45)'; ctx.lineWidth=0.8;
+  for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(px+pw*0.74+i*(pw*0.21/4),py+ph*0.33);ctx.lineTo(px+pw*0.74+i*(pw*0.21/4),py+ph*0.62);ctx.stroke();}
+  for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(px+pw*0.74,py+ph*0.33+i*(ph*0.29/4));ctx.lineTo(px+pw*0.95,py+ph*0.33+i*(ph*0.29/4));ctx.stroke();}
+  // Field marking
+  ctx.strokeStyle='rgba(255,255,255,0.28)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(px+pw*0.3,py+ph*0.75,28,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px+pw*0.3,py+ph*0.62); ctx.lineTo(px+pw*0.3,py+ph); ctx.stroke();
+}
+
+function bgBathroom(ctx,px,py,pw,ph){
+  ctx.fillStyle='#E0EEFF'; ctx.fillRect(px,py,pw,ph);
+  ctx.strokeStyle='#BCC8DC'; ctx.lineWidth=0.7;
+  for(let ty=py;ty<py+ph;ty+=26) for(let tx=px;tx<px+pw;tx+=26) ctx.strokeRect(tx,ty,26,26);
+  ctx.fillStyle='#C8D8E8'; ctx.fillRect(px,py+ph*0.7,pw,ph*0.3);
+  ctx.strokeStyle='#A8B8C8'; ctx.lineWidth=0.7;
+  for(let tx=px;tx<px+pw;tx+=20){ctx.beginPath();ctx.moveTo(tx,py+ph*0.7);ctx.lineTo(tx,py+ph);ctx.stroke();}
+  ctx.beginPath();ctx.moveTo(px,py+ph*0.82);ctx.lineTo(px+pw,py+ph*0.82);ctx.stroke();
+  // Shower curtain (right)
+  ctx.fillStyle='#A8C8E8'; ctx.fillRect(px+pw*0.6,py,pw*0.4,ph*0.72);
+  ctx.strokeStyle='#5888B8'; ctx.lineWidth=2.5; ctx.strokeRect(px+pw*0.6,py,pw*0.4,ph*0.72);
+  ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=3;
+  for(let s=0;s<4;s++){ctx.beginPath();ctx.moveTo(px+pw*0.62+s*22,py);ctx.lineTo(px+pw*0.62+s*22,py+ph*0.72);ctx.stroke();}
+  ctx.strokeStyle='#888'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(px+pw*0.58,py+8); ctx.lineTo(px+pw,py+8); ctx.stroke();
+  // Rings on rod
+  ctx.fillStyle='#AAA';
+  for(let rg=0;rg<5;rg++){ctx.beginPath();ctx.arc(px+pw*0.62+rg*18,py+8,4,0,Math.PI*2);ctx.fill();}
+  // Steam
+  ctx.fillStyle='rgba(200,220,255,0.2)';
+  for(let i=0;i<4;i++){ctx.beginPath();ctx.ellipse(px+pw*0.44+i*12,py+ph*0.32+i*7,7,14,0.3,0,Math.PI*2);ctx.fill();}
+  // Mirror (left)
+  ctx.fillStyle='#C8E4F4'; ctx.fillRect(px+8,py+10,pw*0.32,ph*0.42);
+  ctx.strokeStyle='#7788AA'; ctx.lineWidth=2; ctx.strokeRect(px+8,py+10,pw*0.32,ph*0.42);
+  ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fillRect(px+10,py+12,pw*0.08,ph*0.38);
+}
+
+function bgDoctor(ctx,px,py,pw,ph){
+  ctx.fillStyle='#EEF4F8'; ctx.fillRect(px,py,pw,ph);
+  ctx.fillStyle='#D8E8F0'; ctx.fillRect(px,py+ph*0.7,pw,ph*0.3);
+  // Examination table (right)
+  ctx.fillStyle='#C4CCD0'; ctx.fillRect(px+pw*0.52,py+ph*0.5,pw*0.44,ph*0.24);
+  ctx.strokeStyle='#A4AAAE'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.52,py+ph*0.5,pw*0.44,ph*0.24);
+  ctx.fillStyle='#E4ECF0'; ctx.fillRect(px+pw*0.54,py+ph*0.48,pw*0.4,ph*0.04);
+  // Legs
+  ctx.fillStyle='#888'; ctx.fillRect(px+pw*0.54,py+ph*0.74,8,ph*0.18);
+  ctx.fillRect(px+pw*0.88,py+ph*0.74,8,ph*0.18);
+  // Health poster (left)
+  ctx.fillStyle='#fff'; ctx.fillRect(px+8,py+10,pw*0.36,ph*0.42);
+  ctx.strokeStyle='#7788AA'; ctx.lineWidth=1.5; ctx.strokeRect(px+8,py+10,pw*0.36,ph*0.42);
+  ctx.fillStyle='#E44'; ctx.font='bold 11px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('STAY',px+pw*0.2,py+ph*0.07);
+  ctx.fillText('HEALTHY!',px+pw*0.2,py+ph*0.13);
+  // Red cross
+  ctx.fillStyle='#E44';
+  ctx.fillRect(px+pw*0.14,py+ph*0.24,pw*0.12,pw*0.04);
+  ctx.fillRect(px+pw*0.18,py+ph*0.2,pw*0.04,pw*0.12);
+  // Window
+  ctx.fillStyle='#C4E0F4'; ctx.fillRect(px+pw*0.5,py+10,pw*0.42,ph*0.32);
+  ctx.strokeStyle='#7788AA'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.5,py+10,pw*0.42,ph*0.32);
+}
+
+// Activity-specific bg dispatchers
+function bgBag(ctx,px,py,pw,ph){ bgBedroom(ctx,px,py,pw,ph);
+  // Door visible (right)
+  ctx.fillStyle='#A07850'; ctx.fillRect(px+pw*0.76,py+ph*0.2,pw*0.18,ph*0.52);
+  ctx.strokeStyle='#705530'; ctx.lineWidth=2; ctx.strokeRect(px+pw*0.76,py+ph*0.2,pw*0.18,ph*0.52);
+  ctx.strokeStyle='#8A6640'; ctx.lineWidth=1;
+  ctx.strokeRect(px+pw*0.78,py+ph*0.22,pw*0.14,ph*0.22);
+  ctx.strokeRect(px+pw*0.78,py+ph*0.46,pw*0.14,ph*0.22);
+  ctx.fillStyle='#CCA830'; ctx.beginPath(); ctx.arc(px+pw*0.77,py+ph*0.49,4,0,Math.PI*2); ctx.fill();
+}
+function bgStudying(ctx,px,py,pw,ph){ bgBedroom(ctx,px,py,pw,ph);
+  ctx.fillStyle='#A88850'; ctx.fillRect(px,py+ph*0.56,pw,ph*0.16);
+  ctx.strokeStyle='#806830'; ctx.lineWidth=2; ctx.stroke();
+  ctx.fillStyle='#E44'; ctx.fillRect(px+pw*0.08,py+ph*0.46,22,ph*0.12);
+  ctx.strokeStyle='#B22'; ctx.lineWidth=1.5; ctx.strokeRect(px+pw*0.08,py+ph*0.46,22,ph*0.12);
+  ctx.strokeStyle='#FFDD00'; ctx.lineWidth=2; ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(px+pw*0.1,py+ph*0.42);ctx.lineTo(px+pw*0.11,py+ph*0.47);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(px+pw*0.14,py+ph*0.4);ctx.lineTo(px+pw*0.14,py+ph*0.47);ctx.stroke();
+  ctx.fillStyle='#fff'; ctx.fillRect(px+pw*0.3,py+ph*0.58,pw*0.36,ph*0.12);
+  ctx.strokeStyle='#bbb'; ctx.lineWidth=1; ctx.strokeRect(px+pw*0.3,py+ph*0.58,pw*0.36,ph*0.12);
+  ctx.strokeStyle='#bbb'; ctx.beginPath();ctx.moveTo(px+pw*0.48,py+ph*0.58);ctx.lineTo(px+pw*0.48,py+ph*0.7);ctx.stroke();
+  ctx.strokeStyle='#ccc'; ctx.lineWidth=0.8;
+  for(let l=0;l<4;l++){ctx.beginPath();ctx.moveTo(px+pw*0.32,py+ph*0.612+l*7);ctx.lineTo(px+pw*0.46,py+ph*0.612+l*7);ctx.stroke();}
+}
+function bgHomework(ctx,px,py,pw,ph){ bgStudying(ctx,px,py,pw,ph); }
+function bgChilling(ctx,px,py,pw,ph){ bgLivingRoom(ctx,px,py,pw,ph); }
+function bgEating(ctx,px,py,pw,ph){
+  bgKitchen(ctx,px,py,pw,ph);
+  ctx.fillStyle='#7A5220'; ctx.fillRect(px,py+ph*0.64,pw,ph*0.12);
+  ctx.strokeStyle='#5A3A10'; ctx.lineWidth=2; ctx.strokeRect(px,py+ph*0.64,pw,ph*0.12);
+  ctx.fillStyle='#F0EEE8'; ctx.beginPath(); ctx.ellipse(px+pw*0.3,py+ph*0.62,28,16,0,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#222'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.fillStyle='#E86030'; ctx.beginPath(); ctx.ellipse(px+pw*0.3,py+ph*0.62,18,9,0,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#222'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle='#C8E0F0'; ctx.fillRect(px+pw*0.6,py+ph*0.55,14,22);
+  ctx.strokeStyle='#A0C8E8'; ctx.lineWidth=1.5; ctx.strokeRect(px+pw*0.6,py+ph*0.55,14,22);
+}
+function bgSoccer(ctx,px,py,pw,ph){
+  bgOutdoor(ctx,px,py,pw,ph);
+  drawTinyKid(ctx,px+pw*0.1,py+ph*0.72,0.4,'#FF6622');
+  drawTinyKid(ctx,px+pw*0.52,py+ph*0.68,0.38,'#2266FF');
+}
+function bgFriends(ctx,px,py,pw,ph){
+  bgOutdoor(ctx,px,py,pw,ph);
+  drawTinyKid(ctx,px+pw*0.12,py+ph*0.7,0.44,'#AA44EE');
+  drawTinyKid(ctx,px+pw*0.5,py+ph*0.68,0.4,'#EE8833');
+}
+function bgSports(ctx,px,py,pw,ph){
+  // ── Indoor gym ───────────────────────────────────────────
+  // Floor: rubber mat, dark grey
+  ctx.fillStyle='#2A2A2A'; ctx.fillRect(px,py,pw,ph);
+  // Back wall: warm mid-grey
+  ctx.fillStyle='#3C3C3C'; ctx.fillRect(px,py,pw,ph*0.72);
+  // Rubber floor strip
+  ctx.fillStyle='#1E1E1E'; ctx.fillRect(px,py+ph*0.72,pw,ph*0.28);
+  // Floor lane lines
+  ctx.strokeStyle='rgba(255,200,0,0.35)'; ctx.lineWidth=2; ctx.setLineDash([]);
+  for(let i=0;i<3;i++){
+    ctx.beginPath(); ctx.moveTo(px,py+ph*0.74+i*8); ctx.lineTo(px+pw,py+ph*0.74+i*8); ctx.stroke();
+  }
+  // Mirror wall (left side panel)
+  const mx=px+4, mw=pw*0.18, mh=ph*0.60;
+  ctx.fillStyle='rgba(180,220,240,0.12)'; ctx.fillRect(mx,py+6,mw,mh);
+  ctx.strokeStyle='rgba(180,220,240,0.5)'; ctx.lineWidth=2.5; ctx.strokeRect(mx,py+6,mw,mh);
+  // Reflection shimmer lines on mirror
+  ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1.5;
+  for(let i=0;i<3;i++){
+    ctx.beginPath(); ctx.moveTo(mx+8+i*10,py+12); ctx.lineTo(mx+4+i*10,py+mh-8); ctx.stroke();
+  }
+  // Weight rack (right side)
+  const rx=px+pw*0.74, ry=py+ph*0.55, rw=pw*0.22, rh=ph*0.17;
+  ctx.fillStyle='#222'; ctx.fillRect(rx,ry,rw,rh);
+  ctx.strokeStyle='#555'; ctx.lineWidth=2; ctx.strokeRect(rx,ry,rw,rh);
+  // Rack poles
+  ctx.strokeStyle='#444'; ctx.lineWidth=3;
+  [0.2,0.5,0.8].forEach(f=>{
+    ctx.beginPath(); ctx.moveTo(rx+rw*f,ry); ctx.lineTo(rx+rw*f,ry+rh); ctx.stroke();
+  });
+  // Weights on rack — pairs of dumbbells
+  const wCols=['#CC2200','#0055CC','#338800'];
+  [0,1,2].forEach(i=>{
+    const wx=rx+rw*([0.2,0.5,0.8][i])-8, wy=ry+6;
+    ctx.fillStyle=wCols[i];
+    ctx.beginPath(); ctx.ellipse(wx,wy+10,7,12,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#888'; ctx.fillRect(wx-2,wy,4,20);
+    ctx.fillStyle=wCols[i];
+    ctx.beginPath(); ctx.ellipse(wx+16,wy+10,7,12,0,0,Math.PI*2); ctx.fill();
+  });
+  // Motivational poster on wall (top-right)
+  const bx=px+pw*0.72, by2=py+10, bw2=pw*0.24, bh2=ph*0.18;
+  ctx.fillStyle='#111'; ctx.fillRect(bx,by2,bw2,bh2);
+  ctx.strokeStyle='#FFD700'; ctx.lineWidth=2.5; ctx.strokeRect(bx+3,by2+3,bw2-6,bh2-6);
+  ctx.fillStyle='#FFD700'; ctx.font='bold 9px Impact,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('NO PAIN',bx+bw2/2,by2+bh2*0.38);
+  ctx.fillText('NO GAIN',bx+bw2/2,by2+bh2*0.65);
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+}
+
+/* ── Background dispatcher ─────────────────────────────── */
+function drawBackground(ctx,actId,px,py,pw,ph){
+  const BG={
+    school:bgClassroom, eating:bgEating, homework:bgHomework, studying:bgStudying,
+    gaming:bgGaming, bag:bgBag, sleep:bgSleep, chilling:bgChilling,
+    soccer:bgSoccer, friends:bgFriends, doctor:bgDoctor, shower:bgBathroom,
+    sports:bgSports,
+  };
+  const fn=BG[actId];
+  if(fn) fn(ctx,px,py,pw,ph);
+  else { ctx.fillStyle='#FFFBF0'; ctx.fillRect(px,py,pw,ph); }
+}
+
+/* ── Panel renderer (header at top) ──────────────────────── */
+function drawComicPanel(ctx,px,py,pw,ph,blk){
+  const act=getAct(blk.actId); if(!act) return;
+  const meta=COMIC_META[blk.actId]||{sfx:'WOW!',sfxCol:'#FFD600',bubble:act.name+'!',sfxAng:-0.15};
+  const HDR=40; // header bar height
+
+  // Hard shadow
+  ctx.fillStyle='#000'; ctx.fillRect(px+8,py+8,pw,ph);
+  // Panel bg
+  ctx.fillStyle='#FFFBF0'; ctx.fillRect(px,py,pw,ph);
+  // Halftone
+  cHalftone(ctx,px,py+HDR,pw,ph-HDR,10,'rgba(200,140,30,0.055)');
+
+  // ── Header bar ──
+  ctx.fillStyle='#1a1a1a'; ctx.fillRect(px,py,pw,HDR);
+  // Accent stripe (activity colour)
+  ctx.fillStyle=act.color; ctx.fillRect(px,py,5,HDR);
+  // Activity name (left)
+  ctx.fillStyle='#fff';
+  ctx.font='26px Bangers,Impact,sans-serif'; ctx.letterSpacing='2px';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText(`${act.icon}  ${act.name.toUpperCase()}`,px+14,py+HDR/2);
+  ctx.letterSpacing='0px';
+  // Time (right) — clean DM Mono, no playful font
+  ctx.font='bold 15px "DM Mono",monospace';
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  ctx.fillStyle='#ffffff';
+  ctx.fillText(slotToTime(blk.startSlot) + ' – ' + slotToTime(blk.startSlot + blk.numSlots),px+pw-12,py+HDR/2);
+
+  // Panel border: coloured inner accent + black outer border
+  ctx.strokeStyle=act.color; ctx.lineWidth=3;
+  ctx.globalAlpha=0.55; ctx.strokeRect(px+4,py+4,pw-8,ph-8); ctx.globalAlpha=1;
+  ctx.strokeStyle=OLC; ctx.lineWidth=4; ctx.strokeRect(px,py,pw,ph);
+
+  // Figure — clipped to body area below header
+  ctx.save();
+  ctx.beginPath(); ctx.rect(px+2,py+HDR,pw-4,ph-HDR-2); ctx.clip();
+  drawBackground(ctx,blk.actId,px+2,py+HDR,pw-4,ph-HDR-2);
+  cHalftone(ctx,px+2,py+HDR,pw-4,ph-HDR-2,8,'rgba(0,0,0,0.035)');
+  drawFigure(ctx,blk.actId,px+pw*0.42,py+HDR+(ph-HDR)*0.62,act.color);
+  ctx.restore();
+
+  // Speech bubble (top-right of body area)
+  const bw=178;
+  cBubble(ctx,px+pw-bw-10,py+HDR+8,bw,meta.bubble);
+
+  // SFX (lower-left of body area)
+  cSFX(ctx,px+72,py+ph-64,meta.sfx,meta.sfxCol,meta.sfxAng);
+}
+
+/* ── Main generate → show overlay ────────────────────────── */
+let comicDataURL = null;
+
+function generateComic(){
+  const dayBlocks=schedule[currentDay];
+  if(!dayBlocks.length){ alert('Add some activities first! 🎨'); return; }
+  const entries=[...dayBlocks].sort((a,b)=>a.startSlot-b.startSlot);
+
+  const COLS=2, PAD=52, HEADER_H=104, PW=500, PH=360, GAP=22;
+  const rows=Math.ceil(entries.length/COLS);
+  const cw=PAD*2+COLS*PW+(COLS-1)*GAP;
+  const ch=PAD+HEADER_H+rows*(PH+GAP)+PAD;
+
+  const canvas=document.createElement('canvas');
+  canvas.width=cw; canvas.height=ch;
+  const ctx=canvas.getContext('2d');
+
+  // Page bg: warm ivory with visible grid texture
+  ctx.fillStyle='#FFF8E7'; ctx.fillRect(0,0,cw,ch);
+  cHalftone(ctx,0,0,cw,ch,12,'rgba(200,140,30,0.06)');
+  // Subtle line texture
+  ctx.strokeStyle='rgba(180,120,20,0.04)'; ctx.lineWidth=0.8;
+  for(let gy=0;gy<ch;gy+=24){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(cw,gy);ctx.stroke();}
+
+  // Comic title header
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.font='82px Bangers,Impact,sans-serif';
+  ctx.fillStyle='#CC1122'; ctx.fillText('MY DAY COMIC',cw/2+4,PAD+72+4);
+  ctx.fillStyle='#1a1a1a'; ctx.fillText('MY DAY COMIC',cw/2,PAD+72);
+  ctx.font='36px Bangers,Impact,sans-serif';
+  ctx.fillStyle='#CC1122'; ctx.fillText(`— ${DAYS_FULL[currentDay].toUpperCase()} —`,cw/2,PAD+102);
+
+  // Panels
+  entries.forEach((blk,i)=>{
+    const col=i%COLS, row=Math.floor(i/COLS);
+    const isLastOdd=(i===entries.length-1)&&(entries.length%2===1);
+    const px=isLastOdd?PAD+(PW+GAP)/2:PAD+col*(PW+GAP);
+    const py=PAD+HEADER_H+row*(PH+GAP);
+    drawComicPanel(ctx,px,py,PW,PH,blk);
+  });
+
+  // Show overlay
+  comicDataURL = canvas.toDataURL('image/png');
+  document.getElementById('comicPreviewImg').src = comicDataURL;
+  const overlay = document.getElementById('comicOverlay');
+  overlay.style.display = 'flex';
+}
+
+/* ── Overlay controls ─────────────────────────────────────── */
+document.getElementById('comicCloseBtn').addEventListener('click',()=>{
+  document.getElementById('comicOverlay').style.display='none';
+});
+document.getElementById('comicDownBtn').addEventListener('click',()=>{
+  if(!comicDataURL) return;
+  const a=document.createElement('a');
+  a.href=comicDataURL;
+  a.download=`myday-comic-${DAYS_SHORT[currentDay].toLowerCase()}.png`;
+  a.click();
+});
+document.getElementById('comicBtn').addEventListener('click', generateComic);
+
+</script>
+</body>
+</html>
