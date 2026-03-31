@@ -116,6 +116,13 @@ body::before {
   align-items: start;
 }
 
+@media (max-width: 520px) {
+  .main { grid-template-columns: 1fr 104px; gap: 8px; }
+  .act-card { padding: 5px 6px; gap: 5px; }
+  .act-name  { font-size: 10px; }
+  .act-emoji { font-size: 13px; }
+}
+
 /* ── Panel shell ─────────────────────────────────────────── */
 .panel {
   background: var(--p1);
