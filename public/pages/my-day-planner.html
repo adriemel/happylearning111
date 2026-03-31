@@ -792,6 +792,31 @@ function buildPalette() {
       hideGhost();
     });
 
+    // ── Touch drag support (mobile) ──────────────────────────
+    card.addEventListener('touchstart', (e) => {
+      dragActId = act.id;
+      card.classList.add('is-dragging');
+      showGhost(slotFromClientY(e.touches[0].clientY));
+    }, { passive: true });
+    card.addEventListener('touchmove', (e) => {
+      if (!dragActId) return;
+      e.preventDefault();
+      const slot = slotFromClientY(e.touches[0].clientY);
+      if (slot !== ghostSlot) showGhost(slot);
+    }, { passive: false });
+    card.addEventListener('touchend', (e) => {
+      if (!dragActId) return;
+      const touch  = e.changedTouches[0];
+      const slotsEl = document.getElementById('slotsArea');
+      const rect   = slotsEl.getBoundingClientRect();
+      if (touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+        addBlock(dragActId, slotFromClientY(touch.clientY));
+      }
+      dragActId = null;
+      card.classList.remove('is-dragging');
+      hideGhost();
+    });
+
     el.appendChild(card);
   });
 }
@@ -804,6 +829,19 @@ function slotFromEvent(e) {
   const rect    = slotsEl.getBoundingClientRect();
   const y       = e.clientY - rect.top;
   return Math.max(0, Math.min(N_SLOTS - 1, Math.floor(y / SLOT_H)));
+}
+
+function slotFromClientY(clientY) {
+  const slotsEl = document.getElementById('slotsArea');
+  const rect    = slotsEl.getBoundingClientRect();
+  const y       = clientY - rect.top;
+  return Math.max(0, Math.min(N_SLOTS - 1, Math.floor(y / SLOT_H)));
+}
+
+function getClientY(e) {
+  if (e.touches && e.touches.length)         return e.touches[0].clientY;
+  if (e.changedTouches && e.changedTouches.length) return e.changedTouches[0].clientY;
+  return e.clientY;
 }
 
 function showGhost(slot) {
@@ -928,6 +966,10 @@ function renderBlocks() {
       e.preventDefault(); e.stopPropagation();
       startResizeTop(blk.id, e.clientY, blk.startSlot, blk.numSlots);
     });
+    rsTopHnd.addEventListener('touchstart', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      startResizeTop(blk.id, e.touches[0].clientY, blk.startSlot, blk.numSlots);
+    }, { passive: false });
 
     // Bottom resize handle (drag to change end time, start stays fixed)
     const rsHnd = document.createElement('div');
@@ -936,6 +978,10 @@ function renderBlocks() {
       e.preventDefault(); e.stopPropagation();
       startResize(blk.id, e.clientY, blk.numSlots, blk.startSlot);
     });
+    rsHnd.addEventListener('touchstart', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      startResize(blk.id, e.touches[0].clientY, blk.numSlots, blk.startSlot);
+    }, { passive: false });
 
     el.appendChild(rsTopHnd);
     el.appendChild(topRow);
@@ -956,11 +1002,14 @@ function startResize(id, startY, origSlots, startSlot) {
   document.body.style.userSelect = 'none';
   document.addEventListener('mousemove', onResizeMove);
   document.addEventListener('mouseup',   onResizeEnd);
+  document.addEventListener('touchmove', onResizeMove, { passive: false });
+  document.addEventListener('touchend',  onResizeEnd);
 }
 
 function onResizeMove(e) {
   if (!rsState) return;
-  const delta     = e.clientY - rsState.startY;
+  if (e.cancelable) e.preventDefault();
+  const delta     = getClientY(e) - rsState.startY;
   const deltaSlots= Math.round(delta / SLOT_H);
   const newSlots  = Math.max(1, Math.min(N_SLOTS - rsState.startSlot, rsState.origSlots + deltaSlots));
   const blk = schedule[currentDay].find(b => b.id === rsState.id);
@@ -976,6 +1025,8 @@ function onResizeEnd() {
   document.body.style.userSelect = '';
   document.removeEventListener('mousemove', onResizeMove);
   document.removeEventListener('mouseup',   onResizeEnd);
+  document.removeEventListener('touchmove', onResizeMove);
+  document.removeEventListener('touchend',  onResizeEnd);
 }
 
 /* ── Top-edge resize: drag to shift start time (end time stays fixed) ── */
@@ -985,11 +1036,14 @@ function startResizeTop(id, startY, origStartSlot, origNumSlots) {
   document.body.style.userSelect = 'none';
   document.addEventListener('mousemove', onResizeTopMove);
   document.addEventListener('mouseup',   onResizeTopEnd);
+  document.addEventListener('touchmove', onResizeTopMove, { passive: false });
+  document.addEventListener('touchend',  onResizeTopEnd);
 }
 
 function onResizeTopMove(e) {
   if (!rsTopState) return;
-  const delta      = e.clientY - rsTopState.startY;
+  if (e.cancelable) e.preventDefault();
+  const delta      = getClientY(e) - rsTopState.startY;
   const deltaSlots = Math.round(delta / SLOT_H);
   // End slot stays fixed; moving top up/down shrinks/grows the block
   const endSlot    = rsTopState.origStartSlot + rsTopState.origNumSlots;
@@ -1009,6 +1063,8 @@ function onResizeTopEnd() {
   document.body.style.userSelect = '';
   document.removeEventListener('mousemove', onResizeTopMove);
   document.removeEventListener('mouseup',   onResizeTopEnd);
+  document.removeEventListener('touchmove', onResizeTopMove);
+  document.removeEventListener('touchend',  onResizeTopEnd);
 }
 
 /* ═══════════════════════════════════════════════════════
