@@ -522,13 +522,13 @@ body::before {
 /* ── Block editor popup (mobile tap-to-edit) ────────────── */
 #blockEditorOverlay {
   display: none;
-  position: fixed; inset: 0;
-  z-index: 200;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 9999;
   background: rgba(0,0,0,0.6);
   align-items: flex-end;
   justify-content: center;
 }
-#blockEditorOverlay.open { display: flex; }
 #blockEditorPopup {
   background: var(--p2);
   border: 1px solid var(--border);
@@ -754,11 +754,9 @@ let rsTopState = null; // { id, startY, origStartSlot, origNumSlots }
 ═══════════════════════════════════════════════════════ */
 function slotToTime(slot) {
   const mins = START_H * 60 + slot * 30;
-  const h24  = Math.floor(mins / 60) % 24;
+  const h    = Math.floor(mins / 60) % 24;
   const m    = mins % 60;
-  const ampm = h24 >= 12 ? 'PM' : 'AM';
-  const h12  = h24 % 12 || 12;
-  return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
+  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
 }
 
 function getAct(id) { return ACTS.find(a => a.id === id); }
@@ -1082,8 +1080,9 @@ function renderBlocks() {
     }, { passive: true });
     el.addEventListener('touchend', (e) => {
       const moved = Math.abs(e.changedTouches[0].clientY - tapY0);
-      if (moved < 10 && Date.now() - tapT0 < 400) {
+      if (moved < 18 && Date.now() - tapT0 < 500) {
         e.stopPropagation();
+        e.preventDefault();
         showBlockEditor(blk.id);
       }
     });
@@ -1195,12 +1194,13 @@ function showBlockEditor(blkId) {
   document.getElementById('bedName').textContent = act.name.toUpperCase();
   refreshBedTimes();
 
-  document.getElementById('blockEditorOverlay').classList.add('open');
+  const ov = document.getElementById('blockEditorOverlay');
+  ov.style.display = 'flex';
 }
 
 function closeBlockEditor() {
   editorBlkId = null;
-  document.getElementById('blockEditorOverlay').classList.remove('open');
+  document.getElementById('blockEditorOverlay').style.display = 'none';
 }
 
 // Start −/+
@@ -1239,6 +1239,9 @@ document.getElementById('bedEndPlus').addEventListener('click', () => {
 document.getElementById('bedDone').addEventListener('click', closeBlockEditor);
 // Tap backdrop to close
 document.getElementById('blockEditorOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('blockEditorOverlay')) closeBlockEditor();
+});
+document.getElementById('blockEditorOverlay').addEventListener('touchend', (e) => {
   if (e.target === document.getElementById('blockEditorOverlay')) closeBlockEditor();
 });
 
