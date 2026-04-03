@@ -990,6 +990,11 @@ function addBlock(actId, startSlot) {
   const id = ++blockId;
   // Default 2 slots (1 hr), clamped so it fits
   const numSlots = Math.min(2, N_SLOTS - startSlot);
+  // Reject if any existing block overlaps the target range
+  const overlaps = schedule[currentDay].some(b =>
+    startSlot < b.startSlot + b.numSlots && startSlot + numSlots > b.startSlot
+  );
+  if (overlaps) return;
   schedule[currentDay].push({ id, actId, startSlot, numSlots });
   renderBlocks();
 }
@@ -1058,6 +1063,7 @@ function renderBlocks() {
     delBtn.className = 'blk-del';
     delBtn.innerHTML = '&times;';
     delBtn.addEventListener('click', (e) => { e.stopPropagation(); removeBlock(blk.id); });
+    delBtn.addEventListener('touchend', (e) => { e.stopPropagation(); e.preventDefault(); removeBlock(blk.id); });
 
     // Top resize handle (drag to change start time, end stays fixed)
     const rsTopHnd = document.createElement('div');
