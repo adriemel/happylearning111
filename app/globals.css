@@ -28,10 +28,7 @@
   --lime-dim:  rgba(181, 242, 61, 0.08);
   --lime-glow: rgba(181, 242, 61, 0.18);
 
-  /* Typography */
-  --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-sans:  'Syne', system-ui, sans-serif;
-  --font-mono:  'DM Mono', 'Courier New', monospace;
+  /* Typography — values injected by next/font via <html> class variables */
 
   /* Spacing */
   --radius: 10px;

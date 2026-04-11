@@ -50,7 +50,7 @@ HappyLearning/
 - Dark theme throughout; cards highlight with a lime border glow on hover
 
 ## HTML Files
-All 8 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets — just drop and register.
+All 9 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets — just drop and register.
 
 | File | Title | Subject |
 |------|-------|---------|
@@ -62,6 +62,7 @@ All 8 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts 
 | Fabulator.html | Fabulator | Deutsch |
 | pangaea_ai_training_wiki.html | KI-Training & Pangaea | Allgemein |
 | html-lernen.html | HTML Lernen | Allgemein |
+| my-day-planner.html | My Day Planner | Allgemein |
 
 ## Notes
 - `npm run dev` to run locally at `localhost:3000`
