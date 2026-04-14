@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Script Reader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --bg-app:       #F5F2ED;
+      --bg-code:      #191C2A;
+      --bg-explainer: #FFFFFF;
+      --col-primary:  #2A4A7F;
+      --col-accent:   #C8853A;
+      --col-text:     #252525;
+      --col-muted:    #6B7280;
+      --col-border:   #DDD8D0;
+      --col-google:   #1A73E8;
+      --font-code:    'Source Code Pro', 'Consolas', monospace;
+      --font-serif:   'Lora', Georgia, serif;
+      --font-sans:    'Source Sans 3', sans-serif;
+      --radius:       3px;
+      --transition:   0.22s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: var(--font-sans); background: var(--bg-app); color: var(--col-text); }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+    #codePanel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+
+    /* ═══════════════════════════════════════════════════
+       API KEY SCREEN
+    ═══════════════════════════════════════════════════ */
+    #apiKeyScreen {
+      position: fixed; inset: 0;
+      background: var(--bg-app);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+
+    .key-card {
+      background: #fff;
+      border: 1px solid var(--col-border);
+      border-radius: var(--radius);
+      padding: 48px 48px 40px;
+      max-width: 500px; width: 94%;
+      box-shadow: 0 4px 28px rgba(0,0,0,0.07);
+    }
+
+    .key-card .eyebrow {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--col-accent); margin-bottom: 10px;
+    }
+
+    .key-card h1 {
+      font-family: var(--font-serif);
+      font-size: 26px; font-weight: 700;
+      line-height: 1.25; margin-bottom: 10px;
+    }
+
+    .key-card .subtitle {
+      font-size: 14.5px; color: var(--col-muted);
+      line-height: 1.65; margin-bottom: 28px;
+    }
+
+    /* Provider toggle */
+    .provider-toggle {
+      display: flex; gap: 0;
+      border: 1.5px solid var(--col-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .prov-btn {
+      flex: 1; padding: 10px 12px;
+      border: none; background: #FAFAF8; cursor: pointer;
+      font-family: var(--font-sans); font-size: 13.5px; font-weight: 500;
+      color: var(--col-muted);
+      transition: background var(--transition), color var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .prov-btn:first-child { border-right: 1.5px solid var(--col-border); }
+    .prov-btn .prov-icon { font-size: 16px; }
+
+    .prov-btn.active-google  { background: #EAF2FF; color: var(--col-google); font-weight: 600; }
+    .prov-btn.active-claude  { background: #FEF5EB; color: var(--col-accent); font-weight: 600; }
+
+    /* Free badge */
+    .free-badge {
+      display: inline-block;
+      background: #D4EDDA; color: #1A6B34;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 2px 6px; border-radius: 2px;
+      vertical-align: middle; margin-left: 4px;
+    }
+
+    /* Provider info box */
+    .prov-info {
+      display: none;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      font-size: 13px; line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .prov-info.show { display: block; }
+    .prov-info a { text-decoration: underline; color: inherit; }
+    .prov-info.google-info { background: #EAF2FF; color: #1A3A6B; border: 1px solid #C5D9F5; }
+    .prov-info.claude-info { background: #FEF5EB; color: #6B3A1A; border: 1px solid #F5D9C5; }
+
+    .field-label {
+      display: block; font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--col-muted); margin-bottom: 8px;
+    }
+
+    .key-input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--col-border);
+      border-radius: var(--radius);
+      font-family: var(--font-code); font-size: 13.5px;
+      background: #FAFAF8; color: var(--col-text);
+      transition: border-color var(--transition);
+    }
+    .key-input:focus { outline: none; border-color: var(--col-primary); }
+
+    .trust-note {
+      display: flex; align-items: flex-start; gap: 8px;
+      margin-top: 10px; font-size: 12.5px;
+      color: var(--col-muted); line-height: 1.5;
+    }
+
+    .btn-primary {
+      display: block; width: 100%; margin-top: 24px;
+      padding: 13px; background: var(--col-primary);
+      color: #fff; border: none; border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.02em;
+      transition: background var(--transition);
+    }
+    .btn-primary:hover { background: #1A3060; }
+    .btn-primary.google-btn { background: var(--col-google); }
+    .btn-primary.google-btn:hover { background: #1557B0; }
+
+    #keyError {
+      display: none; margin-top: 12px; padding: 10px 12px;
+      background: #FEF2F2; border: 1px solid #FECACA;
+      border-radius: var(--radius);
+      font-size: 13px; color: #991B1B; line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       MAIN APP SHELL
+    ═══════════════════════════════════════════════════ */
+    #mainApp {
+      display: none;
+      flex-direction: column; height: 100vh;
+    }
+
+    #topBar {
+      flex-shrink: 0;
+      background: var(--bg-code);
+      padding: 0 20px; height: 42px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .app-logo {
+      font-family: var(--font-serif);
+      font-size: 15px; font-weight: 400;
+      color: rgba(255,255,255,0.85);
+    }
+    .app-logo em { color: var(--col-accent); font-style: italic; }
+
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+
+    .provider-chip {
+      font-size: 11px; padding: 3px 9px;
+      border-radius: 2px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+    .chip-google { background: rgba(26,115,232,0.25); color: #7AB3FF; }
+    .chip-claude { background: rgba(200,133,58,0.25); color: #E8A96A; }
+
+    #changeKeyBtn {
+      font-size: 12px; color: rgba(255,255,255,0.35);
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color var(--transition);
+    }
+    #changeKeyBtn:hover { color: rgba(255,255,255,0.65); }
+
+    /* ─── Upload Screen ──────────────────────────────── */
+    #uploadScreen {
+      flex: 1; display: flex;
+      align-items: center; justify-content: center;
+      padding: 28px;
+    }
+
+    .upload-card {
+      background: #fff;
+      border: 1px solid var(--col-border);
+      border-radius: var(--radius);
+      padding: 40px 44px;
+      max-width: 700px; width: 100%;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    }
+
+    .upload-card h2 {
+      font-family: var(--font-serif);
+      font-size: 21px; font-weight: 600; margin-bottom: 6px;
+    }
+
+    .upload-card .desc {
+      font-size: 14.5px; color: var(--col-muted);
+      line-height: 1.6; margin-bottom: 26px;
+    }
+    .upload-card .desc code {
+      font-family: var(--font-code); font-size: 13px;
+      background: #F0EEE8; padding: 1px 5px; border-radius: 2px;
+    }
+
+    .tab-row {
+      display: flex;
+      border-bottom: 2px solid var(--col-border);
+      margin-bottom: 22px;
+    }
+
+    .tab-btn {
+      padding: 8px 22px; font-size: 13px; font-weight: 500;
+      border: none; background: none; cursor: pointer;
+      color: var(--col-muted);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      font-family: var(--font-sans);
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .tab-btn.active { color: var(--col-primary); border-bottom-color: var(--col-primary); }
+
+    #pasteTextarea {
+      width: 100%; height: 210px;
+      padding: 14px 16px;
+      font-family: var(--font-code); font-size: 13px; line-height: 1.65;
+      border: 1.5px solid var(--col-border);
+      border-radius: var(--radius);
+      background: #FAFAF8; color: var(--col-text);
+      resize: vertical;
+      transition: border-color var(--transition);
+    }
+    #pasteTextarea:focus { outline: none; border-color: var(--col-primary); }
+    #pasteTextarea::placeholder { color: #C5BFB5; }
+
+    #dropTab { display: none; }
+
+    #dropZone {
+      height: 190px; cursor: pointer;
+      border: 2px dashed var(--col-border);
+      border-radius: var(--radius);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+      background: #FAFAF8;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    #dropZone:hover, #dropZone.drag-over {
+      border-color: var(--col-primary); background: #EEF2FA;
+    }
+    #dropZone .drop-icon { font-size: 32px; opacity: 0.45; }
+    #dropZone .drop-main { font-size: 15px; color: var(--col-muted); }
+    #dropZone .drop-sub  { font-size: 13px; color: var(--col-primary); text-decoration: underline; }
+    #fileInput { display: none; }
+    #fileName  { margin-top: 10px; font-size: 13px; font-family: var(--font-code); color: #2D6A4F; }
+
+    #tokenEstimator {
+      display: none; margin-top: 14px;
+      padding: 10px 14px;
+      background: #F0F4FA;
+      border-left: 3px solid var(--col-primary);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 13.5px; color: var(--col-muted);
+    }
+    #tokenEstimator strong { color: var(--col-primary); }
+
+    /* Model selector */
+    .model-row {
+      display: none; /* shown by JS when Google is selected */
+      margin-bottom: 20px; align-items: center; gap: 10px;
+    }
+    .model-row.visible { display: flex; }
+    .model-row label {
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--col-muted); white-space: nowrap; flex-shrink: 0;
+    }
+    .model-select {
+      flex: 1; padding: 8px 10px;
+      border: 1.5px solid var(--col-border);
+      border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 13.5px;
+      background: #FAFAF8; color: var(--col-text);
+      cursor: pointer;
+    }
+    .model-select:focus { outline: none; border-color: var(--col-primary); }
+    .model-note {
+      font-size: 12px; color: var(--col-muted);
+      margin-top: -14px; margin-bottom: 18px;
+      line-height: 1.5; display: none;
+    }
+    .model-note.visible { display: block; }
+
+    #errorBox {
+      display: none; margin-top: 14px;
+      padding: 12px 14px;
+      background: #FEF2F2; border: 1px solid #FECACA;
+      border-radius: var(--radius);
+      font-size: 13.5px; color: #991B1B; line-height: 1.5;
+    }
+    #retryBtn {
+      display: none; margin-top: 10px;
+      padding: 8px 16px;
+      background: #991B1B; color: #fff;
+      border: none; border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+      cursor: pointer;
+    }
+    #retryBtn:hover { background: #7F1515; }
+
+    #analyzeBtn {
+      margin-top: 20px; width: 100%; padding: 14px;
+      background: var(--col-accent); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.02em;
+      transition: background var(--transition), opacity var(--transition);
+    }
+    #analyzeBtn:hover:not(:disabled) { background: #A8681F; }
+    #analyzeBtn:disabled { opacity: 0.42; cursor: not-allowed; }
+    #analyzeBtn.google-analyze { background: var(--col-google); }
+    #analyzeBtn.google-analyze:hover:not(:disabled) { background: #1557B0; }
+
+    /* ─── Loading ────────────────────────────────────── */
+    #loadingScreen {
+      display: none;
+      flex: 1; align-items: center; justify-content: center;
+      flex-direction: column; gap: 18px;
+    }
+
+    .spinner {
+      width: 38px; height: 38px;
+      border: 3px solid var(--col-border);
+      border-top-color: var(--col-accent);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-family: var(--font-serif); font-style: italic;
+      font-size: 17px; color: var(--col-muted);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       RESULT VIEW
+    ═══════════════════════════════════════════════════ */
+    #resultView { display: none; flex: 1; overflow: hidden; }
+
+    .panels { display: flex; height: 100%; }
+
+    #codePanel {
+      width: 40%; flex-shrink: 0;
+      background: var(--bg-code);
+      overflow-y: auto; overflow-x: hidden;
+    }
+
+    .code-inner {
+      padding: 16px 0 24px;
+      font-family: var(--font-code);
+      font-size: 12.5px; line-height: 1.7;
+    }
+
+    .code-line {
+      display: flex; align-items: flex-start;
+      padding: 0 14px;
+      transition: background 0.3s, opacity 0.3s;
+    }
+    .code-line.hl  { background: rgba(200,133,58,0.16); }
+    .code-line.dim { opacity: 0.22; }
+
+    /* Inline term highlight — bright mark within a highlighted block */
+    .ihl {
+      background: rgba(200, 133, 58, 0.55);
+      border-radius: 2px;
+      padding: 0 2px;
+      outline: 1px solid rgba(200, 133, 58, 0.8);
+      color: #FFE8C8;
+    }
+
+    .ln {
+      flex-shrink: 0; width: 34px;
+      text-align: right; padding-right: 14px;
+      color: rgba(255,255,255,0.18);
+      font-size: 11px; user-select: none; padding-top: 1px;
+    }
+
+    .lc { flex: 1; color: #B8C4D8; white-space: pre; overflow-x: visible; }
+
+    .kw  { color: #E06C75; }
+    .bi  { color: #61AFEF; }
+    .str { color: #98C379; }
+    .cm  { color: #4D5566; font-style: italic; }
+    .num { color: #D19A66; }
+    .dc  { color: #C678DD; }
+
+    /* ─── Explainer Panel ────────────────────────────── */
+    #explainerPanel {
+      flex: 1; background: var(--bg-explainer);
+      overflow-y: auto; padding: 36px 44px 32px;
+    }
+
+    .block-wrap {
+      animation: fadeUp 0.22s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .cat-badge {
+      display: inline-block; padding: 4px 11px;
+      border-radius: 2px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: #fff; margin-bottom: 16px;
+    }
+
+    .block-title {
+      font-family: var(--font-serif);
+      font-size: 26px; font-weight: 700;
+      line-height: 1.25; color: var(--col-text); margin-bottom: 10px;
+    }
+
+    .lines-tag {
+      display: inline-block;
+      font-family: var(--font-code); font-size: 11.5px;
+      color: var(--col-muted); margin-bottom: 20px;
+      padding: 3px 8px; background: #F2EFE9; border-radius: 2px;
+    }
+
+    .explanation {
+      font-size: 15.5px; line-height: 1.78;
+      color: #383838; margin-bottom: 26px;
+    }
+
+    .exp-code {
+      background: var(--bg-code);
+      border-radius: var(--radius);
+      padding: 13px 16px;
+      font-family: var(--font-code); font-size: 12px;
+      color: #B8C4D8; white-space: pre; overflow-x: auto;
+      max-height: 150px; margin-bottom: 26px; line-height: 1.65;
+    }
+
+    .term-box {
+      background: #F0F4FA;
+      border-left: 4px solid var(--col-primary);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 26px;
+    }
+    .term-box .t-label {
+      font-size: 10.5px; text-transform: uppercase;
+      letter-spacing: 0.12em; font-weight: 700;
+      color: var(--col-primary); margin-bottom: 6px;
+    }
+    .term-box .t-name {
+      font-family: var(--font-code); font-size: 14px; font-weight: 600;
+      color: var(--col-text); margin-bottom: 7px;
+    }
+    .term-box .t-def { font-size: 14px; color: #4A4A4A; line-height: 1.6; }
+
+    .data-preview { margin-top: 4px; }
+    .dp-label {
+      font-size: 10.5px; text-transform: uppercase;
+      letter-spacing: 0.12em; font-weight: 700;
+      color: var(--col-muted); margin-bottom: 10px;
+    }
+
+    .dp-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .dp-table th {
+      background: var(--bg-code); color: rgba(255,255,255,0.6);
+      padding: 8px 12px; text-align: left;
+      font-family: var(--font-code); font-size: 11.5px;
+    }
+    .dp-table td {
+      padding: 7px 12px; border-bottom: 1px solid var(--col-border);
+      font-family: var(--font-code); font-size: 12px;
+    }
+    .dp-table tr:last-child td { border-bottom: none; }
+
+    .dp-var {
+      display: flex; align-items: baseline; gap: 10px;
+      background: #F8F8F6; padding: 10px 14px; border-radius: var(--radius);
+    }
+    .dp-var .v-name  { font-family: var(--font-code); font-weight: 600; color: var(--col-primary); }
+    .dp-var .v-eq    { color: #CCC; }
+    .dp-var .v-value { font-family: var(--font-code); color: var(--col-text); }
+
+    .dp-chart {
+      font-style: italic; font-size: 14px;
+      color: var(--col-muted); line-height: 1.6;
+      padding: 10px 14px; border-left: 3px solid var(--col-border);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       NAV BAR
+    ═══════════════════════════════════════════════════ */
+    #navBar {
+      display: none;
+      flex-shrink: 0; background: #fff;
+      border-top: 1px solid var(--col-border);
+      padding: 10px 20px;
+      align-items: center; gap: 14px;
+    }
+
+    .nav-btn {
+      padding: 8px 22px;
+      border: 1.5px solid var(--col-border);
+      background: #fff; border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+      cursor: pointer; color: var(--col-text);
+      transition: all var(--transition); flex-shrink: 0;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--col-primary); color: #fff; border-color: var(--col-primary);
+    }
+    .nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+
+    .step-counter {
+      font-size: 13px; font-weight: 600;
+      color: var(--col-muted); white-space: nowrap; flex-shrink: 0;
+    }
+
+    .progress-track {
+      flex: 1; height: 4px;
+      background: var(--col-border); border-radius: 2px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--col-accent); border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .kbd-hint { font-size: 11.5px; color: #C0BAB2; flex-shrink: 0; white-space: nowrap; }
+
+    .ghost-btn {
+      padding: 6px 14px; flex-shrink: 0;
+      border: 1.5px solid var(--col-border);
+      background: #fff; border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 12px;
+      cursor: pointer; color: var(--col-muted);
+      transition: all var(--transition);
+    }
+    .ghost-btn:hover { color: var(--col-primary); border-color: var(--col-primary); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ API KEY SCREEN ══════════════════ -->
+<div id="apiKeyScreen">
+  <div class="key-card">
+    <p class="eyebrow">Python Script Reader</p>
+    <h1>Understand your code,<br>step by step.</h1>
+    <p class="subtitle">Choose an AI provider, paste your API key, and get a plain-language walkthrough of any Python script.</p>
+
+    <!-- Provider toggle -->
+    <div class="provider-toggle">
+      <button class="prov-btn active-google" id="provGoogle" onclick="selectProvider('google')">
+        <span class="prov-icon">🔵</span>
+        Google Gemini
+        <span class="free-badge">Free</span>
+      </button>
+      <button class="prov-btn" id="provClaude" onclick="selectProvider('claude')">
+        <span class="prov-icon">🟠</span>
+        Claude (Anthropic)
+      </button>
+    </div>
+
+    <!-- Provider info -->
+    <div class="prov-info google-info show" id="infoGoogle">
+      Free tier available — no credit card needed. Get your key at
+      <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>.
+      Uses <strong>Gemini 2.0 Flash</strong>.
+    </div>
+    <div class="prov-info claude-info" id="infoClaude">
+      Requires a funded account ($5 minimum). Get your key at
+      <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
+      Uses <strong>Claude Sonnet</strong>.
+    </div>
+
+    <label class="field-label" for="apiKeyInput" id="keyLabel">Google AI Studio Key</label>
+    <input class="key-input" type="password" id="apiKeyInput" placeholder="AIza…" autocomplete="off" spellcheck="false">
+    <div class="trust-note">
+      <span>🔒</span>
+      <span>Your key is stored in memory only — never saved to disk or sent anywhere except the AI provider's API.</span>
+    </div>
+
+    <button class="btn-primary google-btn" id="startBtn" onclick="submitApiKey()">Start reading →</button>
+    <div id="keyError"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN APP ════════════════════════ -->
+<div id="mainApp">
+
+  <div id="topBar">
+    <span class="app-logo">Python Script <em>Reader</em></span>
+    <div class="topbar-right">
+      <span class="provider-chip" id="providerChip"></span>
+      <button id="changeKeyBtn" onclick="changeApiKey()">Change API Key</button>
+    </div>
+  </div>
+
+  <!-- Upload Screen -->
+  <div id="uploadScreen">
+    <div class="upload-card">
+      <h2>Analyze a Python Script</h2>
+      <p class="desc">Upload a <code>.py</code> file or paste the code directly. The AI will read through it and explain each part in plain language.</p>
+
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('paste')">Paste Code</button>
+        <button class="tab-btn" onclick="switchTab('upload')">Upload File</button>
+      </div>
+
+      <div id="pasteTab">
+        <textarea id="pasteTextarea" placeholder="Paste your Python script here…" oninput="onCodeInput()"></textarea>
+      </div>
+
+      <div id="dropTab">
+        <div id="dropZone" onclick="document.getElementById('fileInput').click()">
+          <div class="drop-icon">📄</div>
+          <p class="drop-main">Drop your .py file here</p>
+          <span class="drop-sub">or click to browse</span>
+        </div>
+        <input type="file" id="fileInput" accept=".py,.txt" onchange="handleFileUpload(event)">
+        <div id="fileName"></div>
+      </div>
+
+      <!-- Gemini model picker (shown only for Google provider) -->
+      <div class="model-row" id="modelRow">
+        <label for="modelSelect">Model</label>
+        <select class="model-select" id="modelSelect" onchange="onModelChange()">
+          <option value="gemini-2.5-flash">gemini-2.5-flash ✓ recommended</option>
+          <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+          <option value="gemini-1.5-flash">gemini-1.5-flash — stable fallback</option>
+          <option value="gemini-1.5-flash-8b">gemini-1.5-flash-8b — lightest, highest quota</option>
+        </select>
+      </div>
+      <p class="model-note" id="modelNote"></p>
+
+      <div id="tokenEstimator"></div>
+      <div id="errorBox"></div>
+      <button id="retryBtn" onclick="analyzeScript()">↺ Try Again</button>
+
+      <button id="analyzeBtn" disabled onclick="analyzeScript()">Analyze Script</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loadingScreen">
+    <div class="spinner"></div>
+    <p class="loading-text" id="loadingText">Reading your script…</p>
+  </div>
+
+  <!-- Result View -->
+  <div id="resultView">
+    <div class="panels">
+      <div id="codePanel">
+        <div class="code-inner" id="codeLines"></div>
+      </div>
+      <div id="explainerPanel">
+        <div id="blockContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav Bar -->
+  <div id="navBar">
+    <button class="nav-btn" id="prevBtn" onclick="navigate(-1)" disabled>← Prev</button>
+    <span class="step-counter" id="stepCounter">Step 1 of 1</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <button class="nav-btn" id="nextBtn" onclick="navigate(1)">Next →</button>
+    <span class="kbd-hint">← → keys</span>
+    <button class="ghost-btn" onclick="newAnalysis()">New Script</button>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let apiKey       = null;
+let provider     = 'google';   // 'google' | 'claude'
+let blocks       = [];
+let currentIndex = 0;
+let scriptCode   = '';
+
+/* ═══════════════════════════════════════════════════
+   PROVIDER SELECTION
+═══════════════════════════════════════════════════ */
+function selectProvider(p) {
+  provider = p;
+  document.getElementById('provGoogle').className = 'prov-btn' + (p==='google' ? ' active-google' : '');
+  document.getElementById('provClaude').className = 'prov-btn' + (p==='claude' ? ' active-claude' : '');
+  document.getElementById('infoGoogle').className = 'prov-info google-info' + (p==='google' ? ' show' : '');
+  document.getElementById('infoClaude').className = 'prov-info claude-info' + (p==='claude' ? ' show' : '');
+  document.getElementById('keyLabel').textContent = p==='google' ? 'Google AI Studio Key' : 'Anthropic API Key';
+  document.getElementById('apiKeyInput').placeholder = p==='google' ? 'AIza…' : 'sk-ant-…';
+  document.getElementById('startBtn').className = 'btn-primary' + (p==='google' ? ' google-btn' : '');
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('keyError').style.display = 'none';
+}
+
+function onModelChange() {
+  const model = document.getElementById('modelSelect').value;
+  const noteEl = document.getElementById('modelNote');
+  const notes = {
+    'gemini-2.5-flash':    '💡 Current recommended model — best balance of quality and free tier availability.',
+    'gemini-2.0-flash':    '',
+    'gemini-1.5-flash':    '💡 Older but very stable. Good fallback if 2.5 Flash gives errors.',
+    'gemini-1.5-flash-8b': '💡 Smallest model — highest request quota on the free tier.',
+  };
+  const note = notes[model] || '';
+  noteEl.textContent = note;
+  noteEl.className = 'model-note' + (note ? ' visible' : '');
+}
+
+/* ═══════════════════════════════════════════════════
+   API KEY
+═══════════════════════════════════════════════════ */
+function submitApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  const errEl = document.getElementById('keyError');
+  errEl.style.display = 'none';
+
+  if (!key) { showKeyError('Please paste your API key.'); return; }
+
+  if (provider === 'google' && !key.startsWith('AIza')) {
+    showKeyError('That doesn\'t look like a Google AI key (should start with AIza…). Get one free at aistudio.google.com');
+    return;
+  }
+  if (provider === 'claude' && !key.startsWith('sk-ant')) {
+    showKeyError('That doesn\'t look like an Anthropic key (should start with sk-ant-…).');
+    return;
+  }
+
+  apiKey = key;
+  document.getElementById('apiKeyScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'flex';
+
+  // Show/hide model selector
+  const modelRow = document.getElementById('modelRow');
+  modelRow.className = 'model-row' + (provider === 'google' ? ' visible' : '');
+
+  // Set provider chip
+  const chip = document.getElementById('providerChip');
+  if (provider === 'google') {
+    const modelName = document.getElementById('modelSelect')?.value || 'gemini-2.0-flash';
+    chip.textContent = modelName;
+    chip.className = 'provider-chip chip-google';
+    document.getElementById('analyzeBtn').className = 'google-analyze';
+    document.getElementById('loadingText').textContent = 'Gemini is reading your script…';
+  } else {
+    chip.textContent = 'Claude Sonnet';
+    chip.className = 'provider-chip chip-claude';
+    document.getElementById('analyzeBtn').className = '';
+    document.getElementById('loadingText').textContent = 'Claude is reading your script…';
+  }
+}
+
+function showKeyError(msg) {
+  const el = document.getElementById('keyError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function changeApiKey() {
+  apiKey = null;
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('keyError').style.display = 'none';
+  document.getElementById('apiKeyScreen').style.display = 'flex';
+  document.getElementById('mainApp').style.display = 'none';
+}
+
+document.getElementById('apiKeyInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitApiKey();
+});
+
+/* ═══════════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.getElementById('pasteTab').style.display = tab === 'paste' ? 'block' : 'none';
+  document.getElementById('dropTab').style.display  = tab === 'upload' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', (i===0 && tab==='paste') || (i===1 && tab==='upload'));
+  });
+  if (tab === 'paste') onCodeInput();
+}
+
+/* ═══════════════════════════════════════════════════
+   FILE UPLOAD
+═══════════════════════════════════════════════════ */
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    scriptCode = e.target.result;
+    document.getElementById('fileName').textContent = '✓ ' + file.name;
+    document.getElementById('fileName').style.color = '#2D6A4F';
+    updateEstimator(scriptCode);
+    document.getElementById('analyzeBtn').disabled = false;
+  };
+  reader.readAsText(file);
+}
+
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFileUpload({ target: { files: [file] } });
+});
+
+/* ═══════════════════════════════════════════════════
+   TOKEN ESTIMATOR
+═══════════════════════════════════════════════════ */
+function onCodeInput() {
+  scriptCode = document.getElementById('pasteTextarea').value;
+  updateEstimator(scriptCode);
+  document.getElementById('analyzeBtn').disabled = !scriptCode || scriptCode.trim().length < 20;
+}
+
+function updateEstimator(code) {
+  const el = document.getElementById('tokenEstimator');
+  if (!code || code.trim().length < 20) { el.style.display = 'none'; return; }
+  const inTok  = Math.round(code.length / 4);
+  const outTok = inTok * 2;
+  el.style.display = 'block';
+  if (provider === 'google') {
+    el.innerHTML = `<strong>Estimated:</strong> ~${(inTok+outTok).toLocaleString()} tokens &nbsp;·&nbsp; <span style="color:#1A6B34;font-weight:600;">Free tier</span> <span style="color:#aaa;font-size:11.5px">(${inTok.toLocaleString()} in + ${outTok.toLocaleString()} out)</span>`;
+  } else {
+    const inCost  = (inTok  * 0.000003).toFixed(4);
+    const outCost = (outTok * 0.000015).toFixed(4);
+    const total   = (parseFloat(inCost) + parseFloat(outCost)).toFixed(4);
+    el.innerHTML = `<strong>Estimated:</strong> ~${(inTok+outTok).toLocaleString()} tokens &nbsp;·&nbsp; ~$${total} USD <span style="color:#aaa;font-size:11.5px">(${inTok.toLocaleString()} in + ${outTok.toLocaleString()} out)</span>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   INLINE TERM MARKER
+   Wraps occurrences of each term with <span class="ihl">
+   while carefully skipping over HTML tag attributes.
+═══════════════════════════════════════════════════ */
+function applyInlineMarks(html, terms) {
+  for (const term of terms) {
+    if (!term || term.length < 2) continue;
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Replace only inside text nodes (between tags), not inside tag attributes
+    html = html.replace(
+      new RegExp(`(<[^>]+>)|([^<]*)`, 'g'),
+      (match, tag, text) => {
+        if (tag) return tag;  // keep HTML tags untouched
+        if (!text) return '';
+        return text.replace(
+          new RegExp(escaped, 'g'),
+          m => `<span class="ihl">${m}</span>`
+        );
+      }
+    );
+  }
+  return html;
+}
+
+/* ═══════════════════════════════════════════════════
+   SYNTAX HIGHLIGHTER
+═══════════════════════════════════════════════════ */
+function highlightLine(raw, markTerms) {
+  let s = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const regions = [];
+  // Placeholder uses letters either side of the index so the number regex
+  // (\b\d+\b) can never match the index digits and corrupt the restore step.
+  function protect(html) { regions.push(html); return `\x00R${regions.length-1}Q\x00`; }
+
+  s = s.replace(/("""[\s\S]*?"""|'''[\s\S]*?''')/g, m => protect(`<span class="str">${m}</span>`));
+  s = s.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, m => protect(`<span class="str">${m}</span>`));
+  s = s.replace(/(#.*)$/, m => protect(`<span class="cm">${m}</span>`));
+  s = s.replace(/@[\w.]+/g, m => protect(`<span class="dc">${m}</span>`));
+
+  const KW = /\b(False|None|True|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield)\b/g;
+  s = s.replace(KW, m => protect(`<span class="kw">${m}</span>`));
+
+  const BI = /\b(abs|all|any|bool|bytes|callable|chr|dict|dir|divmod|enumerate|eval|exec|filter|float|format|frozenset|getattr|globals|hasattr|hash|help|hex|id|input|int|isinstance|issubclass|iter|len|list|locals|map|max|min|next|object|oct|open|ord|pow|print|property|range|repr|reversed|round|set|setattr|slice|sorted|staticmethod|str|sum|super|tuple|type|vars|zip)\b/g;
+  s = s.replace(BI, m => protect(`<span class="bi">${m}</span>`));
+
+  s = s.replace(/\b(\d+\.?\d*(?:[eE][+-]?\d+)?)\b/g, m => protect(`<span class="num">${m}</span>`));
+
+  // Restore all protected regions
+  s = s.replace(/\x00R(\d+)Q\x00/g, (_, i) => regions[parseInt(i)]);
+
+  // Apply inline term marks AFTER restore so we operate on final HTML
+  if (markTerms && markTerms.length) {
+    s = applyInlineMarks(s, markTerms);
+  }
+
+  return s;
+}
+
+/* ═══════════════════════════════════════════════════
+   SHARED PROMPT
+═══════════════════════════════════════════════════ */
+const SYSTEM_PROMPT = `You are a Python code educator. Analyze the Python script and break it into logical sections. Explain each section for a complete non-programmer.
+
+Return ONLY a valid JSON array — no markdown, no backticks, no preamble. Start with [ and end with ].
+
+Each element:
+{
+  "id": <integer from 1>,
+  "category": <one of exactly: "Load Libraries", "Configuration", "Data Import", "Data Cleaning", "Processing & Calculation", "Visualization", "Export / Output", "Other">,
+  "color": <hex — use consistently: Load Libraries=#4D7FA8, Configuration=#5E8A55, "Data Import"=#A86A43, "Data Cleaning"=#7A5BA0, "Processing & Calculation"=#3D8A7D, "Visualization"=#B89830, "Export / Output"=#A84F62, "Other"=#7A7A7A>,
+  "lines": <"X-Y" string>,
+  "code": <exact source code for this block>,
+  "title": <3–7 word descriptive title>,
+  "explanation": <2–4 sentences, warm plain language, no assumed knowledge. Define any technical terms inline in parentheses. Say WHAT and WHY.>,
+  "python_term": <the single most important Python concept in this block>,
+  "python_term_explanation": <1–2 sentences defining it in everyday language>,
+  "highlight_terms": <array of 1–4 short literal strings that are the specific focus of this block — exact tokens as they appear in the code, e.g. ["meta_lookup", "_resub.txt"] or ["for", "append"]. These will be visually highlighted in the code panel to match the explanation.>,
+  "data_preview": <{"type":"none"} OR {"type":"table","columns":[...],"rows":[[...]]} OR {"type":"variable","name":"...","value":"..."} OR {"type":"chart_description","description":"..."}>
+}
+
+Group by logical purpose. Aim for 6–15 blocks. Maintain chronological order. Cover all lines — no gaps.
+
+CRITICAL — line number accuracy: count every line including blank lines and comment-only lines. The "lines" value must point to the lines that actually contain the code described. Never point to a blank line when the real code is on the next line. If a block is a single statement, use "X-X" (same number twice) rather than just "X".`;
+
+
+/* ═══════════════════════════════════════════════════
+   API CALL — GOOGLE GEMINI
+═══════════════════════════════════════════════════ */
+async function callGemini(code) {
+  const model = document.getElementById('modelSelect')?.value || 'gemini-2.0-flash';
+  // Update chip to reflect currently used model
+  const chip = document.getElementById('providerChip');
+  if (chip) chip.textContent = model;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: [{ role: 'user', parts: [{ text: 'Here is the Python script to analyze:\n\n' + code }] }],
+      generationConfig: { temperature: 0.3, maxOutputTokens: 8192 }
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    const msg = err.error?.message || `HTTP ${resp.status}`;
+    if (resp.status === 400 && msg.includes('API_KEY')) throw new Error('Invalid Google API key. Check it at aistudio.google.com');
+    if (resp.status === 403) throw new Error('Access denied. Make sure the Gemini API is enabled for your key at aistudio.google.com');
+    if (resp.status === 429) throw new Error('Rate limit reached (free tier limit). Wait a minute and try again.');
+    throw new Error(msg);
+  }
+
+  const data = await resp.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+/* ═══════════════════════════════════════════════════
+   API CALL — ANTHROPIC CLAUDE
+═══════════════════════════════════════════════════ */
+async function callClaude(code) {
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 8192,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: 'Here is the Python script to analyze:\n\n' + code }]
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    const msg = err.error?.message || `HTTP ${resp.status}`;
+    if (resp.status === 401) throw new Error('Authentication failed. Check your API key at console.anthropic.com');
+    if (resp.status === 429) throw new Error('Rate limit reached. Please wait a moment and try again.');
+    throw new Error(msg);
+  }
+
+  const data = await resp.json();
+  return data.content[0].text.trim();
+}
+
+/* ═══════════════════════════════════════════════════
+   ANALYZE SCRIPT (router)
+═══════════════════════════════════════════════════ */
+async function analyzeScript() {
+  if (!scriptCode || scriptCode.trim().length < 20) return;
+
+  document.getElementById('uploadScreen').style.display = 'none';
+  document.getElementById('loadingScreen').style.display = 'flex';
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'none';
+
+  try {
+    const raw = provider === 'google'
+      ? await callGemini(scriptCode)
+      : await callClaude(scriptCode);
+
+    const start = raw.indexOf('[');
+    const end   = raw.lastIndexOf(']');
+    if (start === -1 || end === -1) throw new Error('The AI returned an unexpected format. Please try again.');
+
+    blocks = JSON.parse(raw.slice(start, end + 1));
+    if (!Array.isArray(blocks) || blocks.length === 0) throw new Error('No sections were returned. Try a longer script.');
+
+    currentIndex = 0;
+    renderCodePanel();
+    showBlock(0);
+
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('resultView').style.display = 'block';
+    document.getElementById('navBar').style.display = 'flex';
+
+  } catch (err) {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('uploadScreen').style.display = 'flex';
+    const box = document.getElementById('errorBox');
+    const retryBtn = document.getElementById('retryBtn');
+    let msg = err.message || 'Unknown error. Please try again.';
+    const isRateLimit = /rate.limit|429|quota/i.test(msg);
+    if (isRateLimit && provider === 'google') {
+      msg = '⚠ Rate limit hit (free tier). Try switching to gemini-1.5-flash or gemini-1.5-flash-8b in the model selector above — they have higher free quotas. Or just wait 60 seconds and hit Try Again.';
+    } else {
+      msg = '⚠ ' + msg;
+    }
+    box.textContent = msg;
+    box.style.display = 'block';
+    retryBtn.style.display = isRateLimit ? 'inline-block' : 'none';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER CODE PANEL
+═══════════════════════════════════════════════════ */
+function renderCodePanel() {
+  const lines = scriptCode.split('\n');
+  const container = document.getElementById('codeLines');
+  container.innerHTML = '';
+  lines.forEach((line, i) => {
+    const ln = i + 1;
+    const div = document.createElement('div');
+    div.className = 'code-line'; div.id = 'L' + ln;
+    const numEl = document.createElement('span');
+    numEl.className = 'ln'; numEl.textContent = ln;
+    const codeEl = document.createElement('span');
+    codeEl.className = 'lc'; codeEl.innerHTML = highlightLine(line) || '\u00A0';
+    div.appendChild(numEl); div.appendChild(codeEl);
+    container.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   CODE-BASED LINE LOCATOR
+   Finds where block.code actually lives in the source
+   by matching its first non-empty line — much more
+   reliable than trusting the AI's "lines" field.
+═══════════════════════════════════════════════════ */
+function locateBlockInSource(blockCode, srcLines) {
+  const codeLines = blockCode.split('\n');
+
+  // Find the first non-empty line of the block's code to use as anchor
+  const anchor = codeLines.find(l => l.trim() !== '');
+  if (!anchor) return null;
+  const anchorTrimmed = anchor.trim();
+
+  // Search the script for a line that matches (trim both sides)
+  let startIdx = -1;
+  for (let i = 0; i < srcLines.length; i++) {
+    if ((srcLines[i] || '').trim() === anchorTrimmed) {
+      startIdx = i; // 0-indexed
+      break;
+    }
+  }
+  if (startIdx === -1) return null;
+
+  // Walk the block's code lines to find the last matching source line
+  // Skips blank lines in the block code since source may have them too
+  let srcIdx = startIdx;
+  for (let ci = 1; ci < codeLines.length; ci++) {
+    const codeLine = codeLines[ci].trim();
+    if (codeLine === '') continue; // skip blank lines in the code block
+    // Advance srcIdx to find this next non-empty code line
+    let matched = false;
+    for (let si = srcIdx + 1; si < Math.min(srcIdx + 10, srcLines.length); si++) {
+      if ((srcLines[si] || '').trim() === codeLine) {
+        srcIdx = si;
+        matched = true;
+        break;
+      }
+    }
+    // If a line doesn't match within 10 lines, stop extending (avoids over-reaching)
+    if (!matched) break;
+  }
+
+  return { s: startIdx + 1, e: srcIdx + 1 }; // convert to 1-indexed
+}
+
+/* ═══════════════════════════════════════════════════
+   SHOW BLOCK
+═══════════════════════════════════════════════════ */
+function showBlock(idx) {
+  currentIndex = idx;
+  const block = blocks[idx];
+  const srcLines = scriptCode.split('\n');
+
+  // Use block.code to locate the true line range — more reliable than the
+  // AI's "lines" field which is frequently off by 1-2 lines.
+  let s, e;
+  const located = locateBlockInSource(block.code || '', srcLines);
+  if (located) {
+    s = located.s;
+    e = located.e;
+  } else {
+    // Fall back to the AI's line numbers if code-search fails
+    const parts = block.lines.split('-').map(Number);
+    s = parts[0];
+    e = parts[1] ?? parts[0];
+  }
+
+  const terms = Array.isArray(block.highlight_terms) ? block.highlight_terms : [];
+
+  document.querySelectorAll('.code-line').forEach(el => {
+    const n = parseInt(el.id.slice(1));
+    el.classList.remove('hl','dim');
+    const isHl = (n >= s && n <= e);
+    if (isHl) {
+      el.classList.add('hl');
+      // Re-render the highlighted lines with inline term marks
+      if (terms.length) {
+        const lcEl = el.querySelector('.lc');
+        if (lcEl) {
+          // Get the raw source line and re-highlight with marks
+          const rawLine = scriptCode.split('\n')[n - 1] || '';
+          lcEl.innerHTML = highlightLine(rawLine, terms) || '\u00A0';
+        }
+      }
+    } else {
+      el.classList.add('dim');
+      // Clear any leftover marks from a previous block on this line
+      const lcEl = el.querySelector('.lc');
+      if (lcEl && lcEl.querySelector('.ihl')) {
+        const rawLine = scriptCode.split('\n')[n - 1] || '';
+        lcEl.innerHTML = highlightLine(rawLine) || '\u00A0';
+      }
+    }
+  });
+  const firstEl = document.getElementById('L' + s);
+  if (firstEl) firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  const codeSnip = (block.code || '').split('\n').slice(0, 9).join('\n')
+    + ((block.code || '').split('\n').length > 9 ? '\n…' : '');
+  const highlighted = codeSnip.split('\n').map(highlightLine).join('\n');
+
+  let previewHTML = '';
+  const dp = block.data_preview || { type: 'none' };
+  if (dp.type === 'table' && dp.columns && dp.rows) {
+    previewHTML = `<div class="data-preview"><div class="dp-label">Example / Preview</div>
+      <table class="dp-table">
+        <thead><tr>${dp.columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>
+        <tbody>${dp.rows.map(r=>`<tr>${r.map(cell=>`<td>${esc(String(cell))}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table></div>`;
+  } else if (dp.type === 'variable') {
+    previewHTML = `<div class="data-preview"><div class="dp-label">Key Variable</div>
+      <div class="dp-var"><span class="v-name">${esc(dp.name)}</span><span class="v-eq">=</span><span class="v-value">${esc(String(dp.value))}</span></div></div>`;
+  } else if (dp.type === 'chart_description') {
+    previewHTML = `<div class="data-preview"><div class="dp-label">What This Creates</div>
+      <p class="dp-chart">📊 ${esc(dp.description)}</p></div>`;
+  }
+
+  document.getElementById('blockContent').innerHTML = `
+    <div class="block-wrap">
+      <div class="cat-badge" style="background:${esc(block.color||'#888')}">${esc(block.category)}</div>
+      <h2 class="block-title">${esc(block.title)}</h2>
+      <span class="lines-tag">Lines ${esc(block.lines)}</span>
+      <p class="explanation">${esc(block.explanation)}</p>
+      <div class="exp-code">${highlighted}</div>
+      <div class="term-box">
+        <div class="t-label">Python Concept</div>
+        <div class="t-name">${esc(block.python_term||'')}</div>
+        <div class="t-def">${esc(block.python_term_explanation||'')}</div>
+      </div>
+      ${previewHTML}
+    </div>`;
+
+  document.getElementById('explainerPanel').scrollTop = 0;
+
+  const total = blocks.length;
+  document.getElementById('stepCounter').textContent = `Step ${idx+1} of ${total}`;
+  document.getElementById('progressFill').style.width = `${((idx+1)/total)*100}%`;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === total - 1;
+}
+
+function navigate(dir) {
+  const n = currentIndex + dir;
+  if (n >= 0 && n < blocks.length) showBlock(n);
+}
+
+/* ═══════════════════════════════════════════════════
+   NEW ANALYSIS
+═══════════════════════════════════════════════════ */
+function newAnalysis() {
+  blocks = []; currentIndex = 0; scriptCode = '';
+  document.getElementById('pasteTextarea').value    = '';
+  document.getElementById('fileName').textContent   = '';
+  document.getElementById('tokenEstimator').style.display = 'none';
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'none';
+  document.getElementById('analyzeBtn').disabled    = true;
+  document.getElementById('resultView').style.display = 'none';
+  document.getElementById('navBar').style.display   = 'none';
+  document.getElementById('uploadScreen').style.display = 'flex';
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════ */
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.addEventListener('keydown', e => {
+  if (!blocks.length) return;
+  if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+});
+</script>
+</body>
+</html>
