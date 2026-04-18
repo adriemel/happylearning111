@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lernhub — Happy Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─────────────────────────────────────────────
+     LERNHUB v2 — Design System
+     Aesthetic: Dark workshop / scientific journal
+     Fonts: Instrument Serif + Syne + DM Mono
+     ───────────────────────────────────────────── */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Core palette */
+    --bg:        #0b0c0f;
+    --bg-card:   #111318;
+    --bg-card-h: #161820;
+    --bg-elev:   #141620;
+    --border:    #22252e;
+    --border-h:  #b5f23d;
+
+    /* Text */
+    --text-primary:   #e4ddd4;
+    --text-secondary: #7d8090;
+    --text-muted:     #444855;
+
+    /* Accent */
+    --lime:      #b5f23d;
+    --lime-dim:  rgba(181, 242, 61, 0.08);
+    --lime-glow: rgba(181, 242, 61, 0.18);
+
+    /* Subject tag colors (translucent chips on dark) */
+    --tag-mathe-bg:    rgba(255, 176, 46, 0.10);
+    --tag-mathe-text:  #ffb02e;
+    --tag-mathe-border:rgba(255, 176, 46, 0.30);
+
+    --tag-physik-bg:   rgba(120, 140, 255, 0.10);
+    --tag-physik-text: #8e9dff;
+    --tag-physik-border:rgba(120, 140, 255, 0.30);
+
+    --tag-chemie-bg:   rgba(80, 220, 140, 0.10);
+    --tag-chemie-text: #5ddc95;
+    --tag-chemie-border:rgba(80, 220, 140, 0.30);
+
+    --tag-deutsch-bg:  rgba(220, 110, 200, 0.10);
+    --tag-deutsch-text:#de7bcc;
+    --tag-deutsch-border:rgba(220, 110, 200, 0.30);
+
+    --tag-allgemein-bg:    rgba(180, 140, 255, 0.10);
+    --tag-allgemein-text:  #b398ff;
+    --tag-allgemein-border:rgba(180, 140, 255, 0.30);
+
+    --font-sans:  'Syne', system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, serif;
+    --font-mono:  'DM Mono', ui-monospace, monospace;
+
+    --radius: 10px;
+  }
+
+  html, body {
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Background texture (kept from original) */
+  body {
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(181,242,61,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 85%, rgba(60,120,255,0.04) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='0.8' fill='%23ffffff' opacity='0.025'/%3E%3C/svg%3E");
+    background-size: auto, auto, 40px 40px;
+    background-attachment: fixed;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+  /* ── Top bar ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(11, 12, 15, 0.82);
+    backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    max-width: 1120px; margin: 0 auto;
+    padding: 12px 1.5rem;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .brand-mini {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-sans); font-weight: 800;
+    font-size: 18px; letter-spacing: -0.01em;
+  }
+  .brand-mini .brand-script {
+    font-family: var(--font-serif); font-style: italic; font-weight: 400;
+    color: var(--lime); font-size: 22px; line-height: 1;
+  }
+  .brand-mini .ver {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--lime); background: var(--lime-dim);
+    border: 1px solid rgba(181,242,61,0.25);
+    padding: 2px 6px; border-radius: 4px;
+    margin-left: 4px;
+  }
+
+  .search {
+    flex: 1; max-width: 460px; margin-left: 12px;
+    position: relative;
+  }
+  .search input {
+    width: 100%;
+    padding: 9px 14px 9px 38px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  .search input::placeholder { color: var(--text-muted); }
+  .search input:focus {
+    border-color: var(--lime);
+    background: var(--bg-card-h);
+    box-shadow: 0 0 0 3px var(--lime-dim);
+  }
+  .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+  .search kbd {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-family: var(--font-mono); font-size: 10px;
+    padding: 2px 6px; background: var(--bg); color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 4px;
+  }
+
+  .toprite { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+  .lang-toggle {
+    display: flex; border: 1px solid var(--border); border-radius: 6px; padding: 2px;
+    background: var(--bg-card);
+  }
+  .lang-toggle button {
+    padding: 4px 10px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+  .lang-toggle button.on {
+    background: var(--lime); color: var(--bg);
+  }
+
+  .iconbtn {
+    width: 34px; height: 34px; display: grid; place-items: center;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card);
+    color: var(--text-secondary);
+    transition: all .15s;
+  }
+  .iconbtn:hover { border-color: var(--lime); color: var(--lime); }
+
+  /* ── Main layout ── */
+  .main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 5rem;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: var(--lime-dim);
+    border: 1px solid rgba(181, 242, 61, 0.25);
+    border-radius: 100px;
+    padding: 0.25rem 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero-badge .mono {
+    font-family: var(--font-mono);
+    color: var(--lime);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .hero-title {
+    font-family: var(--font-sans);
+    font-size: clamp(3rem, 7.5vw, 6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .title-script {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--lime);
+  }
+  .stick-figure {
+    flex-shrink: 0;
+    animation: figure-bounce 2s ease-in-out infinite;
+    margin-bottom: 6px;
+  }
+  .wave-arm {
+    transform-origin: 0px 0px;
+    animation: wave-arm 7s ease-in-out infinite;
+  }
+  @keyframes wave-arm {
+    0%    { transform: rotate(25deg); }
+    3.5%  { transform: rotate(-30deg); }
+    7%    { transform: rotate(25deg); }
+    10.5% { transform: rotate(-30deg); }
+    14%   { transform: rotate(25deg); }
+    17.5% { transform: rotate(-30deg); }
+    21%   { transform: rotate(25deg); }
+    24.5% { transform: rotate(-30deg); }
+    28.5% { transform: rotate(25deg); }
+    100%  { transform: rotate(25deg); }
+  }
+  @keyframes figure-bounce {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-4px); }
+  }
+  .hero-sub {
+    font-size: 1.02rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    max-width: 460px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.6;
+  }
+  .divider {
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, var(--lime), transparent);
+    margin: 0 auto;
+    border-radius: 2px;
+  }
+
+  /* ── Subject nav (sticky sub-bar) ── */
+  .subjectnav {
+    position: sticky; top: 59px; z-index: 20;
+    background: rgba(11, 12, 15, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    margin: 0 -1.5rem 2.5rem;
+    padding: 0.8rem 1.5rem;
+  }
+  .subjectnav-inner {
+    max-width: 1120px; margin: 0 auto;
+    display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+  }
+  .subjectnav-inner::-webkit-scrollbar { display: none; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    font-family: var(--font-mono);
+    font-size: 11.5px; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--lime); color: var(--lime); }
+  .chip.on {
+    background: var(--lime);
+    color: var(--bg);
+    border-color: var(--lime);
+    box-shadow: 0 0 20px var(--lime-glow);
+  }
+  .chip .chip-count {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    letter-spacing: 0;
+  }
+  .chip.on .chip-count {
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* ── Subject section ── */
+  .subject-section {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 130px;
+  }
+  .subject-header {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .subject-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.9rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .subject-title .count {
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-left: 10px;
+    letter-spacing: 0.08em;
+  }
+  .subject-blurb {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── Grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  [data-density="compact"] .grid { gap: 0.75rem; grid-template-columns: repeat(4, 1fr); }
+  [data-density="spacious"] .grid { gap: 1.75rem; grid-template-columns: repeat(3, 1fr); }
+
+  @media (max-width: 1000px) {
+    .grid, [data-density="compact"] .grid, [data-density="spacious"] .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .grid, [data-density="compact"] .grid, [data-density="spacious"] .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Card ── */
+  .card {
+    display: block;
+    text-decoration: none;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease,
+      transform 0.18s ease,
+      box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--lime-dim) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .card:hover {
+    border-color: var(--border-h);
+    background: var(--bg-card-h);
+    transform: translateY(-3px);
+    box-shadow:
+      0 8px 30px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(181,242,61,0.12),
+      0 0 40px rgba(181,242,61,0.05);
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-inner {
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    height: 100%;
+    min-height: 200px;
+    position: relative;
+  }
+  [data-density="compact"] .card-inner { padding: 1rem; min-height: 0; gap: 0.5rem; }
+  [data-density="compact"] .card-desc { display: none; }
+  [data-density="compact"] .card-footer { display: none; }
+  [data-descriptions="hide"] .card-desc { display: none; }
+
+  .card-top { display: flex; align-items: center; gap: 8px; }
+
+  .subject-tag {
+    display: inline-flex;
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.6rem;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border: 1px solid var(--tag-border);
+  }
+  .card-lang {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 0.22rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .card-title {
+    font-family: var(--font-serif);
+    font-size: 1.18rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-footer {
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .open-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    transition: color 0.15s ease, gap 0.15s ease;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .card:hover .open-label { color: var(--lime); gap: 8px; }
+  .api-badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    padding: 1px 5px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Subject tag color bindings */
+  [data-subject="Mathematik"] .subject-tag { --tag-bg: var(--tag-mathe-bg); --tag-text: var(--tag-mathe-text); --tag-border: var(--tag-mathe-border); }
+  [data-subject="Physik"]     .subject-tag { --tag-bg: var(--tag-physik-bg); --tag-text: var(--tag-physik-text); --tag-border: var(--tag-physik-border); }
+  [data-subject="Chemie"]     .subject-tag { --tag-bg: var(--tag-chemie-bg); --tag-text: var(--tag-chemie-text); --tag-border: var(--tag-chemie-border); }
+  [data-subject="Deutsch"]    .subject-tag { --tag-bg: var(--tag-deutsch-bg); --tag-text: var(--tag-deutsch-text); --tag-border: var(--tag-deutsch-border); }
+  [data-subject="Allgemein"]  .subject-tag { --tag-bg: var(--tag-allgemein-bg); --tag-text: var(--tag-allgemein-text); --tag-border: var(--tag-allgemein-border); }
+
+  /* ── Empty state ── */
+  .empty {
+    text-align: center; padding: 60px 20px;
+    color: var(--text-muted);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+  }
+  .empty-mark {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 2rem; color: var(--lime); margin-bottom: 8px;
+  }
+  .empty-title { color: var(--text-primary); font-weight: 600; margin-bottom: 4px; font-size: 0.95rem; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer .mono {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── Tweaks panel ── */
+  .tweaks {
+    position: fixed; bottom: 20px; right: 20px; z-index: 100;
+    width: 260px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(181,242,61,0.05);
+    padding: 14px;
+    font-size: 13px;
+    display: none;
+  }
+  .tweaks.open { display: block; }
+  .tweaks h4 {
+    margin: 0 0 10px;
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--lime); font-weight: 500;
+  }
+  .tweaks label { display: block; margin-bottom: 10px; }
+  .tweaks label > span {
+    display: block;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tweak-row { display: flex; gap: 6px; }
+  .tweak-row button {
+    flex: 1; padding: 6px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg);
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 500;
+    color: var(--text-secondary); letter-spacing: 0.05em; text-transform: uppercase;
+    transition: all .15s;
+  }
+  .tweak-row button:hover { border-color: var(--lime); color: var(--lime); }
+  .tweak-row button.on {
+    background: var(--lime); color: var(--bg); border-color: var(--lime);
+  }
+</style>
+</head>
+<body>
+
+<script>
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "density": "cozy",
+    "descriptions": "show",
+    "lang": "de",
+    "accentHue": 150,
+    "theme": "dark"
+  }/*EDITMODE-END*/;
+</script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useMemo, useRef } = React;
+
+// ----- Data -----
+const PANELS = [
+  { id: "brown",     subject: "Chemie",     title: { de: "Brownsche Molekularbewegung", en: "Brownian Motion" },
+    desc: { de: "Interaktive Simulation der zufälligen Bewegung von Teilchen in der Luft.", en: "Interactive simulation of random particle motion in air." },
+    href: "pages/BrownMovement.html", lang: "DE" },
+  { id: "schatten",  subject: "Physik",     title: { de: "Licht & Schatten", en: "Light & Shadow" },
+    desc: { de: "Optik-Erkundung: Wie entstehen Schatten? Kernschatten, Halbschatten und Lichtquellen interaktiv erklärt.", en: "Optics: how shadows form. Umbra, penumbra and light sources explained interactively." },
+    href: "pages/schatten_v2.html", lang: "DE" },
+  { id: "bruch",     subject: "Mathematik", title: { de: "Bruchrechnung", en: "Fractions" },
+    desc: { de: "Übungen und visuelle Erklärungen rund ums Rechnen mit Brüchen — Addition, Subtraktion, Multiplikation.", en: "Exercises and visual explanations for fractions — addition, subtraction, multiplication." },
+    href: "pages/bruchrechnung-v5.html", lang: "DE" },
+  { id: "mond",      subject: "Physik",     title: { de: "Mondphasen", en: "Moon Phases" },
+    desc: { de: "Wie entstehen Mondphasen? Licht, Schatten und der Lauf des Mondes um die Erde anschaulich visualisiert.", en: "How moon phases form. Light, shadow and the moon's orbit visualised." },
+    href: "pages/mondphasen.html", lang: "DE" },
+  { id: "stoffe",    subject: "Chemie",     title: { de: "Heterogene Stoffgemische", en: "Heterogeneous Mixtures" },
+    desc: { de: "Virtuelles Chemielabor: Trennverfahren für heterogene Gemische.", en: "Virtual chemistry lab: separation methods for heterogeneous mixtures." },
+    href: "pages/stoffgemische-labor.html", lang: "DE" },
+  { id: "fabulator", subject: "Deutsch",    title: { de: "Fabulator", en: "Fabulator" },
+    desc: { de: "Kreatives Schreibwerkzeug zum Erfinden von Fabeln — mit Charakteren, Moral und eigener Geschichte.", en: "Creative writing tool for inventing fables — characters, moral and your own story." },
+    href: "pages/Fabulator.html", lang: "DE", apiNeeded: true },
+  { id: "pangaea",   subject: "Allgemein",  title: { de: "KI-Training & Pangaea", en: "AI Training & Pangaea" },
+    desc: { de: "Kompaktes Wiki über die Grundlagen des KI-Trainings für PANGAEA Data Curators.", en: "Compact wiki on AI training fundamentals for PANGAEA Data Curators." },
+    href: "pages/pangaea_ai_training_wiki.html", lang: "EN" },
+  { id: "html",      subject: "Allgemein",  title: { de: "HTML Lernen", en: "Learn HTML" },
+    desc: { de: "Einstieg in HTML: Tags, Struktur, Attribute — für alle, die verstehen wollen, wie Webseiten gebaut werden.", en: "Getting started with HTML: tags, structure, attributes — for anyone who wants to understand how web pages are built." },
+    href: "pages/html-lernen.html", lang: "DE" },
+  { id: "python",    subject: "Allgemein",  title: { de: "Python Explainer", en: "Python Explainer" },
+    desc: { de: "Python-Code verständlich erklärt für Nicht-Programmierende.", en: "Get python code explained for non-programmers." },
+    href: "pages/PythonExplainer.html", lang: "EN", apiNeeded: true },
+  { id: "planner",   subject: "Allgemein",  title: { de: "My Day Planner", en: "My Day Planner" },
+    desc: { de: "Plane Deinen Tag und lade den Plan auf dein Handy, oder mache daraus einen Comic.", en: "Plan your day and send it to your phone — or turn it into a comic." },
+    href: "pages/my-day-planner.html", lang: "DE" },
+];
+
+const SUBJECT_ORDER = ["Mathematik", "Physik", "Chemie", "Deutsch", "Allgemein"];
+const SUBJECT_META = {
+  Mathematik: { de: "Mathematik", en: "Math",      blurb: { de: "Zahlen, Muster, Logik.",        en: "Numbers · patterns · logic" } },
+  Physik:     { de: "Physik",     en: "Physics",   blurb: { de: "Wie die Welt funktioniert.",    en: "How the world works" } },
+  Chemie:     { de: "Chemie",     en: "Chemistry", blurb: { de: "Stoffe · Teilchen · Reaktionen",en: "Substances · particles · reactions" } },
+  Deutsch:    { de: "Deutsch",    en: "German",    blurb: { de: "Lesen · Schreiben · Erzählen",  en: "Reading · writing · storytelling" } },
+  Allgemein:  { de: "Allgemein",  en: "General",   blurb: { de: "Werkzeuge und Wissen.",         en: "Tools and knowledge" } },
+};
+
+const T = {
+  de: {
+    sub: "Interaktive Seiten zum Entdecken, Verstehen und Üben.",
+    search: "Seiten durchsuchen…",
+    all: "Alle",
+    open: "Öffnen",
+    noResults: "Nichts gefunden",
+    noResultsSub: "Versuch einen anderen Suchbegriff oder ein anderes Fach.",
+    footer: "Happy Learning",
+    tweaks: "Einstellungen",
+    density: "Dichte",
+    compact: "Kompakt", cozy: "Mittel", spacious: "Weit",
+    descriptions: "Beschreibungen", show: "An", hide: "Aus",
+    pages: "Seiten",
+    subjects: "Fächer",
+  },
+  en: {
+    sub: "Interactive pages to explore, understand and practice.",
+    search: "Search pages…",
+    all: "All",
+    open: "Open",
+    noResults: "Nothing found",
+    noResultsSub: "Try a different search term or subject.",
+    footer: "Happy Learning",
+    tweaks: "Settings",
+    density: "Density",
+    compact: "Compact", cozy: "Cozy", spacious: "Spacious",
+    descriptions: "Descriptions", show: "On", hide: "Off",
+    pages: "pages",
+    subjects: "subjects",
+  }
+};
+
+// ----- Helpers -----
+function loadTweaks() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("lernhub-tweaks") || "{}");
+    return { ...TWEAK_DEFAULTS, ...saved };
+  } catch { return TWEAK_DEFAULTS; }
+}
+function saveTweaks(t) {
+  localStorage.setItem("lernhub-tweaks", JSON.stringify(t));
+  try { window.parent.postMessage({type: '__edit_mode_set_keys', edits: t}, '*'); } catch {}
+}
+
+// ----- Components -----
+function StickFigure({size = 44}) {
+  const h = Math.round(size * 58 / 44);
+  return (
+    <svg
+      className="stick-figure"
+      width={size} height={h}
+      viewBox="0 0 44 58"
+      fill="none" stroke="#b5f23d" strokeWidth="2.5" strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <circle cx="19" cy="7" r="6" />
+      <line x1="19" y1="13" x2="19" y2="34" />
+      <line x1="19" y1="22" x2="8" y2="27" />
+      <g transform="translate(19,22)">
+        <g className="wave-arm">
+          <line x1="0" y1="0" x2="11" y2="-3" />
+        </g>
+      </g>
+      <line x1="19" y1="34" x2="11" y2="48" />
+      <line x1="19" y1="34" x2="27" y2="48" />
+    </svg>
+  );
+}
+
+function BrandMini() {
+  return (
+    <div className="brand-mini">
+      <span className="brand-script">Lern</span>
+      <span>hub</span>
+      <span className="ver">v2.0</span>
+    </div>
+  );
+}
+
+function Search({value, onChange, placeholder}) {
+  const ref = useRef();
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); ref.current?.focus(); }
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); ref.current?.focus(); }
+      if (e.key === "Escape" && document.activeElement === ref.current) { onChange(""); ref.current?.blur(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onChange]);
+  return (
+    <div className="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input ref={ref} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} />
+      <kbd>⌘K</kbd>
+    </div>
+  );
+}
+
+function LangToggle({lang, onChange}) {
+  return (
+    <div className="lang-toggle" role="group">
+      <button className={lang === "de" ? "on" : ""} onClick={() => onChange("de")}>DE</button>
+      <button className={lang === "en" ? "on" : ""} onClick={() => onChange("en")}>EN</button>
+    </div>
+  );
+}
+
+function TweaksButton({onClick, open}) {
+  return (
+    <button className="iconbtn" onClick={onClick} title="Tweaks" aria-pressed={open}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+        <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+        <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+      </svg>
+    </button>
+  );
+}
+
+function Hero({lang}) {
+  const t = T[lang];
+  return (
+    <section className="hero">
+      <div className="hero-badge">
+        <span className="mono">v2.0</span>
+      </div>
+      <div className="title-row">
+        <h1 className="hero-title">
+          <span className="title-script">Lern</span>hub
+        </h1>
+        <StickFigure size={44} />
+      </div>
+      <p className="hero-sub">{t.sub}</p>
+      <div className="divider" />
+    </section>
+  );
+}
+
+function SubjectNav({subjects, counts, active, onSelect, lang}) {
+  const t = T[lang];
+  const total = Object.values(counts).reduce((a,b) => a+b, 0);
+  return (
+    <nav className="subjectnav">
+      <div className="subjectnav-inner">
+        <button className={"chip " + (active === "all" ? "on" : "")} onClick={() => onSelect("all")}>
+          {t.all}
+          <span className="chip-count">{total}</span>
+        </button>
+        {subjects.map(s => (
+          <button
+            key={s}
+            className={"chip " + (active === s ? "on" : "")}
+            onClick={() => onSelect(s)}
+          >
+            {SUBJECT_META[s][lang]}
+            <span className="chip-count">{counts[s] || 0}</span>
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+function Card({p, lang}) {
+  const t = T[lang];
+  return (
+    <a className="card" href={p.href} data-subject={p.subject}>
+      <div className="card-inner">
+        <div className="card-top">
+          <span className="subject-tag">{SUBJECT_META[p.subject][lang]}</span>
+          <span className="card-lang">{p.lang}</span>
+        </div>
+        <h3 className="card-title">{p.title[lang]}</h3>
+        <p className="card-desc">{p.desc[lang]}</p>
+        <div className="card-footer">
+          <span className="open-label">{t.open} →</span>
+          {p.apiNeeded && <span className="api-badge">API</span>}
+        </div>
+      </div>
+    </a>
+  );
+}
+
+function Section({subject, items, lang}) {
+  const meta = SUBJECT_META[subject];
+  return (
+    <section className="subject-section" id={"s-" + subject}>
+      <header className="subject-header">
+        <h2 className="subject-title">
+          {meta[lang]}
+          <span className="count">{String(items.length).padStart(2,'0')} {T[lang].pages}</span>
+        </h2>
+        <span className="subject-blurb">{meta.blurb[lang]}</span>
+      </header>
+      <div className="grid">
+        {items.map(p => <Card key={p.id} p={p} lang={lang} />)}
+      </div>
+    </section>
+  );
+}
+
+function Tweaks({open, tweaks, set, lang}) {
+  const t = T[lang];
+  return (
+    <aside className={"tweaks " + (open ? "open" : "")}>
+      <h4>{t.tweaks}</h4>
+      <label>
+        <span>{t.density}</span>
+        <div className="tweak-row">
+          {["compact","cozy","spacious"].map(d => (
+            <button key={d} className={tweaks.density === d ? "on" : ""} onClick={() => set({density: d})}>{t[d]}</button>
+          ))}
+        </div>
+      </label>
+      <label>
+        <span>{t.descriptions}</span>
+        <div className="tweak-row">
+          <button className={tweaks.descriptions === "show" ? "on" : ""} onClick={() => set({descriptions: "show"})}>{t.show}</button>
+          <button className={tweaks.descriptions === "hide" ? "on" : ""} onClick={() => set({descriptions: "hide"})}>{t.hide}</button>
+        </div>
+      </label>
+    </aside>
+  );
+}
+
+function App() {
+  const [tweaks, setTweaks] = useState(loadTweaks);
+  const [query, setQuery] = useState("");
+  const [activeSubject, setActiveSubject] = useState("all");
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const lang = tweaks.lang || "de";
+  const t = T[lang];
+
+  useEffect(() => { saveTweaks(tweaks); }, [tweaks]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-density", tweaks.density);
+    root.setAttribute("data-descriptions", tweaks.descriptions);
+    root.lang = lang;
+  }, [tweaks, lang]);
+
+  useEffect(() => {
+    const handler = (ev) => {
+      if (ev.data?.type === '__activate_edit_mode') { setEditMode(true); setTweaksOpen(true); }
+      if (ev.data?.type === '__deactivate_edit_mode') { setEditMode(false); setTweaksOpen(false); }
+    };
+    window.addEventListener('message', handler);
+    try { window.parent.postMessage({type: '__edit_mode_available'}, '*'); } catch {}
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const set = (patch) => setTweaks(prev => ({...prev, ...patch}));
+  const setLang = (l) => set({lang: l});
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return PANELS.filter(p => {
+      if (activeSubject !== "all" && p.subject !== activeSubject) return false;
+      if (!q) return true;
+      return (
+        p.title[lang].toLowerCase().includes(q) ||
+        p.desc[lang].toLowerCase().includes(q) ||
+        p.subject.toLowerCase().includes(q) ||
+        SUBJECT_META[p.subject][lang].toLowerCase().includes(q)
+      );
+    });
+  }, [query, activeSubject, lang]);
+
+  const bySubject = useMemo(() => {
+    const m = {};
+    SUBJECT_ORDER.forEach(s => m[s] = []);
+    filtered.forEach(p => { if (m[p.subject]) m[p.subject].push(p); });
+    return m;
+  }, [filtered]);
+
+  const counts = useMemo(() => {
+    const m = {};
+    SUBJECT_ORDER.forEach(s => m[s] = PANELS.filter(p => p.subject === s).length);
+    return m;
+  }, []);
+
+  const visibleSubjects = SUBJECT_ORDER.filter(s => bySubject[s] && bySubject[s].length > 0);
+
+  return (
+    <>
+      <header className="topbar">
+        <div className="topbar-inner">
+          <BrandMini />
+          <Search value={query} onChange={setQuery} placeholder={t.search} />
+          <div className="toprite">
+            <LangToggle lang={lang} onChange={setLang} />
+            {!editMode && <TweaksButton open={tweaksOpen} onClick={() => setTweaksOpen(v => !v)} />}
+          </div>
+        </div>
+      </header>
+
+      <main className="main">
+        <Hero lang={lang} />
+
+        <SubjectNav
+          subjects={SUBJECT_ORDER}
+          counts={counts}
+          active={activeSubject}
+          onSelect={setActiveSubject}
+          lang={lang}
+        />
+
+        {filtered.length === 0 ? (
+          <div className="empty">
+            <div className="empty-mark">∅</div>
+            <div className="empty-title">{t.noResults}</div>
+            <div>{t.noResultsSub}</div>
+          </div>
+        ) : (
+          visibleSubjects.map(s => (
+            <Section key={s} subject={s} items={bySubject[s]} lang={lang} />
+          ))
+        )}
+
+        <footer className="footer">
+          <span className="mono">{t.footer}</span>
+        </footer>
+      </main>
+
+      <Tweaks open={tweaksOpen} tweaks={tweaks} set={set} lang={lang} />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+</body>
+</html>

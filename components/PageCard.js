@@ -1,28 +1,26 @@
-"use client";
+import { T } from "@/lib/i18n";
+import { SUBJECT_META } from "@/lib/subjects";
 
-import { SUBJECT_COLORS } from "@/lib/pages";
-
-export default function PageCard({ file, title, subject, description }) {
-  const colors = SUBJECT_COLORS[subject] ?? SUBJECT_COLORS["Allgemein"];
-
+export default function PageCard({ page, lang }) {
+  const t = T[lang];
   return (
     <a
-      href={`/pages/${file}`}
+      className="card"
+      href={page.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="card"
-      style={{
-        "--tag-bg": colors.bg,
-        "--tag-text": colors.text,
-        "--tag-border": colors.border,
-      }}
+      data-subject={page.subject}
     >
       <div className="card-inner">
-        <span className="subject-tag">{subject}</span>
-        <h2 className="card-title">{title}</h2>
-        <p className="card-desc">{description}</p>
+        <div className="card-top">
+          <span className="subject-tag">{SUBJECT_META[page.subject][lang]}</span>
+          <span className="card-lang">{page.lang}</span>
+        </div>
+        <h3 className="card-title">{page.title[lang]}</h3>
+        <p className="card-desc">{page.desc[lang]}</p>
         <div className="card-footer">
-          <span className="open-label">Öffnen →</span>
+          <span className="open-label">{t.open} →</span>
+          {page.apiNeeded && <span className="api-badge">API</span>}
         </div>
       </div>
     </a>
