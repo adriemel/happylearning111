@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trennverfahren-Labor 🔬</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f0f5f9;
+  --card: #fffdf8;
+  --text: #1e2a38;
+  --text-light: #6b7a8d;
+  --shadow: 0 3px 14px rgba(0,0,0,0.07);
+  --radius: 18px;
+  --sieben:   #f97316;
+  --sediment: #92400e;
+  --dekant:   #1d4ed8;
+  --filtrier: #0f766e;
+  --zentri:   #6d28d9;
+  --poren:    #15803d;
+  --wal:      #075985;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 15% 20%, rgba(29,78,216,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 80%, rgba(15,118,110,0.06) 0%, transparent 50%);
+}
+
+.app { max-width: 1060px; margin: 0 auto; padding: 24px 16px 52px; }
+
+/* HEADER */
+.header { text-align: center; margin-bottom: 28px; }
+.header h1 {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 2.2rem; font-weight: 700;
+  background: linear-gradient(135deg, #1d4ed8, #0f766e, #6d28d9);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 5px;
+}
+.header p { color: var(--text-light); font-size: 0.9rem; font-weight: 700; }
+
+/* NAV */
+.nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+.nav-btn {
+  font-family: 'Fredoka', sans-serif; font-size: 0.95rem; font-weight: 600;
+  padding: 9px 17px; border-radius: 50px; border: 2.5px solid #dde4ec;
+  background: white; color: var(--text-light); cursor: pointer;
+  transition: all 0.22s ease; display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05); white-space: nowrap;
+}
+.nav-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.nav-btn[data-m="sieben"].on   { background:#fff4ed; border-color:var(--sieben);   color:var(--sieben); }
+.nav-btn[data-m="sediment"].on { background:#fef3c7; border-color:var(--sediment); color:var(--sediment); }
+.nav-btn[data-m="dekant"].on   { background:#eff6ff; border-color:var(--dekant);   color:var(--dekant); }
+.nav-btn[data-m="filtrier"].on { background:#f0fdfa; border-color:var(--filtrier); color:var(--filtrier); }
+.nav-btn[data-m="zentri"].on   { background:#f5f3ff; border-color:var(--zentri);   color:var(--zentri); }
+.nav-btn[data-m="poren"].on    { background:#f0fdf4; border-color:var(--poren);    color:var(--poren); }
+.nav-btn[data-m="wal"].on      { background:#e0f2fe; border-color:var(--wal);      color:var(--wal); }
+
+/* PANELS */
+.panel { display: none; }
+.panel.on { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; align-items: start; animation: panelIn 0.3s ease; }
+@keyframes panelIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width: 680px) {
+  .panel.on { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.65rem; }
+  .nav-btn { font-size: 0.85rem; padding: 8px 13px; }
+}
+
+/* STAGE CARD */
+.stage-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.stage-inner {
+  position: relative; min-height: 320px;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.stage-badge {
+  position: absolute; top: 12px; left: 14px;
+  font-family: 'Fredoka', sans-serif; font-size: 0.8rem; font-weight: 600;
+  color: white; background: rgba(0,0,0,0.25); backdrop-filter: blur(5px);
+  border-radius: 20px; padding: 3px 12px; z-index: 5; pointer-events: none;
+}
+.stage-footer { padding: 12px 16px; }
+.anim-btn {
+  width: 100%; font-family: 'Fredoka', sans-serif; font-size: 1.05rem;
+  font-weight: 700; padding: 13px; border: none; border-radius: 13px;
+  color: white; cursor: pointer; transition: all 0.22s ease; letter-spacing: 0.3px;
+}
+.anim-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+.anim-btn:active { transform: scale(0.97); }
+.btn-sieben  { background: linear-gradient(135deg, #fb923c, #ea6c1a); }
+.btn-sediment{ background: linear-gradient(135deg, #b45309, #92400e); }
+.btn-dekant  { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.btn-filtrier{ background: linear-gradient(135deg, #14b8a6, #0f766e); }
+.btn-zentri  { background: linear-gradient(135deg, #a78bfa, #6d28d9); }
+.btn-poren   { background: linear-gradient(135deg, #4ade80, #15803d); }
+.btn-wal     { background: linear-gradient(135deg, #38bdf8, #075985); }
+
+/* INFO CARD */
+.info-card { background: var(--card); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+.info-card h2 { font-family: 'Fredoka', sans-serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 2px; }
+.info-card .tagline { font-size: 0.79rem; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-light); margin-bottom: 14px; }
+.info-card p { font-size: 0.9rem; line-height: 1.68; color: #374151; margin-bottom: 11px; }
+
+.fact { border-radius: 12px; padding: 11px 14px; margin-bottom: 9px; font-size: 0.87rem; line-height: 1.58; border-left: 4px solid; }
+.fact .flabel { font-weight: 800; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 3px; }
+.fact.how     { background: #f8fafc; border-color: #94a3b8; }
+.fact.how .flabel { color: #64748b; }
+.fact.where   { background: #fffbeb; border-color: #fbbf24; }
+.fact.where .flabel { color: #d97706; }
+.fact.note    { background: #f0fdf4; border-color: #86efac; }
+.fact.note .flabel { color: #15803d; }
+.fact.warning { background: #fff7ed; border-color: #fb923c; }
+.fact.warning .flabel { color: #c2410c; }
+
+/* SUMMARY TABLE */
+.summary-section { margin-top: 32px; background: white; border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+.summary-section h2 { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; text-align: center; margin-bottom: 16px; }
+.sum-wrap { overflow-x: auto; }
+.sum-table { width: 100%; border-collapse: separate; border-spacing: 3px; font-size: 0.82rem; min-width: 520px; }
+.sum-table th { font-family: 'Fredoka', sans-serif; font-weight: 600; padding: 9px 10px; text-align: left; color: white; border-radius: 8px; background: #475569; }
+.sum-table th:first-child { width: 28%; }
+.sum-table td { padding: 9px 10px; background: #f8fafc; border-radius: 8px; font-weight: 600; color: #374151; vertical-align: middle; }
+.sum-table tr td:first-child { font-weight: 800; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <h1>🔬 Trennverfahren-Labor</h1>
+    <p>6. Klasse &middot; Chemie &middot; Gymnasium Niedersachsen</p>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn" data-m="sieben"   onclick="show('sieben')">🪨 Sieben</button>
+    <button class="nav-btn" data-m="sediment" onclick="show('sediment')">💧 Sedimentieren</button>
+    <button class="nav-btn" data-m="dekant"   onclick="show('dekant')">🥛 Dekantieren</button>
+    <button class="nav-btn" data-m="filtrier" onclick="show('filtrier')">🔺 Filtrieren</button>
+    <button class="nav-btn" data-m="zentri"   onclick="show('zentri')">🌀 Zentrifugieren</button>
+    <button class="nav-btn" data-m="poren"    onclick="show('poren')">🔍 Poren</button>
+    <button class="nav-btn" data-m="wal"      onclick="show('wal')">🐋 Bartenwal</button>
+  </div>
+
+  <!-- SIEBEN -->
+  <div class="panel" id="p-sieben">
+    <div class="stage-card">
+      <div class="stage-inner" style="background:linear-gradient(160deg,#fff7ed,#fde8c8);">
+        <div class="stage-badge">Sieben</div>
+        <svg id="svg-sieben" viewBox="0 0 280 310" width="280" height="310" style="overflow:visible;display:block">
+          <!-- big rocks -->
+          <text id="r1" x="72"  y="118" font-size="28" text-anchor="middle">🪨</text>
+          <text id="r2" x="140" y="105" font-size="24" text-anchor="middle">🪨</text>
+          <text id="r3" x="205" y="115" font-size="26" text-anchor="middle">🪨</text>
+          <!-- small grains -->
+          <circle id="g1" cx="100" cy="95"  r="5.5" fill="#d97706"/>
+          <circle id="g2" cx="118" cy="122" r="4.5" fill="#b45309"/>
+          <circle id="g3" cx="158" cy="88"  r="5"   fill="#d97706"/>
+          <circle id="g4" cx="172" cy="118" r="4.5" fill="#b45309"/>
+          <circle id="g5" cx="58"  cy="128" r="4.5" fill="#d97706"/>
+          <circle id="g6" cx="216" cy="98"  r="5"   fill="#b45309"/>
+          <circle id="g7" cx="234" cy="120" r="4.5" fill="#d97706"/>
+          <circle id="g8" cx="148" cy="126" r="5"   fill="#b45309"/>
+          <!-- sieve frame -->
+          <rect x="28" y="143" width="224" height="13" rx="6.5" fill="#8B6914"/>
+          <!-- sieve wires (16px spacing, 14 wires) -->
+          <line x1="50"  y1="143" x2="50"  y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="66"  y1="143" x2="66"  y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="82"  y1="143" x2="82"  y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="98"  y1="143" x2="98"  y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="114" y1="143" x2="114" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="130" y1="143" x2="130" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="146" y1="143" x2="146" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="162" y1="143" x2="162" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="178" y1="143" x2="178" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="194" y1="143" x2="194" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="210" y1="143" x2="210" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <line x1="226" y1="143" x2="226" y2="156" stroke="#5c4a1e" stroke-width="2.5"/>
+          <!-- sieve holes (dark ovals between wires show openings) -->
+          <ellipse cx="58"  cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="74"  cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="90"  cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="106" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="122" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="138" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="154" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="170" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="186" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="202" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <ellipse cx="218" cy="149" rx="5" ry="2.5" fill="#1a0800" opacity="0.55"/>
+          <!-- handles -->
+          <rect x="116" y="122" width="11" height="23" rx="4" fill="#8B6914"/>
+          <rect x="153" y="122" width="11" height="23" rx="4" fill="#8B6914"/>
+          <!-- collection tray -->
+          <rect x="38" y="250" width="204" height="50" rx="9" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+          <text x="140" y="270" text-anchor="middle" font-family="Nunito,sans-serif" font-size="11" font-weight="700" fill="#92400e">Sand &amp; kleine Körner</text>
+          <!-- collected dots (start hidden) -->
+          <circle id="c1" cx="75"  cy="272" r="4.5" fill="#d97706" opacity="0"/>
+          <circle id="c2" cx="97"  cy="278" r="4"   fill="#b45309" opacity="0"/>
+          <circle id="c3" cx="118" cy="270" r="4.5" fill="#d97706" opacity="0"/>
+          <circle id="c4" cx="140" cy="276" r="4"   fill="#b45309" opacity="0"/>
+          <circle id="c5" cx="162" cy="270" r="4.5" fill="#d97706" opacity="0"/>
+          <circle id="c6" cx="185" cy="277" r="4"   fill="#b45309" opacity="0"/>
+          <circle id="c7" cx="207" cy="270" r="4.5" fill="#d97706" opacity="0"/>
+          <!-- result badge -->
+          <rect  id="res-bg" x="58" y="161" width="164" height="26" rx="10" fill="#bbf7d0" opacity="0"/>
+          <text  id="res-tx" x="140" y="178" text-anchor="middle" font-family="Nunito,sans-serif" font-size="12" font-weight="800" fill="#15803d" opacity="0">✓ Trennung erfolgreich!</text>
+        </svg>
+      </div>
+      <div class="stage-footer">
+        <button class="anim-btn btn-sieben" id="btn-sieben" onclick="animSieben()">🪨 Sieb schütteln!</button>
+      </div>
+    </div>
+    <div class="info-card">
+      <h2 style="color:var(--sieben)">🪨 Sieben</h2>
+      <div class="tagline">Trennen durch Korngröße</div>
+      <p>Beim Sieben nutzt man ein Netz oder Gitter mit gleichmäßigen Löchern &mdash; den <strong>Maschen</strong>. Nur Teilchen, die <em>kleiner</em> sind als die Maschenweite, fallen hindurch.</p>
+      <div class="fact how">
+        <span class="flabel">So funktioniert's</span>
+        Das Gemisch wird auf das Sieb gegeben und geschüttelt. Kleine Körner fallen durch die Maschen, große Stücke bleiben oben auf dem Sieb.
+      </div>
+      <div class="fact where">
+        <span class="flabel">Wo begegnet uns das?</span>
+        🏗️ Baustelle: Kies sieben &middot; 🍳 Küche: Mehl sieben &middot; ⛏️ Bergbau: Erze sortieren &middot; 🏖️ Sandkasten aufbereiten
+      </div>
+      <div class="fact note">
+        <span class="flabel">Verbindung zum Filtrieren</span>
+        Sieben und Filtrieren nutzen dasselbe Prinzip &mdash; nur unterschiedliche Lochgrößen! Beim Sieb sind die <strong>Poren</strong> sichtbar (Millimeter), beim Filter unsichtbar (Mikrometer).
+      </div>
+    </div>
+  </div>
+
+  <!-- SEDIMENTIEREN -->
+  <div class="panel" id="p-sediment">
+    <div class="stage-card">
+      <div class="stage-inner" style="background:linear-gradient(160deg,#fffbeb,#fef3c7);">
+        <div class="stage-badge">Sedimentieren</div>
+        <canvas id="cvs-sediment" width="260" height="310" style="max-width:100%;display:block"></canvas>
+      </div>
+      <div class="stage-footer">
+        <button class="anim-btn btn-sediment" id="btn-sediment" onclick="animSediment()">⏱️ Abwarten lassen...</button>
+      </div>
+    </div>
+    <div class="info-card">
+      <h2 style="color:var(--sediment)">💧 Sedimentieren</h2>
+      <div class="tagline">Absetzen durch Schwerkraft</div>
+      <p>Beim Sedimentieren lässt man ein Gemisch einfach <strong>stehen</strong>. Feste Teilchen, die dichter als die Flüssigkeit sind, sinken langsam nach unten und bilden das <em>Sediment</em>.</p>
+      <div class="fact how">
+        <span class="flabel">So funktioniert's</span>
+        Die Schwerkraft zieht alle festen Teilchen nach unten. Je größer und schwerer ein Teilchen, desto schneller sinkt es. Winzige Partikel können tagelang schweben.
+      </div>
+      <div class="fact where">
+        <span class="flabel">In Natur und Technik</span>
+        🌊 Flussdelta: Sand setzt sich ab &middot; 🚰 Wasserwerk: erste Reinigungsstufe &middot; 🧪 Labor: Vorstufe vor dem Dekantieren
+      </div>
+      <div class="fact warning">
+        <span class="flabel">Nachteil</span>
+        Es kann <strong>sehr lange dauern</strong> &mdash; Stunden bis Tage! Für winzige Teilchen braucht man die Zentrifuge.
+      </div>
+    </div>
+  </div>
+
+  <!-- DEKANTIEREN -->
+  <div class="panel" id="p-dekant">
+    <div class="stage-card">
+      <div class="stage-inner" style="background:linear-gradient(160deg,#eff6ff,#dbeafe);">
+        <div class="stage-badge">Dekantieren</div>
+        <canvas id="cvs-dekant" width="280" height="310" style="max-width:100%;display:block"></canvas>
+      </div>
+      <div class="stage-footer">
+        <button class="anim-btn btn-dekant" id="btn-dekant" onclick="animDekant()">🥛 Vorsichtig ausgießen!</button>
+      </div>
+    </div>
+    <div class="info-card">
+      <h2 style="color:var(--dekant)">🥛 Dekantieren</h2>
+      <div class="tagline">Abgießen nach dem Absetzen</div>
+      <p>Dekantieren bedeutet: nach dem Sedimentieren die <strong>klare Flüssigkeit vorsichtig abgießen</strong>, ohne den Bodensatz aufzuwirbeln.</p>
+      <p>Man kippt das Gefäß langsam, bis die Flüssigkeit in ein zweites Gefäß fließt &mdash; der Feststoff bleibt zurück.</p>
+      <div class="fact how">
+        <span class="flabel">Reihenfolge</span>
+        1. Erst <strong>sedimentieren</strong> lassen &middot; 2. Gefäß langsam <strong>neigen</strong> &middot; 3. Klare Flüssigkeit fließt in Gefäß 2 &middot; 4. Bodensatz bleibt in Gefäß 1
+      </div>
+      <div class="fact where">
+        <span class="flabel">Beispiele</span>
+        🍷 Rotwein dekantieren (Depot abtrennen) &middot; 🫙 Öl und Wasser &middot; 🧪 Laboralltag
+      </div>
+      <div class="fact warning">
+        <span class="flabel">Wichtig!</span>
+        Sehr <strong>ruhig und langsam</strong> gießen! Sonst wirbelt der Bodensatz auf und muss erneut abgesetzt werden.
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTRIEREN -->
+  <div class="panel" id="p-filtrier">
+    <div class="stage-card">
+      <div class="stage-inner" style="background:linear-gradient(160deg,#f0fdfa,#ccfbf1);">
+        <div class="stage-badge">Filtrieren</div>
+        <canvas id="cvs-filtrier" width="260" height="310" style="max-width:100%;display:block"></canvas>
+      </div>
+      <div class="stage-footer">
+        <button class="anim-btn btn-filtrier" id="btn-filtrier" onclick="animFiltrieren()">🔺 Filtrieren starten!</button>
+      </div>
+    </div>
+    <div class="info-card">
+      <h2 style="color:var(--filtrier)">🔺 Filtrieren</h2>
+      <div class="tagline">Trennung durch Filterpapier</div>
+      <p>Beim Filtrieren gießt man ein Gemisch durch ein <strong>Filterpapier</strong> im Trichter. Das Papier hat winzige Poren: Wasser und gelöste Stoffe fließen hindurch, feste Teilchen nicht.</p>
+      <div class="fact how">
+        <span class="flabel">So funktioniert's</span>
+        Das Filterpapier wird als Kegel in den Trichter gelegt. Das <em>Filtrat</em> (klare Flüssigkeit) tropft in den Kolben. Der <em>Rückstand</em> (Feststoff) bleibt auf dem Papier.
+      </div>
+      <div class="fact where">
+        <span class="flabel">Überall dabei!</span>
+        ☕ Kaffeefilter &middot; 🚰 Wasserfilter &middot; 😷 Atemmasken &middot; 🏭 Kläranlage &middot; 🩺 Medizin
+      </div>
+      <div class="fact warning">
+        <span class="flabel">Achtung!</span>
+        Filtrieren trennt nur <strong>unlösliche Feststoffe</strong>. Gelöste Stoffe (z.B. Salz in Wasser) gehen trotzdem durch das Filter!
+      </div>
+    </div>
+  </div>
+
+  <!-- ZENTRIFUGIEREN -->
+  <div class="panel" id="p-zentri">
+    <div class="stage-card">
+      <div class="stage-inner" style="background:linear-gradient(160deg,#f5f3ff,#ede9fe);">
+        <div class="stage-badge">Zentrifugieren</div>
+        <canvas id="cvs-zentri" width="280" height="310" style="max-width:100%;display:block"></canvas>
+      </div>
+      <div class="stage-footer">
+        <button class="anim-btn btn-zentri" id="btn-zentri" onclick="animZentri()">🌀 Zentrifuge starten!</button>
+      </div>
+    </div>
+    <div class="info-card">
+      <h2 style="color:var(--zentri)">🌀 Zentrifugieren</h2>
+      <div class="tagline">Trennung durch Schleuderkraft</div>
+      <p>Eine Zentrifuge dreht Proben mit hoher Geschwindigkeit im Kreis. Durch die <strong>Fliehkraft</strong> werden schwere Teilchen nach außen gedrückt &mdash; wie Wasser aus der Wäsche beim Schleudern.</p>
+      <p>Was beim Sedimentieren Stunden dauert, geht hier in <strong>Minuten</strong>!</p>
+      <div class="fact how">
+        <span class="flabel">So funktioniert's</span>
+        Die Fliehkraft wirkt wie eine stark verstärkte Schwerkraft. Schwere/dichte Teilchen fliegen nach außen (= unten im Röhrchen), leichte bleiben innen (= oben).
+      </div>
+      <div class="fact where">
+        <span class="flabel">Wo es eingesetzt wird</span>
+        🩺 Arzt: Blut trennen (Plasma + Blutkörperchen) &middot; 🧬 Forschung &middot; 🥛 Molkerei: Sahne &middot; 🌀 Waschmaschine!
+      </div>
+      <div class="fact note">
+        <span class="flabel">Vorteil gegenüber Sedimentieren</span>
+        Auch <strong>winzigste Teilchen</strong> werden zuverlässig getrennt &mdash; viel schneller und gründlicher!
+      </div>
+    </div>
+  </div>
+
+  <!-- POREN -->
+  <div class="panel" id="p-poren">
+    <div class="stage-card">
+      <div class="stage-inner" style="background:linear-gradient(160deg,#f0fdf4,#dcfce7);">
+        <div class="stage-badge">Poren &mdash; unter der Lupe</div>
+        <canvas id="cvs-poren" width="270" height="310" style="max-width:100%;display:block"></canvas>
+      </div>
+      <div class="stage-footer">
+        <button class="anim-btn btn-poren" id="btn-poren" onclick="animPoren()">🔍 Poren zeigen!</button>
+      </div>
+    </div>
+    <div class="info-card">
+      <h2 style="color:var(--poren)">🔍 Poren</h2>
+      <div class="tagline">Das Prinzip hinter allem</div>
+      <p>Eine <strong>Pore</strong> ist ein winziges Loch in einem Material &mdash; so klein, dass man es mit bloßem Auge nicht sieht. Filterpapier ist voller Poren.</p>
+      <p>Die <strong>Porengröße</strong> entscheidet, was hindurchkommt und was nicht. Das ist das Grundprinzip hinter Sieben, Filtrieren und sogar dem Bartenwal!</p>
+      <div class="fact how">
+        <span class="flabel">Das Prinzip</span>
+        Kleiner als die Pore &rarr; kommt durch ✓<br>
+        Größer als die Pore &rarr; wird gestoppt ✗<br>
+        Sieb = große Poren (mm) &middot; Filter = winzige Poren (µm bis nm!)
+      </div>
+      <div class="fact where">
+        <span class="flabel">Poren überall in der Natur!</span>
+        🧻 Filterpapier &middot; 🧱 Stein (Grundwasser) &middot; 🧽 Schwamm &middot; 🫁 Lunge &middot; 🌱 Pflanzenwurzeln &middot; 🦴 Knochen
+      </div>
+      <div class="fact note">
+        <span class="flabel">Sieb = Filter &mdash; gleiche Idee!</span>
+        Beide nutzen Poren unterschiedlicher Größe. Der einzige Unterschied: beim Sieb kannst du die Poren sehen &mdash; beim Filter nicht.
+      </div>
+    </div>
+  </div>
+
+  <!-- BARTENWAL -->
+  <div class="panel" id="p-wal">
+    <div class="stage-card">
+      <div class="stage-inner" style="background:linear-gradient(160deg,#0c4a6e,#0369a1);">
+        <div class="stage-badge" style="background:rgba(255,255,255,0.2)">Bartenwal</div>
+        <canvas id="cvs-wal" width="280" height="310" style="max-width:100%;display:block"></canvas>
+      </div>
+      <div class="stage-footer">
+        <button class="anim-btn btn-wal" id="btn-wal" onclick="animWal()">🐋 Wal filtriert!</button>
+      </div>
+    </div>
+    <div class="info-card">
+      <h2 style="color:var(--wal)">🐋 Bartenwal</h2>
+      <div class="tagline">Natur-Meister des Filtrierens</div>
+      <p>Bartenwale (Blauwal, Buckelwal, Finnwal) haben keine Zähne &mdash; stattdessen <strong>Barten</strong>: hornige Platten im Maul, die wie ein feiner Kamm funktionieren.</p>
+      <p>Die Barten sind ein natürliches <strong>Sieb / Filter</strong>: Wasser geht durch, Krill bleibt hängen!</p>
+      <div class="fact how">
+        <span class="flabel">Der Mechanismus (3 Schritte)</span>
+        1. Maul weit öffnen &rarr; riesige Menge Wasser + Krill rein<br>
+        2. Zunge drückt Wasser durch die Barten heraus<br>
+        3. Krill bleibt auf den Barten &rarr; wird abgeschleckt!
+      </div>
+      <div class="fact where">
+        <span class="flabel">Rekordhalter</span>
+        🐋 Blauwal: bis 30 m lang, 180 Tonnen schwer &mdash; frisst bis zu 4 Tonnen Krill pro Tag! Die Barten können 3 m lang werden.
+      </div>
+      <div class="fact note">
+        <span class="flabel">Verbindung zur Chemie</span>
+        Barten = natürliches Filter mit feinen Poren. Selbe Idee wie Filterpapier! Die Natur hat dieses Prinzip vor Millionen Jahren "erfunden".
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY TABLE (shown after 3 tabs explored) -->
+  <div class="summary-section" id="summary-section" style="display:none">
+    <h2>📋 Vergleich aller Trennverfahren</h2>
+    <div class="sum-wrap">
+      <table class="sum-table">
+        <thead>
+          <tr>
+            <th>Verfahren</th>
+            <th>Trennt was?</th>
+            <th>Wie?</th>
+            <th>Alltagsbeispiel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="background:#fff4ed;color:var(--sieben)">🪨 Sieben</td>
+            <td>Fest + Fest</td><td>Maschenweite (Korngröße)</td><td>Kies &amp; Sand trennen</td>
+          </tr>
+          <tr>
+            <td style="background:#fef3c7;color:var(--sediment)">💧 Sedimentieren</td>
+            <td>Fest + Flüssig</td><td>Schwerkraft &mdash; Zeit!</td><td>Schlamm absetzen</td>
+          </tr>
+          <tr>
+            <td style="background:#eff6ff;color:var(--dekant)">🥛 Dekantieren</td>
+            <td>Fest + Flüssig</td><td>Abgießen nach Absetzen</td><td>Rotwein dekantieren</td>
+          </tr>
+          <tr>
+            <td style="background:#f0fdfa;color:var(--filtrier)">🔺 Filtrieren</td>
+            <td>Fest + Flüssig</td><td>Filterpapier (Poren)</td><td>Kaffeefilter</td>
+          </tr>
+          <tr>
+            <td style="background:#f5f3ff;color:var(--zentri)">🌀 Zentrifugieren</td>
+            <td>Fest + Flüssig</td><td>Fliehkraft (sehr schnell!)</td><td>Blut trennen</td>
+          </tr>
+          <tr>
+            <td style="background:#f0fdf4;color:var(--poren)">🔍 Poren</td>
+            <td>Grundprinzip</td><td>Teilchengröße vs. Lochgröße</td><td>Filterpapier, Sieb</td>
+          </tr>
+          <tr>
+            <td style="background:#e0f2fe;color:var(--wal)">🐋 Bartenwal</td>
+            <td>Fest + Flüssig</td><td>Barten = natürliches Filter</td><td>Krill aus Meerwasser</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- .app -->
+
+<script>
+// ─────────────────────────────────────────────
+// TAB NAVIGATION
+// ─────────────────────────────────────────────
+const METHODS = ['sieben','sediment','dekant','filtrier','zentri','poren','wal'];
+const explored = new Set();
+
+function show(name) {
+  METHODS.forEach(m => {
+    document.getElementById('p-'+m).classList.remove('on');
+    document.querySelector(`.nav-btn[data-m="${m}"]`).classList.remove('on');
+  });
+  document.getElementById('p-'+name).classList.add('on');
+  document.querySelector(`.nav-btn[data-m="${name}"]`).classList.add('on');
+  explored.add(name);
+  if (explored.size >= 3) document.getElementById('summary-section').style.display = 'block';
+  // lazy-init canvas methods
+  if (name === 'sediment' && !sedS.ok) initSediment();
+  if (name === 'dekant'   && !dekS.ok) initDekant();
+  if (name === 'filtrier' && !filtS.ok) initFiltrier();
+  if (name === 'zentri'   && !zentS.ok) initZentri();
+  if (name === 'poren'    && !porS.ok)  initPoren();
+  if (name === 'wal'      && !walS.ok)  initWal();
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function eio(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+// ─────────────────────────────────────────────
+// 1. SIEBEN (SVG-based)
+// ─────────────────────────────────────────────
+let siebenDone = false;
+const GRAIN_OY = {g1:95,g2:122,g3:88,g4:118,g5:128,g6:98,g7:120,g8:126};
+const GRAIN_OX = {g1:100,g2:118,g3:158,g4:172,g5:58,g6:216,g7:234,g8:148};
+const ROCK_OX  = {r1:72,r2:140,r3:205};
+
+function animSieben() {
+  if (siebenDone) { resetSieben(); return; }
+  siebenDone = true;
+  document.getElementById('btn-sieben').textContent = '🔄 Zurücksetzen';
+
+  // shake rocks
+  ['r1','r2','r3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    let t=0, ox=ROCK_OX[id];
+    const iv = setInterval(()=>{ t++; el.setAttribute('x', ox+Math.sin(t*2)*5); if(t>18) clearInterval(iv); },40);
+  });
+
+  // drop grains
+  Object.keys(GRAIN_OY).forEach((id,i) => {
+    const el = document.getElementById(id);
+    const tgt = 255+Math.random()*12;
+    let cy = GRAIN_OY[id];
+    setTimeout(()=>{
+      const step = ()=>{ cy+=(tgt-cy)*0.09; el.setAttribute('cy',cy); if(Math.abs(tgt-cy)>0.5) requestAnimationFrame(step); else el.setAttribute('opacity','0'); };
+      step();
+    }, 280+i*55);
+  });
+
+  // reveal collected dots
+  ['c1','c2','c3','c4','c5','c6','c7'].forEach((id,i)=>{
+    setTimeout(()=>{ document.getElementById(id).setAttribute('opacity','1'); }, 750+i*90);
+  });
+
+  // result badge
+  setTimeout(()=>{
+    document.getElementById('res-bg').setAttribute('opacity','1');
+    document.getElementById('res-tx').setAttribute('opacity','1');
+  }, 1650);
+}
+
+function resetSieben() {
+  siebenDone = false;
+  Object.keys(GRAIN_OY).forEach(id=>{
+    const el=document.getElementById(id);
+    el.setAttribute('cy',GRAIN_OY[id]); el.setAttribute('cx',GRAIN_OX[id]); el.setAttribute('opacity','1');
+  });
+  Object.keys(ROCK_OX).forEach(id=>{ document.getElementById(id).setAttribute('x',ROCK_OX[id]); });
+  ['c1','c2','c3','c4','c5','c6','c7'].forEach(id=>document.getElementById(id).setAttribute('opacity','0'));
+  document.getElementById('res-bg').setAttribute('opacity','0');
+  document.getElementById('res-tx').setAttribute('opacity','0');
+  document.getElementById('btn-sieben').textContent = '🪨 Sieb schütteln!';
+}
+
+// ─────────────────────────────────────────────
+// 2. SEDIMENTIEREN
+// ─────────────────────────────────────────────
+const sedS = { ok:false, run:false, done:false, raf:null, pts:[] };
+
+function initSediment() {
+  sedS.ok=true; sedS.pts=[];
+  for(let i=0;i<22;i++){
+    const r=4+Math.random()*5;
+    sedS.pts.push({ x:62+Math.random()*138, y:68+Math.random()*170, r,
+      color:['#78716c','#57534e','#a8a29e','#92400e'][~~(Math.random()*4)], ty:0 });
+  }
+  // stagger target y by size
+  const sorted=[...sedS.pts].sort((a,b)=>b.r-a.r);
+  let sy=252; sorted.forEach(p=>{ p.ty=sy-p.r; sy-=p.r*0.75; });
+  sedS.stackTop=sy+4;
+  drawSed(0);
+}
+
+function drawSed(prog) {
+  const cvs=document.getElementById('cvs-sediment'); if(!cvs) return;
+  const ctx=cvs.getContext('2d'), W=cvs.width, H=cvs.height;
+  ctx.clearRect(0,0,W,H);
+
+  // water (clarity grows)
+  ctx.fillStyle=`rgba(${~~(147-prog*55)},${~~(197-prog*38)},253,${0.22+prog*0.12})`;
+  ctx.beginPath(); ctx.moveTo(60,52); ctx.lineTo(55,258); ctx.lineTo(205,258); ctx.lineTo(200,52); ctx.closePath(); ctx.fill();
+
+  // sediment layer
+  if(prog>0.05){
+    const maxLh=Math.max(44, 258-(sedS.stackTop||210));
+    const lh=prog*maxLh;
+    ctx.fillStyle='rgba(116,107,100,0.88)';
+    ctx.beginPath(); ctx.moveTo(56+prog*2,258-lh); ctx.lineTo(56+prog*2,258); ctx.lineTo(204-prog*2,258); ctx.lineTo(204-prog*2,258-lh); ctx.closePath(); ctx.fill();
+  }
+
+  // beaker outline
+  ctx.strokeStyle='#60a5fa'; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(60,48); ctx.lineTo(55,258); ctx.lineTo(205,258); ctx.lineTo(200,48); ctx.stroke();
+  ctx.strokeStyle='#93c5fd'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(52,48); ctx.lineTo(208,48); ctx.stroke();
+  // scale marks
+  ctx.strokeStyle='#bfdbfe'; ctx.lineWidth=1.2;
+  [100,150,200].forEach(y=>{ ctx.beginPath(); ctx.moveTo(196,y); ctx.lineTo(208,y); ctx.stroke(); });
+
+  // particles
+  sedS.pts.forEach(p=>{
+    const cy=p.y+(p.ty-p.y)*prog;
+    ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,cy,p.r,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=1; ctx.stroke();
+  });
+
+  // labels
+  ctx.fillStyle='#92400e'; ctx.font='bold 11px Nunito,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('Trübes Wasser',130,34);
+  if(prog>0.55){ ctx.fillStyle='rgba(147,197,253,0.95)'; ctx.font='bold 10px Nunito,sans-serif'; ctx.fillText('Klares Wasser',130,95); }
+  if(prog>0.82){ ctx.fillStyle='#fffbeb'; ctx.font='bold 10px Nunito,sans-serif'; ctx.fillText('Sediment',130,252); }
+  if(prog>=1){
+    ctx.fillStyle='rgba(21,128,61,0.9)'; rr(ctx,42,271,178,28,10); ctx.fill();
+    ctx.fillStyle='white'; ctx.font='bold 12px Fredoka,sans-serif';
+    ctx.fillText('✓ Sediment hat sich abgesetzt!',131,289);
+  }
+}
+
+let sedT0=null;
+function animSediment(){
+  if(sedS.done){resetSediment();return;} if(sedS.run)return;
+  sedS.run=true; sedT0=null;
+  document.getElementById('btn-sediment').textContent='⏳ Partikel sinken...';
+  sedS.raf=requestAnimationFrame(function frame(ts){
+    if(!sedT0)sedT0=ts;
+    const p=Math.min((ts-sedT0)/4200,1);
+    drawSed(eio(p));
+    if(p<1){sedS.raf=requestAnimationFrame(frame);}
+    else{sedS.done=true;sedS.run=false;document.getElementById('btn-sediment').textContent='🔄 Zurücksetzen';}
+  });
+}
+
+function resetSediment(){ cancelAnimationFrame(sedS.raf); sedS.done=false;sedS.run=false; initSediment(); document.getElementById('btn-sediment').textContent='⏱️ Abwarten lassen...'; }
+
+// ─────────────────────────────────────────────
+// 3. DEKANTIEREN
+// ─────────────────────────────────────────────
+const dekS={ok:false,run:false,done:false,raf:null};
+
+function initDekant(){ dekS.ok=true; drawDek(0); }
+
+function drawDek(prog){
+  const cvs=document.getElementById('cvs-dekant'); if(!cvs)return;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height;
+  ctx.clearRect(0,0,W,H);
+  const tilt=prog*28*Math.PI/180;
+  const pourThr=0.3;
+
+  // Beaker 1 — pivot at x=72; tilt capped at 28° so it never reaches Beaker 2
+  const b1cx=72;
+  ctx.save();
+  ctx.translate(b1cx,258); ctx.rotate(tilt); ctx.translate(-b1cx,-258);
+  // sediment — left side rises as glass tilts clockwise (gravity keeps it level)
+  const sedSlope=tilt*28;
+  ctx.fillStyle='rgba(116,107,100,0.92)';
+  ctx.beginPath(); ctx.moveTo(38,240+sedSlope); ctx.lineTo(36,258); ctx.lineTo(120,258); ctx.lineTo(116,232-sedSlope); ctx.closePath(); ctx.fill();
+  // water — fades out as it gets poured away (alpha drops from 0.42 to 0)
+  const waterAlpha=0.42*(1-Math.max(0,(prog-pourThr)/(1-pourThr)));
+  ctx.fillStyle=`rgba(147,197,253,${waterAlpha})`;
+  ctx.beginPath(); ctx.moveTo(39,78); ctx.lineTo(36,258); ctx.lineTo(120,258); ctx.lineTo(117,78); ctx.closePath(); ctx.fill();
+  // outline
+  ctx.strokeStyle='#3b82f6'; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(40,62); ctx.lineTo(36,258); ctx.lineTo(120,258); ctx.lineTo(117,62); ctx.stroke();
+  ctx.strokeStyle='#93c5fd'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(32,62); ctx.lineTo(124,62); ctx.stroke();
+  ctx.fillStyle='#1d4ed8'; ctx.font='bold 10px Nunito,sans-serif'; ctx.textAlign='center'; ctx.fillText('Becherglas 1',78,50);
+  ctx.fillStyle='white'; ctx.font='bold 9px Nunito,sans-serif'; ctx.fillText('Bodensatz',78,252);
+  ctx.restore();
+
+  // Pour stream — fades in quickly then fades back out as the beaker empties
+  if(prog>pourThr){
+    const pp=(prog-pourThr)/(1-pourThr);
+    // alpha rises for first 40% of pour, then falls back to 0 so stream disappears at end
+    const streamAlpha=pp<0.4 ? Math.min(pp/0.4*0.85,0.85) : 0.85*(1-(pp-0.4)/0.6);
+    const TR=tilt;
+    const srcX=b1cx+(50*Math.cos(TR)+196*Math.sin(TR));
+    const srcY=258+(50*Math.sin(TR)-196*Math.cos(TR));
+    ctx.save(); ctx.globalAlpha=Math.max(0,streamAlpha);
+    ctx.strokeStyle='rgba(96,165,250,0.8)'; ctx.lineWidth=8; ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(srcX, srcY);
+    ctx.bezierCurveTo(srcX+4,srcY+28,204,135,204,162);
+    ctx.stroke(); ctx.restore();
+  }
+
+  // Beaker 2 — smaller (width 62, height 110) to avoid collision
+  const b2l=204, b2r=266, b2top=148, b2bot=258;
+  const fillH=prog>pourThr ? Math.min((prog-pourThr)/(1-pourThr),1)*78 : 0;
+  if(fillH>0){
+    ctx.fillStyle='rgba(147,197,253,0.5)';
+    ctx.beginPath(); ctx.moveTo(b2l,b2bot-fillH); ctx.lineTo(b2l,b2bot); ctx.lineTo(b2r,b2bot); ctx.lineTo(b2r,b2bot-fillH); ctx.closePath(); ctx.fill();
+  }
+  ctx.strokeStyle='#3b82f6'; ctx.lineWidth=2; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(b2l+2,b2top); ctx.lineTo(b2l,b2bot); ctx.lineTo(b2r,b2bot); ctx.lineTo(b2r-2,b2top); ctx.stroke();
+  ctx.strokeStyle='#93c5fd'; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(b2l-2,b2top); ctx.lineTo(b2r+2,b2top); ctx.stroke();
+  ctx.fillStyle='#1d4ed8'; ctx.font='bold 10px Nunito,sans-serif'; ctx.textAlign='center'; ctx.fillText('Becherglas 2',(b2l+b2r)/2,b2top-12);
+  if(fillH>38){ ctx.fillStyle='rgba(29,78,216,0.8)'; ctx.font='bold 9px Nunito,sans-serif'; ctx.fillText('Klares Wasser',(b2l+b2r)/2,b2bot-18); }
+
+  // Result labels
+  if(prog>=1){
+    ctx.fillStyle='rgba(21,128,61,0.92)'; rr(ctx,8,268,130,28,9); ctx.fill();
+    ctx.fillStyle='white'; ctx.font='bold 11px Fredoka,sans-serif'; ctx.textAlign='center'; ctx.fillText('Bodensatz bleibt! ✓',73,286);
+    ctx.fillStyle='rgba(29,78,216,0.92)'; rr(ctx,148,268,122,28,9); ctx.fill();
+    ctx.fillStyle='white'; ctx.fillText('Wasser klar! ✓',209,286);
+  }
+}
+
+let dekT0=null;
+function animDekant(){
+  if(dekS.done){resetDekant();return;} if(dekS.run)return;
+  dekS.run=true; dekT0=null;
+  document.getElementById('btn-dekant').textContent='⏳ Ausgießen...';
+  dekS.raf=requestAnimationFrame(function frame(ts){ if(!dekT0)dekT0=ts; const p=Math.min((ts-dekT0)/3000,1); drawDek(eio(p)); if(p<1){dekS.raf=requestAnimationFrame(frame);}else{dekS.done=true;dekS.run=false;document.getElementById('btn-dekant').textContent='🔄 Zurücksetzen';} });
+}
+function resetDekant(){ cancelAnimationFrame(dekS.raf); dekS.done=false;dekS.run=false; drawDek(0); document.getElementById('btn-dekant').textContent='🥛 Vorsichtig ausgießen!'; }
+
+// ─────────────────────────────────────────────
+// 4. FILTRIEREN
+// ─────────────────────────────────────────────
+const filtS={ok:false,run:false,done:false,raf:null};
+
+function initFiltrier(){ filtS.ok=true; drawFilt(0,0); }
+
+function drawFilt(prog,t){
+  const cvs=document.getElementById('cvs-filtrier'); if(!cvs)return;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height;
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2;
+
+  // Ring stand
+  ctx.strokeStyle='#d1d5db'; ctx.lineWidth=4; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(cx,18); ctx.lineTo(cx,H-18); ctx.stroke();
+  ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(58,H-14); ctx.lineTo(202,H-14); ctx.stroke();
+
+  // Flask
+  const ft=168, fb=H-22, fillH=prog*72;
+  ctx.fillStyle='rgba(167,243,208,0.22)'; ctx.strokeStyle='#0d9488'; ctx.lineWidth=2;
+  ctx.fillRect(cx-20,ft,40,22); ctx.strokeRect(cx-20,ft,40,22);
+  ctx.beginPath(); ctx.moveTo(cx-20,ft+22); ctx.lineTo(cx-68,fb); ctx.lineTo(cx+68,fb); ctx.lineTo(cx+20,ft+22); ctx.closePath();
+  ctx.fillStyle='rgba(167,243,208,0.2)'; ctx.fill(); ctx.stroke();
+  if(fillH>0){
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(cx-20,ft+22); ctx.lineTo(cx-68,fb); ctx.lineTo(cx+68,fb); ctx.lineTo(cx+20,ft+22); ctx.closePath(); ctx.clip();
+    ctx.fillStyle='rgba(20,184,166,0.42)'; ctx.fillRect(cx-72,fb-fillH,144,fillH+4);
+    ctx.restore();
+  }
+  ctx.fillStyle='#0f766e'; ctx.font='bold 10px Nunito,sans-serif'; ctx.textAlign='center'; ctx.fillText('Filtrat',cx,fb-12);
+
+  // Funnel stem
+  ctx.fillStyle='rgba(167,243,208,0.32)'; ctx.fillRect(cx-7,ft-22,14,25);
+  ctx.strokeStyle='#0d9488'; ctx.lineWidth=1.5; ctx.strokeRect(cx-7,ft-22,14,25);
+
+  // Funnel body
+  const fTop=46;
+  ctx.beginPath(); ctx.moveTo(cx-73,fTop); ctx.lineTo(cx-7,ft-20); ctx.lineTo(cx+7,ft-20); ctx.lineTo(cx+73,fTop); ctx.closePath();
+  ctx.fillStyle='rgba(167,243,208,0.15)'; ctx.fill(); ctx.strokeStyle='#0d9488'; ctx.lineWidth=2; ctx.stroke();
+
+  // Filter paper cone
+  ctx.beginPath(); ctx.moveTo(cx-70,fTop+3); ctx.lineTo(cx-5,ft-22); ctx.lineTo(cx+5,ft-22); ctx.lineTo(cx+70,fTop+3); ctx.closePath();
+  ctx.fillStyle='rgba(254,243,199,0.92)'; ctx.fill();
+  ctx.setLineDash([4,3]); ctx.strokeStyle='#d97706'; ctx.lineWidth=1.5; ctx.stroke(); ctx.setLineDash([]);
+
+  // Dirty liquid level (decreases with progress)
+  const liqH=Math.max(0,(1-prog)*58);
+  if(liqH>0){
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(cx-70,fTop+3); ctx.lineTo(cx-5,ft-22); ctx.lineTo(cx+5,ft-22); ctx.lineTo(cx+70,fTop+3); ctx.closePath(); ctx.clip();
+    const spW=68*(1-prog*0.35);
+    ctx.fillStyle='rgba(120,113,108,0.3)'; ctx.fillRect(cx-spW,ft-22,spW*2,liqH+18);
+    ctx.restore();
+  }
+
+  // Caught particles — clipped inside the filter cone so none appear outside
+  {
+    const nC=Math.max(3,Math.floor(prog*7));
+    // positions chosen to sit well within the filter cone (narrower toward bottom)
+    const cps=[{x:cx-28,y:72},{x:cx+22,y:78},{x:cx-14,y:94},{x:cx+30,y:96},{x:cx-32,y:112},{x:cx+14,y:116},{x:cx-4,y:128}];
+    ctx.save();
+    // clip to the filter paper cone so particles cannot stray outside
+    ctx.beginPath(); ctx.moveTo(cx-70,fTop+3); ctx.lineTo(cx-5,ft-22); ctx.lineTo(cx+5,ft-22); ctx.lineTo(cx+70,fTop+3); ctx.closePath(); ctx.clip();
+    for(let i=0;i<nC&&i<cps.length;i++){
+      ctx.fillStyle=i%2===0?'#78716c':'#57534e';
+      ctx.beginPath(); ctx.arc(cps[i].x,cps[i].y,5,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1; ctx.stroke();
+    }
+    ctx.restore();
+    // label to the right of the filter, outside any clip region
+    ctx.fillStyle='#92400e'; ctx.font='700 10px Nunito,sans-serif'; ctx.textAlign='left';
+    ctx.fillText('Feststoffe',cx+78,100);
+    ctx.fillText('(Rückstand)',cx+78,114);
+    // small arrow pointing left into the filter
+    ctx.strokeStyle='#92400e'; ctx.lineWidth=1.5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(cx+76,103); ctx.lineTo(cx+44,103); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx+48,99); ctx.lineTo(cx+44,103); ctx.lineTo(cx+48,107); ctx.stroke();
+  }
+
+  // Drops through stem (animated)
+  if(prog>0.1){
+    for(let i=0;i<3;i++){
+      const dy=((t*0.85+i/3)%1);
+      const dY=ft-18+dy*38;
+      ctx.fillStyle='rgba(20,184,166,0.82)';
+      ctx.beginPath(); ctx.arc(cx,dY,4,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  ctx.fillStyle='#0f766e'; ctx.font='bold 11px Nunito,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('Trichter mit Filterpapier',cx,33);
+
+  if(prog>=1){
+    ctx.fillStyle='rgba(15,118,110,0.9)'; rr(ctx,28,H-52,204,28,10); ctx.fill();
+    ctx.fillStyle='white'; ctx.font='bold 11px Fredoka,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('✓ Feststoffe gefangen · Filtrat klar!',cx,H-32);
+  }
+}
+
+let filtT0=null;
+function animFiltrieren(){
+  if(filtS.done){resetFiltrieren();return;} if(filtS.run)return;
+  filtS.run=true; filtT0=null;
+  document.getElementById('btn-filtrier').textContent='⏳ Filtrieren...';
+  filtS.raf=requestAnimationFrame(function frame(ts){ if(!filtT0)filtT0=ts; const p=Math.min((ts-filtT0)/5200,1); drawFilt(eio(p),ts/1000); if(p<1){filtS.raf=requestAnimationFrame(frame);}else{filtS.done=true;filtS.run=false;document.getElementById('btn-filtrier').textContent='🔄 Zurücksetzen';} });
+}
+function resetFiltrieren(){ cancelAnimationFrame(filtS.raf); filtS.done=false;filtS.run=false; drawFilt(0,0); document.getElementById('btn-filtrier').textContent='🔺 Filtrieren starten!'; }
+
+// ─────────────────────────────────────────────
+// 5. ZENTRIFUGIEREN
+// ─────────────────────────────────────────────
+const zentS={ok:false,run:false,done:false,raf:null,pts:[]};
+let zentAngle=0;
+
+function initZentri(){
+  zentS.ok=true; zentS.pts=[];
+  const cx=140,cy=152;
+  for(let i=0;i<28;i++){
+    const a=Math.random()*Math.PI*2, r=6+Math.random()*52;
+    zentS.pts.push({ a, r, sr:r, tr:64+Math.random()*26,
+      sz:4+Math.random()*3,
+      col:['#78716c','#92400e','#a78bfa','#57534e','#b45309'][~~(Math.random()*5)] });
+  }
+  zentAngle=0; drawZent(0,0);
+}
+
+function drawZent(prog,ang){
+  const cvs=document.getElementById('cvs-zentri'); if(!cvs)return;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height;
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2,cy=152;
+
+  // bg circle
+  const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,118);
+  bg.addColorStop(0,'#f5f3ff'); bg.addColorStop(1,'#ede9fe');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.arc(cx,cy,118,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#c4b5fd'; ctx.lineWidth=2; ctx.stroke();
+
+  // outer ring (speed indicator)
+  ctx.strokeStyle=`rgba(109,40,217,${prog*0.35})`; ctx.lineWidth=4;
+  ctx.setLineDash([6,4]); ctx.beginPath(); ctx.arc(cx,cy,112,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+
+  // rotor
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang);
+  ctx.strokeStyle='#7c3aed'; ctx.lineWidth=8; ctx.lineCap='round';
+  for(let i=0;i<4;i++){
+    ctx.save(); ctx.rotate(i*Math.PI/2);
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(78,0); ctx.stroke();
+    ctx.fillStyle='#ddd6fe';
+    ctx.beginPath(); ctx.ellipse(80,0,11,22,Math.PI/2,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#7c3aed'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.restore();
+  }
+  // hub
+  ctx.fillStyle='#6d28d9'; ctx.beginPath(); ctx.arc(0,0,13,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#a78bfa'; ctx.beginPath(); ctx.arc(0,0,6,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // clear solution in center (becomes visible as particles move outward)
+  if(prog>0.05){
+    ctx.fillStyle=`rgba(147,197,253,${Math.min(prog*0.28,0.22)})`;
+    ctx.beginPath(); ctx.arc(cx,cy,50,0,Math.PI*2); ctx.fill();
+  }
+
+  // particles
+  zentS.pts.forEach(p=>{
+    const cr=p.sr+(p.tr-p.sr)*prog;
+    const ca=p.a+ang*0.9;
+    const px=cx+Math.cos(ca)*cr, py=cy+Math.sin(ca)*cr;
+    ctx.fillStyle=p.col; ctx.beginPath(); ctx.arc(px,py,p.sz,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1; ctx.stroke();
+  });
+
+  // RPM bar
+  const rpm=~~(prog*3200);
+  ctx.fillStyle='#4c1d95'; ctx.font='bold 12px Nunito,sans-serif'; ctx.textAlign='left';
+  ctx.fillText(`${rpm} RPM`,14,H-36);
+  ctx.fillStyle='#ede9fe'; rr(ctx,14,H-26,132,8,4); ctx.fill();
+  ctx.fillStyle='#7c3aed'; rr(ctx,14,H-26,132*prog,8,4); ctx.fill();
+
+  // legend
+  ctx.fillStyle='#78716c'; ctx.beginPath(); ctx.arc(W-74,H-46,6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#374151'; ctx.font='11px Nunito,sans-serif'; ctx.textAlign='left'; ctx.fillText('Partikel',W-64,H-42);
+  ctx.fillStyle='rgba(147,197,253,0.9)'; ctx.beginPath(); ctx.arc(W-74,H-26,6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#374151'; ctx.fillText('Lösung',W-64,H-22);
+
+  if(prog>=1){
+    ctx.fillStyle='rgba(109,40,217,0.88)'; rr(ctx,cx-95,cy+82,190,44,12); ctx.fill();
+    ctx.fillStyle='white'; ctx.font='bold 13px Fredoka,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('✓ Trennung abgeschlossen!',cx,cy+100);
+    ctx.font='10px Nunito,sans-serif'; ctx.fillText('Alle Partikel außen · klare Lösung innen',cx,cy+117);
+  }
+}
+
+let zentT0=null;
+function animZentri(){
+  if(zentS.done){resetZentri();return;} if(zentS.run)return;
+  zentS.run=true; zentT0=null;
+  document.getElementById('btn-zentri').textContent='⏳ Schleudern...';
+  zentS.raf=requestAnimationFrame(function frame(ts){
+    if(!zentT0)zentT0=ts;
+    const p=Math.min((ts-zentT0)/5500,1), ep=eio(p);
+    zentAngle+=0.035+ep*0.2;
+    drawZent(ep,zentAngle);
+    if(p<1){zentS.raf=requestAnimationFrame(frame);}
+    else{zentS.done=true;zentS.run=false;document.getElementById('btn-zentri').textContent='🔄 Zurücksetzen';}
+  });
+}
+function resetZentri(){ cancelAnimationFrame(zentS.raf); zentS.done=false;zentS.run=false; initZentri(); document.getElementById('btn-zentri').textContent='🌀 Zentrifuge starten!'; }
+
+// ─────────────────────────────────────────────
+// 6. POREN
+// ─────────────────────────────────────────────
+const porS={ok:false,run:false,done:false,raf:null};
+
+function initPoren(){ porS.ok=true; drawPor(0); }
+
+function drawPor(prog){
+  const cvs=document.getElementById('cvs-poren'); if(!cvs)return;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height;
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2, mR=100, mCx=cx, mCy=148;
+
+  // lens glow
+  const glo=ctx.createRadialGradient(mCx,mCy,mR*0.4,mCx,mCy,mR*1.25);
+  glo.addColorStop(0,'rgba(220,252,231,0)'); glo.addColorStop(1,'rgba(220,252,231,0.38)');
+  ctx.fillStyle=glo; ctx.beginPath(); ctx.arc(mCx,mCy,mR*1.25,0,Math.PI*2); ctx.fill();
+
+  // clip to lens
+  ctx.save();
+  ctx.beginPath(); ctx.arc(mCx,mCy,mR,0,Math.PI*2); ctx.clip();
+  ctx.fillStyle='#f0fdf4'; ctx.fillRect(0,0,W,H);
+
+  // filter paper band
+  ctx.fillStyle='#fef9c3'; ctx.fillRect(mCx-mR,mCy-22,mR*2,48);
+  ctx.strokeStyle='#fde68a'; ctx.lineWidth=1.5; ctx.strokeRect(mCx-mR,mCy-22,mR*2,48);
+
+  // fiber weave
+  ctx.strokeStyle='#d97706'; ctx.lineWidth=2.2;
+  const sp=18;
+  for(let x=mCx-mR;x<=mCx+mR;x+=sp){ ctx.beginPath(); ctx.moveTo(x,mCy-22); ctx.lineTo(x,mCy+26); ctx.stroke(); }
+  for(let y=mCy-16;y<=mCy+26;y+=14){ ctx.beginPath(); ctx.moveTo(mCx-mR,y); ctx.lineTo(mCx+mR,y); ctx.stroke(); }
+
+  // pore highlights + labels
+  const pXs=[mCx-44,mCx+6,mCx+52];
+  pXs.forEach(px=>{
+    ctx.fillStyle='rgba(21,128,61,0.14)'; ctx.fillRect(px-7,mCy-22,14,48);
+    ctx.fillStyle='#15803d'; ctx.font='bold 9px Nunito,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Pore',px,mCy+5);
+  });
+
+  // water molecules passing through
+  pXs.forEach((px,i)=>{
+    const del=i*0.12;
+    const p=Math.max(0,Math.min((prog-del)/(1-del),1));
+    const wy=mCy-58+p*120;
+    ctx.fillStyle='rgba(59,130,246,0.88)'; ctx.beginPath(); ctx.arc(px,wy,8.5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='white'; ctx.font='bold 8px Nunito,sans-serif'; ctx.textAlign='center'; ctx.fillText('H₂O',px,wy+3);
+  });
+
+  // large particles blocked above filter
+  const bXs=[mCx-74,mCx-15,mCx+58];
+  const bLb=['Sand','Ton','Schlamm'];
+  const bCl=['#78716c','#92400e','#78716c'];
+  bXs.forEach((bx,i)=>{
+    const wob=prog>0?Math.sin(prog*Math.PI*3.5+i*1.2)*3.5:0;
+    ctx.fillStyle=bCl[i]; ctx.beginPath(); ctx.arc(bx+wob*0.5,mCy-37,14.5,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle='white'; ctx.font='bold 8px Nunito,sans-serif'; ctx.textAlign='center'; ctx.fillText(bLb[i],bx+wob*0.5,mCy-33);
+    if(prog>0.28){ ctx.fillStyle='rgba(220,38,38,0.95)'; ctx.font='bold 15px sans-serif'; ctx.fillText('✗',bx+wob*0.5+15,mCy-44); }
+  });
+
+  ctx.restore(); // end clip
+
+  // lens ring
+  ctx.strokeStyle='#15803d'; ctx.lineWidth=3.5;
+  ctx.beginPath(); ctx.arc(mCx,mCy,mR,0,Math.PI*2); ctx.stroke();
+  // glass shine
+  ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(mCx-30,mCy-30,20,Math.PI*1.1,Math.PI*1.7); ctx.stroke();
+  // handle
+  ctx.strokeStyle='#15803d'; ctx.lineWidth=11; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(mCx+64,mCy+68); ctx.lineTo(mCx+92,mCy+96); ctx.stroke();
+  ctx.strokeStyle='#4ade80'; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.moveTo(mCx+64,mCy+68); ctx.lineTo(mCx+92,mCy+96); ctx.stroke();
+
+  // title
+  ctx.fillStyle='#15803d'; ctx.font='bold 12px Nunito,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('🔍 Filterpapier unter der Lupe',cx,22);
+
+  // legend
+  if(prog>0.2){
+    ctx.save(); ctx.globalAlpha=Math.min((prog-0.2)/0.3,1);
+    ctx.fillStyle='#dbeafe'; rr(ctx,18,H-60,112,46,10); ctx.fill();
+    ctx.fillStyle='#1d4ed8'; ctx.font='bold 10px Nunito,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('💧 H₂O: winzig',74,H-42); ctx.fillText('→ passt durch! ✓',74,H-27);
+    ctx.fillStyle='#fee2e2'; rr(ctx,138,H-60,118,46,10); ctx.fill();
+    ctx.fillStyle='#dc2626'; ctx.font='bold 10px Nunito,sans-serif';
+    ctx.fillText('🪨 Sand: zu groß',197,H-42); ctx.fillText('→ gestoppt! ✗',197,H-27);
+    ctx.restore();
+  }
+
+  if(prog>=1){
+    ctx.fillStyle='rgba(21,128,61,0.9)'; rr(ctx,cx-98,H-82,196,28,10); ctx.fill();
+    ctx.fillStyle='white'; ctx.font='bold 12px Fredoka,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('✓ Poren trennen nach Teilchengröße!',cx,H-62);
+  }
+}
+
+let porT0=null;
+function animPoren(){
+  if(porS.done){resetPoren();return;} if(porS.run)return;
+  porS.run=true; porT0=null;
+  document.getElementById('btn-poren').textContent='⏳ Zeige Poren...';
+  porS.raf=requestAnimationFrame(function frame(ts){ if(!porT0)porT0=ts; const p=Math.min((ts-porT0)/3800,1); drawPor(eio(p)); if(p<1){porS.raf=requestAnimationFrame(frame);}else{porS.done=true;porS.run=false;document.getElementById('btn-poren').textContent='🔄 Zurücksetzen';} });
+}
+function resetPoren(){ cancelAnimationFrame(porS.raf); porS.done=false;porS.run=false; drawPor(0); document.getElementById('btn-poren').textContent='🔍 Poren zeigen!'; }
+
+// ─────────────────────────────────────────────
+// 7. BARTENWAL
+// ─────────────────────────────────────────────
+const walS={ok:false,run:false,done:false,raf:null};
+
+function initWal(){ walS.ok=true; drawWal(0,0); }
+
+function drawWal(prog,t){
+  const cvs=document.getElementById('cvs-wal'); if(!cvs)return;
+  const ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height;
+  const cx=W/2;
+  ctx.clearRect(0,0,W,H);
+
+  // ocean bg
+  const og=ctx.createLinearGradient(0,0,0,H);
+  og.addColorStop(0,'#0c4a6e'); og.addColorStop(0.55,'#0369a1'); og.addColorStop(1,'#075985');
+  ctx.fillStyle=og; ctx.fillRect(0,0,W,H);
+
+  // bubbles
+  [[22,52,3],[258,78,2],[44,218,2.5],[252,245,2],[128,38,1.5]].forEach(([bx,by,br])=>{
+    ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.beginPath(); ctx.arc(bx,by,br,0,Math.PI*2); ctx.fill();
+  });
+  // light rays
+  ctx.save(); ctx.globalAlpha=0.045;
+  for(let i=0;i<4;i++){
+    ctx.fillStyle='#bae6fd'; ctx.beginPath();
+    ctx.moveTo(62+i*58,0); ctx.lineTo(38+i*65,H); ctx.lineTo(48+i*65,H); ctx.lineTo(72+i*58,0); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+
+  const wCx=158, wCy=162;
+
+  // tail fluke
+  ctx.fillStyle='#1e3a5f';
+  ctx.beginPath();
+  ctx.moveTo(262,wCy);
+  ctx.bezierCurveTo(278,wCy-16,292,wCy-32,287,wCy-42);
+  ctx.bezierCurveTo(280,wCy-32,272,wCy-19,264,wCy);
+  ctx.bezierCurveTo(270,wCy+19,280,wCy+32,287,wCy+42);
+  ctx.bezierCurveTo(292,wCy+32,278,wCy+16,262,wCy);
+  ctx.closePath(); ctx.fill();
+
+  // main body ellipse
+  ctx.fillStyle='#1e3a5f';
+  ctx.beginPath(); ctx.ellipse(wCx,wCy,112,60,0,0,Math.PI*2); ctx.fill();
+
+  // head bulge
+  ctx.beginPath(); ctx.ellipse(wCx-90,wCy+5,52,54,0,0,Math.PI*2); ctx.fill();
+
+  // belly
+  ctx.fillStyle='#2d5a8e';
+  ctx.beginPath(); ctx.ellipse(wCx-18,wCy+30,90,28,0,0,Math.PI*2); ctx.fill();
+
+  // dorsal fin
+  ctx.fillStyle='#162d4a';
+  ctx.beginPath(); ctx.moveTo(wCx+22,wCy-58);
+  ctx.bezierCurveTo(wCx+46,wCy-100,wCx+72,wCy-90,wCx+57,wCy-56);
+  ctx.closePath(); ctx.fill();
+
+  // flipper
+  ctx.beginPath(); ctx.ellipse(wCx-38,wCy+68,34,11,-0.38,0,Math.PI*2); ctx.fillStyle='#162d4a'; ctx.fill();
+
+  // eye
+  ctx.fillStyle='white'; ctx.beginPath(); ctx.arc(wCx-112,wCy-8,9,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#0d2137'; ctx.beginPath(); ctx.arc(wCx-110,wCy-8,6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='white'; ctx.beginPath(); ctx.arc(wCx-107,wCy-11,2,0,Math.PI*2); ctx.fill();
+
+  // === MOUTH (opens as prog increases) ===
+  const mOpen=0.45+Math.sin(Math.min(prog,1)*Math.PI)*0.38;
+  const mX=wCx-143, mY=wCy+14;
+  ctx.fillStyle='#0d2137';
+  ctx.beginPath();
+  ctx.moveTo(mX,mY-16*mOpen);
+  ctx.bezierCurveTo(mX+14,mY+18,mX+34,mY+33*mOpen,mX+54,mY+33*mOpen);
+  ctx.lineTo(mX+54,mY-16*mOpen);
+  ctx.bezierCurveTo(mX+30,mY-26*mOpen,mX+10,mY-20,mX,mY-16*mOpen);
+  ctx.closePath(); ctx.fill();
+
+  // === BARTEN (baleen plates) ===
+  ctx.strokeStyle='#d4af37'; ctx.lineWidth=2.2; ctx.lineCap='round';
+  for(let i=0;i<11;i++){
+    const bx=mX+4+i*4.6;
+    ctx.beginPath(); ctx.moveTo(bx,mY-14*mOpen); ctx.lineTo(bx,mY+30*mOpen); ctx.stroke();
+  }
+
+  // === KRILL (swim left to right into mouth) ===
+  for(let i=0;i<10;i++){
+    const kp=((prog*1.5+i/10)%1);
+    let kx,ky,al;
+    if(kp<0.68){
+      kx=-18+kp/0.68*(mX+48);
+      ky=mY+(i%4-1.5)*10+Math.sin(kp*7+i*1.3)*3.5;
+      al=1;
+    } else {
+      kx=mX+15+(i%3)*9;
+      ky=mY+(i%4-1)*7;
+      al=1-(kp-0.68)/0.32;
+    }
+    ctx.save(); ctx.globalAlpha=Math.max(0,al);
+    ctx.fillStyle=i%2===0?'#f97316':'#ea580c';
+    ctx.beginPath(); ctx.arc(kx,ky,3,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // water flow arrows entering mouth
+  if(prog>0){
+    ctx.save(); ctx.globalAlpha=0.48;
+    ctx.strokeStyle='#bae6fd'; ctx.lineWidth=2.5; ctx.lineCap='round';
+    const wa=(t*0.9)%(Math.PI*2);
+    for(let i=0;i<3;i++){
+      const fy=mY-10+i*12;
+      const fx=mX-28-Math.sin(wa+i*1.1)*10;
+      ctx.beginPath(); ctx.moveTo(fx-14,fy); ctx.lineTo(fx,fy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(fx,fy-4); ctx.lineTo(fx+6,fy); ctx.lineTo(fx,fy+4); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // water exiting through baleen sides
+  if(prog>0.38){
+    ctx.save(); ctx.globalAlpha=Math.min((prog-0.38)*1.6,0.58);
+    ctx.strokeStyle='#bae6fd'; ctx.lineWidth=2.2; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(mX+55,mY+8); ctx.bezierCurveTo(mX+90,mY+28,mX+112,mY+42,mX+86,mY+68); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mX+55,mY+20); ctx.bezierCurveTo(mX+95,mY+44,mX+118,mY+58,mX+92,mY+80); ctx.stroke();
+    ctx.restore();
+  }
+
+  // blowhole spout
+  ctx.fillStyle='rgba(186,230,253,0.38)';
+  ctx.beginPath();
+  ctx.moveTo(wCx-68,wCy-62);
+  ctx.bezierCurveTo(wCx-74,wCy-104,wCx-60,wCy-115,wCx-58,wCy-62);
+  ctx.closePath(); ctx.fill();
+
+  // baleen label
+  ctx.fillStyle='#d4af37'; ctx.font='bold 10px Nunito,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('Barten',mX+26,mY+44*mOpen+14);
+
+  // krill label — placed above the whale's head, away from the action
+  const klX=wCx-140, klY=wCy-80;
+  ctx.fillStyle='rgba(249,115,22,0.92)'; rr(ctx,klX,klY,52,20,7); ctx.fill();
+  ctx.fillStyle='white'; ctx.font='bold 9px Nunito,sans-serif'; ctx.textAlign='center'; ctx.fillText('Krill 🦐',klX+26,klY+14);
+
+  // result
+  if(prog>0.82){
+    ctx.save(); ctx.globalAlpha=Math.min((prog-0.82)/0.18,1);
+    ctx.fillStyle='rgba(12,74,110,0.9)'; rr(ctx,cx-112,H-57,224,44,12); ctx.fill();
+    ctx.fillStyle='white'; ctx.font='bold 12px Fredoka,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('💧 Wasser geht durch die Barten',cx,H-36);
+    ctx.fillStyle='#fde68a'; ctx.font='bold 11px Nunito,sans-serif';
+    ctx.fillText('🦐 Krill bleibt gefangen!',cx,H-18);
+    ctx.restore();
+  }
+}
+
+let walT0=null;
+function animWal(){
+  if(walS.done){resetWal();return;} if(walS.run)return;
+  walS.run=true; walT0=null;
+  document.getElementById('btn-wal').textContent='⏳ Filtrieren...';
+  walS.raf=requestAnimationFrame(function frame(ts){ if(!walT0)walT0=ts; const p=Math.min((ts-walT0)/6200,1); drawWal(eio(p),ts/1000); if(p<1){walS.raf=requestAnimationFrame(frame);}else{walS.done=true;walS.run=false;document.getElementById('btn-wal').textContent='🔄 Zurücksetzen';} });
+}
+function resetWal(){ cancelAnimationFrame(walS.raf); walS.done=false;walS.run=false; drawWal(0,0); document.getElementById('btn-wal').textContent='🐋 Wal filtriert!'; }
+
+// ─────────────────────────────────────────────
+// BOOT
+// ─────────────────────────────────────────────
+show('sieben');
+</script>
+</body>
+</html>
