@@ -384,6 +384,7 @@ const E_RADIUS      = 16;   // enemy collision radius
 const B_RADIUS      = 3;    // bullet radius
 const WALL_VH       = 36;   // wall visual height (3D extrusion in pixels)
 const SHOOT_CD      = 9;    // frames between shots
+const MIN_CORRIDOR   = 82;   // minimum walkable gap between inner walls and outer wall
 
 // =============================================
 // STATE
@@ -472,16 +473,33 @@ function buildArena() {
     ],
   ];
 
-  // Keep inner walls inside the outer boundary on small screens.
+  const innerBounds = {
+    left: b + t + MIN_CORRIDOR,
+    right: W - b - t - MIN_CORRIDOR,
+    top: HUD + b + t + MIN_CORRIDOR,
+    bottom: H - b - t - MIN_CORRIDOR,
+  };
+
+  // Keep every inner wall far enough away from the outer boundary to leave a
+  // real corridor. On very small screens, shorten or drop walls rather than
+  // allowing them to pinch off the map.
   const inner = layouts[(state.round - 1) % layouts.length]
-    .map(w => makeWall(
-      Math.max(b + t + 18, Math.min(w.x, W - b - t - 18 - w.w)),
-      Math.max(HUD + b + t + 18, Math.min(w.y, H - b - t - 18 - w.h)),
-      w.w,
-      w.h
-    ));
+    .map(w => clampInnerWall(w, innerBounds, t))
+    .filter(Boolean);
 
   state.walls = [...outer, ...inner];
+}
+
+function clampInnerWall(w, bounds, minSize) {
+  const maxW = bounds.right - bounds.left;
+  const maxH = bounds.bottom - bounds.top;
+  if (maxW < minSize * 3 || maxH < minSize * 3) return null;
+
+  const nw = Math.min(w.w, Math.max(minSize, maxW * 0.62));
+  const nh = Math.min(w.h, Math.max(minSize, maxH * 0.62));
+  const nx = Math.max(bounds.left, Math.min(w.x, bounds.right - nw));
+  const ny = Math.max(bounds.top, Math.min(w.y, bounds.bottom - nh));
+  return makeWall(nx, ny, nw, nh);
 }
 
 // =============================================
@@ -498,6 +516,40 @@ function isCircleClear(x, y, radius, extra = 0) {
     if (hitCircleRect(x, y, r, w.x, w.y, w.w, w.h)) return false;
   }
   return true;
+}
+
+function isReachableFromPlayer(tx, ty, radius = E_RADIUS) {
+  const W = viewW(), H = viewH();
+  const cell = 28;
+  const cols = Math.ceil(W / cell);
+  const rows = Math.ceil(H / cell);
+  const key = (c, r) => r * cols + c;
+  const startC = Math.max(0, Math.min(cols - 1, Math.floor(state.player.x / cell)));
+  const startR = Math.max(0, Math.min(rows - 1, Math.floor(state.player.y / cell)));
+  const targetC = Math.max(0, Math.min(cols - 1, Math.floor(tx / cell)));
+  const targetR = Math.max(0, Math.min(rows - 1, Math.floor(ty / cell)));
+
+  function open(c, r) {
+    return isCircleClear(c * cell + cell / 2, r * cell + cell / 2, radius, 4);
+  }
+
+  if (!open(startC, startR) || !open(targetC, targetR)) return false;
+  const queue = [[startC, startR]];
+  const seen = new Set([key(startC, startR)]);
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+
+  while (queue.length) {
+    const [c, r] = queue.shift();
+    if (c === targetC && r === targetR) return true;
+    for (const [dc, dr] of dirs) {
+      const nc = c + dc, nr = r + dr;
+      const k = key(nc, nr);
+      if (nc < 0 || nr < 0 || nc >= cols || nr >= rows || seen.has(k) || !open(nc, nr)) continue;
+      seen.add(k);
+      queue.push([nc, nr]);
+    }
+  }
+  return false;
 }
 
 function getPlayerSpawn() {
@@ -527,16 +579,16 @@ function randomSpawnPoint(index) {
     const y = base.y + (Math.random() - 0.5) * 90;
     const farFromPlayer = Math.hypot(x - state.player.x, y - state.player.y) > 170;
     const farFromEnemies = state.enemies.every(e => Math.hypot(x - e.x, y - e.y) > E_RADIUS * 2.5);
-    if (farFromPlayer && farFromEnemies && isCircleClear(x, y, E_RADIUS, 8)) return { x, y };
+    if (farFromPlayer && farFromEnemies && isCircleClear(x, y, E_RADIUS, 8) && isReachableFromPlayer(x, y)) return { x, y };
   }
 
   // Last-resort fallback: scan the arena grid for an open point.
   for (let y = 100; y < H - 90; y += 35) {
     for (let x = 90; x < W - 90; x += 35) {
-      if (Math.hypot(x - state.player.x, y - state.player.y) > 170 && isCircleClear(x, y, E_RADIUS, 8)) return { x, y };
+      if (Math.hypot(x - state.player.x, y - state.player.y) > 170 && isCircleClear(x, y, E_RADIUS, 8) && isReachableFromPlayer(x, y)) return { x, y };
     }
   }
-  return { x: W / 2, y: 110 };
+  return { x: state.player.x, y: Math.max(90, state.player.y - 180) };
 }
 
 // =============================================
