@@ -194,31 +194,6 @@
       border: 1px solid rgba(236,240,244,0.45);
       box-shadow: 0 0 18px rgba(0,200,200,0.35);
     }
-    #firePad {
-      position: fixed;
-      right: 28px;
-      bottom: max(28px, env(safe-area-inset-bottom));
-      width: 128px;
-      height: 128px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,70,85,0.45);
-      background: rgba(255,70,85,0.08);
-      color: rgba(255,70,85,0.9);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: auto;
-      touch-action: none;
-      user-select: none;
-    }
-    #firePad.active {
-      background: rgba(255,70,85,0.22);
-      box-shadow: 0 0 25px rgba(255,70,85,0.25);
-    }
     #mobileHint {
       position: fixed;
       left: 50%;
@@ -257,7 +232,6 @@
     @media (max-width: 520px) {
       #joystickBase { width: 104px; height: 104px; left: 18px; bottom: max(18px, env(safe-area-inset-bottom)); }
       #joystickKnob { width: 40px; height: 40px; }
-      #firePad { width: 108px; height: 108px; right: 18px; bottom: max(18px, env(safe-area-inset-bottom)); }
       #mobileHint { display: none; }
     }
 
@@ -271,9 +245,8 @@
 <canvas id="gameCanvas"></canvas>
 <div id="mobileControls">
   <div id="joystickBase"><div id="joystickKnob"></div></div>
-  <div id="firePad">Fire</div>
 </div>
-<div id="mobileHint">Left thumb moves · right thumb aims and fires</div>
+<div id="mobileHint">Left thumb moves · tap anywhere to fire</div>
 
 <!-- HUD -->
 <div id="hud">
@@ -307,7 +280,7 @@
   </div>
   <div class="tagline">// five rounds &nbsp;·&nbsp; one life &nbsp;·&nbsp; zero mercy</div>
   <button class="btn" id="startBtn">Deploy</button>
-  <div class="screen-stat" style="margin-top:28px">WASD / left thumb — move &nbsp;|&nbsp; Mouse / right thumb — aim & fire</div>
+  <div class="screen-stat" style="margin-top:28px">WASD / left thumb — move &nbsp;|&nbsp; Mouse / tap — aim & fire</div>
 </div>
 
 <!-- Round Cleared -->
@@ -428,30 +401,87 @@ let state = {
 // ARENA — wall rectangles { x, y, w, h }
 // NOTE: Player spawns at (cx, cy+220) — well clear of all inner walls
 // =============================================
+function makeWall(x, y, w, h) {
+  return { x, y, w: Math.max(12, w), h: Math.max(12, h) };
+}
+
 function buildArena() {
   const W = viewW(), H = viewH();
   const cx = W / 2, cy = H / 2;
-  const HUD = 56, b = 50, t = 16; // border, wall thickness
+  const HUD = 56, b = Math.max(34, Math.min(50, W * 0.08)), t = 16;
 
-  state.walls = [
-    // ─── Outer boundary ───────────────────────────
-    { x: b,       y: HUD+b,  w: t,       h: H-HUD-b*2 },  // left wall
-    { x: W-b-t,   y: HUD+b,  w: t,       h: H-HUD-b*2 },  // right wall
-    { x: b,       y: HUD+b,  w: W-b*2,   h: t },            // top wall
-    { x: b,       y: H-b-t,  w: W-b*2,   h: t },            // bottom wall
-
-    // ─── Inner cover (upper zone) ─────────────────
-    { x: cx-90,   y: cy-150, w: 180,     h: t   },  // center top bar
-    { x: cx-220,  y: cy-110, w: t,       h: 100 },  // left pillar (vertical)
-    { x: cx-300,  y: cy-10,  w: 80,      h: t   },  // left arm (horizontal)
-    { x: cx+204,  y: cy-110, w: t,       h: 100 },  // right pillar (mirrored)
-    { x: cx+220,  y: cy-10,  w: 80,      h: t   },  // right arm (mirrored)
-
-    // ─── Inner cover (lower zone, above spawn) ─────
-    { x: cx-200,  y: cy+80,  w: 90,      h: t   },  // lower-left cover
-    { x: cx+110,  y: cy+80,  w: 90,      h: t   },  // lower-right cover (mirrored)
-    // Player spawns at cy+220 — at least 124px below these covers
+  const outer = [
+    makeWall(b,       HUD+b,  t,       H-HUD-b*2),
+    makeWall(W-b-t,   HUD+b,  t,       H-HUD-b*2),
+    makeWall(b,       HUD+b,  W-b*2,   t),
+    makeWall(b,       H-b-t,  W-b*2,   t),
   ];
+
+  const short = Math.max(70, Math.min(130, W * 0.18));
+  const med   = Math.max(100, Math.min(180, W * 0.25));
+  const tall  = Math.max(70, Math.min(120, H * 0.17));
+
+  const layouts = [
+    // Round 1: open training layout
+    [
+      makeWall(cx-med/2, cy-145, med, t),
+      makeWall(cx-210, cy-55, short, t),
+      makeWall(cx+210-short, cy-55, short, t),
+      makeWall(cx-170, cy+90, short, t),
+      makeWall(cx+170-short, cy+90, short, t),
+    ],
+
+    // Round 2: split cover, no closed pockets
+    [
+      makeWall(cx-230, cy-145, short, t),
+      makeWall(cx+230-short, cy-145, short, t),
+      makeWall(cx-70, cy-80, t, tall),
+      makeWall(cx+54, cy-80, t, tall),
+      makeWall(cx-med/2, cy+85, med, t),
+    ],
+
+    // Round 3: staggered lanes
+    [
+      makeWall(cx-250, cy-130, 150, t),
+      makeWall(cx+100, cy-130, 150, t),
+      makeWall(cx-10, cy-70, t, 105),
+      makeWall(cx-250, cy+55, 125, t),
+      makeWall(cx+125, cy+55, 125, t),
+      makeWall(cx-med/2, cy+145, med, t),
+    ],
+
+    // Round 4: crossfire cover with wide openings
+    [
+      makeWall(cx-med/2, cy-170, med, t),
+      makeWall(cx-med/2, cy+145, med, t),
+      makeWall(cx-245, cy-50, t, tall),
+      makeWall(cx+229, cy-50, t, tall),
+      makeWall(cx-80, cy-18, 160, t),
+    ],
+
+    // Round 5: dense but still traversable arena
+    [
+      makeWall(cx-265, cy-150, 120, t),
+      makeWall(cx+145, cy-150, 120, t),
+      makeWall(cx-150, cy-72, t, 95),
+      makeWall(cx+134, cy-72, t, 95),
+      makeWall(cx-60, cy-5, 120, t),
+      makeWall(cx-265, cy+95, 120, t),
+      makeWall(cx+145, cy+95, 120, t),
+      makeWall(cx-med/2, cy+175, med, t),
+    ],
+  ];
+
+  // Keep inner walls inside the outer boundary on small screens.
+  const inner = layouts[(state.round - 1) % layouts.length]
+    .map(w => makeWall(
+      Math.max(b + t + 18, Math.min(w.x, W - b - t - 18 - w.w)),
+      Math.max(HUD + b + t + 18, Math.min(w.y, H - b - t - 18 - w.h)),
+      w.w,
+      w.h
+    ));
+
+  state.walls = [...outer, ...inner];
 }
 
 // =============================================
@@ -461,12 +491,61 @@ function eHP(r)    { return 8 + r * 4; }           // r1=12 … r5=28
 function eCount(r) { return 3 + r * 2; }           // r1=5 … r5=13
 function eSpeed(r) { return 0.65 + r * 0.25; }     // r1=0.9 … r5=1.9
 
+function isCircleClear(x, y, radius, extra = 0) {
+  const r = radius + extra;
+  if (x - r < 0 || x + r > viewW() || y - r < 56 || y + r > viewH()) return false;
+  for (const w of state.walls) {
+    if (hitCircleRect(x, y, r, w.x, w.y, w.w, w.h)) return false;
+  }
+  return true;
+}
+
+function getPlayerSpawn() {
+  const W = viewW(), H = viewH();
+  const candidates = [
+    { x: W / 2, y: H - 120 },
+    { x: W / 2, y: H / 2 + 180 },
+    { x: W / 2, y: H / 2 + 120 },
+    { x: W / 2, y: H / 2 },
+  ];
+  return candidates.find(p => isCircleClear(p.x, p.y, P_RADIUS, 10)) || { x: W / 2, y: H - 120 };
+}
+
+function randomSpawnPoint(index) {
+  const W = viewW(), H = viewH();
+  const margin = 95;
+  const preferred = [
+    { x: margin, y: 115 }, { x: W - margin, y: 115 },
+    { x: margin, y: H - 135 }, { x: W - margin, y: H - 135 },
+    { x: W / 2, y: 115 }, { x: W / 2, y: H * 0.32 },
+    { x: W * 0.25, y: H * 0.45 }, { x: W * 0.75, y: H * 0.45 },
+  ];
+
+  for (let attempt = 0; attempt < 120; attempt++) {
+    const base = preferred[(index + attempt) % preferred.length];
+    const x = base.x + (Math.random() - 0.5) * 90;
+    const y = base.y + (Math.random() - 0.5) * 90;
+    const farFromPlayer = Math.hypot(x - state.player.x, y - state.player.y) > 170;
+    const farFromEnemies = state.enemies.every(e => Math.hypot(x - e.x, y - e.y) > E_RADIUS * 2.5);
+    if (farFromPlayer && farFromEnemies && isCircleClear(x, y, E_RADIUS, 8)) return { x, y };
+  }
+
+  // Last-resort fallback: scan the arena grid for an open point.
+  for (let y = 100; y < H - 90; y += 35) {
+    for (let x = 90; x < W - 90; x += 35) {
+      if (Math.hypot(x - state.player.x, y - state.player.y) > 170 && isCircleClear(x, y, E_RADIUS, 8)) return { x, y };
+    }
+  }
+  return { x: W / 2, y: 110 };
+}
+
 // =============================================
 // SPAWN PLAYER  — guaranteed clear of all walls
 // =============================================
 function spawnPlayer() {
-  const W = viewW(), H = viewH();
-  state.player = { x: W / 2, y: H / 2 + 220, angle: 0 };
+  const pos = getPlayerSpawn();
+  state.player = { x: pos.x, y: pos.y, angle: -Math.PI / 2 };
+  state.mouse = { x: pos.x, y: Math.max(80, pos.y - 160) };
   state.hp = MAX_HP;
   state.bullets = [];
   state.particles = [];
@@ -477,24 +556,16 @@ function spawnPlayer() {
 // SPAWN ENEMIES
 // =============================================
 function spawnEnemies() {
-  const W = viewW(), H = viewH();
   const count = eCount(state.round);
   const hp    = eHP(state.round);
   const speed = eSpeed(state.round);
   state.enemies = [];
 
-  // Six spawn zones — corners and mid-edges, away from player
-  const zones = [
-    { x: 120, y: 120 }, { x: W-120, y: 120 },
-    { x: 120, y: H-120 }, { x: W-120, y: H-120 },
-    { x: W/2, y: 120 }, { x: W/2, y: H/4 },
-  ];
-
   for (let i = 0; i < count; i++) {
-    const z = zones[i % zones.length];
+    const pos = randomSpawnPoint(i);
     state.enemies.push({
-      x: z.x + (Math.random()-0.5)*70,
-      y: z.y + (Math.random()-0.5)*70,
+      x: pos.x,
+      y: pos.y,
       hp, maxHp: hp, speed, angle: 0,
       zigzag: Math.random() * Math.PI * 2,
     });
@@ -874,17 +945,31 @@ function updateEnemies() {
     e.zigzag += 0.045;
     const dx = p.x - e.x, dy = p.y - e.y;
     const baseAngle = Math.atan2(dy, dx);
-    const moveAngle = baseAngle + Math.sin(e.zigzag) * 0.45;
+    const moveAngle = baseAngle + Math.sin(e.zigzag) * 0.35;
 
-    const nx = e.x + Math.cos(moveAngle) * e.speed;
-    const ny = e.y + Math.sin(moveAngle) * e.speed;
+    const mx = Math.cos(moveAngle) * e.speed;
+    const my = Math.sin(moveAngle) * e.speed;
 
-    // Wall check before moving
-    let wallHit = false;
-    for (const w of state.walls) {
-      if (hitCircleRect(nx, ny, E_RADIUS, w.x, w.y, w.w, w.h)) { wallHit = true; break; }
+    // Try full move, then slide on X/Y. This prevents enemies from freezing at wall corners.
+    let moved = false;
+    const attempts = [
+      { x: e.x + mx, y: e.y + my },
+      { x: e.x + mx, y: e.y },
+      { x: e.x,      y: e.y + my },
+      { x: e.x + Math.cos(baseAngle + Math.PI / 2) * e.speed * 0.7, y: e.y + Math.sin(baseAngle + Math.PI / 2) * e.speed * 0.7 },
+      { x: e.x + Math.cos(baseAngle - Math.PI / 2) * e.speed * 0.7, y: e.y + Math.sin(baseAngle - Math.PI / 2) * e.speed * 0.7 },
+    ];
+    for (const a of attempts) {
+      if (isCircleClear(a.x, a.y, E_RADIUS, 0)) {
+        e.x = a.x; e.y = a.y; moved = true; break;
+      }
     }
-    if (!wallHit) { e.x = nx; e.y = ny; }
+
+    // If an enemy somehow ends up inside cover after resize/orientation, relocate it instead of trapping it.
+    if (!moved && !isCircleClear(e.x, e.y, E_RADIUS, 0)) {
+      const pos = randomSpawnPoint(Math.floor(Math.random() * 99));
+      e.x = pos.x; e.y = pos.y;
+    }
 
     e.angle = Math.atan2(p.y - e.y, p.x - e.x);
 
@@ -1079,7 +1164,7 @@ function startGame() {
 function gameLoop() {
   if (!state.running) return;
 
-  // Auto-fire while mouse held
+  // Desktop auto-fire while mouse button is held
   if (state.mouseHeld) shoot();
   if (state.shootCooldown > 0) state.shootCooldown--;
 
@@ -1126,11 +1211,11 @@ window.addEventListener('mouseup', e => {
 
 // =============================================
 // MOBILE TOUCH CONTROLS
-// Left thumb: virtual joystick. Right thumb: aim + auto-fire.
+// Left thumb: virtual joystick. Tap anywhere outside the joystick/UI to fire once toward that point.
 // =============================================
 const joystickBase = document.getElementById('joystickBase');
 const joystickKnob = document.getElementById('joystickKnob');
-const firePad = document.getElementById('firePad');
+let lastTouchShot = 0;
 
 function setAimFromPoint(x, y) {
   state.mouse.x = x;
@@ -1159,8 +1244,12 @@ function updateJoystick(touch) {
   joystickKnob.style.left = (50 + (kx / rect.width) * 100) + '%';
   joystickKnob.style.top  = (50 + (ky / rect.height) * 100) + '%';
   state.touchMove.active = true;
-  state.touchMove.x = dist > 6 ? dx / max : 0;
-  state.touchMove.y = dist > 6 ? dy / max : 0;
+  state.touchMove.x = dist > 6 ? Math.max(-1, Math.min(1, dx / max)) : 0;
+  state.touchMove.y = dist > 6 ? Math.max(-1, Math.min(1, dy / max)) : 0;
+}
+
+function isInteractiveElement(target) {
+  return target.closest('.screen, .btn, #hud, #joystickBase');
 }
 
 joystickBase.addEventListener('touchstart', e => {
@@ -1185,50 +1274,31 @@ joystickBase.addEventListener('touchend', e => {
 }, { passive: false });
 joystickBase.addEventListener('touchcancel', resetJoystick, { passive: false });
 
-firePad.addEventListener('touchstart', e => {
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  setAimFromPoint(t.clientX, t.clientY);
-  state.mouseHeld = true;
-  firePad.classList.add('active');
-  shoot();
-}, { passive: false });
-
-firePad.addEventListener('touchmove', e => {
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  setAimFromPoint(t.clientX, t.clientY);
-}, { passive: false });
-
-function stopTouchFire(e) {
-  if (e) e.preventDefault();
-  state.mouseHeld = false;
-  firePad.classList.remove('active');
-}
-firePad.addEventListener('touchend', stopTouchFire, { passive: false });
-firePad.addEventListener('touchcancel', stopTouchFire, { passive: false });
-
-// Allows aiming/firing anywhere on the right half of the screen, not only on the button.
-canvas.addEventListener('touchstart', e => {
+window.addEventListener('touchstart', e => {
+  if (!state.running || isInteractiveElement(e.target)) return;
+  const now = Date.now();
   for (const t of e.changedTouches) {
-    if (t.clientX > viewW() * 0.45) {
-      e.preventDefault();
-      setAimFromPoint(t.clientX, t.clientY);
-      state.mouseHeld = true;
+    // Ignore touches that begin on the left control zone; those belong to movement.
+    if (t.clientX < viewW() * 0.34 && t.clientY > viewH() * 0.55) continue;
+    e.preventDefault();
+    setAimFromPoint(t.clientX, t.clientY);
+    if (now - lastTouchShot > 80) {
       shoot();
+      lastTouchShot = now;
     }
   }
 }, { passive: false });
-canvas.addEventListener('touchmove', e => {
+
+window.addEventListener('touchmove', e => {
+  if (!state.running || isInteractiveElement(e.target)) return;
   for (const t of e.changedTouches) {
-    if (t.clientX > viewW() * 0.45) {
-      e.preventDefault();
+    if (t.clientX >= viewW() * 0.34 || t.clientY <= viewH() * 0.55) {
       setAimFromPoint(t.clientX, t.clientY);
     }
   }
 }, { passive: false });
-canvas.addEventListener('touchend', e => {
-  e.preventDefault();
+
+window.addEventListener('touchend', () => {
   state.mouseHeld = false;
 }, { passive: false });
 
