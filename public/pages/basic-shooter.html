@@ -158,6 +158,109 @@
       font-size: 44px; font-weight: 700; letter-spacing: 8px;
       text-transform: uppercase; line-height: 1.1;
     }
+  
+
+    /* ── Mobile touch controls ── */
+    #mobileControls {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      pointer-events: none;
+      display: none;
+      touch-action: none;
+    }
+    #joystickBase {
+      position: fixed;
+      left: 28px;
+      bottom: max(28px, env(safe-area-inset-bottom));
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,200,200,0.35);
+      background: rgba(0,200,200,0.06);
+      box-shadow: 0 0 20px rgba(0,200,200,0.12) inset;
+      pointer-events: auto;
+      touch-action: none;
+    }
+    #joystickKnob {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,200,200,0.45);
+      border: 1px solid rgba(236,240,244,0.45);
+      box-shadow: 0 0 18px rgba(0,200,200,0.35);
+    }
+    #firePad {
+      position: fixed;
+      right: 28px;
+      bottom: max(28px, env(safe-area-inset-bottom));
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,70,85,0.45);
+      background: rgba(255,70,85,0.08);
+      color: rgba(255,70,85,0.9);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      touch-action: none;
+      user-select: none;
+    }
+    #firePad.active {
+      background: rgba(255,70,85,0.22);
+      box-shadow: 0 0 25px rgba(255,70,85,0.25);
+    }
+    #mobileHint {
+      position: fixed;
+      left: 50%;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 75;
+      display: none;
+      pointer-events: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: rgba(200,214,229,0.7);
+      background: rgba(6,10,14,0.55);
+      padding: 5px 9px;
+      border: 1px solid rgba(30,42,53,0.8);
+      text-transform: uppercase;
+    }
+
+    @media (pointer: coarse), (max-width: 900px) {
+      html, body { cursor: default; }
+      #crosshair { display: none; }
+      #mobileControls { display: block; }
+      #mobileHint { display: block; }
+      #hud { height: 64px; padding: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-left)); }
+      .hud-value { font-size: 17px; }
+      .hud-label { font-size: 8px; letter-spacing: 2px; }
+      #hp-bar-track { width: 92px; }
+      .round-pip { width: 18px; }
+      #killfeed { top: 72px; right: 10px; }
+      .logo { font-size: clamp(42px, 13vw, 76px); letter-spacing: 5px; text-align: center; }
+      .tagline { font-size: 10px; letter-spacing: 2px; padding: 0 18px; text-align: center; }
+      .btn { padding: 13px 34px; font-size: 18px; margin-top: 34px; }
+      .screen-stat { max-width: 84vw; text-align: center; line-height: 1.5; }
+    }
+
+    @media (max-width: 520px) {
+      #joystickBase { width: 104px; height: 104px; left: 18px; bottom: max(18px, env(safe-area-inset-bottom)); }
+      #joystickKnob { width: 40px; height: 40px; }
+      #firePad { width: 108px; height: 108px; right: 18px; bottom: max(18px, env(safe-area-inset-bottom)); }
+      #mobileHint { display: none; }
+    }
+
   </style>
 </head>
 <body>
@@ -166,6 +269,11 @@
 <div id="damageFlash"></div>
 <div id="killfeed"></div>
 <canvas id="gameCanvas"></canvas>
+<div id="mobileControls">
+  <div id="joystickBase"><div id="joystickKnob"></div></div>
+  <div id="firePad">Fire</div>
+</div>
+<div id="mobileHint">Left thumb moves · right thumb aims and fires</div>
 
 <!-- HUD -->
 <div id="hud">
@@ -199,7 +307,7 @@
   </div>
   <div class="tagline">// five rounds &nbsp;·&nbsp; one life &nbsp;·&nbsp; zero mercy</div>
   <button class="btn" id="startBtn">Deploy</button>
-  <div class="screen-stat" style="margin-top:28px">WASD — move &nbsp;|&nbsp; MOUSE — aim &nbsp;|&nbsp; CLICK — fire</div>
+  <div class="screen-stat" style="margin-top:28px">WASD / left thumb — move &nbsp;|&nbsp; Mouse / right thumb — aim & fire</div>
 </div>
 
 <!-- Round Cleared -->
@@ -275,11 +383,20 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 function resizeCanvas() {
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  canvas.width  = Math.floor(W * dpr);
+  canvas.height = Math.floor(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
+function viewW() { return window.innerWidth; }
+function viewH() { return window.innerHeight; }
 resizeCanvas();
 window.addEventListener('resize', () => { resizeCanvas(); if (state.running) buildArena(); });
+window.addEventListener('orientationchange', () => setTimeout(() => { resizeCanvas(); if (state.running) buildArena(); }, 150));
 
 // =============================================
 // CONSTANTS
@@ -303,6 +420,7 @@ let state = {
   player: { x: 0, y: 0, angle: 0 },
   bullets: [], enemies: [], particles: [],
   keys: {}, mouse: { x: 0, y: 0 }, mouseHeld: false,
+  touchMove: { active: false, id: null, x: 0, y: 0 },
   walls: [], shootCooldown: 0, frameId: null,
 };
 
@@ -311,7 +429,7 @@ let state = {
 // NOTE: Player spawns at (cx, cy+220) — well clear of all inner walls
 // =============================================
 function buildArena() {
-  const W = canvas.width, H = canvas.height;
+  const W = viewW(), H = viewH();
   const cx = W / 2, cy = H / 2;
   const HUD = 56, b = 50, t = 16; // border, wall thickness
 
@@ -347,7 +465,7 @@ function eSpeed(r) { return 0.65 + r * 0.25; }     // r1=0.9 … r5=1.9
 // SPAWN PLAYER  — guaranteed clear of all walls
 // =============================================
 function spawnPlayer() {
-  const W = canvas.width, H = canvas.height;
+  const W = viewW(), H = viewH();
   state.player = { x: W / 2, y: H / 2 + 220, angle: 0 };
   state.hp = MAX_HP;
   state.bullets = [];
@@ -359,7 +477,7 @@ function spawnPlayer() {
 // SPAWN ENEMIES
 // =============================================
 function spawnEnemies() {
-  const W = canvas.width, H = canvas.height;
+  const W = viewW(), H = viewH();
   const count = eCount(state.round);
   const hp    = eHP(state.round);
   const speed = eSpeed(state.round);
@@ -450,7 +568,7 @@ function updateHUD() {
 // DRAW — FLOOR  (dark tactical grid with vignette)
 // =============================================
 function drawFloor() {
-  const W = canvas.width, H = canvas.height;
+  const W = viewW(), H = viewH();
 
   // Base fill
   ctx.fillStyle = '#090d12';
@@ -805,6 +923,10 @@ function updatePlayer() {
   if (state.keys['s'] || state.keys['arrowdown'])  dy += 1;
   if (state.keys['a'] || state.keys['arrowleft'])  dx -= 1;
   if (state.keys['d'] || state.keys['arrowright']) dx += 1;
+  if (state.touchMove.active) {
+    dx += state.touchMove.x;
+    dy += state.touchMove.y;
+  }
 
   if (dx !== 0 || dy !== 0) {
     const len = Math.sqrt(dx*dx + dy*dy);
@@ -850,7 +972,7 @@ function updateBullets() {
     b.x += Math.cos(b.angle) * BULLET_SPEED;
     b.y += Math.sin(b.angle) * BULLET_SPEED;
 
-    if (b.x < 0 || b.x > canvas.width || b.y < 0 || b.y > canvas.height) return false;
+    if (b.x < 0 || b.x > viewW() || b.y < 0 || b.y > viewH()) return false;
 
     // Wall hit
     for (const w of state.walls) {
@@ -1000,6 +1122,120 @@ window.addEventListener('mousedown', e => {
 window.addEventListener('mouseup', e => {
   if (e.button === 0) state.mouseHeld = false;
 });
+
+
+// =============================================
+// MOBILE TOUCH CONTROLS
+// Left thumb: virtual joystick. Right thumb: aim + auto-fire.
+// =============================================
+const joystickBase = document.getElementById('joystickBase');
+const joystickKnob = document.getElementById('joystickKnob');
+const firePad = document.getElementById('firePad');
+
+function setAimFromPoint(x, y) {
+  state.mouse.x = x;
+  state.mouse.y = y;
+}
+
+function resetJoystick() {
+  state.touchMove = { active: false, id: null, x: 0, y: 0 };
+  joystickKnob.style.left = '50%';
+  joystickKnob.style.top = '50%';
+}
+
+function updateJoystick(touch) {
+  const rect = joystickBase.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const max = rect.width * 0.36;
+  const dx = touch.clientX - cx;
+  const dy = touch.clientY - cy;
+  const dist = Math.hypot(dx, dy);
+  const clamped = Math.min(dist, max);
+  const angle = Math.atan2(dy, dx);
+  const kx = Math.cos(angle) * clamped;
+  const ky = Math.sin(angle) * clamped;
+
+  joystickKnob.style.left = (50 + (kx / rect.width) * 100) + '%';
+  joystickKnob.style.top  = (50 + (ky / rect.height) * 100) + '%';
+  state.touchMove.active = true;
+  state.touchMove.x = dist > 6 ? dx / max : 0;
+  state.touchMove.y = dist > 6 ? dy / max : 0;
+}
+
+joystickBase.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  state.touchMove.id = t.identifier;
+  updateJoystick(t);
+}, { passive: false });
+
+joystickBase.addEventListener('touchmove', e => {
+  e.preventDefault();
+  for (const t of e.changedTouches) {
+    if (t.identifier === state.touchMove.id) updateJoystick(t);
+  }
+}, { passive: false });
+
+joystickBase.addEventListener('touchend', e => {
+  e.preventDefault();
+  for (const t of e.changedTouches) {
+    if (t.identifier === state.touchMove.id) resetJoystick();
+  }
+}, { passive: false });
+joystickBase.addEventListener('touchcancel', resetJoystick, { passive: false });
+
+firePad.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  setAimFromPoint(t.clientX, t.clientY);
+  state.mouseHeld = true;
+  firePad.classList.add('active');
+  shoot();
+}, { passive: false });
+
+firePad.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t = e.changedTouches[0];
+  setAimFromPoint(t.clientX, t.clientY);
+}, { passive: false });
+
+function stopTouchFire(e) {
+  if (e) e.preventDefault();
+  state.mouseHeld = false;
+  firePad.classList.remove('active');
+}
+firePad.addEventListener('touchend', stopTouchFire, { passive: false });
+firePad.addEventListener('touchcancel', stopTouchFire, { passive: false });
+
+// Allows aiming/firing anywhere on the right half of the screen, not only on the button.
+canvas.addEventListener('touchstart', e => {
+  for (const t of e.changedTouches) {
+    if (t.clientX > viewW() * 0.45) {
+      e.preventDefault();
+      setAimFromPoint(t.clientX, t.clientY);
+      state.mouseHeld = true;
+      shoot();
+    }
+  }
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  for (const t of e.changedTouches) {
+    if (t.clientX > viewW() * 0.45) {
+      e.preventDefault();
+      setAimFromPoint(t.clientX, t.clientY);
+    }
+  }
+}, { passive: false });
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  state.mouseHeld = false;
+}, { passive: false });
+
+// Prevent iOS Safari from interpreting quick taps as zoom/scroll gestures during play.
+document.addEventListener('touchmove', e => {
+  if (state.running) e.preventDefault();
+}, { passive: false });
 
 // =============================================
 // BUTTON WIRING
