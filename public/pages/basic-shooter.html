@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TACTICAL // FIVE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:    #ff4655;
+      --teal:   #00c8c8;
+      --dark:   #0b0f14;
+      --darker: #060a0e;
+      --panel:  #111820;
+      --border: #1e2a35;
+      --text:   #c8d6e5;
+      --dim:    #4a5a6a;
+      --white:  #ecf0f4;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--darker);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      overflow: hidden;
+      cursor: none;
+      user-select: none;
+    }
+
+    /* ── Crosshair ── */
+    #crosshair {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 6px var(--teal), 0 0 14px rgba(0,200,200,0.5);
+      transition: background 0.06s, box-shadow 0.06s;
+    }
+    #crosshair.fired {
+      background: #fff;
+      box-shadow: 0 0 8px #fff, 0 0 18px var(--teal);
+    }
+
+    /* ── Canvas ── */
+    #gameCanvas { display: block; position: fixed; top: 0; left: 0; }
+
+    /* ── Damage flash ── */
+    #damageFlash {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(255,50,60,0.35) 100%);
+      pointer-events: none; z-index: 40; opacity: 0;
+      transition: opacity 0.06s;
+    }
+    #damageFlash.hit { opacity: 1; }
+
+    /* ── Kill feed ── */
+    #killfeed {
+      position: fixed; top: 64px; right: 16px;
+      display: flex; flex-direction: column; gap: 4px;
+      z-index: 60; pointer-events: none;
+    }
+    .kf-entry {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 1px; color: var(--teal);
+      background: rgba(0,200,200,0.07); border-left: 2px solid var(--teal);
+      padding: 3px 10px; opacity: 1; transition: opacity 0.5s;
+      text-transform: uppercase;
+    }
+    .kf-entry.fading { opacity: 0; }
+
+    /* ── HUD ── */
+    #hud {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      background: linear-gradient(180deg, rgba(6,10,14,0.97) 0%, rgba(6,10,14,0.5) 80%, transparent 100%);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; z-index: 50;
+      border-bottom: 1px solid rgba(30,42,53,0.5);
+    }
+    .hud-block { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .hud-block.center { align-items: center; }
+    .hud-block.right  { align-items: flex-end; }
+    .hud-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 3px; color: var(--dim); text-transform: uppercase;
+    }
+    .hud-value {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 20px; color: var(--white); letter-spacing: 2px;
+    }
+    .hud-value.score-val { color: var(--teal); }
+
+    #hp-bar-track { width: 150px; height: 5px; background: rgba(30,42,53,0.8); margin-top: 3px; }
+    #hp-bar-fill  { height: 100%; transition: width 0.2s, background 0.3s; }
+
+    #round-pips { display: flex; gap: 6px; margin-top: 4px; }
+    .round-pip  { width: 28px; height: 4px; background: rgba(30,42,53,0.8); }
+    .round-pip.done    { background: var(--red); }
+    .round-pip.current { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+
+    /* ── Screens ── */
+    .screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 100;
+      background: radial-gradient(ellipse at 50% 40%, rgba(20,30,45,0.98) 0%, rgba(6,10,14,0.99) 100%);
+    }
+    .screen.hidden { display: none; }
+
+    .screen::before, .screen::after {
+      content: ''; position: absolute;
+      width: 100px; height: 100px;
+      border-style: solid; border-color: rgba(255,70,85,0.4);
+    }
+    .screen::before { top: 28px; left: 28px; border-width: 2px 0 0 2px; }
+    .screen::after  { bottom: 28px; right: 28px; border-width: 0 2px 2px 0; }
+
+    .logo {
+      font-size: 76px; font-weight: 700;
+      letter-spacing: 10px; color: var(--white);
+      text-transform: uppercase; line-height: 1;
+      text-shadow: 0 0 40px rgba(0,200,200,0.2);
+    }
+    .logo span { color: var(--red); }
+
+    .tagline {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px; letter-spacing: 4px; color: var(--dim);
+      margin-top: 10px; text-transform: uppercase;
+    }
+
+    .btn {
+      margin-top: 44px; padding: 14px 52px;
+      background: transparent; border: 2px solid var(--red);
+      color: var(--red); font-family: 'Rajdhani', sans-serif;
+      font-size: 20px; font-weight: 700; letter-spacing: 5px;
+      text-transform: uppercase; cursor: pointer;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover {
+      background: var(--red); color: var(--darker);
+      box-shadow: 0 0 30px rgba(255,70,85,0.4);
+    }
+
+    .screen-stat {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px; color: var(--dim); margin-top: 18px; letter-spacing: 2px;
+    }
+    .screen-stat b { color: var(--teal); }
+
+    .screen-big {
+      font-size: 44px; font-weight: 700; letter-spacing: 8px;
+      text-transform: uppercase; line-height: 1.1;
+    }
+  </style>
+</head>
+<body>
+
+<div id="crosshair"></div>
+<div id="damageFlash"></div>
+<div id="killfeed"></div>
+<canvas id="gameCanvas"></canvas>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-block">
+    <div class="hud-label">Health</div>
+    <div id="hpValue" class="hud-value">30</div>
+    <div id="hp-bar-track"><div id="hp-bar-fill"></div></div>
+  </div>
+  <div class="hud-block center">
+    <div class="hud-label">Round</div>
+    <div id="round-pips">
+      <div class="round-pip" id="pip1"></div>
+      <div class="round-pip" id="pip2"></div>
+      <div class="round-pip" id="pip3"></div>
+      <div class="round-pip" id="pip4"></div>
+      <div class="round-pip" id="pip5"></div>
+    </div>
+    <div id="roundLabel" class="hud-label" style="margin-top:4px;color:var(--text)">1 / 5</div>
+  </div>
+  <div class="hud-block right">
+    <div class="hud-label">Score</div>
+    <div id="scoreValue" class="hud-value score-val">0</div>
+    <div class="hud-label" style="color:rgba(0,200,200,0.5);letter-spacing:2px;margin-top:3px">▪ ▪ ▪ ARMOR</div>
+  </div>
+</div>
+
+<!-- Start Screen -->
+<div id="startScreen" class="screen">
+  <div class="logo">TACT<span>I</span>CAL<br>
+    <span style="font-size:0.45em;letter-spacing:22px;color:var(--teal);text-shadow:0 0 20px var(--teal)">FIVE</span>
+  </div>
+  <div class="tagline">// five rounds &nbsp;·&nbsp; one life &nbsp;·&nbsp; zero mercy</div>
+  <button class="btn" id="startBtn">Deploy</button>
+  <div class="screen-stat" style="margin-top:28px">WASD — move &nbsp;|&nbsp; MOUSE — aim &nbsp;|&nbsp; CLICK — fire</div>
+</div>
+
+<!-- Round Cleared -->
+<div id="roundEndScreen" class="screen hidden">
+  <div class="screen-big" style="color:var(--teal)">Round <span id="roundEndNum">1</span></div>
+  <div class="screen-big" style="color:var(--white);margin-top:8px">Cleared</div>
+  <div class="screen-stat">Score so far: <b id="roundEndScore">0</b></div>
+  <button class="btn" id="nextRoundBtn">Next Round</button>
+</div>
+
+<!-- Round Failed -->
+<div id="roundFailScreen" class="screen hidden">
+  <div class="screen-big" style="color:var(--red)">Eliminated</div>
+  <div class="screen-big" style="color:var(--dim);font-size:28px;margin-top:8px">Round <span id="roundFailNum">1</span> Failed</div>
+  <div class="screen-stat">Score this run: <b id="roundFailScore">0</b></div>
+  <button class="btn" id="retryBtn">Retry Round</button>
+</div>
+
+<!-- Win Screen -->
+<div id="winScreen" class="screen hidden">
+  <div class="logo">Victory<br>
+    <span style="font-size:0.4em;letter-spacing:16px;color:var(--teal)">Protocol</span>
+  </div>
+  <div class="screen-stat">All five rounds cleared</div>
+  <div class="screen-stat" style="margin-top:8px">Final Score: <b id="finalScore">0</b></div>
+  <button class="btn" id="playAgainBtn">Play Again</button>
+</div>
+
+<script>
+// =============================================
+// SOUND  — Web Audio API, no files needed
+// =============================================
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playShoot() {
+  try {
+    const ctx = getAudio();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.07, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++)
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.5);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+    src.connect(gain); gain.connect(ctx.destination); src.start();
+  } catch(e) {}
+}
+
+function playHit() {
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.setValueAtTime(1100, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(350, ctx.currentTime + 0.07);
+    gain.gain.setValueAtTime(0.28, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.09);
+  } catch(e) {}
+}
+
+// =============================================
+// CANVAS
+// =============================================
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); if (state.running) buildArena(); });
+
+// =============================================
+// CONSTANTS
+// =============================================
+const MAX_HP        = 30;
+const TOTAL_ROUNDS  = 5;
+const BULLET_DAMAGE = 2;
+const PLAYER_SPEED  = 3.4;
+const BULLET_SPEED  = 13;
+const P_RADIUS      = 14;   // player collision radius
+const E_RADIUS      = 16;   // enemy collision radius
+const B_RADIUS      = 3;    // bullet radius
+const WALL_VH       = 36;   // wall visual height (3D extrusion in pixels)
+const SHOOT_CD      = 9;    // frames between shots
+
+// =============================================
+// STATE
+// =============================================
+let state = {
+  round: 1, score: 0, hp: MAX_HP, running: false,
+  player: { x: 0, y: 0, angle: 0 },
+  bullets: [], enemies: [], particles: [],
+  keys: {}, mouse: { x: 0, y: 0 }, mouseHeld: false,
+  walls: [], shootCooldown: 0, frameId: null,
+};
+
+// =============================================
+// ARENA — wall rectangles { x, y, w, h }
+// NOTE: Player spawns at (cx, cy+220) — well clear of all inner walls
+// =============================================
+function buildArena() {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const HUD = 56, b = 50, t = 16; // border, wall thickness
+
+  state.walls = [
+    // ─── Outer boundary ───────────────────────────
+    { x: b,       y: HUD+b,  w: t,       h: H-HUD-b*2 },  // left wall
+    { x: W-b-t,   y: HUD+b,  w: t,       h: H-HUD-b*2 },  // right wall
+    { x: b,       y: HUD+b,  w: W-b*2,   h: t },            // top wall
+    { x: b,       y: H-b-t,  w: W-b*2,   h: t },            // bottom wall
+
+    // ─── Inner cover (upper zone) ─────────────────
+    { x: cx-90,   y: cy-150, w: 180,     h: t   },  // center top bar
+    { x: cx-220,  y: cy-110, w: t,       h: 100 },  // left pillar (vertical)
+    { x: cx-300,  y: cy-10,  w: 80,      h: t   },  // left arm (horizontal)
+    { x: cx+204,  y: cy-110, w: t,       h: 100 },  // right pillar (mirrored)
+    { x: cx+220,  y: cy-10,  w: 80,      h: t   },  // right arm (mirrored)
+
+    // ─── Inner cover (lower zone, above spawn) ─────
+    { x: cx-200,  y: cy+80,  w: 90,      h: t   },  // lower-left cover
+    { x: cx+110,  y: cy+80,  w: 90,      h: t   },  // lower-right cover (mirrored)
+    // Player spawns at cy+220 — at least 124px below these covers
+  ];
+}
+
+// =============================================
+// ENEMY SCALING PER ROUND
+// =============================================
+function eHP(r)    { return 8 + r * 4; }           // r1=12 … r5=28
+function eCount(r) { return 3 + r * 2; }           // r1=5 … r5=13
+function eSpeed(r) { return 0.65 + r * 0.25; }     // r1=0.9 … r5=1.9
+
+// =============================================
+// SPAWN PLAYER  — guaranteed clear of all walls
+// =============================================
+function spawnPlayer() {
+  const W = canvas.width, H = canvas.height;
+  state.player = { x: W / 2, y: H / 2 + 220, angle: 0 };
+  state.hp = MAX_HP;
+  state.bullets = [];
+  state.particles = [];
+  state.shootCooldown = 0;
+}
+
+// =============================================
+// SPAWN ENEMIES
+// =============================================
+function spawnEnemies() {
+  const W = canvas.width, H = canvas.height;
+  const count = eCount(state.round);
+  const hp    = eHP(state.round);
+  const speed = eSpeed(state.round);
+  state.enemies = [];
+
+  // Six spawn zones — corners and mid-edges, away from player
+  const zones = [
+    { x: 120, y: 120 }, { x: W-120, y: 120 },
+    { x: 120, y: H-120 }, { x: W-120, y: H-120 },
+    { x: W/2, y: 120 }, { x: W/2, y: H/4 },
+  ];
+
+  for (let i = 0; i < count; i++) {
+    const z = zones[i % zones.length];
+    state.enemies.push({
+      x: z.x + (Math.random()-0.5)*70,
+      y: z.y + (Math.random()-0.5)*70,
+      hp, maxHp: hp, speed, angle: 0,
+      zigzag: Math.random() * Math.PI * 2,
+    });
+  }
+}
+
+// =============================================
+// COLLISION  circle↔rect and circle↔circle
+// =============================================
+function hitCircleRect(cx, cy, cr, rx, ry, rw, rh) {
+  const nx = Math.max(rx, Math.min(cx, rx + rw));
+  const ny = Math.max(ry, Math.min(cy, ry + rh));
+  const dx = cx - nx, dy = cy - ny;
+  return dx*dx + dy*dy < cr*cr;
+}
+function hitCircles(ax, ay, ar, bx, by, br) {
+  const dx = ax-bx, dy = ay-by;
+  return dx*dx + dy*dy < (ar+br)*(ar+br);
+}
+
+// =============================================
+// PARTICLES — burst squares on impact
+// =============================================
+function spawnParticles(x, y, color, count = 8) {
+  for (let i = 0; i < count; i++) {
+    const a = (Math.PI*2/count)*i + Math.random()*0.6;
+    const sp = 2 + Math.random()*5;
+    state.particles.push({
+      x, y, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp,
+      life: 1.0, color, size: 2 + Math.random()*3,
+    });
+  }
+}
+
+// =============================================
+// KILL FEED
+// =============================================
+function showKillFeed(text) {
+  const feed = document.getElementById('killfeed');
+  const el = document.createElement('div');
+  el.className = 'kf-entry';
+  el.textContent = text;
+  feed.appendChild(el);
+  if (feed.children.length > 5) feed.removeChild(feed.firstChild);
+  setTimeout(() => el.classList.add('fading'), 1400);
+  setTimeout(() => el.remove(), 1900);
+}
+
+// =============================================
+// HUD UPDATE
+// =============================================
+function updateHUD() {
+  document.getElementById('hpValue').textContent = Math.max(0, state.hp);
+  document.getElementById('scoreValue').textContent = state.score;
+  document.getElementById('roundLabel').textContent = state.round + ' / ' + TOTAL_ROUNDS;
+
+  const pct = state.hp / MAX_HP;
+  const fill = document.getElementById('hp-bar-fill');
+  fill.style.width = (pct * 100) + '%';
+  fill.style.background = pct > 0.6 ? '#00c8c8' : pct > 0.3 ? '#f0a500' : '#ff4655';
+
+  for (let i = 1; i <= 5; i++) {
+    const pip = document.getElementById('pip'+i);
+    pip.className = 'round-pip';
+    if (i < state.round) pip.classList.add('done');
+    else if (i === state.round) pip.classList.add('current');
+  }
+}
+
+// =============================================
+// DRAW — FLOOR  (dark tactical grid with vignette)
+// =============================================
+function drawFloor() {
+  const W = canvas.width, H = canvas.height;
+
+  // Base fill
+  ctx.fillStyle = '#090d12';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  const G = 44;
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(18,30,44,0.9)';
+  for (let x = G/2; x < W; x += G) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = G/2; y < H; y += G) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Subtle diagonal lines for tactical feel
+  ctx.strokeStyle = 'rgba(15,25,35,0.7)';
+  ctx.lineWidth = 0.5;
+  for (let i = -H; i < W + H; i += G * 3) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + H, H); ctx.stroke();
+  }
+
+  // Vignette (dark edges)
+  const vg = ctx.createRadialGradient(W/2, H/2, H*0.15, W/2, H/2, H*0.85);
+  vg.addColorStop(0, 'transparent');
+  vg.addColorStop(1, 'rgba(0,0,0,0.6)');
+  ctx.fillStyle = vg;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// =============================================
+// DRAW — WALLS  (3D extruded blocks)
+// The wall hitbox area is on top. Below it we add
+// a darker "south face" to create the 3D effect.
+// We also add a thin east-face strip on the right.
+// =============================================
+function drawWalls3D() {
+  // Sort north→south so south walls overdraw north ones (painter's algorithm)
+  const sorted = [...state.walls].sort((a, b) => (a.y + a.h) - (b.y + b.h));
+
+  for (const w of sorted) {
+    // ── Ground shadow under the whole block ──
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.beginPath();
+    ctx.ellipse(
+      w.x + w.w/2 + 6, w.y + w.h + WALL_VH + 6,
+      w.w * 0.55, 8, 0, 0, Math.PI*2
+    );
+    ctx.fill();
+
+    // ── South (front) face ──
+    const faceGrad = ctx.createLinearGradient(0, w.y + w.h, 0, w.y + w.h + WALL_VH);
+    faceGrad.addColorStop(0, '#111c28');
+    faceGrad.addColorStop(1, '#070d12');
+    ctx.fillStyle = faceGrad;
+    ctx.fillRect(w.x, w.y + w.h, w.w, WALL_VH);
+
+    // South face edge lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(w.x, w.y + w.h, w.w, WALL_VH);
+
+    // ── East (right) face — thin strip ──
+    const rightFaceGrad = ctx.createLinearGradient(w.x + w.w, 0, w.x + w.w + 7, 0);
+    rightFaceGrad.addColorStop(0, '#101820');
+    rightFaceGrad.addColorStop(1, '#06090d');
+    ctx.fillStyle = rightFaceGrad;
+    ctx.fillRect(w.x + w.w, w.y, 7, w.h + WALL_VH);
+
+    // ── Top face ──
+    const topGrad = ctx.createLinearGradient(w.x, w.y, w.x, w.y + w.h);
+    topGrad.addColorStop(0, '#28384a');
+    topGrad.addColorStop(1, '#1a2a38');
+    ctx.fillStyle = topGrad;
+    ctx.fillRect(w.x, w.y, w.w, w.h);
+
+    // Top face border
+    ctx.strokeStyle = '#2a3c50';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(w.x, w.y, w.w, w.h);
+
+    // Teal highlight on very top edge
+    ctx.strokeStyle = 'rgba(0,200,200,0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(w.x, w.y);
+    ctx.lineTo(w.x + w.w, w.y);
+    ctx.stroke();
+
+    // Left top edge highlight (slightly dimmer)
+    ctx.strokeStyle = 'rgba(0,200,200,0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(w.x, w.y);
+    ctx.lineTo(w.x, w.y + w.h);
+    ctx.stroke();
+  }
+}
+
+// =============================================
+// DRAW — PLAYER  (3D sphere look with armor ring)
+// Drawn slightly above its shadow for height illusion
+// =============================================
+function drawPlayer() {
+  const p = state.player;
+
+  // Ground shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.beginPath();
+  ctx.ellipse(p.x + 5, p.y + P_RADIUS - 2, P_RADIUS * 0.9, P_RADIUS * 0.32, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Lift player visually (3D height illusion)
+  const liftY = p.y - 10;
+
+  ctx.save();
+  ctx.translate(p.x, liftY);
+  ctx.rotate(p.angle);
+
+  // Outer armor glow
+  ctx.beginPath();
+  ctx.arc(0, 0, P_RADIUS + 8, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(0,200,200,0.15)';
+  ctx.lineWidth = 6;
+  ctx.stroke();
+
+  // Armor ring
+  ctx.beginPath();
+  ctx.arc(0, 0, P_RADIUS + 5, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(0,200,200,0.65)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // ── Body — radial gradient = sphere illusion ──
+  const bodyGrad = ctx.createRadialGradient(-5, -6, 2, 0, 0, P_RADIUS);
+  bodyGrad.addColorStop(0, '#4a7090');
+  bodyGrad.addColorStop(0.45, '#1e3850');
+  bodyGrad.addColorStop(1, '#0a1820');
+  ctx.beginPath();
+  ctx.arc(0, 0, P_RADIUS, 0, Math.PI*2);
+  ctx.fillStyle = bodyGrad;
+  ctx.fill();
+
+  // Body rim
+  ctx.strokeStyle = 'rgba(0,200,200,0.8)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Specular highlight (top-left light source)
+  ctx.beginPath();
+  ctx.arc(-4, -5, 5, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx.fill();
+
+  // Direction barrel
+  ctx.beginPath();
+  ctx.moveTo(P_RADIUS - 1, -2);
+  ctx.lineTo(P_RADIUS + 12, -2);
+  ctx.lineTo(P_RADIUS + 12, 2);
+  ctx.lineTo(P_RADIUS - 1, 2);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0,200,200,0.9)';
+  ctx.fill();
+
+  ctx.restore();
+}
+
+// =============================================
+// DRAW — ENEMIES  (3D diamond with gradient)
+// =============================================
+function drawEnemies() {
+  // Sort by Y so enemies further south appear in front
+  const sorted = [...state.enemies].sort((a, b) => a.y - b.y);
+
+  for (const e of sorted) {
+    // Ground shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.beginPath();
+    ctx.ellipse(e.x + 5, e.y + E_RADIUS - 3, E_RADIUS * 0.85, E_RADIUS * 0.28, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    const liftY = e.y - 8;
+
+    ctx.save();
+    ctx.translate(e.x, liftY);
+    ctx.rotate(e.angle);
+
+    // Ambient glow
+    const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, E_RADIUS * 2.8);
+    glow.addColorStop(0, 'rgba(255,70,85,0.18)');
+    glow.addColorStop(1, 'transparent');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(0, 0, E_RADIUS * 2.8, 0, Math.PI*2);
+    ctx.fill();
+
+    // ── Diamond body — gradient = 3D facet look ──
+    const r = E_RADIUS;
+    const eGrad = ctx.createLinearGradient(-r, -r, r, r);
+    eGrad.addColorStop(0, '#6a2030');
+    eGrad.addColorStop(0.4, '#3a1018');
+    eGrad.addColorStop(1, '#150608');
+    ctx.beginPath();
+    ctx.moveTo(0, -r);
+    ctx.lineTo(r * 0.75, 0);
+    ctx.lineTo(0, r);
+    ctx.lineTo(-r * 0.75, 0);
+    ctx.closePath();
+    ctx.fillStyle = eGrad;
+    ctx.fill();
+
+    // Diamond edge
+    ctx.strokeStyle = '#ff4655';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    // Specular facet (top-left bright triangle)
+    ctx.beginPath();
+    ctx.moveTo(0, -r);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(-r * 0.75, 0);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.fill();
+
+    // Direction indicator
+    ctx.beginPath();
+    ctx.moveTo(r - 2, 0);
+    ctx.lineTo(r + 8, 0);
+    ctx.strokeStyle = 'rgba(255,70,85,0.75)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.restore();
+
+    // HP bar (stays in world-space, above visual)
+    const bW = 38, bH = 4;
+    const bx = e.x - bW/2, by = e.y - E_RADIUS - 20;
+    ctx.fillStyle = 'rgba(8,3,4,0.85)';
+    ctx.fillRect(bx - 1, by - 1, bW + 2, bH + 2);
+    ctx.fillStyle = '#2a0008';
+    ctx.fillRect(bx, by, bW, bH);
+    const hp_pct = e.hp / e.maxHp;
+    ctx.fillStyle = hp_pct > 0.5 ? '#ff4655' : '#ff8800';
+    ctx.fillRect(bx, by, bW * hp_pct, bH);
+  }
+}
+
+// =============================================
+// DRAW — BULLETS  (teal streak with glow)
+// =============================================
+function drawBullets() {
+  for (const b of state.bullets) {
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.rotate(b.angle);
+
+    // Trail
+    const trail = ctx.createLinearGradient(0, 0, -18, 0);
+    trail.addColorStop(0, 'rgba(0,220,220,0.9)');
+    trail.addColorStop(1, 'rgba(0,220,220,0)');
+    ctx.beginPath();
+    ctx.moveTo(0, 0); ctx.lineTo(-18, 0);
+    ctx.strokeStyle = trail;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Core
+    ctx.beginPath();
+    ctx.arc(0, 0, B_RADIUS, 0, Math.PI*2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+
+    // Glow
+    ctx.beginPath();
+    ctx.arc(0, 0, B_RADIUS + 2, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,200,200,0.35)';
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+// =============================================
+// DRAW — PARTICLES
+// =============================================
+function drawParticles() {
+  for (const p of state.particles) {
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+  }
+  ctx.globalAlpha = 1;
+}
+
+// =============================================
+// UPDATE — ENEMY AI
+// =============================================
+function updateEnemies() {
+  const p = state.player;
+  for (const e of state.enemies) {
+    e.zigzag += 0.045;
+    const dx = p.x - e.x, dy = p.y - e.y;
+    const baseAngle = Math.atan2(dy, dx);
+    const moveAngle = baseAngle + Math.sin(e.zigzag) * 0.45;
+
+    const nx = e.x + Math.cos(moveAngle) * e.speed;
+    const ny = e.y + Math.sin(moveAngle) * e.speed;
+
+    // Wall check before moving
+    let wallHit = false;
+    for (const w of state.walls) {
+      if (hitCircleRect(nx, ny, E_RADIUS, w.x, w.y, w.w, w.h)) { wallHit = true; break; }
+    }
+    if (!wallHit) { e.x = nx; e.y = ny; }
+
+    e.angle = Math.atan2(p.y - e.y, p.x - e.x);
+
+    // Enemy touches player
+    if (hitCircles(e.x, e.y, E_RADIUS, p.x, p.y, P_RADIUS)) {
+      takeDamage(1);
+    }
+  }
+}
+
+// =============================================
+// TAKE DAMAGE — with brief invincibility frames
+// =============================================
+let lastDmgTime = 0;
+function takeDamage(amount) {
+  const now = Date.now();
+  if (now - lastDmgTime < 450) return;
+  lastDmgTime = now;
+  state.hp = Math.max(0, state.hp - amount);
+
+  const flash = document.getElementById('damageFlash');
+  flash.classList.add('hit');
+  setTimeout(() => flash.classList.remove('hit'), 130);
+
+  updateHUD();
+  if (state.hp <= 0) roundFailed();
+}
+
+// =============================================
+// UPDATE — PLAYER MOVEMENT (WASD + wall slide)
+// =============================================
+function updatePlayer() {
+  const p = state.player;
+  let dx = 0, dy = 0;
+  if (state.keys['w'] || state.keys['arrowup'])    dy -= 1;
+  if (state.keys['s'] || state.keys['arrowdown'])  dy += 1;
+  if (state.keys['a'] || state.keys['arrowleft'])  dx -= 1;
+  if (state.keys['d'] || state.keys['arrowright']) dx += 1;
+
+  if (dx !== 0 || dy !== 0) {
+    const len = Math.sqrt(dx*dx + dy*dy);
+    const mx = (dx/len) * PLAYER_SPEED;
+    const my = (dy/len) * PLAYER_SPEED;
+
+    // Try full move
+    const nx = p.x + mx, ny = p.y + my;
+    let fullBlocked = false;
+    for (const w of state.walls) {
+      if (hitCircleRect(nx, ny, P_RADIUS, w.x, w.y, w.w, w.h)) { fullBlocked = true; break; }
+    }
+    if (!fullBlocked) {
+      p.x = nx; p.y = ny;
+    } else {
+      // Try slide X only
+      const nx2 = p.x + mx;
+      let xBlocked = false;
+      for (const w of state.walls) {
+        if (hitCircleRect(nx2, p.y, P_RADIUS, w.x, w.y, w.w, w.h)) { xBlocked = true; break; }
+      }
+      if (!xBlocked) p.x = nx2;
+
+      // Try slide Y only
+      const ny2 = p.y + my;
+      let yBlocked = false;
+      for (const w of state.walls) {
+        if (hitCircleRect(p.x, ny2, P_RADIUS, w.x, w.y, w.w, w.h)) { yBlocked = true; break; }
+      }
+      if (!yBlocked) p.y = ny2;
+    }
+  }
+
+  // Always face the mouse cursor
+  p.angle = Math.atan2(state.mouse.y - p.y, state.mouse.x - p.x);
+}
+
+// =============================================
+// UPDATE — BULLETS
+// =============================================
+function updateBullets() {
+  state.bullets = state.bullets.filter(b => {
+    b.x += Math.cos(b.angle) * BULLET_SPEED;
+    b.y += Math.sin(b.angle) * BULLET_SPEED;
+
+    if (b.x < 0 || b.x > canvas.width || b.y < 0 || b.y > canvas.height) return false;
+
+    // Wall hit
+    for (const w of state.walls) {
+      if (hitCircleRect(b.x, b.y, B_RADIUS, w.x, w.y, w.w, w.h)) {
+        spawnParticles(b.x, b.y, '#1a4060', 4);
+        return false;
+      }
+    }
+
+    // Enemy hit
+    for (let i = state.enemies.length - 1; i >= 0; i--) {
+      const e = state.enemies[i];
+      if (hitCircles(b.x, b.y, B_RADIUS, e.x, e.y, E_RADIUS)) {
+        e.hp -= BULLET_DAMAGE;
+        playHit();
+        spawnParticles(b.x, b.y, '#ff4655', 5);
+
+        if (e.hp <= 0) {
+          spawnParticles(e.x, e.y, '#ff4655', 20);
+          spawnParticles(e.x, e.y, '#ff8800', 10);
+          const pts = 10 + (state.round - 1) * 5;
+          state.score += pts;
+          showKillFeed('+' + pts + ' pts  —  target eliminated');
+          state.enemies.splice(i, 1);
+          updateHUD();
+          if (state.enemies.length === 0) roundCleared();
+        }
+        return false;
+      }
+    }
+    return true;
+  });
+}
+
+// =============================================
+// UPDATE — PARTICLES
+// =============================================
+function updateParticles() {
+  state.particles = state.particles.filter(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.vx *= 0.9; p.vy *= 0.9;
+    p.life -= 0.032;
+    return p.life > 0;
+  });
+}
+
+// =============================================
+// SHOOT — fires a bullet toward the mouse
+// =============================================
+function shoot() {
+  if (state.shootCooldown > 0 || !state.running) return;
+  const p = state.player;
+  const angle = Math.atan2(state.mouse.y - p.y, state.mouse.x - p.x);
+  state.bullets.push({
+    x: p.x + Math.cos(angle) * (P_RADIUS + 14),
+    y: p.y + Math.sin(angle) * (P_RADIUS + 14),
+    angle,
+  });
+  playShoot();
+  state.shootCooldown = SHOOT_CD;
+
+  const ch = document.getElementById('crosshair');
+  ch.classList.add('fired');
+  setTimeout(() => ch.classList.remove('fired'), 70);
+}
+
+// =============================================
+// ROUND MANAGEMENT
+// =============================================
+function roundCleared() {
+  state.running = false;
+  cancelAnimationFrame(state.frameId);
+  document.getElementById('roundEndNum').textContent = state.round;
+  document.getElementById('roundEndScore').textContent = state.score;
+  document.getElementById('roundEndScreen').classList.remove('hidden');
+}
+
+function roundFailed() {
+  state.running = false;
+  cancelAnimationFrame(state.frameId);
+  document.getElementById('roundFailNum').textContent = state.round;
+  document.getElementById('roundFailScore').textContent = state.score;
+  document.getElementById('roundFailScreen').classList.remove('hidden');
+}
+
+function startRound(roundNum) {
+  state.round = roundNum;
+  state.running = true;
+  buildArena();
+  spawnPlayer();
+  spawnEnemies();
+  updateHUD();
+  gameLoop();
+}
+
+function startGame() {
+  state.score = 0;
+  startRound(1);
+}
+
+// =============================================
+// MAIN GAME LOOP — ~60 fps
+// =============================================
+function gameLoop() {
+  if (!state.running) return;
+
+  // Auto-fire while mouse held
+  if (state.mouseHeld) shoot();
+  if (state.shootCooldown > 0) state.shootCooldown--;
+
+  updatePlayer();
+  updateEnemies();
+  updateBullets();
+  updateParticles();
+
+  // ── Draw ──────────────────────────────────
+  drawFloor();
+  drawWalls3D();
+  drawParticles();
+  drawBullets();
+  drawEnemies();
+  drawPlayer();
+
+  state.frameId = requestAnimationFrame(gameLoop);
+}
+
+// =============================================
+// INPUT EVENTS
+// =============================================
+window.addEventListener('keydown', e => {
+  state.keys[e.key.toLowerCase()] = true;
+  e.preventDefault(); // prevent page scroll with arrow keys / space
+});
+window.addEventListener('keyup',   e => { state.keys[e.key.toLowerCase()] = false; });
+
+window.addEventListener('mousemove', e => {
+  state.mouse.x = e.clientX;
+  state.mouse.y = e.clientY;
+  const ch = document.getElementById('crosshair');
+  ch.style.left = e.clientX + 'px';
+  ch.style.top  = e.clientY + 'px';
+});
+
+window.addEventListener('mousedown', e => {
+  if (e.button === 0) { state.mouseHeld = true; shoot(); }
+});
+window.addEventListener('mouseup', e => {
+  if (e.button === 0) state.mouseHeld = false;
+});
+
+// =============================================
+// BUTTON WIRING
+// =============================================
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('startScreen').classList.add('hidden');
+  startGame();
+});
+
+document.getElementById('nextRoundBtn').addEventListener('click', () => {
+  document.getElementById('roundEndScreen').classList.add('hidden');
+  const next = state.round + 1;
+  if (next > TOTAL_ROUNDS) {
+    document.getElementById('finalScore').textContent = state.score;
+    document.getElementById('winScreen').classList.remove('hidden');
+  } else {
+    startRound(next);
+  }
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  document.getElementById('roundFailScreen').classList.add('hidden');
+  startRound(state.round);
+});
+
+document.getElementById('playAgainBtn').addEventListener('click', () => {
+  document.getElementById('winScreen').classList.add('hidden');
+  startGame();
+});
+</script>
+</body>
+</html>

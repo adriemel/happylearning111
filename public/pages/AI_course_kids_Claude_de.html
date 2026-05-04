@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Grundlagen für junge Wissenschaftler 🚀</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+
+  :root {
+    --sky: #1a1a2e;
+    --deep: #16213e;
+    --accent1: #e94560;
+    --accent2: #f5a623;
+    --accent3: #4ecca3;
+    --accent4: #a29bfe;
+    --text: #eaeaea;
+    --subtext: #c4cde0;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--sky);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+    font-size: 17px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(78,204,163,0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(233,69,96,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(162,155,254,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 64px 20px 52px;
+  }
+
+  .hero .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent3), var(--accent4));
+    color: var(--sky);
+    font-family: 'Fredoka One', cursive;
+    font-size: 15px;
+    letter-spacing: 2px;
+    padding: 7px 22px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+
+  .hero h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3.2rem;
+    background: linear-gradient(135deg, var(--accent3) 0%, var(--accent4) 50%, var(--accent1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--subtext);
+    max-width: 580px;
+    margin: 0 auto 36px;
+  }
+
+  /* ── SECTION CARDS ── */
+  .section-card {
+    background: var(--deep);
+    border-radius: 22px;
+    padding: 38px 40px;
+    margin: 32px 0;
+    border: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    border-radius: 22px 22px 0 0;
+  }
+  .section-card.teal::before   { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+  .section-card.red::before    { background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+  .section-card.purple::before { background: linear-gradient(90deg, var(--accent4), var(--accent1)); }
+  .section-card.gold::before   { background: linear-gradient(90deg, var(--accent2), var(--accent3)); }
+
+  .section-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .teal .section-num   { color: var(--accent3); }
+  .red .section-num    { color: var(--accent1); }
+  .purple .section-num { color: var(--accent4); }
+  .gold .section-num   { color: var(--accent2); }
+
+  .section-card h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    margin-bottom: 18px;
+    color: var(--white);
+  }
+
+  .section-card p {
+    color: var(--subtext);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+  }
+
+  .section-card p strong { color: var(--white); }
+
+  /* ── ILLUSTRATIONS ── */
+  .illustration { margin: 26px 0; text-align: center; }
+  .illustration svg { max-width: 100%; height: auto; }
+
+  /* ── TWO-COL ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 22px 0;
+  }
+
+  .mini-card {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .mini-card h4 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+  .mini-card.good h4 { color: var(--accent3); }
+  .mini-card.bad h4  { color: var(--accent1); }
+
+  .mini-card ul { list-style: none; padding: 0; }
+  .mini-card li {
+    font-size: 0.97rem;
+    color: var(--subtext);
+    margin-bottom: 7px;
+    list-style: none;
+    padding-left: 1.6em;
+    position: relative;
+  }
+  .mini-card.good li::before { content: '✅'; position: absolute; left: 0; font-size: 0.8em; top: 3px; }
+  .mini-card.bad li::before  { content: '❌'; position: absolute; left: 0; font-size: 0.8em; top: 3px; }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 20px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .callout .icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-body h4 {
+    font-size: 0.9rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .callout-body p { font-size: 0.97rem; margin: 0; color: var(--subtext); }
+  .callout-body p strong { color: var(--white); }
+
+  .callout.tip    { background: rgba(245,166,35,0.12);  border: 1px solid rgba(245,166,35,0.3); }
+  .callout.tip h4 { color: var(--accent2); }
+  .callout.warn   { background: rgba(233,69,96,0.10);   border: 1px solid rgba(233,69,96,0.3); }
+  .callout.warn h4 { color: var(--accent1); }
+  .callout.info   { background: rgba(78,204,163,0.10);  border: 1px solid rgba(78,204,163,0.3); }
+  .callout.info h4 { color: var(--accent3); }
+  .callout.purple { background: rgba(162,155,254,0.10); border: 1px solid rgba(162,155,254,0.3); }
+  .callout.purple h4 { color: var(--accent4); }
+
+  /* ── STEPS ── */
+  .steps { margin: 22px 0; }
+  .step { display: flex; gap: 18px; margin-bottom: 16px; align-items: flex-start; }
+  .step-circle {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    color: var(--sky);
+  }
+  .step:nth-child(1) .step-circle { background: var(--accent3); }
+  .step:nth-child(2) .step-circle { background: var(--accent4); }
+  .step:nth-child(3) .step-circle { background: var(--accent1); }
+  .step:nth-child(4) .step-circle { background: var(--accent2); }
+  .step-text h4 { font-weight: 900; font-size: 1.05rem; color: var(--white); margin-bottom: 3px; }
+  .step-text p  { font-size: 0.97rem; color: var(--subtext); margin: 0; }
+
+  /* ── BOT GRID ── */
+  .bot-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 22px 0;
+  }
+  .bot-card {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 16px 10px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: transform 0.2s;
+  }
+  .bot-card:hover { transform: translateY(-4px); }
+  .bot-card .emoji    { font-size: 2.2rem; margin-bottom: 8px; display: block; }
+  .bot-card .bot-name { font-family: 'Fredoka One', cursive; font-size: 1rem; color: var(--white); }
+  .bot-card .bot-maker { font-size: 0.78rem; color: var(--subtext); margin-top: 3px; }
+  .bot-card .bot-url   { font-size: 0.78rem; color: var(--accent3); margin-top: 4px; }
+
+  /* ── BIG BACKGROUND NUMBER ── */
+  .big-num {
+    position: absolute;
+    right: 28px; top: 18px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 5.5rem;
+    opacity: 0.05;
+    line-height: 1;
+    color: var(--white);
+    pointer-events: none;
+  }
+
+  /* ── NAV PILLS ── */
+  .nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 32px 0 8px;
+  }
+  .nav-pill {
+    display: inline-block;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 30px;
+    padding: 7px 18px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--subtext);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-pill:hover { background: rgba(78,204,163,0.15); border-color: var(--accent3); color: var(--accent3); }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 36px 0;
+    color: var(--subtext);
+    font-size: 0.95rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin-top: 52px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    body { font-size: 16px; }
+    .hero h1 { font-size: 2.4rem; }
+    .two-col { grid-template-columns: 1fr; }
+    .bot-grid { grid-template-columns: 1fr 1fr; }
+    .section-card { padding: 28px 20px; }
+    .container { padding: 0 18px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge">🌊 PANGAEA · KI für junge Wissenschaftler</div>
+    <h1>KI-Grundlagen:<br>Wie Chatbots wirklich funktionieren</h1>
+    <p>Ein Leitfaden für neugierige Köpfe — lerne, wie KI denkt, wie man gut mit ihr spricht und wann man ihr NICHT vertrauen sollte.</p>
+    <div class="nav-pills">
+      <a class="nav-pill" href="#llm">🧠 Was ist ein LLM?</a>
+      <a class="nav-pill" href="#chatbot">💬 Chatbots</a>
+      <a class="nav-pill" href="#bots">🤖 Welche Bots?</a>
+      <a class="nav-pill" href="#privacy">🔒 Datenschutz</a>
+      <a class="nav-pill" href="#4d">✨ 4-D-Methode</a>
+      <a class="nav-pill" href="#prompt">✍️ Prompting</a>
+      <a class="nav-pill" href="#memory">📦 Gedächtnis</a>
+      <a class="nav-pill" href="#trust">🛡️ Vertrauen</a>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 1: LLM ═══════════════ -->
+  <div class="section-card teal" id="llm">
+    <div class="big-num">1</div>
+    <div class="section-num">Abschnitt 1</div>
+    <h2>🧠 Was ist ein LLM?</h2>
+
+    <p>LLM steht für <strong>Large Language Model</strong> — das ist der Motor in allen KI-Chatbots. Stell dir vor, jemand hätte jedes Buch in jeder Bibliothek gelesen, jede Website im Internet und Millionen von Artikeln — und wäre dann wirklich gut darin geworden zu erraten, welches kleine Textteil als Nächstes kommt. Das ist im Grunde ein LLM.</p>
+
+    <p>Es ist eher wie eine super-starke Autokorrektur als ein denkendes Gehirn — es sagt immer wieder das wahrscheinlichste nächste Textteil voraus, bis eine vollständige Antwort entsteht. Ob es Dinge wirklich "versteht", ist eine tiefe philosophische Frage, über die sich selbst Wissenschaftler streiten!</p>
+
+    <!-- 2-box diagram: Training Data → LLM only -->
+    <div class="illustration">
+      <svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;">
+        <defs>
+          <linearGradient id="bgCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,0.05)"/>
+            <stop offset="100%" style="stop-color:rgba(255,255,255,0.02)"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Box 1: TRAINING DATA -->
+        <rect x="10" y="20" width="230" height="200" rx="16" fill="url(#bgCard)" stroke="rgba(78,204,163,0.4)" stroke-width="1.5"/>
+        <text x="125" y="48" text-anchor="middle" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="16">TRAININGSDATEN</text>
+        <!-- Books row 1 -->
+        <rect x="28" y="60" width="32" height="44" rx="4" fill="#e94560"/>
+        <rect x="28" y="60" width="6" height="44" rx="3" fill="rgba(0,0,0,0.25)"/>
+        <rect x="66" y="65" width="32" height="44" rx="4" fill="#4ecca3"/>
+        <rect x="66" y="65" width="6" height="44" rx="3" fill="rgba(0,0,0,0.25)"/>
+        <rect x="104" y="57" width="32" height="44" rx="4" fill="#f5a623"/>
+        <rect x="104" y="57" width="6" height="44" rx="3" fill="rgba(0,0,0,0.25)"/>
+        <rect x="142" y="62" width="32" height="44" rx="4" fill="#a29bfe"/>
+        <rect x="142" y="62" width="6" height="44" rx="3" fill="rgba(0,0,0,0.25)"/>
+        <rect x="180" y="60" width="32" height="44" rx="4" fill="#e94560" opacity="0.6"/>
+        <rect x="180" y="60" width="6" height="44" rx="3" fill="rgba(0,0,0,0.25)"/>
+        <!-- Labels -->
+        <text x="125" y="126" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="Nunito,sans-serif" font-size="14">Milliarden Textbausteine:</text>
+        <text x="125" y="148" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="Nunito,sans-serif" font-size="14">📚 Bücher &amp; Lehrbücher</text>
+        <text x="125" y="168" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="Nunito,sans-serif" font-size="14">🌐 Webseiten &amp; Blogs</text>
+        <text x="125" y="188" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="Nunito,sans-serif" font-size="14">📰 Nachrichten &amp; Artikel</text>
+        <text x="125" y="208" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="13">💬 Online-Diskussionen</text>
+
+        <!-- Big arrow with label — moved to above the arrow line -->
+        <text x="295" y="90" text-anchor="middle" fill="#a29bfe" font-family="'Fredoka One',cursive" font-size="12">wurde darauf</text>
+        <text x="295" y="104" text-anchor="middle" fill="#a29bfe" font-family="'Fredoka One',cursive" font-size="12">trainiert</text>
+        <path d="M246 120 L330 120" stroke="#a29bfe" stroke-width="3" stroke-dasharray="7,4"/>
+        <polygon points="330,113 346,120 330,127" fill="#a29bfe"/>
+        <text x="295" y="140" text-anchor="middle" fill="rgba(162,155,254,0.55)" font-family="Nunito,sans-serif" font-size="11">lernt Muster</text>
+        <text x="295" y="153" text-anchor="middle" fill="rgba(162,155,254,0.55)" font-family="Nunito,sans-serif" font-size="11">in der Sprache</text>
+
+        <!-- Box 2: THE LLM — neural network -->
+        <rect x="349" y="20" width="272" height="200" rx="16" fill="url(#bgCard)" stroke="rgba(162,155,254,0.4)" stroke-width="1.5"/>
+        <text x="485" y="48" text-anchor="middle" fill="#a29bfe" font-family="'Fredoka One',cursive" font-size="16">DAS LLM</text>
+        <!-- Neural net: 3 layers -->
+        <!-- L1 -->
+        <circle cx="387" cy="90"  r="10" fill="rgba(78,204,163,0.22)" stroke="#4ecca3" stroke-width="1.8"/>
+        <circle cx="387" cy="120" r="10" fill="rgba(78,204,163,0.22)" stroke="#4ecca3" stroke-width="1.8"/>
+        <circle cx="387" cy="150" r="10" fill="rgba(78,204,163,0.22)" stroke="#4ecca3" stroke-width="1.8"/>
+        <text x="387" y="174" text-anchor="middle" fill="rgba(78,204,163,0.5)" font-family="Nunito,sans-serif" font-size="10">Eingabe</text>
+        <!-- L2 -->
+        <circle cx="485" cy="78"  r="10" fill="rgba(162,155,254,0.22)" stroke="#a29bfe" stroke-width="1.8"/>
+        <circle cx="485" cy="104" r="10" fill="rgba(162,155,254,0.22)" stroke="#a29bfe" stroke-width="1.8"/>
+        <circle cx="485" cy="130" r="10" fill="rgba(162,155,254,0.22)" stroke="#a29bfe" stroke-width="1.8"/>
+        <circle cx="485" cy="156" r="10" fill="rgba(162,155,254,0.22)" stroke="#a29bfe" stroke-width="1.8"/>
+        <text x="485" y="180" text-anchor="middle" fill="rgba(162,155,254,0.5)" font-family="Nunito,sans-serif" font-size="10">Muster</text>
+        <!-- L3 -->
+        <circle cx="580" cy="90"  r="10" fill="rgba(245,166,35,0.22)" stroke="#f5a623" stroke-width="1.8"/>
+        <circle cx="580" cy="120" r="10" fill="rgba(245,166,35,0.22)" stroke="#f5a623" stroke-width="1.8"/>
+        <circle cx="580" cy="150" r="10" fill="rgba(245,166,35,0.22)" stroke="#f5a623" stroke-width="1.8"/>
+        <text x="580" y="174" text-anchor="middle" fill="rgba(245,166,35,0.5)" font-family="Nunito,sans-serif" font-size="10">Ausgabe</text>
+        <!-- Connections L1→L2 -->
+        <line x1="397" y1="90"  x2="475" y2="78"  stroke="rgba(255,255,255,0.13)" stroke-width="1.2"/>
+        <line x1="397" y1="90"  x2="475" y2="104" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+        <line x1="397" y1="90"  x2="475" y2="130" stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
+        <line x1="397" y1="120" x2="475" y2="78"  stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
+        <line x1="397" y1="120" x2="475" y2="104" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+        <line x1="397" y1="120" x2="475" y2="130" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+        <line x1="397" y1="120" x2="475" y2="156" stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
+        <line x1="397" y1="150" x2="475" y2="104" stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
+        <line x1="397" y1="150" x2="475" y2="130" stroke="rgba(255,255,255,0.13)" stroke-width="1.2"/>
+        <line x1="397" y1="150" x2="475" y2="156" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+        <!-- Connections L2→L3 -->
+        <line x1="495" y1="78"  x2="570" y2="90"  stroke="rgba(255,255,255,0.13)" stroke-width="1.2"/>
+        <line x1="495" y1="78"  x2="570" y2="120" stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
+        <line x1="495" y1="104" x2="570" y2="90"  stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+        <line x1="495" y1="104" x2="570" y2="120" stroke="rgba(255,255,255,0.13)" stroke-width="1.2"/>
+        <line x1="495" y1="130" x2="570" y2="120" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+        <line x1="495" y1="130" x2="570" y2="150" stroke="rgba(255,255,255,0.13)" stroke-width="1.2"/>
+        <line x1="495" y1="156" x2="570" y2="120" stroke="rgba(255,255,255,0.08)" stroke-width="1.2"/>
+        <line x1="495" y1="156" x2="570" y2="150" stroke="rgba(255,255,255,0.16)" stroke-width="1.2"/>
+        <!-- Caption inside -->
+        <text x="485" y="200" text-anchor="middle" fill="rgba(255,255,255,0.38)" font-family="Nunito,sans-serif" font-size="12">Milliarden gelernter</text>
+        <text x="485" y="213" text-anchor="middle" fill="rgba(255,255,255,0.38)" font-family="Nunito,sans-serif" font-size="12">Verbindungen (Sprachmuster)</text>
+      </svg>
+    </div>
+
+    <div class="two-col">
+      <div class="mini-card good">
+        <h4>👍 KI ist gut in…</h4>
+        <ul>
+          <li>Dinge einfach erklären</li>
+          <li>Texte schreiben und bearbeiten</li>
+          <li>Sprachen übersetzen (aber nicht perfekt!)</li>
+          <li>Häufige Fragen beantworten</li>
+          <li>Beim Schreiben oder Reparieren von Code helfen</li>
+          <li>Ideen sammeln (Brainstorming)</li>
+        </ul>
+      </div>
+      <div class="mini-card bad">
+        <h4>👎 KI hat Schwierigkeiten mit…</h4>
+        <ul>
+          <li>Mathe — das Sprachmodell selbst ist schlecht darin (viele Chatbots haben jetzt einen echten Taschenrechner eingebaut)</li>
+          <li>Sehr aktuellen Nachrichten oder Ereignissen</li>
+          <li>Zuverlässig zu erkennen, wenn es falsch liegt</li>
+          <li>Genauen Zahlen und Daten</li>
+          <li>Schwierigen mehrstufigen Aufgaben</li>
+          <li>Dingen, die echten gesunden Menschenverstand erfordern</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="icon">⚠️</div>
+      <div class="callout-body">
+        <h4>Achtung: Halluzinationen!</h4>
+        <p>Manchmal erfindet die KI einfach "Fakten", die völlig real und selbstsicher klingen. Wissenschaftler nennen das <strong>Halluzination</strong>. Zum Beispiel könnte sie einen erfundenen Buchtitel nennen. Überprüfe immer Wichtiges selbst — vor allem Zahlen, Daten und Quellen!</p>
+      </div>
+    </div>
+
+    <!-- TOKEN PREDICTION GAME -->
+    <div style="margin-top: 28px;">
+      <div class="section-num" style="color: var(--accent3); margin-bottom: 8px;">🎮 MINI-SPIEL — WAS IST EIN TOKEN?</div>
+      <p>Das LLM arbeitet nicht mit ganzen Wörtern — es arbeitet mit <strong>Tokens</strong>, kleinen Textbausteinen (ca. ¾ eines Wortes). "Photosynthese" könnte zwei Tokens sein: <em>"Photo"</em> + <em>"synthese"</em>. In jedem Schritt wählt das Modell das <em>wahrscheinlichste</em> nächste Token.</p>
+      <p>Baue den Satz auf, indem du klickst, was deiner Meinung nach als Nächstes kommt. Kannst du denken wie ein LLM?</p>
+    </div>
+
+    <div id="tg-wrap" style="background:rgba(0,0,0,0.25);border-radius:16px;padding:24px;margin-top:14px;border:1px solid rgba(78,204,163,0.2);">
+      <div style="font-family:'Fredoka One',cursive;color:var(--accent3);font-size:1.15rem;margin-bottom:16px;">🔮 Token-Vorhersage — baue den Satz!</div>
+
+      <!-- Sentence display -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:0.82rem;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:8px;">Satz bisher:</div>
+        <div id="tg-sent" style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 18px;font-family:'Courier New',monospace;font-size:1.1rem;color:var(--white);min-height:46px;border:1px solid rgba(255,255,255,0.08);">Der Ozean<span id="tg-blink" style="display:inline-block;width:2px;height:1em;background:#4ecca3;vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite;"></span></div>
+      </div>
+
+      <!-- Feedback line -->
+      <div id="tg-fb" style="min-height:20px;margin-bottom:14px;font-size:0.95rem;"></div>
+
+      <!-- Choice buttons rendered here -->
+      <div style="font-size:0.82rem;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:10px;">Wähle das nächste Token:</div>
+      <div id="tg-choices" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;"></div>
+
+      <!-- Score + reset -->
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <button onclick="tgReset()" style="background:rgba(78,204,163,0.15);border:1px solid rgba(78,204,163,0.4);color:#4ecca3;border-radius:20px;padding:8px 22px;font-family:'Fredoka One',cursive;font-size:0.95rem;cursor:pointer;">↩ Neu starten</button>
+        <span style="font-size:0.9rem;color:var(--subtext);">Punkte: <strong id="tg-score" style="color:var(--accent2);font-family:'Fredoka One',cursive;font-size:1.1rem;">0</strong></span>
+        <span style="font-size:0.9rem;color:var(--subtext);">Schritt: <strong id="tg-stepnum" style="color:var(--accent4);font-family:'Fredoka One',cursive;font-size:1.1rem;">1</strong> / 5</span>
+      </div>
+      <div style="margin-top:12px;font-size:0.8rem;color:rgba(255,255,255,0.28);font-style:italic;">* Die Wahrscheinlichkeiten sind vereinfacht — zur Veranschaulichung, nicht von einem echten Modell.</div>
+    </div>
+
+    <style>
+      @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+      .tgc {
+        background: rgba(255,255,255,0.05);
+        border: 1.5px solid rgba(255,255,255,0.18);
+        border-radius: 12px;
+        padding: 12px 18px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-align: left;
+        min-width: 130px;
+        font-family: 'Nunito', sans-serif;
+      }
+      .tgc:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.35); transform: translateY(-2px); }
+      .tgc .tw { font-family: 'Courier New', monospace; font-size: 1rem; color: var(--white); font-weight: 700; display: block; margin-bottom: 5px; }
+      .tgc .tb-wrap { height: 5px; background: rgba(255,255,255,0.08); border-radius: 4px; margin-bottom: 4px; }
+      .tgc .tb { height: 5px; border-radius: 4px; width: 0%; transition: width 0.4s ease; }
+      .tgc .tl { font-size: 0.78rem; color: var(--subtext); }
+      .tgc.best  { background: rgba(78,204,163,0.18); border-color: #4ecca3; }
+      .tgc.chose { background: rgba(162,155,254,0.18); border-color: #a29bfe; }
+      .tgc.wrong { background: rgba(233,69,96,0.12); border-color: rgba(233,69,96,0.45); }
+    </style>
+
+    <script>
+    (function(){
+      var steps = [
+        { ctx: "Der Ozean", tokens: [
+          {t:"bedeckt",p:42,c:"#4ecca3"},{t:"ist",p:25,c:"#a29bfe"},
+          {t:"enthält",p:14,c:"#f5a623"},{t:"hat",p:11,c:"#e94560"},{t:"bildet",p:8,c:"#a29bfe"}
+        ]},
+        { ctx: "Der Ozean bedeckt", tokens: [
+          {t:"etwa",p:48,c:"#4ecca3"},{t:"rund",p:22,c:"#a29bfe"},
+          {t:"fast",p:16,c:"#f5a623"},{t:"71",p:8,c:"#e94560"},{t:"mehr",p:6,c:"#a29bfe"}
+        ]},
+        { ctx: "Der Ozean bedeckt etwa", tokens: [
+          {t:"71 %",p:54,c:"#4ecca3"},{t:"70 %",p:18,c:"#a29bfe"},
+          {t:"die",p:13,c:"#f5a623"},{t:"zwei",p:8,c:"#e94560"},{t:"drei",p:7,c:"#a29bfe"}
+        ]},
+        { ctx: "Der Ozean bedeckt etwa 71 %", tokens: [
+          {t:"der",p:76,c:"#4ecca3"},{t:"des",p:12,c:"#a29bfe"},
+          {t:"von",p:7,c:"#f5a623"},{t:"—",p:5,c:"#e94560"}
+        ]},
+        { ctx: "Der Ozean bedeckt etwa 71 % der", tokens: [
+          {t:"Erdoberfläche",p:58,c:"#4ecca3"},{t:"Erde",p:26,c:"#a29bfe"},
+          {t:"Welt",p:10,c:"#f5a623"},{t:"Meere",p:6,c:"#e94560"}
+        ]}
+      ];
+
+      var step = 0, score = 0, picked = false;
+
+      function shuffle(arr){ return arr.slice().sort(function(){return Math.random()-0.5;}); }
+
+      function render(){
+        if(step >= steps.length){ showDone(); return; }
+        picked = false;
+        var s = steps[step];
+        document.getElementById('tg-sent').innerHTML =
+          s.ctx + '<span id="tg-blink" style="display:inline-block;width:2px;height:1em;background:#4ecca3;vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite;"></span>';
+        document.getElementById('tg-fb').innerHTML = '';
+        document.getElementById('tg-stepnum').textContent = (step+1);
+
+        var box = document.getElementById('tg-choices');
+        box.innerHTML = '';
+        var shuffled = shuffle(s.tokens);
+        shuffled.forEach(function(tk){
+          var btn = document.createElement('button');
+          btn.className = 'tgc';
+          btn.innerHTML =
+            '<span class="tw">"'+tk.t+'"</span>'+
+            '<div class="tb-wrap"><div class="tb" id="tgb-'+tk.t.replace(/[^a-z0-9]/gi,'_')+'" style="background:'+tk.c+';"></div></div>'+
+            '<span class="tl" id="tgl-'+tk.t.replace(/[^a-z0-9]/gi,'_')+'">probability: ?</span>';
+          btn.onclick = function(){ pick(tk.t); };
+          box.appendChild(btn);
+        });
+      }
+
+      function pick(chosen){
+        if(picked) return;
+        picked = true;
+        var s = steps[step];
+        var best = s.tokens[0];
+        var chosenTk = s.tokens.filter(function(t){return t.t===chosen;})[0];
+        var isTop = chosen === best.t;
+
+        // Reveal all bars
+        s.tokens.forEach(function(tk){
+          var safeId = tk.t.replace(/[^a-z0-9]/gi,'_');
+          var bar = document.getElementById('tgb-'+safeId);
+          var lbl = document.getElementById('tgl-'+safeId);
+          if(bar) bar.style.width = tk.p + '%';
+          if(lbl) lbl.textContent = 'probability: ' + tk.p + '%';
+        });
+
+        // Style the buttons
+        var btns = document.getElementById('tg-choices').querySelectorAll('.tgc');
+        btns.forEach(function(b){
+          var w = b.querySelector('.tw');
+          if(!w) return;
+          var token = w.textContent.replace(/"/g,'');
+          if(token === best.t) b.classList.add('best');
+          else if(token === chosen && !isTop) b.classList.add('wrong');
+          if(token === chosen) b.classList.add('chose');
+        });
+
+        score += chosenTk.p;
+        document.getElementById('tg-score').textContent = score;
+
+        var fb = document.getElementById('tg-fb');
+        if(isTop){
+          fb.style.color = '#4ecca3';
+          fb.innerHTML = '✅ <strong>Top-Wahl!</strong> "'+chosen+'" — '+chosenTk.p+'% wahrscheinlich. +'+chosenTk.p+' Punkte! &nbsp;<button onclick="tgStep()" style="background:rgba(78,204,163,0.2);border:1px solid #4ecca3;color:#4ecca3;border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">Weiter →</button>';
+        } else {
+          fb.style.color = '#f5a623';
+          fb.innerHTML = '💡 Das LLM würde <strong>"'+best.t+'"</strong> wählen ('+best.p+'%). Du bekommst +'+chosenTk.p+' Punkte. &nbsp;<button onclick="tgStep()" style="background:rgba(245,166,35,0.15);border:1px solid #f5a623;color:#f5a623;border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">Weiter →</button>';
+        }
+      }
+
+      function showDone(){
+        document.getElementById('tg-sent').innerHTML = 'Der Ozean bedeckt etwa 71 % der Erdoberfläche. ✅';
+        document.getElementById('tg-choices').innerHTML = '';
+        var maxPts = steps.reduce(function(s,st){return s+st.tokens[0].p;},0);
+        var fb = document.getElementById('tg-fb');
+        fb.style.color = '#a29bfe';
+        fb.innerHTML = '🎉 <strong>Fertig!</strong> Du hast <strong>'+score+'</strong> / '+maxPts+' Punkte. So baut ein LLM Text auf — eine Wahrscheinlichkeitswahl nach der anderen!';
+      }
+
+      window.tgStep = function(){ step++; render(); };
+      window.tgReset = function(){ step=0; score=0; document.getElementById('tg-score').textContent='0'; render(); };
+
+      // Always call render immediately — no waiting for DOMContentLoaded
+      render();
+    })();
+    </script>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 2: CHATBOT ═══════════════ -->
+  <div class="section-card purple" id="chatbot">
+    <div class="big-num">2</div>
+    <div class="section-num">Abschnitt 2</div>
+    <h2>💬 Was ist ein Chatbot?</h2>
+
+    <p>Wenn das LLM der <strong>Motor</strong> ist, ist ein Chatbot das <strong>Cockpit</strong>, in dem du sitzt. Das LLM erledigt die ganze schwere Arbeit im Verborgenen — der Chatbot ist der Bildschirm und die Tastatur, mit der du wirklich mit ihm sprechen kannst.</p>
+
+    <p>Du tippst eine Nachricht (genannt <strong>Prompt</strong>), und der Chatbot sendet sie — zusammen mit einigen versteckten Anweisungen — an das LLM. Das LLM generiert eine Antwort Token für Token, und sie erscheint live auf deinem Bildschirm.</p>
+
+    <div class="illustration">
+      <svg viewBox="0 0 760 210" xmlns="http://www.w3.org/2000/svg" style="max-width:740px;">
+        <defs>
+          <linearGradient id="bgCard2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,0.05)"/>
+            <stop offset="100%" style="stop-color:rgba(255,255,255,0.02)"/>
+          </linearGradient>
+        </defs>
+
+        <!-- YOU TYPE box -->
+        <rect x="10" y="28" width="175" height="155" rx="16" fill="rgba(162,155,254,0.07)" stroke="rgba(162,155,254,0.3)" stroke-width="1.5"/>
+        <text x="97" y="54" text-anchor="middle" fill="#a29bfe" font-family="'Fredoka One',cursive" font-size="15">DU TIPPST:</text>
+        <rect x="22" y="66" width="152" height="40" rx="9" fill="rgba(162,155,254,0.14)" stroke="rgba(162,155,254,0.2)" stroke-width="1"/>
+        <text x="98" y="91" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Nunito,sans-serif" font-size="13">"Was ist Photosynthese?"</text>
+        <line x1="22" y1="120" x2="174" y2="120" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <text x="98" y="140" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">chatbot adds hidden</text>
+        <text x="98" y="156" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">instructions + context</text>
+        <text x="98" y="172" text-anchor="middle" fill="rgba(255,255,255,0.22)" font-family="Nunito,sans-serif" font-size="11">= your full "prompt"</text>
+
+        <!-- Arrow 1 -->
+        <path d="M190 106 L240 106" stroke="#a29bfe" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <polygon points="240,100 252,106 240,112" fill="#a29bfe"/>
+        <text x="219" y="95" text-anchor="middle" fill="#a29bfe" font-family="Nunito,sans-serif" font-size="12" font-weight="800">sent to</text>
+
+        <!-- LLM BRAIN box — neural network symbol -->
+        <rect x="255" y="28" width="188" height="155" rx="16" fill="rgba(78,204,163,0.07)" stroke="rgba(78,204,163,0.3)" stroke-width="1.5"/>
+        <text x="349" y="54" text-anchor="middle" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="15">LLM-KERN</text>
+        <!-- Neural net nodes: 3 layers -->
+        <!-- L1 -->
+        <circle cx="282" cy="88"  r="9" fill="rgba(78,204,163,0.2)"  stroke="#4ecca3" stroke-width="1.5"/>
+        <circle cx="282" cy="116" r="9" fill="rgba(78,204,163,0.2)"  stroke="#4ecca3" stroke-width="1.5"/>
+        <circle cx="282" cy="144" r="9" fill="rgba(78,204,163,0.2)"  stroke="#4ecca3" stroke-width="1.5"/>
+        <!-- L2 -->
+        <circle cx="349" cy="78"  r="9" fill="rgba(162,155,254,0.2)" stroke="#a29bfe" stroke-width="1.5"/>
+        <circle cx="349" cy="102" r="9" fill="rgba(162,155,254,0.2)" stroke="#a29bfe" stroke-width="1.5"/>
+        <circle cx="349" cy="126" r="9" fill="rgba(162,155,254,0.2)" stroke="#a29bfe" stroke-width="1.5"/>
+        <circle cx="349" cy="150" r="9" fill="rgba(162,155,254,0.2)" stroke="#a29bfe" stroke-width="1.5"/>
+        <!-- L3 -->
+        <circle cx="416" cy="92"  r="9" fill="rgba(245,166,35,0.2)"  stroke="#f5a623" stroke-width="1.5"/>
+        <circle cx="416" cy="116" r="9" fill="rgba(245,166,35,0.2)"  stroke="#f5a623" stroke-width="1.5"/>
+        <circle cx="416" cy="140" r="9" fill="rgba(245,166,35,0.2)"  stroke="#f5a623" stroke-width="1.5"/>
+        <!-- Connections -->
+        <line x1="291" y1="88"  x2="340" y2="78"  stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+        <line x1="291" y1="88"  x2="340" y2="102" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+        <line x1="291" y1="88"  x2="340" y2="126" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="291" y1="116" x2="340" y2="78"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="291" y1="116" x2="340" y2="102" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+        <line x1="291" y1="116" x2="340" y2="126" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+        <line x1="291" y1="116" x2="340" y2="150" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="291" y1="144" x2="340" y2="102" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="291" y1="144" x2="340" y2="126" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="291" y1="144" x2="340" y2="150" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+        <line x1="358" y1="78"  x2="407" y2="92"  stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="358" y1="78"  x2="407" y2="116" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="358" y1="102" x2="407" y2="92"  stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+        <line x1="358" y1="102" x2="407" y2="116" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="358" y1="126" x2="407" y2="116" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+        <line x1="358" y1="126" x2="407" y2="140" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="358" y1="150" x2="407" y2="116" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="358" y1="150" x2="407" y2="140" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+        <text x="349" y="175" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">sagt Tokens voraus</text>
+
+        <!-- Arrow 2 -->
+        <path d="M447 106 L497 106" stroke="#f5a623" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <polygon points="497,100 509,106 497,112" fill="#f5a623"/>
+        <text x="471" y="95" text-anchor="middle" fill="#f5a623" font-family="Nunito,sans-serif" font-size="12" font-weight="800">reply!</text>
+
+        <!-- YOU SEE box -->
+        <rect x="512" y="28" width="235" height="155" rx="16" fill="rgba(245,166,35,0.07)" stroke="rgba(245,166,35,0.3)" stroke-width="1.5"/>
+        <text x="629" y="54" text-anchor="middle" fill="#f5a623" font-family="'Fredoka One',cursive" font-size="15">DU SIEHST:</text>
+        <rect x="525" y="66" width="210" height="88" rx="9" fill="rgba(245,166,35,0.07)" stroke="rgba(245,166,35,0.2)" stroke-width="1"/>
+        <text x="630" y="88" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">"Photosynthesis is how</text>
+        <text x="630" y="106" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">plants turn sunlight into</text>
+        <text x="630" y="124" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">in Nahrung umwandelt."</text>
+        <text x="630" y="147" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">erscheint Wort für Wort ✨</text>
+        <text x="630" y="170" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="Nunito,sans-serif" font-size="11">Token für Token in Echtzeit</text>
+      </svg>
+    </div>
+
+    <div class="callout info">
+      <div class="icon">🛠️</div>
+      <div class="callout-body">
+        <h4>Chatbots können Werkzeuge nutzen!</h4>
+        <p>Moderne Chatbots reden nicht nur — sie können auch <strong>Werkzeuge nutzen</strong>, wie eine Websuchmaschine, einen Taschenrechner oder eine Code-Umgebung. Das LLM entscheidet, wann ein Werkzeug benötigt wird, nutzt es, liest das Ergebnis und schreibt dann seine Antwort. So kann ein Chatbot Fragen zu Dingen beantworten, die <em>gestern</em> passiert sind.</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 10px; font-weight: 800; color: var(--white); font-size: 1rem;">Beispiel 1 — eine Frage aus dem Trainingswissen:</p>
+
+    <div class="illustration" style="margin-top:10px;">
+      <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg" style="max-width:740px;">
+        <!-- YOU TYPE -->
+        <rect x="10" y="14" width="156" height="100" rx="14" fill="rgba(162,155,254,0.07)" stroke="rgba(162,155,254,0.3)" stroke-width="1.5"/>
+        <text x="88" y="36" text-anchor="middle" fill="#a29bfe" font-family="'Fredoka One',cursive" font-size="13">DU TIPPST</text>
+        <rect x="20" y="46" width="136" height="32" rx="7" fill="rgba(162,155,254,0.14)" stroke="rgba(162,155,254,0.2)" stroke-width="1"/>
+        <text x="88" y="67" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Nunito,sans-serif" font-size="12">"Was ist Photosynthese?"</text>
+        <text x="88" y="96" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">Allgemeinwissen →</text>
+        <text x="88" y="108" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">kein Werkzeug nötig</text>
+        <!-- Arrow -->
+        <path d="M170 64 L210 64" stroke="#a29bfe" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="210,59 220,64 210,69" fill="#a29bfe"/>
+        <!-- LLM -->
+        <rect x="222" y="14" width="130" height="100" rx="14" fill="rgba(78,204,163,0.07)" stroke="rgba(78,204,163,0.3)" stroke-width="1.5"/>
+        <text x="287" y="36" text-anchor="middle" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="13">LLM</text>
+        <!-- mini neural net -->
+        <circle cx="250" cy="64" r="7" fill="rgba(78,204,163,0.2)" stroke="#4ecca3" stroke-width="1.2"/>
+        <circle cx="250" cy="82" r="7" fill="rgba(78,204,163,0.2)" stroke="#4ecca3" stroke-width="1.2"/>
+        <circle cx="287" cy="58" r="7" fill="rgba(162,155,254,0.2)" stroke="#a29bfe" stroke-width="1.2"/>
+        <circle cx="287" cy="74" r="7" fill="rgba(162,155,254,0.2)" stroke="#a29bfe" stroke-width="1.2"/>
+        <circle cx="287" cy="90" r="7" fill="rgba(162,155,254,0.2)" stroke="#a29bfe" stroke-width="1.2"/>
+        <circle cx="324" cy="64" r="7" fill="rgba(245,166,35,0.2)" stroke="#f5a623" stroke-width="1.2"/>
+        <circle cx="324" cy="82" r="7" fill="rgba(245,166,35,0.2)" stroke="#f5a623" stroke-width="1.2"/>
+        <line x1="257" y1="64" x2="280" y2="58" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="257" y1="64" x2="280" y2="74" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="257" y1="82" x2="280" y2="74" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="257" y1="82" x2="280" y2="90" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="294" y1="58" x2="317" y2="64" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="294" y1="74" x2="317" y2="64" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="294" y1="74" x2="317" y2="82" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="294" y1="90" x2="317" y2="82" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <!-- Arrow out -->
+        <path d="M356 64 L396 64" stroke="#f5a623" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="396,59 406,64 396,69" fill="#f5a623"/>
+        <!-- ANSWER -->
+        <rect x="408" y="14" width="340" height="100" rx="14" fill="rgba(245,166,35,0.07)" stroke="rgba(245,166,35,0.3)" stroke-width="1.5"/>
+        <text x="578" y="36" text-anchor="middle" fill="#f5a623" font-family="'Fredoka One',cursive" font-size="13">ANTWORT (aus Training)</text>
+        <text x="578" y="60" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">"Photosynthesis is how plants turn</text>
+        <text x="578" y="78" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">Prozess, der Licht in Nahrung umwandelt."</text>
+        <text x="578" y="103" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">✅ LLM wusste es bereits — antwortet direkt</text>
+      </svg>
+    </div>
+
+    <p style="margin-top: 18px; font-weight: 800; color: var(--white); font-size: 1rem;">Beispiel 2 — eine Frage, die aktuelle Infos braucht:</p>
+
+    <div class="illustration" style="margin-top:10px;">
+      <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" style="max-width:780px;">
+        <!-- YOU TYPE -->
+        <rect x="10" y="14" width="150" height="170" rx="14" fill="rgba(162,155,254,0.07)" stroke="rgba(162,155,254,0.3)" stroke-width="1.5"/>
+        <text x="85" y="36" text-anchor="middle" fill="#a29bfe" font-family="'Fredoka One',cursive" font-size="13">DU TIPPST</text>
+        <rect x="20" y="46" width="130" height="44" rx="7" fill="rgba(162,155,254,0.14)" stroke="rgba(162,155,254,0.2)" stroke-width="1"/>
+        <text x="85" y="64" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Nunito,sans-serif" font-size="12">"Wie viele Tore schoss</text>
+        <text x="85" y="79" text-anchor="middle" fill="rgba(255,255,255,0.78)" font-family="Nunito,sans-serif" font-size="12">Ronaldo 2025?"</text>
+        <text x="85" y="114" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">neuere Info →</text>
+        <text x="85" y="128" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">benötigt Websuche!</text>
+        <!-- Arrow to LLM -->
+        <path d="M164 100 L200 100" stroke="#a29bfe" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="200,95 210,100 200,105" fill="#a29bfe"/>
+        <!-- LLM box -->
+        <rect x="212" y="14" width="120" height="170" rx="14" fill="rgba(78,204,163,0.07)" stroke="rgba(78,204,163,0.3)" stroke-width="1.5"/>
+        <text x="272" y="36" text-anchor="middle" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="13">LLM</text>
+        <text x="272" y="68" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">Hmm, Ich weiß</text>
+        <text x="272" y="81" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">das nicht</text>
+        <text x="272" y="94" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">=> Websuche!</text>
+        <text x="272" y="148" text-anchor="middle" fill="rgba(78,204,163,0.6)" font-family="Nunito,sans-serif" font-size="11">Ich hab's! Jetzt</text>
+        <text x="272" y="161" text-anchor="middle" fill="rgba(78,204,163,0.6)" font-family="Nunito,sans-serif" font-size="11">kann ich antworten.</text>
+        <!-- Arrow down to web -->
+        <path d="M272 112 L272 130" stroke="#e94560" stroke-width="2" stroke-dasharray="4,3"/>
+        <polygon points="267,130 272,142 277,130" fill="#e94560"/>
+        <!-- WEB SEARCH box below LLM -->
+        <text x="272" y="107" text-anchor="middle" fill="#e94560" font-family="'Fredoka One',cursive" font-size="11">🔍 WEBSUCHE</text>
+        <!-- Arrow to answer -->
+        <path d="M345 100 L442 100" stroke="#f5a623" stroke-width="2" stroke-dasharray="5,3"/>
+        <polygon points="442,95 452,100 442,105" fill="#f5a623"/>
+        <!-- ANSWER — widened to x=454 width=336, centre at 622 -->
+        <rect x="454" y="14" width="336" height="170" rx="14" fill="rgba(245,166,35,0.07)" stroke="rgba(245,166,35,0.3)" stroke-width="1.5"/>
+        <text x="622" y="36" text-anchor="middle" fill="#f5a623" font-family="'Fredoka One',cursive" font-size="13">ANTWORT (mit Suche)</text>
+        <text x="622" y="62" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">"Cristiano Ronaldo scored</text>
+        <text x="622" y="80" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">38 goals in 2025 for</text>
+        <text x="622" y="98" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">38 Tore erzielt (alle Wettbewerbe)."</text>
+        <text x="622" y="126" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">✅ Used the web search tool —</text>
+        <text x="622" y="140" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">answer reflects current info</text>
+        <text x="622" y="158" text-anchor="middle" fill="rgba(233,69,96,0.55)" font-family="Nunito,sans-serif" font-size="11">⚠ Still verify — web results</text>
+        <text x="622" y="171" text-anchor="middle" fill="rgba(233,69,96,0.55)" font-family="Nunito,sans-serif" font-size="11">can be wrong too!</text>
+      </svg>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 3: WHICH BOTS ═══════════════ -->
+  <div class="section-card red" id="bots">
+    <div class="big-num">3</div>
+    <div class="section-num">Abschnitt 3</div>
+    <h2>🤖 Die großen Chatbots</h2>
+
+    <p>Es gibt fünf große KI-Chatbots, die du überall hörst. Sie funktionieren alle im normalen Webbrowser — keine App nötig. Sie sind alle kostenlos!</p>
+
+    <div class="bot-grid">
+      <div class="bot-card">
+        <span class="emoji">🤖</span>
+        <div class="bot-name">Claude</div>
+        <div class="bot-maker">by Anthropic</div>
+        <div class="bot-url">claude.ai</div>
+      </div>
+      <div class="bot-card">
+        <span class="emoji">💬</span>
+        <div class="bot-name">ChatGPT</div>
+        <div class="bot-maker">by OpenAI</div>
+        <div class="bot-url">chatgpt.com</div>
+      </div>
+      <div class="bot-card">
+        <span class="emoji">💎</span>
+        <div class="bot-name">Gemini</div>
+        <div class="bot-maker">by Google</div>
+        <div class="bot-url">gemini.google.com</div>
+      </div>
+      <div class="bot-card">
+        <span class="emoji">🔍</span>
+        <div class="bot-name">Perplexity</div>
+        <div class="bot-maker">by Perplexity AI</div>
+        <div class="bot-url">perplexity.ai</div>
+      </div>
+      <div class="bot-card">
+        <span class="emoji">🪟</span>
+        <div class="bot-name">Copilot</div>
+        <div class="bot-maker">by Microsoft</div>
+        <div class="bot-url">copilot.microsoft.com</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="icon">🚨</div>
+      <div class="callout-body">
+        <h4>Kostenlos-Versionen: Chats können gespeichert werden</h4>
+        <p>Bei kostenlosen Plänen können die Unternehmen Gespräche speichern und nutzen, um künftige KI-Modelle zu verbessern — manchmal werden sie dabei auch von Menschen überprüft. Die Regeln sind je nach Dienst verschieden. Die kluge Regel: Tippe nichts, was du einem Mitarbeiter des Unternehmens nicht zeigen würdest.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 4: PRIVACY ═══════════════ -->
+  <div class="section-card gold" id="privacy">
+    <div class="big-num">4</div>
+    <div class="section-num">Abschnitt 4</div>
+    <h2>🔒 Datenschutz — Was du NICHT teilen solltest</h2>
+
+    <p>Jede Nachricht, die du in einen Chatbot tippst, reist durchs Internet zu einem Server eines Unternehmens. Stell es dir wie einen Brief an ein Unternehmen vor — sie empfangen ihn, speichern ihn, und je nach ihren Richtlinien kann ihn Personal lesen oder er kann für das Training der nächsten KI-Version verwendet werden.</p>
+
+    <div class="illustration">
+      <svg viewBox="0 0 640 152" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;">
+        <!-- Phone -->
+        <rect x="20" y="20" width="88" height="110" rx="14" fill="rgba(245,166,35,0.1)" stroke="rgba(245,166,35,0.3)" stroke-width="1.5"/>
+        <rect x="32" y="34" width="64" height="76" rx="5" fill="rgba(255,255,255,0.05)"/>
+        <circle cx="64" cy="122" r="6" fill="rgba(245,166,35,0.4)"/>
+        <text x="64" y="74" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Nunito,sans-serif" font-size="13">Your</text>
+        <text x="64" y="91" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Nunito,sans-serif" font-size="13">message</text>
+        <text x="64" y="15" text-anchor="middle" fill="#f5a623" font-family="'Fredoka One',cursive" font-size="14">YOU</text>
+        <!-- Arrow 1 -->
+        <path d="M113 75 L183 75" stroke="#f5a623" stroke-width="2.5" stroke-dasharray="5,4"/>
+        <polygon points="183,69 195,75 183,81" fill="#f5a623"/>
+        <text x="148" y="62" text-anchor="middle" fill="#f5a623" font-family="Nunito,sans-serif" font-size="13" font-weight="800">verlässt dein Gerät!</text>
+        <!-- Cloud -->
+        <ellipse cx="256" cy="73" rx="58" ry="34" fill="rgba(162,155,254,0.07)" stroke="rgba(162,155,254,0.3)" stroke-width="1.5"/>
+        <path d="M220,66 Q223,50 239,53 Q245,40 264,47 Q278,40 285,53 Q298,50 294,66" stroke="rgba(162,155,254,0.5)" stroke-width="1.5" fill="none"/>
+        <text x="256" y="80" text-anchor="middle" fill="#a29bfe" font-family="Nunito,sans-serif" font-size="14" font-weight="800">☁️ Das Internet</text>
+        <text x="256" y="122" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="13">reist hierdrüber!</text>
+        <!-- Arrow 2 -->
+        <path d="M318 75 L380 75" stroke="#e94560" stroke-width="2.5" stroke-dasharray="5,4"/>
+        <polygon points="380,69 392,75 380,81" fill="#e94560"/>
+        <text x="349" y="62" text-anchor="middle" fill="#e94560" font-family="Nunito,sans-serif" font-size="13" font-weight="800">kommt an bei</text>
+        <!-- Server -->
+        <rect x="396" y="22" width="108" height="106" rx="10" fill="rgba(233,69,96,0.1)" stroke="rgba(233,69,96,0.3)" stroke-width="1.5"/>
+        <rect x="410" y="38" width="80" height="14" rx="4" fill="rgba(233,69,96,0.35)"/>
+        <rect x="410" y="58" width="80" height="14" rx="4" fill="rgba(233,69,96,0.22)"/>
+        <rect x="410" y="78" width="80" height="14" rx="4" fill="rgba(233,69,96,0.15)"/>
+        <circle cx="484" cy="45" r="4" fill="#e94560"/>
+        <text x="450" y="112" text-anchor="middle" fill="#e94560" font-family="'Fredoka One',cursive" font-size="13">DEREN SERVER</text>
+        <text x="450" y="140" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="12">kann für KI-Training genutzt werden</text>
+        <!-- Postcard icon -->
+        <text x="556" y="80" text-anchor="middle" fill="rgba(255,255,255,0.18)" font-family="Nunito,sans-serif" font-size="40">📮</text>
+        <text x="594" y="100" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="Nunito,sans-serif" font-size="12">postcard,</text>
+        <text x="594" y="115" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="Nunito,sans-serif" font-size="12">not a letter!</text>
+      </svg>
+    </div>
+
+    <p><strong>Die goldene Regel: Wärst du damit einverstanden, wenn ein Fremder das lesen könnte?</strong> Wenn nicht — tippe es nicht in einen Chatbot.</p>
+
+    <div class="two-col">
+      <div class="mini-card bad">
+        <h4>🚫 Niemals teilen</h4>
+        <ul>
+          <li>Deinen vollständigen Namen + Heimadresse</li>
+          <li>Passwörter oder PINs</li>
+          <li>Fotos von dir oder Freunden</li>
+          <li>Deinen Schulnamen + persönliche Daten</li>
+          <li>Deine Telefonnummer</li>
+          <li>Alles, was ein Fremder nicht wissen sollte</li>
+        </ul>
+      </div>
+      <div class="mini-card good">
+        <h4>✅ In Ordnung</h4>
+        <ul>
+          <li>Fragen zu Schulthemen</li>
+          <li>Hilfe beim Schreiben einer Geschichte</li>
+          <li>Wissenschaftliche Konzepte erklären</li>
+          <li>Ideen sammeln (Brainstorming)</li>
+          <li>Eine Sprache üben</li>
+          <li>Allgemeine "Wie funktioniert X?"-Fragen</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="icon">💡</div>
+      <div class="callout-body">
+        <h4>Nützlicher Trick: Verwende erfundene Namen</h4>
+        <p>Wenn du die KI für etwas Persönliches brauchst — wie eine Nachricht an eine Freundin schreiben — benutze einfach einen erfundenen Namen. Statt "Meine Freundin Sofia..." schreibe "Meine Freundin Alice...". Du bekommst dieselbe Hilfe ohne echte Details zu teilen.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 5: 4-D ═══════════════ -->
+  <div class="section-card teal" id="4d">
+    <div class="big-num">5</div>
+    <div class="section-num">Abschnitt 5</div>
+    <h2>✨ Die 4-D-Methode</h2>
+
+    <p>Bevor du eine KI um etwas bittest, gehe diese 4 Schritte durch. Denke daran wie eine Checkliste vor einem Raketenstart — überspringe einen Schritt und alles geht schief! Diese Methode wurde von den Leuten entwickelt, die Claude bauen.</p>
+
+    <div class="illustration">
+      <svg viewBox="0 0 720 195" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;">
+        <defs>
+          <marker id="arr2" markerWidth="9" markerHeight="7" refX="7" refY="3.5" orient="auto">
+            <polygon points="0 0, 9 3.5, 0 7" fill="rgba(255,255,255,0.25)"/>
+          </marker>
+        </defs>
+        <!-- D1 -->
+        <rect x="10" y="28" width="152" height="155" rx="16" fill="rgba(78,204,163,0.10)" stroke="#4ecca3" stroke-width="1.5"/>
+        <text x="86" y="62" text-anchor="middle" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="38">D</text>
+        <text x="86" y="90" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="'Fredoka One',cursive" font-size="17">Delegation</text>
+        <text x="86" y="113" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="Nunito,sans-serif" font-size="13">Plan first!</text>
+        <text x="86" y="132" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">What do I want?</text>
+        <text x="86" y="151" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">What's a good result?</text>
+        <text x="86" y="170" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">AI or do it myself?</text>
+        <path d="M166 105 L194 105" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" marker-end="url(#arr2)"/>
+        <!-- D2 -->
+        <rect x="197" y="28" width="152" height="155" rx="16" fill="rgba(162,155,254,0.10)" stroke="#a29bfe" stroke-width="1.5"/>
+        <text x="273" y="62" text-anchor="middle" fill="#a29bfe" font-family="'Fredoka One',cursive" font-size="38">D</text>
+        <text x="273" y="90" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="'Fredoka One',cursive" font-size="17">Beschreibung</text>
+        <text x="273" y="113" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="Nunito,sans-serif" font-size="13">Be detailed!</text>
+        <text x="273" y="132" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">Give context</text>
+        <text x="273" y="151" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">Give examples</text>
+        <text x="273" y="170" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">Say the format you want</text>
+        <path d="M353 105 L381 105" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" marker-end="url(#arr2)"/>
+        <!-- D3 -->
+        <rect x="384" y="28" width="152" height="155" rx="16" fill="rgba(233,69,96,0.10)" stroke="#e94560" stroke-width="1.5"/>
+        <text x="460" y="62" text-anchor="middle" fill="#e94560" font-family="'Fredoka One',cursive" font-size="38">D</text>
+        <text x="460" y="90" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="'Fredoka One',cursive" font-size="17">Beurteilung</text>
+        <text x="460" y="113" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="Nunito,sans-serif" font-size="13">Check it!</text>
+        <text x="460" y="132" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">Is this actually correct?</text>
+        <text x="460" y="151" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">Verify the facts</text>
+        <text x="460" y="170" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">Ask "what's wrong?"</text>
+        <path d="M540 105 L568 105" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" marker-end="url(#arr2)"/>
+        <!-- D4 -->
+        <rect x="571" y="28" width="142" height="155" rx="16" fill="rgba(245,166,35,0.10)" stroke="#f5a623" stroke-width="1.5"/>
+        <text x="642" y="62" text-anchor="middle" fill="#f5a623" font-family="'Fredoka One',cursive" font-size="38">D</text>
+        <text x="642" y="90" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="'Fredoka One',cursive" font-size="17">Sorgfalt</text>
+        <text x="642" y="113" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="Nunito,sans-serif" font-size="13">Own it!</text>
+        <text x="642" y="132" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">You're responsible</text>
+        <text x="642" y="151" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="13">for the result</text>
+        <text x="642" y="170" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="12">Don't just copy-paste!</text>
+      </svg>
+    </div>
+
+    <div class="callout tip">
+      <div class="icon">🎮</div>
+      <div class="callout-body">
+        <h4>Echtes Beispiel: Hausaufgabenhilfe</h4>
+        <p><strong>Delegation:</strong> "Ich möchte, dass die KI Photosynthese erklärt — nicht meinen Aufsatz schreibt." <strong>Beschreibung:</strong> "Erkläre es für eine 12-Jährige, in 3 Sätzen, mit einer Lebensmittel-Analogie." <strong>Beurteilung:</strong> Stimmt das mit meinem Lehrbuch überein? <strong>Sorgfalt:</strong> Schreibe es in deinen eigenen Worten — nie einfach die KI-Antwort abgeben!</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTIONS 6+7: PROMPTING ═══════════════ -->
+  <div class="section-card purple" id="prompt">
+    <div class="big-num">6+7</div>
+    <div class="section-num">Abschnitte 6 &amp; 7</div>
+    <h2>✍️ Wie man mit KI spricht (Prompting)</h2>
+
+    <p>Ein <strong>Prompt</strong> ist das, was du der KI tippst. Das Wichtigste: Die KI nimmt deine Nachricht super wörtlich. Sie errät nicht, was du <em>meintest</em> — sie arbeitet nur mit dem, was du tatsächlich geschrieben hast. Vage Frage = vage Antwort.</p>
+
+    <p>Es ist wie eine Bestellung im Restaurant. Sagst du nur "Essen bitte", bekommst du vielleicht alles Mögliche. Aber wenn du sagst "eine Veggie-Pizza, mittelgroß, ohne Oliven" — bekommst du genau das, was du willst!</p>
+
+    <div class="illustration">
+      <svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;">
+        <!-- Bad prompt -->
+        <rect x="10" y="10" width="320" height="170" rx="16" fill="rgba(233,69,96,0.07)" stroke="rgba(233,69,96,0.3)" stroke-width="1.5"/>
+        <text x="170" y="38" text-anchor="middle" fill="#e94560" font-family="'Fredoka One',cursive" font-size="17">😬 Vager Prompt</text>
+        <rect x="26" y="50" width="288" height="42" rx="9" fill="rgba(255,255,255,0.04)"/>
+        <text x="170" y="76" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="'Courier New',monospace" font-size="14">"Hilf mir bei meinem Projekt"</text>
+        <text x="170" y="114" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="14">❌ Welches Projekt? Welches Fach?</text>
+        <text x="170" y="136" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="14">❌ Welches Format brauchst du?</text>
+        <text x="170" y="158" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="14">❌ KI rät einfach und schreibt drauflos</text>
+        <!-- VS -->
+        <text x="360" y="108" text-anchor="middle" fill="rgba(255,255,255,0.28)" font-family="'Fredoka One',cursive" font-size="26">VS</text>
+        <!-- Good prompt -->
+        <rect x="390" y="10" width="320" height="170" rx="16" fill="rgba(78,204,163,0.07)" stroke="rgba(78,204,163,0.3)" stroke-width="1.5"/>
+        <text x="550" y="38" text-anchor="middle" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="17">✅ Klarer Prompt</text>
+        <rect x="406" y="50" width="288" height="58" rx="9" fill="rgba(255,255,255,0.04)"/>
+        <text x="550" y="72" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="'Courier New',monospace" font-size="12">"I'm in 6th grade doing a project</text>
+        <text x="550" y="88" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="'Courier New',monospace" font-size="12">on ocean currents. Give me 3 key</text>
+        <text x="550" y="104" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="'Courier New',monospace" font-size="12">Meeresströmungen. 3 Fakten bitte."</text>
+        <text x="550" y="130" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="14">✅ Wer du bist + Thema</text>
+        <text x="550" y="150" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="14">✅ Genaues Format: 3 Fakten</text>
+        <text x="550" y="170" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="14">✅ Sprachniveau: einfach</text>
+      </svg>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-circle">1</div>
+        <div class="step-text">
+          <h4>Sag, wer du bist und warum du fragst</h4>
+          <p>"Ich bin 12 Jahre alt und lerne für ein Schulprojekt über Vulkane. Erkläre, wie Magma entsteht, mit einer einfachen Analogie."</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-text">
+          <h4>Sag genau, welches Format du möchtest</h4>
+          <p>Sag "2 Sätze", "eine Liste mit 5 Punkten", "erkläre wie für einen 10-Jährigen". Sonst bekommst du vielleicht drei Seiten, wenn du einen Absatz brauchst!</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-text">
+          <h4>Die erste Antwort ist nur ein Entwurf — weitermachen!</h4>
+          <p>Ergänze: "Mach es kürzer", "Gib mir ein anderes Beispiel", "Erkläre den letzten Teil nochmal". Das ist völlig normal — die besten Ergebnisse entstehen durch Hin-und-Her.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-text">
+          <h4>Überprüfe wichtige Fakten immer selbst</h4>
+          <p>Zahlen, Daten, Namen, wissenschaftliche Fakten — vertraue diesen niemals, ohne sie nachzuschlagen. Die KI klingt selbstsicher, auch wenn sie komplett falsch liegt!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout purple">
+      <div class="icon">🤯</div>
+      <div class="callout-body">
+        <h4>Mythos: "Ich habe die KI korrigiert, jetzt weiß sie es besser!"</h4>
+        <p>Nein! Eine Korrektur gilt nur <strong>in diesem einen Gespräch</strong>. Schließe den Tab und er vergisst alles — er kehrt sofort zu seinen alten Angewohnheiten zurück. Die KI lernt wirklich nur, wenn ihre Entwickler eine neue Version trainieren, was Monate dauert.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 8: CONTEXT ROT ═══════════════ -->
+  <div class="section-card red" id="memory">
+    <div class="big-num">8</div>
+    <div class="section-num">Abschnitt 8</div>
+    <h2>📦 Context Rot — Warum lange Chats seltsam werden</h2>
+
+    <p>Jedes KI-Gespräch lebt in einem <strong>Kontextfenster</strong> — stell dir das wie einen Rucksack vor, der nur eine bestimmte Anzahl von Notizen fasst. Die KI liest jede Notiz, um deine Frage zu beantworten. Wenn das Gespräch wächst, kommen neue Notizen hinzu. Wenn der Rucksack voll ist, fällt die <em>älteste Notiz komplett heraus</em> — nicht langsam, sondern sofort weg.</p>
+
+    <p>Die KI sagt dir nicht, dass sie vergessen hat. Sie ignoriert einfach stillschweigend Anweisungen vom Anfang des Chats oder widerspricht früheren Aussagen. Dieser Qualitätsverlust heißt <strong>Context Rot</strong>.</p>
+
+    <div class="illustration">
+      <svg viewBox="0 0 760 235" xmlns="http://www.w3.org/2000/svg" style="max-width:740px;">
+        <text x="380" y="18" text-anchor="middle" fill="#e94560" font-family="'Fredoka One',cursive" font-size="15">DAS KONTEXTFENSTER  (der Rucksack — feste Größe!)</text>
+
+        <!-- Backpack outline -->
+        <rect x="20" y="26" width="718" height="128" rx="14" fill="rgba(255,255,255,0.03)" stroke="rgba(233,69,96,0.45)" stroke-width="2"/>
+
+        <!-- GONE label left of box -->
+        <text x="10" y="84" text-anchor="middle" fill="rgba(233,69,96,0.6)" font-family="'Fredoka One',cursive" font-size="11" transform="rotate(-90,10,84)">WEG</text>
+
+        <!-- Message 1 - completely gone (outside box, faded) -->
+        <rect x="28" y="40" width="88" height="54" rx="8" fill="rgba(255,255,255,0.025)" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="72" y="60" text-anchor="middle" fill="rgba(255,255,255,0.12)" font-family="Nunito,sans-serif" font-size="12">Nachricht 1</text>
+        <text x="72" y="76" text-anchor="middle" fill="rgba(255,255,255,0.12)" font-family="Nunito,sans-serif" font-size="12">"use short</text>
+        <text x="72" y="88" text-anchor="middle" fill="rgba(255,255,255,0.12)" font-family="Nunito,sans-serif" font-size="12">verwenden"</text>
+        <!-- Drop-off arrow -->
+        <path d="M72 97 L72 116" stroke="rgba(233,69,96,0.5)" stroke-width="2" stroke-dasharray="3,2"/>
+        <polygon points="67,116 72,126 77,116" fill="rgba(233,69,96,0.5)"/>
+        <text x="72" y="143" text-anchor="middle" fill="rgba(233,69,96,0.55)" font-family="Nunito,sans-serif" font-size="11">dropped!</text>
+
+        <!-- Divider line — hard cliff -->
+        <line x1="124" y1="30" x2="124" y2="150" stroke="rgba(233,69,96,0.5)" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="124" y="160" text-anchor="middle" fill="rgba(233,69,96,0.5)" font-family="Nunito,sans-serif" font-size="10">cliff edge</text>
+
+        <!-- Message 2 — IN the window, full visibility -->
+        <rect x="132" y="38" width="94" height="54" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+        <text x="179" y="59" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Nunito,sans-serif" font-size="12">Nachricht 2</text>
+        <text x="179" y="75" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="12">still fully</text>
+        <text x="179" y="87" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="12">vorhanden ✓</text>
+
+        <!-- Message 3 -->
+        <rect x="234" y="38" width="94" height="54" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+        <text x="281" y="59" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Nunito,sans-serif" font-size="12">Nachricht 5</text>
+        <text x="281" y="75" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="12">fully present</text>
+        <text x="281" y="87" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="12">im Fenster ✓</text>
+
+        <!-- Message 4 -->
+        <rect x="336" y="38" width="104" height="54" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+        <text x="388" y="59" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="Nunito,sans-serif" font-size="12">Nachricht 10</text>
+        <text x="388" y="75" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="12">fully present</text>
+        <text x="388" y="87" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="12">im Fenster ✓</text>
+
+        <!-- Recent message -->
+        <rect x="450" y="30" width="112" height="70" rx="10" fill="rgba(78,204,163,0.10)" stroke="rgba(78,204,163,0.4)" stroke-width="1.5"/>
+        <text x="506" y="53" text-anchor="middle" fill="rgba(78,204,163,0.9)" font-family="Nunito,sans-serif" font-size="13">Nachricht 20</font></text>
+        <text x="506" y="70" text-anchor="middle" fill="rgba(78,204,163,0.9)" font-family="Nunito,sans-serif" font-size="13">present ✓✓</text>
+        <text x="506" y="88" text-anchor="middle" fill="rgba(78,204,163,0.65)" font-family="Nunito,sans-serif" font-size="12">KI sieht das gut</text>
+
+        <!-- Latest message -->
+        <rect x="572" y="26" width="152" height="78" rx="10" fill="rgba(78,204,163,0.16)" stroke="rgba(78,204,163,0.65)" stroke-width="2"/>
+        <text x="648" y="52" text-anchor="middle" fill="#4ecca3" font-family="Nunito,sans-serif" font-size="13" font-weight="800">Neueste Nachricht</text>
+        <text x="648" y="69" text-anchor="middle" fill="#4ecca3" font-family="Nunito,sans-serif" font-size="13">glasklar ✨</text>
+        <text x="648" y="90" text-anchor="middle" fill="rgba(78,204,163,0.65)" font-family="Nunito,sans-serif" font-size="12">KI liest das zuerst</text>
+
+        <!-- Caption -->
+        <text x="380" y="182" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="Nunito,sans-serif" font-size="13">Nachrichten im Fenster sind vollständig vorhanden — alles oder nichts, kein allmähliches Ausblenden.</text>
+        <text x="380" y="200" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-family="Nunito,sans-serif" font-size="13">Wenn das Fenster voll ist, fällt die älteste Nachricht komplett raus — für immer weg.</text>
+        <text x="380" y="220" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="Nunito,sans-serif" font-size="12">Lösung: Starte einen neuen Chat oder füge eine kurze Zusammenfassung nahe deiner letzten Nachricht ein.</text>
+      </svg>
+    </div>
+
+    <div class="two-col">
+      <div class="mini-card bad">
+        <h4>🔴 Anzeichen von Context Rot</h4>
+        <ul>
+          <li>Widerspricht früheren Aussagen</li>
+          <li>Vergisst deine Formatierungsregeln</li>
+          <li>Bringt korrigierte Fehler zurück</li>
+          <li>Antworten wirken seltsam oder generisch</li>
+        </ul>
+      </div>
+      <div class="mini-card good">
+        <h4>🟢 Was tun?</h4>
+        <ul>
+          <li>Ein ganz neues Gespräch beginnen</li>
+          <li>Kurze Zusammenfassung einfügen statt des ganzen Chats</li>
+          <li>Wichtige Regeln nahe der letzten Nachricht wiederholen</li>
+          <li>Große Aufgaben in kleinere Teile aufteilen</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <div class="icon">🎒</div>
+      <div class="callout-body">
+        <h4>Stell dir einen Schulrucksack vor</h4>
+        <p>Das Kontextfenster ist wie ein Rucksack mit begrenztem Platz. Neue Notizen kommen vorne rein. Wenn er völlig voll ist und eine neue Notiz hinzukommt, fällt die älteste Notiz hinten komplett raus — sie verblasst nicht, sie verschwindet einfach. Die KI kann nur die Notizen “sehen”, die gerade im Rucksack sind. Sobald eine Notiz rausfällt, hat die KI keinerlei Erinnerung daran.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SECTION 9: TRUST ═══════════════ -->
+  <div class="section-card gold" id="trust">
+    <div class="big-num">9</div>
+    <div class="section-num">Abschnitt 9</div>
+    <h2>🛡️ Was man vertrauen kann — und was man prüfen sollte</h2>
+
+    <p>Nicht alles, was eine KI sagt, ist gleich zuverlässig. Einige Ausgaben kannst du sofort nutzen — andere solltest du <strong>immer</strong> zuerst unabhängig überprüfen. Denk daran wie an eine Ampel.</p>
+
+    <div class="illustration">
+      <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg" style="max-width:680px;">
+        <!-- Green -->
+        <rect x="15" y="12" width="668" height="52" rx="12" fill="rgba(78,204,163,0.09)" stroke="rgba(78,204,163,0.28)" stroke-width="1.5"/>
+        <text x="46" y="34" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="16">🟢 Im Allgemeinen sicher zu nutzen</text>
+        <text x="46" y="54" fill="rgba(255,255,255,0.55)" font-family="Nunito,sans-serif" font-size="14">Texte umschreiben · Zusammenfassen · Übersetzen · Formatieren · Alternative Formulierungen</text>
+        <!-- Yellow -->
+        <rect x="15" y="75" width="668" height="52" rx="12" fill="rgba(245,166,35,0.09)" stroke="rgba(245,166,35,0.28)" stroke-width="1.5"/>
+        <text x="46" y="97" fill="#f5a623" font-family="'Fredoka One',cursive" font-size="16">🟡 Vor der Nutzung prüfen</text>
+        <text x="46" y="117" fill="rgba(255,255,255,0.55)" font-family="Nunito,sans-serif" font-size="14">Wissenschaftliche Erklärungen · Definitionen · Schreibvorschläge · Einfache Code-Schnipsel</text>
+        <!-- Red -->
+        <rect x="15" y="138" width="668" height="58" rx="12" fill="rgba(233,69,96,0.09)" stroke="rgba(233,69,96,0.28)" stroke-width="1.5"/>
+        <text x="46" y="160" fill="#e94560" font-family="'Fredoka One',cursive" font-size="16">🔴 Immer unabhängig nachprüfen</text>
+        <text x="46" y="179" fill="rgba(255,255,255,0.55)" font-family="Nunito,sans-serif" font-size="14">Genaue Zahlen · Daten · Statistiken · Zitate und Quellen · Historische Fakten</text>
+        <text x="46" y="195" fill="rgba(255,255,255,0.32)" font-family="Nunito,sans-serif" font-size="13">Je wichtiger die Richtigkeit, desto weniger solltest du der KI allein vertrauen</text>
+      </svg>
+    </div>
+
+    <div class="callout warn">
+      <div class="icon">🎯</div>
+      <div class="callout-body">
+        <h4>Die KI weiß nicht immer, was sie nicht weiß</h4>
+        <p>Etwas Kniffliges an der KI: Sie kann gleichermaßen selbstsicher klingen, egal ob sie recht hat <em>oder</em> falsch liegt. Eine sorgfältige Person, die unsicher ist, sagt „Ich glaube…“ oder „Ich bin nicht 100% sicher…“ — KI-Chatbots tun das manchmal auch, aber nicht zuverlässig genug. Bei allem Wichtigen — einem Fakt in deinem Aufsatz, einem Datum, einer Statistik — prüfe immer mit einer echten Quelle wie deinem Lehrbuch oder einer zuverlässigen Webseite.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════ SUMMARY ═══════════════ -->
+  <div class="section-card teal" style="text-align:center;">
+    <h2>🎉 Abschnitt 1 geschafft!</h2>
+    <p style="margin-bottom:22px;">Du weißt jetzt mehr über KI als die meisten Erwachsenen. Hier eine kurze Zusammenfassung:</p>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px; text-align:left; margin-top: 8px;">
+      <div class="callout info" style="margin:0;">
+        <div class="icon">🧠</div>
+        <div class="callout-body"><h4>LLMs</h4><p>KI sagt das nächste Wort voraus — eine super-starke Autokorrektur, kein denkendes Gehirn.</p></div>
+      </div>
+      <div class="callout info" style="margin:0;">
+        <div class="icon">💬</div>
+        <div class="callout-body"><h4>Chatbots</h4><p>Das Gesicht, mit dem du sprichst. Der Chatbot leitet deinen Prompt ans LLM weiter und zeigt die Antwort live an.</p></div>
+      </div>
+      <div class="callout info" style="margin:0;">
+        <div class="icon">🔒</div>
+        <div class="callout-body"><h4>Datenschutz</h4><p>Jede Nachricht geht an ein Unternehmen. Teile niemals Passwörter, Adressen, Fotos oder persönliche Daten.</p></div>
+      </div>
+      <div class="callout info" style="margin:0;">
+        <div class="icon">✨</div>
+        <div class="callout-body"><h4>4-D-Methode</h4><p>Delegation → Beschreibung → Beurteilung → Sorgfalt. Keine Schritte überspringen!</p></div>
+      </div>
+      <div class="callout info" style="margin:0;">
+        <div class="icon">✍️</div>
+        <div class="callout-body"><h4>Prompting</h4><p>Sei konkret. Gib Kontext. Nenn das Format. Betrachte die erste Antwort als Entwurf.</p></div>
+      </div>
+      <div class="callout info" style="margin:0;">
+        <div class="icon">🛡️</div>
+        <div class="callout-body"><h4>Vertrauen</h4><p>🟢 nutzen · 🟡 prüfen · 🔴 immer unabhängig nachprüfen.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>PANGAEA KI-Training · Kinder-Edition · Abschnitt 1: Die Grundlagen</p>
+    <p style="margin-top:8px; opacity:0.45;">Für neugierige junge Wissenschaftler überall auf der Welt 🌊</p>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.nav-pill').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const el = document.getElementById(a.getAttribute('href').slice(1));
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const cards = document.querySelectorAll('.section-card');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  cards.forEach((card, i) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(22px)';
+    card.style.transition = `opacity 0.5s ease ${i * 0.04}s, transform 0.5s ease ${i * 0.04}s`;
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>

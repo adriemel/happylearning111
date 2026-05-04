@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Basics for Kids · Course 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Space+Grotesk:wght@600;700&display=swap');
+  :root{
+    --navy:#10233F; --blue:#2563EB; --cyan:#67E8F9; --mint:#BBF7D0; --lime:#D9F99D;
+    --amber:#FDE68A; --orange:#FDBA74; --rose:#FDA4AF; --violet:#C4B5FD;
+    --ink:#17212B; --muted:#596579; --paper:#FFFFFF; --soft:#F7FAFC; --line:#DCE6F2;
+    --shadow:0 14px 35px rgba(16,35,63,.13); --radius:24px;
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Atkinson Hyperlegible',Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 0%,#DBEAFE 0,#F8FAFC 35%,#FFFFFF 100%);line-height:1.55;font-size:18px}
+  .layout{display:grid;grid-template-columns:270px minmax(0,1200px);max-width:1600px;margin:0 auto}
+  nav{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#10233F,#12335D);color:white;padding:24px 16px;overflow:auto}
+  nav h2{font-family:'Space Grotesk';font-size:24px;margin:0 0 4px} nav p{font-size:14px;opacity:.75;margin:0 0 18px}
+  nav a{display:block;color:rgba(255,255,255,.84);text-decoration:none;padding:9px 11px;border-radius:14px;font-size:15px;margin:4px 0;border:1px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:white}
+  main{padding:34px 42px 72px}.cover,.panel,section{background:rgba(255,255,255,.94);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius)}
+  .cover{padding:34px;margin-bottom:28px;position:relative;overflow:hidden}.cover:after{content:"";position:absolute;right:-70px;top:-80px;width:260px;height:260px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--violet));opacity:.35}
+  .badge{display:inline-flex;gap:8px;align-items:center;background:#E0F2FE;color:#075985;font-weight:700;border-radius:999px;padding:8px 12px;font-size:14px}
+  h1,h2,h3{font-family:'Space Grotesk',Arial,sans-serif;line-height:1.12}h1{font-size:48px;color:var(--navy);margin:14px 0 10px;max-width:720px}h2{font-size:31px;color:var(--navy);margin:0 0 12px}h3{font-size:22px;color:#075985;margin:22px 0 8px}
+  .subtitle{font-size:22px;color:var(--muted);max-width:700px}.hero-icons{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}.hero-icons span{font-size:34px;background:white;border:2px solid var(--line);border-radius:18px;padding:10px;box-shadow:0 6px 14px rgba(16,35,63,.08)}
+  section{padding:28px;margin:28px 0}.lead{font-size:21px;font-weight:700}.tiny{font-size:14px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{background:var(--soft);border:2px solid var(--line);border-radius:20px;padding:18px}.card h3{margin-top:0}.good{background:#ECFDF5;border-color:#86EFAC}.warn{background:#FFF1F2;border-color:#FDA4AF}.tip{background:#FFFBEB;border-color:#FCD34D}.blue{background:#EFF6FF;border-color:#93C5FD}.purple{background:#F5F3FF;border-color:#C4B5FD}
+  .icon{font-size:36px}.rule{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start;background:#F8FAFC;border-left:8px solid var(--blue);border-radius:18px;padding:14px;margin:12px 0}.rule .num{width:42px;height:42px;border-radius:14px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:700}
+  .diagram{background:#F8FBFF;border:2px solid #DCEBFF;border-radius:22px;padding:18px;margin:18px 0}.flow{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}.bubble{background:white;border:3px solid #93C5FD;border-radius:999px;padding:13px 18px;font-weight:700;color:var(--navy);text-align:center}.arrow{font-size:26px;color:var(--blue);font-weight:700}
+  .token-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.token{background:white;border:2px solid #93C5FD;border-radius:12px;padding:7px 11px;font-weight:700}.choice{background:#FEF3C7;border-color:#F59E0B}.prompt{background:#111827;color:#E5F4FF;border-radius:18px;padding:18px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px}.bad{color:#FCA5A5}.better{color:#86EFAC}
+  .risk{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.risk div{padding:16px;border-radius:18px;text-align:center;font-weight:700}.low{background:#DCFCE7}.mid{background:#FEF3C7}.high{background:#FFE4E6}.checklist li{margin:8px 0}.fact-row{display:grid;grid-template-columns:160px 1fr;gap:14px;border-top:1px solid var(--line);padding:12px 0}.status{font-weight:700;color:#166534}
+  details.quiz{background:#F1F5F9;border:2px dashed #93C5FD;border-radius:20px;padding:16px;margin-top:16px}summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:20px}
+  .game{background:linear-gradient(135deg,#EFF6FF,#F5F3FF);border:3px solid #BFDBFE;border-radius:24px;padding:20px}.sentence{font-size:24px;font-weight:700;background:white;border-radius:18px;padding:16px;border:2px solid #DBEAFE}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.option{border:0;border-radius:18px;background:white;padding:14px;text-align:left;cursor:pointer;font:inherit;font-weight:700;box-shadow:0 8px 16px rgba(16,35,63,.08);border:2px solid transparent}.option:hover,.option:focus{border-color:var(--blue);outline:none}.bar{height:13px;background:#E5E7EB;border-radius:999px;overflow:hidden;margin-top:8px}.fill{height:100%;width:0;background:linear-gradient(90deg,#60A5FA,#A78BFA);transition:width .35s}.score{font-weight:700;background:#ECFDF5;border:2px solid #86EFAC;border-radius:18px;padding:12px}.result{min-height:56px;font-weight:700}.red-note{color:#B91C1C;font-weight:800;font-size:20px;margin:10px 0 0}.controls{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:999px;background:var(--navy);color:white;padding:11px 16px;font-weight:700;cursor:pointer}.btn.secondary{background:#475569}.footer{text-align:center;color:var(--muted);font-size:14px;margin-top:28px;padding-top:22px;border-top:2px solid var(--line)}
+  @media(max-width:860px){.layout{display:block}nav{position:relative;height:auto}.grid,.grid.three,.risk,.options,.fact-row{grid-template-columns:1fr}main{padding:18px}h1{font-size:38px}.cover,section{padding:22px}}
+  @media print{nav{display:none}.layout{display:block}main{padding:0}.cover,section{box-shadow:none;break-inside:avoid}.game button{display:none}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <h2>AI Basics</h2><p>Course 1 · Kids version</p>
+  <a href="#start">Start</a><a href="#llm">1 · LLMs</a><a href="#chatbot">2 · Chatbots</a><a href="#tools">3 · Tools</a><a href="#privacy">4 · Privacy + age rules</a><a href="#prompting">5 · Prompting</a><a href="#game">6 · Prediction game</a><a href="#context">7 · Context window</a><a href="#trust">8 · Trust meter</a><a href="#cheat">Cheat sheet</a>
+</nav>
+<main>
+  <div class="cover" id="start">
+    <span class="badge">PANGAEA Data Publisher · AI mini-course</span>
+    <h1>AI Basics for Curious Kids</h1>
+    <p class="subtitle">Learn how chatbots work, how to ask better questions, when to check answers, and why word prediction is not the same as knowing the truth.</p>
+    <div class="hero-icons"><span>🤖</span><span>🎮</span><span>🧠</span><span>🔍</span><span>🛡️</span></div>
+  </div>
+
+  <section id="llm">
+    <h2>🤖 1 · What is an LLM?</h2>
+    <p class="lead">An LLM is a language-pattern machine. It builds answers by predicting likely next pieces of text.</p>
+    <p>LLM means <strong>Large Language Model</strong>. It is trained on many examples of language and sometimes other data, depending on the model. It learns patterns: which words often appear together, how explanations are built, and what kind of answer usually fits a question.</p>
+    <div class="diagram">
+      <div class="flow"><div class="bubble">Training examples<br>📚 🌐 💬</div><div class="arrow">→</div><div class="bubble">Patterns<br>🧠</div><div class="arrow">→</div><div class="bubble">Next token<br>🔤</div></div>
+    </div>
+    <h3>What is a token?</h3>
+    <p>A token is a small piece of text. It can be a whole word, part of a word, a number, or punctuation.</p>
+    <div class="token-row"><span class="token">The</span><span class="token">ocean</span><span class="token">is</span><span class="token">full</span><span class="token">of</span><span class="token choice">?</span></div>
+    <div class="grid">
+      <div class="card good"><div class="icon">✅</div><h3>Useful for</h3><p>Explaining, summarising, rewriting, translating, brainstorming, practising, and helping with code.</p></div>
+      <div class="card warn"><div class="icon">⚠️</div><h3>Needs checking for</h3><p>Exact facts, recent events, maths, quotes, sources, medical or legal advice, and anything important.</p></div>
+    </div>
+    <div class="card tip"><strong>Key word: hallucination.</strong> This means the AI gives a wrong answer that sounds confident. It happens because the model generates likely text; it does not automatically prove that the text is true.</div>
+  </section>
+
+  <section id="chatbot">
+    <h2>💬 2 · What is a chatbot?</h2>
+    <p class="lead">The chatbot is the app you talk to. The LLM is one part inside it.</p>
+    <div class="diagram"><div class="flow"><div class="bubble">You ask<br>“Explain gravity”</div><div class="arrow">→</div><div class="bubble">Chat app<br>history + files + settings</div><div class="arrow">→</div><div class="bubble">AI model<br>predicts answer</div></div></div>
+    <p class="red-note">Important: You check the answer before using it.</p>
+    <div class="grid three">
+      <div class="card blue"><h3>Prompt</h3><p>Your instruction or question.</p></div>
+      <div class="card blue"><h3>Context</h3><p>The information the chatbot can currently see.</p></div>
+      <div class="card blue"><h3>Tools</h3><p>Search, calculator, code, files, image tools, or other connected apps.</p></div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <h2>🌐 3 · Which chatbots exist, what can they do?</h2>
+    <p>Common AI assistants include ChatGPT, Gemini, Copilot, Claude, and Perplexity. Their features and privacy rules change, so treat this list as examples, not a permanent ranking.</p>
+    <div class="grid three">
+      <div class="card"><div class="icon">✍️</div><h3>Writing helper</h3><p>Good for drafts, explanations, summaries, and rewriting.</p></div>
+      <div class="card"><div class="icon">🔎</div><h3>Search helper</h3><p>Useful when it shows sources you can open and check.</p></div>
+      <div class="card"><div class="icon">🛠️</div><h3>Tool helper</h3><p>Useful when connected to web search, image creation, files, code, or other tools.</p></div>
+    </div>
+    <div class="card warn"><strong>Rule:</strong> Different tool, different answer. For school, science, or anything important, compare with a textbook, teacher, official source, or calculator.</div>
+  </section>
+
+  <section id="privacy">
+    <h2>🔒 4 · Privacy + age rules</h2>
+    <p class="lead">A 12-year-old should use AI only with parent or teacher permission.</p>
+    <div class="grid">
+      <div class="card warn"><h3>Do not paste</h3><p>Passwords, addresses, phone numbers, private photos, private school/work documents, unpublished data, medical details, or anything that could embarrass someone.</p></div>
+      <div class="card good"><h3>Safer to use</h3><p>Made-up examples, public facts, short text you are allowed to share, and questions without personal details.</p></div>
+    </div>
+    <div class="rule"><div class="num">!</div><p><strong>Before sending, ask:</strong> “Would it be okay if this became public or was reviewed by a company?” If the answer is no, do not paste it.</p></div>
+    <div class="card purple"><h3>Age reality check</h3><p>Some AI services require users to be at least 13 with parent permission. Some require 18+. Some school or family accounts have special controls. Always check the rules for the exact tool you use.</p></div>
+  </section>
+
+  <section id="prompting">
+    <h2>✍️ 5 · Prompting: how to ask well</h2>
+    <p class="lead">A good prompt gives the AI a clear mission.</p>
+    <div class="prompt"><span class="bad">Weak prompt:</span><br>Explain AI.</div><br>
+    <div class="prompt"><span class="better">Better prompt:</span><br>Explain what an AI chatbot is for a 12-year-old. Use 5 short bullet points, one gaming example, and one thing I should double-check.</div>
+    <div class="grid">
+      <div class="card blue"><h3>Prompt recipe</h3><p><strong>Goal:</strong> What should it make?<br><strong>Audience:</strong> Who is it for?<br><strong>Context:</strong> What does it need to know?<br><strong>Format:</strong> Bullets, table, quiz, story?<br><strong>Checks:</strong> Ask what might be wrong.</p></div>
+      <div class="card tip"><h3>Useful follow-ups</h3><p>“Make it shorter.”<br>“Give an example.”<br>“What could be wrong?”<br>“Use simpler words.”<br>“Show two versions.”</p></div>
+    </div>
+  </section>
+
+  <section id="game">
+    <h2>🎮 6 · Word prediction game</h2>
+    <p class="lead">Pick the next word that probably fits best. After you choose, compare the probabilities.</p>
+    <div class="game" aria-live="polite">
+      <div class="sentence" id="sentence">Loading game…</div>
+      <div class="options" id="options"></div>
+      <div class="result" id="result"></div>
+      <div class="score" id="score">Score: 0 / 0</div><br>
+      <div class="controls"><button class="btn" id="nextBtn">Next round</button><button class="btn secondary" id="resetBtn">Reset score</button></div>
+    </div>
+    <p class="tiny">After you choose, the game reveals simplified fake probabilities. They are not from a live AI model. The lesson is real: sentence structure changes which next words become likely.</p>
+  </section>
+
+  <section id="context">
+    <h2>🧠 7 · Context window and context rot</h2>
+    <p class="lead">A chatbot can only work with the information currently available to it.</p>
+    <p>The <strong>context window</strong> is like the AI’s desk. It may include your prompt, recent chat history, uploaded text, and instructions. If the chat becomes crowded, old details can be ignored, mixed up, or contradicted.</p>
+    <div class="grid">
+      <div class="card warn"><h3>Signs of context rot</h3><ul class="checklist"><li>The AI forgets the goal.</li><li>It mixes old and new instructions.</li><li>It repeats a mistake.</li><li>It answers a question you did not ask.</li></ul></div>
+      <div class="card good"><h3>Fix it</h3><ul class="checklist"><li>Start a new chat.</li><li>Paste a short summary.</li><li>List only the important facts.</li><li>Give one clear next task.</li></ul></div>
+    </div>
+    <div class="prompt">Restart - open new chat:<br><br>Goal: [goal]. Important facts: [facts]. Decisions so far: [decisions]. Next task: [task]. Please continue with your [analysis/writing/explanation]</div>
+  </section>
+
+  <section id="trust">
+    <h2>✅ 8 · What to trust, what to verify</h2>
+    <p class="lead">Do not trust all AI answers equally.</p>
+    <div class="risk"><div class="low">LOW RISK<br><span class="tiny">Rewriting, brainstorming, style ideas</span></div><div class="mid">CHECK IT<br><span class="tiny">Science, code, units, school answers</span></div><div class="high">VERIFY ALWAYS<br><span class="tiny">Numbers, dates, quotes, sources, private data</span></div></div>
+    <details class="quiz"><summary>Mini quiz: should you trust it?</summary>
+      <p><strong>1. AI rewrites your paragraph more clearly.</strong> Usually okay, but read it once.</p>
+      <p><strong>2. AI gives a quote from a book.</strong> Check it. Quotes can be invented.</p>
+      <p><strong>3. AI converts 37 °C to Kelvin.</strong> Use the formula or a calculator. 37 °C = 310.15 K.</p>
+      <p><strong>4. AI explains photosynthesis simply.</strong> Good starting point, but compare with class material.</p>
+    </details>
+  </section>
+
+  <section id="cheat">
+    <h2>🧪 One-page cheat sheet</h2>
+    <div class="grid">
+      <div class="card blue"><h3>AI can help me…</h3><p>Understand, draft, rewrite, organise, brainstorm, practise, compare, and make examples.</p></div>
+      <div class="card warn"><h3>I must check…</h3><p>Facts, numbers, dates, sources, personal data, and anything that will be graded, published, or shared.</p></div>
+    </div>
+    <div class="prompt">Copy-and-use prompt:<br><br>You are a friendly teacher. Explain [TOPIC] for a 12-year-old. Use short sentences, one example, and a tiny quiz. Also tell me what I should double-check.</div>
+  </section>
+
+  <div class="footer">Kids version of Course 1 · AI Basics · Revised and fact-checked · May 2026</div>
+</main>
+</div>
+<script>
+const rounds = [
+  {s:'The dragon breathes ___', options:[['fire',72,'Common fantasy pattern: dragons breathe fire.'],['homework',8,'Funny, but much less common.'],['under',5,'This does not fit the grammar well.'],['because',3,'A connector word is unlikely here.']]},
+  {s:'After school, I usually ___', options:[['play',35,'Verb fits: “I usually play…”'],['played',9,'Past tense clashes with “usually”.'],['because',4,'A reason word does not complete the action.'],['blue',2,'An adjective does not fit here.']]},
+  {s:'The fastest animal on land is the ___', options:[['cheetah',78,'This is a known factual pattern. Still check important facts.'],['banana',1,'Grammatically possible? No. Semantically weird.'],['running',6,'This does not fit after “the”.'],['planet',3,'Wrong category.']]},
+  {s:'Can you explain this like I am ___', options:[['12',46,'A common prompt structure asks for an age level.'],['yesterday',5,'Time word does not fit well.'],['quietly',7,'Adverb fits poorly after “I am”.'],['volcano',2,'Noun is possible in a joke, not likely.']]},
+  {s:'Because it was raining, we took an ___', options:[['umbrella',64,'Fits meaning and grammar.'],['idea',8,'Grammar fits, meaning is weak.'],['run',6,'Possible phrase elsewhere, but weak here.'],['angry',2,'Adjective does not fit after “an”.']]},
+  {s:'In a recipe, 200 grams of flour is a ___', options:[['measurement',44,'The sentence asks for a type of thing.'],['football',3,'Wrong topic.'],['quickly',1,'Adverb does not fit.'],['slept',1,'Verb does not fit.']]}
+];
+let current=0, correct=0, total=0;
+const sentence=document.getElementById('sentence'), options=document.getElementById('options'), result=document.getElementById('result'), score=document.getElementById('score');
+function best(r){return r.options.reduce((a,b)=>b[1]>a[1]?b:a)}
+function draw(){
+  const r=rounds[current]; sentence.textContent=r.s; options.innerHTML=''; result.textContent='';
+  r.options.sort(()=>Math.random()-0.5).forEach(o=>{
+    const btn=document.createElement('button'); btn.className='option';
+    btn.dataset.word=o[0]; btn.dataset.prob=o[1];
+    btn.textContent=o[0];
+    btn.onclick=()=>choose(o,r); options.appendChild(btn);
+  });
+}
+function choose(o,r){
+  const b=best(r); total++;
+  if(o[0]===b[0]){correct++; result.textContent=`Correct. “${o[0]}” is most likely here. ${o[2]}`;}
+  else{result.textContent=`Not the most likely. “${b[0]}” fits better: ${b[2]} Your choice: ${o[2]}`;}
+  score.textContent=`Score: ${correct} / ${total}`;
+  [...document.querySelectorAll('.option')].forEach(btn=>{
+    const prob=btn.dataset.prob;
+    btn.innerHTML=`${btn.dataset.word}<div class="bar"><div class="fill" style="width:${prob}%"></div></div><span class="tiny">${prob}% fake probability</span>`;
+    btn.disabled=true;
+  });
+}
+document.getElementById('nextBtn').onclick=()=>{current=(current+1)%rounds.length; draw();};
+document.getElementById('resetBtn').onclick=()=>{correct=0;total=0;score.textContent='Score: 0 / 0';draw();};
+draw();
+</script>
+</body>
+</html>

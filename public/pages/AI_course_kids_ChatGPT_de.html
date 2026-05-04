@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KI-Grundlagen für Kinder · Kurs 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Space+Grotesk:wght@600;700&display=swap');
+  :root{
+    --navy:#10233F; --blue:#2563EB; --cyan:#67E8F9; --mint:#BBF7D0; --lime:#D9F99D;
+    --amber:#FDE68A; --orange:#FDBA74; --rose:#FDA4AF; --violet:#C4B5FD;
+    --ink:#17212B; --muted:#596579; --paper:#FFFFFF; --soft:#F7FAFC; --line:#DCE6F2;
+    --shadow:0 14px 35px rgba(16,35,63,.13); --radius:24px;
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Atkinson Hyperlegible',Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 0%,#DBEAFE 0,#F8FAFC 35%,#FFFFFF 100%);line-height:1.55;font-size:18px}
+  .layout{display:grid;grid-template-columns:270px minmax(0,1200px);max-width:1600px;margin:0 auto}
+  nav{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#10233F,#12335D);color:white;padding:24px 16px;overflow:auto}
+  nav h2{font-family:'Space Grotesk';font-size:24px;margin:0 0 4px} nav p{font-size:14px;opacity:.75;margin:0 0 18px}
+  nav a{display:block;color:rgba(255,255,255,.84);text-decoration:none;padding:9px 11px;border-radius:14px;font-size:15px;margin:4px 0;border:1px solid transparent}
+  nav a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:white}
+  main{padding:34px 42px 72px}.cover,.panel,section{background:rgba(255,255,255,.94);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius)}
+  .cover{padding:34px;margin-bottom:28px;position:relative;overflow:hidden}.cover:after{content:"";position:absolute;right:-70px;top:-80px;width:260px;height:260px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--violet));opacity:.35}
+  .badge{display:inline-flex;gap:8px;align-items:center;background:#E0F2FE;color:#075985;font-weight:700;border-radius:999px;padding:8px 12px;font-size:14px}
+  h1,h2,h3{font-family:'Space Grotesk',Arial,sans-serif;line-height:1.12}h1{font-size:48px;color:var(--navy);margin:14px 0 10px;max-width:720px}h2{font-size:31px;color:var(--navy);margin:0 0 12px}h3{font-size:22px;color:#075985;margin:22px 0 8px}
+  .subtitle{font-size:22px;color:var(--muted);max-width:700px}.hero-icons{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}.hero-icons span{font-size:34px;background:white;border:2px solid var(--line);border-radius:18px;padding:10px;box-shadow:0 6px 14px rgba(16,35,63,.08)}
+  section{padding:28px;margin:28px 0}.lead{font-size:21px;font-weight:700}.tiny{font-size:14px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{background:var(--soft);border:2px solid var(--line);border-radius:20px;padding:18px}.card h3{margin-top:0}.good{background:#ECFDF5;border-color:#86EFAC}.warn{background:#FFF1F2;border-color:#FDA4AF}.tip{background:#FFFBEB;border-color:#FCD34D}.blue{background:#EFF6FF;border-color:#93C5FD}.purple{background:#F5F3FF;border-color:#C4B5FD}
+  .icon{font-size:36px}.rule{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start;background:#F8FAFC;border-left:8px solid var(--blue);border-radius:18px;padding:14px;margin:12px 0}.rule .num{width:42px;height:42px;border-radius:14px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:700}
+  .diagram{background:#F8FBFF;border:2px solid #DCEBFF;border-radius:22px;padding:18px;margin:18px 0}.flow{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}.bubble{background:white;border:3px solid #93C5FD;border-radius:999px;padding:13px 18px;font-weight:700;color:var(--navy);text-align:center}.arrow{font-size:26px;color:var(--blue);font-weight:700}
+  .token-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.token{background:white;border:2px solid #93C5FD;border-radius:12px;padding:7px 11px;font-weight:700}.choice{background:#FEF3C7;border-color:#F59E0B}.prompt{background:#111827;color:#E5F4FF;border-radius:18px;padding:18px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px}.bad{color:#FCA5A5}.better{color:#86EFAC}
+  .risk{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.risk div{padding:16px;border-radius:18px;text-align:center;font-weight:700}.low{background:#DCFCE7}.mid{background:#FEF3C7}.high{background:#FFE4E6}.checklist li{margin:8px 0}.fact-row{display:grid;grid-template-columns:160px 1fr;gap:14px;border-top:1px solid var(--line);padding:12px 0}.status{font-weight:700;color:#166534}
+  details.quiz{background:#F1F5F9;border:2px dashed #93C5FD;border-radius:20px;padding:16px;margin-top:16px}summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:20px}
+  .game{background:linear-gradient(135deg,#EFF6FF,#F5F3FF);border:3px solid #BFDBFE;border-radius:24px;padding:20px}.sentence{font-size:24px;font-weight:700;background:white;border-radius:18px;padding:16px;border:2px solid #DBEAFE}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.option{border:0;border-radius:18px;background:white;padding:14px;text-align:left;cursor:pointer;font:inherit;font-weight:700;box-shadow:0 8px 16px rgba(16,35,63,.08);border:2px solid transparent}.option:hover,.option:focus{border-color:var(--blue);outline:none}.bar{height:13px;background:#E5E7EB;border-radius:999px;overflow:hidden;margin-top:8px}.fill{height:100%;width:0;background:linear-gradient(90deg,#60A5FA,#A78BFA);transition:width .35s}.score{font-weight:700;background:#ECFDF5;border:2px solid #86EFAC;border-radius:18px;padding:12px}.result{min-height:56px;font-weight:700}.red-note{color:#B91C1C;font-weight:800;font-size:20px;margin:10px 0 0}.controls{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:999px;background:var(--navy);color:white;padding:11px 16px;font-weight:700;cursor:pointer}.btn.secondary{background:#475569}.footer{text-align:center;color:var(--muted);font-size:14px;margin-top:28px;padding-top:22px;border-top:2px solid var(--line)}
+  @media(max-width:860px){.layout{display:block}nav{position:relative;height:auto}.grid,.grid.three,.risk,.options,.fact-row{grid-template-columns:1fr}main{padding:18px}h1{font-size:38px}.cover,section{padding:22px}}
+  @media print{nav{display:none}.layout{display:block}main{padding:0}.cover,section{box-shadow:none;break-inside:avoid}.game button{display:none}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <h2>KI-Grundlagen</h2><p>Kurs 1 · Kinderversion</p>
+  <a href="#start">Start</a><a href="#llm">1 · LLMs</a><a href="#chatbot">2 · Chatbots</a><a href="#tools">3 · Tools</a><a href="#privacy">4 · Datenschutz + Altersregeln</a><a href="#prompting">5 · Prompting</a><a href="#game">6 · Vorhersage-Spiel</a><a href="#context">7 · Kontextfenster</a><a href="#trust">8 · Vertrauens-Meter</a><a href="#cheat">Spickzettel</a>
+</nav>
+<main>
+  <div class="cover" id="start">
+    <span class="badge">PANGAEA Data Publisher · KI-Minikurs</span>
+    <h1>KI-Grundlagen für neugierige Kinder</h1>
+    <p class="subtitle">Lerne, wie Chatbots funktionieren, wie du bessere Fragen stellst, wann du Antworten prüfen musst und warum Wortvorhersage nicht dasselbe ist wie Wahrheit.</p>
+    <div class="hero-icons"><span>🤖</span><span>🎮</span><span>🧠</span><span>🔍</span><span>🛡️</span></div>
+  </div>
+
+  <section id="llm">
+    <h2>🤖 1 · Was ist ein LLM?</h2>
+    <p class="lead">Ein LLM ist eine Sprachmuster-Maschine. Es baut Antworten, indem es wahrscheinliche nächste Textstücke vorhersagt.</p>
+    <p>LLM bedeutet <strong>Large Language Model</strong>, auf Deutsch etwa: großes Sprachmodell. Es wird mit sehr vielen Sprachbeispielen trainiert, je nach Modell manchmal auch mit anderen Daten. Dabei lernt es Muster: Welche Wörter oft zusammen vorkommen, wie Erklärungen aufgebaut sind und welche Art von Antwort normalerweise zu einer Frage passt.</p>
+    <div class="diagram">
+      <div class="flow"><div class="bubble">Trainingsbeispiele<br>📚 🌐 💬</div><div class="arrow">→</div><div class="bubble">Muster<br>🧠</div><div class="arrow">→</div><div class="bubble">Nächstes Token<br>🔤</div></div>
+    </div>
+    <h3>Was ist ein Token?</h3>
+    <p>Ein Token ist ein kleines Stück Text. Es kann ein ganzes Wort sein, ein Teil eines Wortes, eine Zahl oder ein Satzzeichen.</p>
+    <div class="token-row"><span class="token">Der</span><span class="token">Ozean</span><span class="token">ist</span><span class="token">voll</span><span class="token">von</span><span class="token choice">?</span></div>
+    <div class="grid">
+      <div class="card good"><div class="icon">✅</div><h3>Nützlich für</h3><p>Erklären, Zusammenfassen, Umschreiben, Übersetzen, Ideen sammeln, Üben und Hilfe beim Programmieren.</p></div>
+      <div class="card warn"><div class="icon">⚠️</div><h3>Hier musst du prüfen</h3><p>Exakte Fakten, aktuelle Ereignisse, Mathe, Zitate, Quellen, medizinische oder rechtliche Themen und alles Wichtige.</p></div>
+    </div>
+    <div class="card tip"><strong>Wichtiges Wort: Halluzination.</strong> Das bedeutet: Die KI gibt eine falsche Antwort, die sicher und überzeugend klingt. Das passiert, weil das Modell wahrscheinlichen Text erzeugt; es beweist nicht automatisch, dass dieser Text stimmt.</div>
+  </section>
+
+  <section id="chatbot">
+    <h2>💬 2 · Was ist ein Chatbot?</h2>
+    <p class="lead">Der Chatbot ist die App, mit der du sprichst. Das LLM ist nur ein Teil davon.</p>
+    <div class="diagram"><div class="flow"><div class="bubble">Du fragst<br>„Erklär Schwerkraft“</div><div class="arrow">→</div><div class="bubble">Chat-App<br>Verlauf + Dateien + Einstellungen</div><div class="arrow">→</div><div class="bubble">KI-Modell<br>sagt Antwort voraus</div></div></div>
+    <p class="red-note">Wichtig: Du prüfst die Antwort, bevor du sie benutzt.</p>
+    <div class="grid three">
+      <div class="card blue"><h3>Prompt</h3><p>Deine Frage oder Anweisung.</p></div>
+      <div class="card blue"><h3>Kontext</h3><p>Die Informationen, die der Chatbot im Moment sehen kann.</p></div>
+      <div class="card blue"><h3>Tools</h3><p>Suche, Rechner, Code, Dateien, Bildwerkzeuge oder andere verbundene Apps.</p></div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <h2>🌐 3 · Welche Chatbots gibt es, und was können sie?</h2>
+    <p>Bekannte KI-Assistenten sind zum Beispiel ChatGPT, Gemini, Copilot, Claude und Perplexity. Ihre Funktionen und Datenschutzregeln ändern sich. Diese Liste ist deshalb nur eine Sammlung von Beispielen, keine feste Rangliste.</p>
+    <div class="grid three">
+      <div class="card"><div class="icon">✍️</div><h3>Schreibhelfer</h3><p>Gut für Entwürfe, Erklärungen, Zusammenfassungen und bessere Formulierungen.</p></div>
+      <div class="card"><div class="icon">🔎</div><h3>Suchhelfer</h3><p>Nützlich, wenn Quellen angezeigt werden, die du öffnen und prüfen kannst.</p></div>
+      <div class="card"><div class="icon">🛠️</div><h3>Werkzeughelfer</h3><p>Nützlich, wenn der Chatbot mit Websuche, Bilderzeugung, Dateien, Code oder anderen Tools verbunden ist.</p></div>
+    </div>
+    <div class="card warn"><strong>Regel:</strong> Anderes Tool, andere Antwort. Für Schule, Wissenschaft oder alles Wichtige vergleichst du die Antwort mit einem Schulbuch, einer Lehrkraft, einer offiziellen Quelle oder einem Rechner.</div>
+  </section>
+
+  <section id="privacy">
+    <h2>🔒 4 · Datenschutz + Altersregeln</h2>
+    <p class="lead">Ein 12-jähriges Kind sollte KI nur mit Erlaubnis der Eltern oder einer Lehrkraft nutzen.</p>
+    <div class="grid">
+      <div class="card warn"><h3>Nicht einfügen</h3><p>Passwörter, Adressen, Telefonnummern, private Fotos, private Schul- oder Arbeitsdokumente, unveröffentlichte Daten, medizinische Informationen oder Dinge, die jemanden bloßstellen könnten.</p></div>
+      <div class="card good"><h3>Sicherer ist</h3><p>Ausgedachte Beispiele, öffentliche Fakten, kurze Texte, die du teilen darfst, und Fragen ohne persönliche Details.</p></div>
+    </div>
+    <div class="rule"><div class="num">!</div><p><strong>Vor dem Absenden fragen:</strong> „Wäre es okay, wenn das öffentlich würde oder von einer Firma geprüft wird?“ Wenn die Antwort nein ist, füge es nicht ein.</p></div>
+    <div class="card purple"><h3>Alters-Realitätscheck</h3><p>Manche KI-Dienste verlangen ein Mindestalter von 13 Jahren und die Zustimmung der Eltern. Manche verlangen 18+. Schul- oder Familienkonten können besondere Schutzfunktionen haben. Prüfe immer die Regeln des konkreten Tools.</p></div>
+  </section>
+
+  <section id="prompting">
+    <h2>✍️ 5 · Prompting: gut fragen</h2>
+    <p class="lead">Ein guter Prompt gibt der KI eine klare Aufgabe.</p>
+    <div class="prompt"><span class="bad">Schwacher Prompt:</span><br>Erklär KI.</div><br>
+    <div class="prompt"><span class="better">Besserer Prompt:</span><br>Erkläre einem 12-jährigen Kind, was ein KI-Chatbot ist. Nutze 5 kurze Stichpunkte, ein Beispiel aus einem Computerspiel und eine Sache, die ich überprüfen sollte.</div>
+    <div class="grid">
+      <div class="card blue"><h3>Prompt-Rezept</h3><p><strong>Ziel:</strong> Was soll entstehen?<br><strong>Zielgruppe:</strong> Für wen ist es?<br><strong>Kontext:</strong> Was muss die KI wissen?<br><strong>Format:</strong> Stichpunkte, Tabelle, Quiz, Geschichte?<br><strong>Kontrolle:</strong> Frage, was falsch sein könnte.</p></div>
+      <div class="card tip"><h3>Nützliche Nachfragen</h3><p>„Mach es kürzer.“<br>„Gib ein Beispiel.“<br>„Was könnte falsch sein?“<br>„Benutze einfachere Wörter.“<br>„Zeig zwei Versionen.“</p></div>
+    </div>
+  </section>
+
+  <section id="game">
+    <h2>🎮 6 · Wortvorhersage-Spiel</h2>
+    <p class="lead">Wähle das nächste Wort, das wahrscheinlich am besten passt. Danach siehst du die Wahrscheinlichkeiten.</p>
+    <div class="game" aria-live="polite">
+      <div class="sentence" id="sentence">Spiel wird geladen …</div>
+      <div class="options" id="options"></div>
+      <div class="result" id="result"></div>
+      <div class="score" id="score">Punkte: 0 / 0</div><br>
+      <div class="controls"><button class="btn" id="nextBtn">Nächste Runde</button><button class="btn secondary" id="resetBtn">Punkte zurücksetzen</button></div>
+    </div>
+    <p class="tiny">Nach deiner Auswahl zeigt das Spiel vereinfachte erfundene Wahrscheinlichkeiten. Sie stammen nicht aus einem echten Live-KI-Modell. Die Lektion stimmt trotzdem: Satzbau und Bedeutung verändern, welche nächsten Wörter wahrscheinlich werden.</p>
+  </section>
+
+  <section id="context">
+    <h2>🧠 7 · Kontextfenster und Kontext-Chaos</h2>
+    <p class="lead">Ein Chatbot kann nur mit den Informationen arbeiten, die ihm gerade zur Verfügung stehen.</p>
+    <p>Das <strong>Kontextfenster</strong> ist wie der Schreibtisch der KI. Dort liegen dein Prompt, der bisherige Chatverlauf, hochgeladene Texte und Anweisungen. Wenn der Chat zu voll wird, können alte Details übersehen, vermischt oder widersprüchlich verwendet werden.</p>
+    <div class="grid">
+      <div class="card warn"><h3>Anzeichen für Kontext-Chaos</h3><ul class="checklist"><li>Die KI vergisst das Ziel.</li><li>Sie mischt alte und neue Anweisungen.</li><li>Sie wiederholt einen Fehler.</li><li>Sie beantwortet eine Frage, die du gar nicht gestellt hast.</li></ul></div>
+      <div class="card good"><h3>So behebst du es</h3><ul class="checklist"><li>Starte einen neuen Chat.</li><li>Füge eine kurze Zusammenfassung ein.</li><li>Nenne nur die wichtigen Fakten.</li><li>Gib eine klare nächste Aufgabe.</li></ul></div>
+    </div>
+    <div class="prompt">Neustart - öffne einen neuen Chat:<br><br>Ziel: [Ziel]. Wichtige Fakten: [Fakten]. Entscheidungen bisher: [Entscheidungen]. Nächste Aufgabe: [Aufgabe]. Bitte [anaylsiere/schreibe/erkläre] weiter.</div>
+  </section>
+
+  <section id="trust">
+    <h2>✅ 8 · Was vertrauen, was überprüfen?</h2>
+    <p class="lead">Nicht alle KI-Antworten sind gleich zuverlässig.</p>
+    <div class="risk"><div class="low">GERINGES RISIKO<br><span class="tiny">Umschreiben, Ideen sammeln, Stilideen</span></div><div class="mid">PRÜFEN<br><span class="tiny">Wissenschaft, Code, Einheiten, Schulantworten</span></div><div class="high">IMMER ÜBERPRÜFEN<br><span class="tiny">Zahlen, Daten, Zitate, Quellen, private Daten</span></div></div>
+    <details class="quiz"><summary>Mini-Quiz: Solltest du es glauben?</summary>
+      <p><strong>1. Die KI schreibt deinen Absatz klarer um.</strong> Meist okay, aber lies ihn einmal durch.</p>
+      <p><strong>2. Die KI nennt ein Zitat aus einem Buch.</strong> Prüfen. Zitate können erfunden sein.</p>
+      <p><strong>3. Die KI rechnet 37 °C in Kelvin um.</strong> Nutze die Formel oder einen Rechner. 37 °C = 310,15 K.</p>
+      <p><strong>4. Die KI erklärt Fotosynthese einfach.</strong> Guter Startpunkt, aber vergleiche es mit deinem Unterrichtsmaterial.</p>
+    </details>
+  </section>
+
+  <section id="cheat">
+    <h2>🧪 Ein-Seiten-Spickzettel</h2>
+    <div class="grid">
+      <div class="card blue"><h3>KI kann mir helfen beim …</h3><p>Verstehen, Entwerfen, Umschreiben, Ordnen, Ideenfinden, Üben, Vergleichen und Beispiele-Bauen.</p></div>
+      <div class="card warn"><h3>Ich muss prüfen …</h3><p>Fakten, Zahlen, Daten, Quellen, persönliche Daten und alles, was bewertet, veröffentlicht oder geteilt wird.</p></div>
+    </div>
+    <div class="prompt">Kopier-und-nutz-Prompt:<br><br>Du bist eine freundliche Lehrkraft. Erkläre [THEMA] für ein 12-jähriges Kind. Nutze kurze Sätze, ein Beispiel und ein Mini-Quiz. Sag mir außerdem, was ich überprüfen sollte.</div>
+  </section>
+
+  <div class="footer">Kinderversion von Kurs 1 · KI-Grundlagen · Überarbeitet und fachlich geprüft · Mai 2026</div>
+</main>
+</div>
+<script>
+const rounds = [
+  {s:'Der Drache spuckt ___', options:[['Feuer',72,'Typisches Fantasy-Muster: Drachen speien Feuer.'],['Hausaufgaben',8,'Lustig, aber viel weniger wahrscheinlich.'],['unter',5,'Das passt grammatisch nicht gut.'],['weil',3,'Ein Bindewort ist hier unwahrscheinlich.']]},
+  {s:'Nach der Schule ___ ich meistens', options:[['spiele',35,'Ein Verb passt: „ich spiele meistens …“'],['gespielt',9,'Die Vergangenheitsform passt hier schlecht.'],['weil',4,'Ein Begründungswort vervollständigt die Handlung nicht.'],['blau',2,'Ein Adjektiv passt hier nicht.']]},
+  {s:'Das schnellste Landtier ist der ___', options:[['Gepard',78,'Das ist ein bekanntes Faktenmuster. Wichtige Fakten trotzdem prüfen.'],['Banane',1,'Grammatisch und inhaltlich unpassend.'],['laufend',6,'Passt nach „der“ nicht gut.'],['Planet',3,'Falsche Kategorie.']]},
+  {s:'Kannst du mir das erklären, als wäre ich ___', options:[['12',46,'Eine häufige Prompt-Struktur fragt nach einem Altersniveau.'],['gestern',5,'Ein Zeitwort passt hier nicht gut.'],['leise',7,'Ein Adverb passt nach „ich wäre“ schlecht.'],['Vulkan',2,'Als Witz möglich, aber nicht wahrscheinlich.']]},
+  {s:'Weil es regnete, nahmen wir einen ___', options:[['Regenschirm',64,'Passt zur Bedeutung und zur Grammatik.'],['Gedanken',8,'Grammatisch möglich, aber inhaltlich schwach.'],['Lauf',6,'In anderen Sätzen möglich, hier aber schwach.'],['wütend',2,'Ein Adjektiv passt nach „einen“ nicht.']]},
+  {s:'In einem Rezept sind 200 Gramm Mehl eine ___', options:[['Mengenangabe',44,'Der Satz fragt nach einer Art von Information.'],['Fußball',3,'Falsches Thema.'],['schnell',1,'Ein Adverb passt nicht.'],['schlief',1,'Ein Verb passt nicht.']]}
+];
+let current=0, correct=0, total=0;
+const sentence=document.getElementById('sentence'), options=document.getElementById('options'), result=document.getElementById('result'), score=document.getElementById('score');
+function best(r){return r.options.reduce((a,b)=>b[1]>a[1]?b:a)}
+function draw(){
+  const r=rounds[current]; sentence.textContent=r.s; options.innerHTML=''; result.textContent='';
+  r.options.sort(()=>Math.random()-0.5).forEach(o=>{
+    const btn=document.createElement('button'); btn.className='option';
+    btn.dataset.word=o[0]; btn.dataset.prob=o[1];
+    btn.textContent=o[0];
+    btn.onclick=()=>choose(o,r); options.appendChild(btn);
+  });
+}
+function choose(o,r){
+  const b=best(r); total++;
+  if(o[0]===b[0]){correct++; result.textContent=`Richtig. „${o[0]}“ ist hier am wahrscheinlichsten. ${o[2]}`;}
+  else{result.textContent=`Nicht die wahrscheinlichste Antwort. „${b[0]}“ passt besser: ${b[2]} Deine Wahl: ${o[2]}`;}
+  score.textContent=`Punkte: ${correct} / ${total}`;
+  [...document.querySelectorAll('.option')].forEach(btn=>{
+    const prob=btn.dataset.prob;
+    btn.innerHTML=`${btn.dataset.word}<div class="bar"><div class="fill" style="width:${prob}%"></div></div><span class="tiny">${prob}% erfundene Wahrscheinlichkeit</span>`;
+    btn.disabled=true;
+  });
+}
+document.getElementById('nextBtn').onclick=()=>{current=(current+1)%rounds.length; draw();};
+document.getElementById('resetBtn').onclick=()=>{correct=0;total=0;score.textContent='Punkte: 0 / 0';draw();};
+draw();
+</script>
+</body>
+</html>

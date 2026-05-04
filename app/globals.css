@@ -50,6 +50,14 @@
   --tag-allgemein-text:   #b398ff;
   --tag-allgemein-border: rgba(180, 140, 255, 0.30);
 
+  --tag-aikids-bg:      rgba(46, 232, 217, 0.10);
+  --tag-aikids-text:    #2ee8d9;
+  --tag-aikids-border:  rgba(46, 232, 217, 0.30);
+
+  --tag-games-bg:       rgba(255, 92, 56, 0.10);
+  --tag-games-text:     #ff5c38;
+  --tag-games-border:   rgba(255, 92, 56, 0.30);
+
   /* Typography — values injected by next/font via <html> class variables */
 
   /* Spacing */
