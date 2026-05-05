@@ -292,10 +292,40 @@
   @media (max-width: 680px) {
     body { font-size: 16px; }
     .hero h1 { font-size: 2.4rem; }
+    .hero p { font-size: 1rem; }
     .two-col { grid-template-columns: 1fr; }
     .bot-grid { grid-template-columns: 1fr 1fr; }
     .section-card { padding: 28px 20px; }
-    .container { padding: 0 18px 60px; }
+    .section-card h2 { font-size: 1.55rem; }
+    .container { padding: 0 14px 60px; }
+    .big-num { font-size: 3.8rem; right: 14px; }
+    .nav-pills { gap: 7px; }
+    .nav-pill { font-size: 0.82rem; padding: 6px 13px; }
+
+    /* Token game */
+    #tg-wrap { padding: 16px 14px; }
+    .tgc { min-width: 0; width: calc(50% - 5px); padding: 10px 12px; }
+    .tgc .tw { font-size: 0.92rem; }
+    .tgc .tl { font-size: 0.72rem; }
+    #tg-choices { gap: 8px; }
+    #tg-fb { font-size: 0.88rem; line-height: 1.5; }
+    #tg-fb button { display: block; margin: 8px 0 0 0 !important; }
+
+    /* Callouts */
+    .callout { flex-direction: column; gap: 10px; padding: 16px 16px; }
+    .callout .icon { font-size: 1.5rem; }
+
+    /* Steps */
+    .step { gap: 12px; }
+    .step-circle { width: 38px; height: 38px; font-size: 1rem; }
+
+    /* Summary grid */
+    div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  }
+
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 2rem; }
+    .tgc { width: 100%; }
   }
 </style>
 </head>
@@ -471,10 +501,9 @@
       <div style="font-size:0.82rem;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:10px;">Pick the next token:</div>
       <div id="tg-choices" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;"></div>
 
-      <!-- Score + reset -->
+      <!-- Step counter + reset -->
       <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
         <button onclick="tgReset()" style="background:rgba(78,204,163,0.15);border:1px solid rgba(78,204,163,0.4);color:#4ecca3;border-radius:20px;padding:8px 22px;font-family:'Fredoka One',cursive;font-size:0.95rem;cursor:pointer;">↩ Start over</button>
-        <span style="font-size:0.9rem;color:var(--subtext);">Score: <strong id="tg-score" style="color:var(--accent2);font-family:'Fredoka One',cursive;font-size:1.1rem;">0</strong> pts</span>
         <span style="font-size:0.9rem;color:var(--subtext);">Step: <strong id="tg-stepnum" style="color:var(--accent4);font-family:'Fredoka One',cursive;font-size:1.1rem;">1</strong> / 6</span>
       </div>
       <div style="margin-top:12px;font-size:0.8rem;color:rgba(255,255,255,0.28);font-style:italic;">* Probabilities are illustrative — simplified to teach the concept, not from a live model.</div>
@@ -505,34 +534,46 @@
 
     <script>
     (function(){
+      var START = "The ocean";
+
+      // Each step only needs the token options — context is built dynamically from choices
       var steps = [
-        { ctx: "The ocean", tokens: [
+        { tokens: [
           {t:"covers",p:38,c:"#4ecca3"},{t:"is",p:27,c:"#a29bfe"},
-          {t:"floor",p:14,c:"#f5a623"},{t:"contains",p:12,c:"#e94560"},{t:"depths",p:9,c:"#a29bfe"}
+          {t:"contains",p:14,c:"#f5a623"},{t:"holds",p:12,c:"#e94560"},{t:"depths",p:9,c:"#a29bfe"}
         ]},
-        { ctx: "The ocean covers", tokens: [
+        { tokens: [
           {t:"about",p:44,c:"#4ecca3"},{t:"more",p:21,c:"#a29bfe"},
           {t:"nearly",p:18,c:"#f5a623"},{t:"71",p:10,c:"#e94560"},{t:"most",p:7,c:"#a29bfe"}
         ]},
-        { ctx: "The ocean covers about", tokens: [
+        { tokens: [
           {t:"71%",p:52,c:"#4ecca3"},{t:"70%",p:18,c:"#a29bfe"},
           {t:"half",p:15,c:"#f5a623"},{t:"two",p:8,c:"#e94560"},{t:"three",p:7,c:"#a29bfe"}
         ]},
-        { ctx: "The ocean covers about 71%", tokens: [
+        { tokens: [
           {t:"of",p:78,c:"#4ecca3"},{t:"percent",p:10,c:"#a29bfe"},
           {t:"or",p:7,c:"#f5a623"},{t:"—",p:5,c:"#e94560"}
         ]},
-        { ctx: "The ocean covers about 71% of", tokens: [
+        { tokens: [
           {t:"Earth's",p:55,c:"#4ecca3"},{t:"the",p:32,c:"#a29bfe"},
           {t:"our",p:8,c:"#f5a623"},{t:"its",p:5,c:"#e94560"}
         ]},
-        { ctx: "The ocean covers about 71% of Earth's", tokens: [
+        { tokens: [
           {t:"surface",p:61,c:"#4ecca3"},{t:"area",p:20,c:"#a29bfe"},
           {t:"crust",p:11,c:"#f5a623"},{t:"oceans",p:5,c:"#e94560"},{t:"land",p:3,c:"#a29bfe"}
         ]}
       ];
 
-      var step = 0, score = 0, picked = false;
+      var step = 0, picked = false;
+      var chosenTokens = [];   // { t, p } for each step
+      var builtSentence = START;
+
+      function sentenceProbability() {
+        // Joint probability: multiply all chosen p/100 together, return as %
+        var prob = 1;
+        chosenTokens.forEach(function(c){ prob *= c.p / 100; });
+        return (prob * 100).toFixed(1);
+      }
 
       function shuffle(arr){ return arr.slice().sort(function(){return Math.random()-0.5;}); }
 
@@ -541,7 +582,7 @@
         picked = false;
         var s = steps[step];
         document.getElementById('tg-sent').innerHTML =
-          s.ctx + '<span id="tg-blink" style="display:inline-block;width:2px;height:1em;background:#4ecca3;vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite;"></span>';
+          builtSentence + '<span id="tg-blink" style="display:inline-block;width:2px;height:1em;background:#4ecca3;vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite;"></span>';
         document.getElementById('tg-fb').innerHTML = '';
         document.getElementById('tg-stepnum').textContent = (step+1);
 
@@ -568,7 +609,11 @@
         var chosenTk = s.tokens.filter(function(t){return t.t===chosen;})[0];
         var isTop = chosen === best.t;
 
-        // Reveal all bars
+        // Record the choice and extend sentence
+        chosenTokens.push({ t: chosen, p: chosenTk.p });
+        builtSentence = builtSentence + " " + chosen;
+
+        // Reveal all probability bars
         s.tokens.forEach(function(tk){
           var safeId = tk.t.replace(/[^a-z0-9]/gi,'_');
           var bar = document.getElementById('tgb-'+safeId);
@@ -577,43 +622,66 @@
           if(lbl) lbl.textContent = 'probability: ' + tk.p + '%';
         });
 
-        // Style the buttons
+        // Style buttons: green = top pick, purple = your choice, red = wrong non-top
         var btns = document.getElementById('tg-choices').querySelectorAll('.tgc');
         btns.forEach(function(b){
           var w = b.querySelector('.tw');
           if(!w) return;
           var token = w.textContent.replace(/"/g,'');
           if(token === best.t) b.classList.add('best');
-          else if(token === chosen && !isTop) b.classList.add('wrong');
+          if(token === chosen && !isTop) b.classList.add('wrong');
           if(token === chosen) b.classList.add('chose');
         });
 
-        score += chosenTk.p;
-        document.getElementById('tg-score').textContent = score;
+        // Running sentence probability so far
+        var runningProb = sentenceProbability();
 
         var fb = document.getElementById('tg-fb');
+        var nextBtn = '';
+        var isLast = (step === steps.length - 1);
+        var nextLabel = isLast ? 'See result →' : 'Next →';
+        var nextStyle = isTop
+          ? 'background:rgba(78,204,163,0.2);border:1px solid #4ecca3;color:#4ecca3;'
+          : 'background:rgba(245,166,35,0.15);border:1px solid #f5a623;color:#f5a623;';
+        nextBtn = '&nbsp;<button onclick="tgStep()" style="'+nextStyle+'border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">'+nextLabel+'</button>';
+
         if(isTop){
           fb.style.color = '#4ecca3';
-          fb.innerHTML = '✅ <strong>Top pick!</strong> "'+chosen+'" — '+chosenTk.p+'% likely. +'+chosenTk.p+' pts! &nbsp;<button onclick="tgStep()" style="background:rgba(78,204,163,0.2);border:1px solid #4ecca3;color:#4ecca3;border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">Next →</button>';
+          fb.innerHTML = '✅ <strong>Top pick!</strong> "'+chosen+'" had a '+chosenTk.p+'% chance — great match! Running sentence probability: <strong>'+runningProb+'%</strong>'+nextBtn;
         } else {
           fb.style.color = '#f5a623';
-          fb.innerHTML = '💡 The LLM would pick <strong>"'+best.t+'"</strong> ('+best.p+'%). You got +'+chosenTk.p+' pts. &nbsp;<button onclick="tgStep()" style="background:rgba(245,166,35,0.15);border:1px solid #f5a623;color:#f5a623;border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">Next →</button>';
+          fb.innerHTML = '💡 Claude\'s top pick was <strong>"'+best.t+'"</strong> ('+best.p+'%), but you chose "'+chosen+'" ('+chosenTk.p+'%) — and that\'s the word we\'ll use! Running probability: <strong>'+runningProb+'%</strong>'+nextBtn;
         }
       }
 
       function showDone(){
-        document.getElementById('tg-sent').innerHTML = 'The ocean covers about 71% of Earth\'s surface. ✅';
+        document.getElementById('tg-sent').innerHTML = builtSentence + ' ✅';
         document.getElementById('tg-choices').innerHTML = '';
-        var maxPts = steps.reduce(function(s,st){return s+st.tokens[0].p;},0);
+        var finalProb = sentenceProbability();
         var fb = document.getElementById('tg-fb');
         fb.style.color = '#a29bfe';
-        fb.innerHTML = '🎉 <strong>Done!</strong> You scored <strong>'+score+'</strong> / '+maxPts+' pts. That\'s how an LLM builds text — one probability pick at a time!';
+        fb.innerHTML =
+          '🎉 <strong>Sentence complete!</strong><br><br>' +
+          '<span style="font-size:0.97rem;color:var(--subtext);">Your sentence: <em style="color:var(--white);">'+builtSentence+'</em></span><br><br>' +
+          '<span style="display:inline-block;background:rgba(162,155,254,0.15);border:1px solid rgba(162,155,254,0.4);border-radius:12px;padding:12px 18px;margin-top:4px;font-size:0.97rem;">' +
+          '🎲 There was a <strong style="color:#a29bfe;font-size:1.2rem;">'+finalProb+'%</strong> chance that Claude would have generated this exact sentence — one token choice at a time!' +
+          '</span>' +
+          '<br><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.35);">The more you diverge from the top pick, the less likely your sentence becomes. That\'s why every word matters!</span>';
       }
 
       window.tgStep = function(){ step++; render(); };
-      window.tgReset = function(){ step=0; score=0; document.getElementById('tg-score').textContent='0'; render(); };
+      window.tgReset = function(){
+        step=0; chosenTokens=[]; builtSentence=START;
+        document.getElementById('tg-score').style.display='none';
+        render();
+      };
 
-      // Always call render immediately — no waiting for DOMContentLoaded
+      // Hide the score display — we replaced it with probability
+      document.addEventListener('DOMContentLoaded', function(){
+        var scoreEl = document.getElementById('tg-score');
+        if(scoreEl) scoreEl.parentElement.style.display='none';
+      });
+
       render();
     })();
     </script>
