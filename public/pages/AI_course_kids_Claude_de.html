@@ -292,10 +292,40 @@
   @media (max-width: 680px) {
     body { font-size: 16px; }
     .hero h1 { font-size: 2.4rem; }
+    .hero p { font-size: 1rem; }
     .two-col { grid-template-columns: 1fr; }
     .bot-grid { grid-template-columns: 1fr 1fr; }
     .section-card { padding: 28px 20px; }
-    .container { padding: 0 18px 60px; }
+    .section-card h2 { font-size: 1.55rem; }
+    .container { padding: 0 14px 60px; }
+    .big-num { font-size: 3.8rem; right: 14px; }
+    .nav-pills { gap: 7px; }
+    .nav-pill { font-size: 0.82rem; padding: 6px 13px; }
+
+    /* Token-Spiel */
+    #tg-wrap { padding: 16px 14px; }
+    .tgc { min-width: 0; width: calc(50% - 5px); padding: 10px 12px; }
+    .tgc .tw { font-size: 0.92rem; }
+    .tgc .tl { font-size: 0.72rem; }
+    #tg-choices { gap: 8px; }
+    #tg-fb { font-size: 0.88rem; line-height: 1.5; }
+    #tg-fb button { display: block; margin: 8px 0 0 0 !important; }
+
+    /* Callouts */
+    .callout { flex-direction: column; gap: 10px; padding: 16px 16px; }
+    .callout .icon { font-size: 1.5rem; }
+
+    /* Schritte */
+    .step { gap: 12px; }
+    .step-circle { width: 38px; height: 38px; font-size: 1rem; }
+
+    /* Zusammenfassungs-Grid */
+    div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  }
+
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 2rem; }
+    .tgc { width: 100%; }
   }
 </style>
 </head>
@@ -473,8 +503,9 @@
 
       <!-- Score + reset -->
       <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <!-- Schritt-Zähler + Neu starten -->
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
         <button onclick="tgReset()" style="background:rgba(78,204,163,0.15);border:1px solid rgba(78,204,163,0.4);color:#4ecca3;border-radius:20px;padding:8px 22px;font-family:'Fredoka One',cursive;font-size:0.95rem;cursor:pointer;">↩ Neu starten</button>
-        <span style="font-size:0.9rem;color:var(--subtext);">Punkte: <strong id="tg-score" style="color:var(--accent2);font-family:'Fredoka One',cursive;font-size:1.1rem;">0</strong></span>
         <span style="font-size:0.9rem;color:var(--subtext);">Schritt: <strong id="tg-stepnum" style="color:var(--accent4);font-family:'Fredoka One',cursive;font-size:1.1rem;">1</strong> / 5</span>
       </div>
       <div style="margin-top:12px;font-size:0.8rem;color:rgba(255,255,255,0.28);font-style:italic;">* Die Wahrscheinlichkeiten sind vereinfacht — zur Veranschaulichung, nicht von einem echten Modell.</div>
@@ -505,30 +536,40 @@
 
     <script>
     (function(){
+      var START = "Der Ozean";
+
       var steps = [
-        { ctx: "Der Ozean", tokens: [
+        { tokens: [
           {t:"bedeckt",p:42,c:"#4ecca3"},{t:"ist",p:25,c:"#a29bfe"},
           {t:"enthält",p:14,c:"#f5a623"},{t:"hat",p:11,c:"#e94560"},{t:"bildet",p:8,c:"#a29bfe"}
         ]},
-        { ctx: "Der Ozean bedeckt", tokens: [
+        { tokens: [
           {t:"etwa",p:48,c:"#4ecca3"},{t:"rund",p:22,c:"#a29bfe"},
           {t:"fast",p:16,c:"#f5a623"},{t:"71",p:8,c:"#e94560"},{t:"mehr",p:6,c:"#a29bfe"}
         ]},
-        { ctx: "Der Ozean bedeckt etwa", tokens: [
+        { tokens: [
           {t:"71 %",p:54,c:"#4ecca3"},{t:"70 %",p:18,c:"#a29bfe"},
           {t:"die",p:13,c:"#f5a623"},{t:"zwei",p:8,c:"#e94560"},{t:"drei",p:7,c:"#a29bfe"}
         ]},
-        { ctx: "Der Ozean bedeckt etwa 71 %", tokens: [
+        { tokens: [
           {t:"der",p:76,c:"#4ecca3"},{t:"des",p:12,c:"#a29bfe"},
           {t:"von",p:7,c:"#f5a623"},{t:"—",p:5,c:"#e94560"}
         ]},
-        { ctx: "Der Ozean bedeckt etwa 71 % der", tokens: [
+        { tokens: [
           {t:"Erdoberfläche",p:58,c:"#4ecca3"},{t:"Erde",p:26,c:"#a29bfe"},
           {t:"Welt",p:10,c:"#f5a623"},{t:"Meere",p:6,c:"#e94560"}
         ]}
       ];
 
-      var step = 0, score = 0, picked = false;
+      var step = 0, picked = false;
+      var chosenTokens = [];
+      var builtSentence = START;
+
+      function sentenceProbability() {
+        var prob = 1;
+        chosenTokens.forEach(function(c){ prob *= c.p / 100; });
+        return (prob * 100).toFixed(1);
+      }
 
       function shuffle(arr){ return arr.slice().sort(function(){return Math.random()-0.5;}); }
 
@@ -537,7 +578,7 @@
         picked = false;
         var s = steps[step];
         document.getElementById('tg-sent').innerHTML =
-          s.ctx + '<span id="tg-blink" style="display:inline-block;width:2px;height:1em;background:#4ecca3;vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite;"></span>';
+          builtSentence + '<span id="tg-blink" style="display:inline-block;width:2px;height:1em;background:#4ecca3;vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite;"></span>';
         document.getElementById('tg-fb').innerHTML = '';
         document.getElementById('tg-stepnum').textContent = (step+1);
 
@@ -550,7 +591,7 @@
           btn.innerHTML =
             '<span class="tw">"'+tk.t+'"</span>'+
             '<div class="tb-wrap"><div class="tb" id="tgb-'+tk.t.replace(/[^a-z0-9]/gi,'_')+'" style="background:'+tk.c+';"></div></div>'+
-            '<span class="tl" id="tgl-'+tk.t.replace(/[^a-z0-9]/gi,'_')+'">probability: ?</span>';
+            '<span class="tl" id="tgl-'+tk.t.replace(/[^a-z0-9]/gi,'_')+'">Wahrscheinlichkeit: ?</span>';
           btn.onclick = function(){ pick(tk.t); };
           box.appendChild(btn);
         });
@@ -564,52 +605,67 @@
         var chosenTk = s.tokens.filter(function(t){return t.t===chosen;})[0];
         var isTop = chosen === best.t;
 
-        // Reveal all bars
+        chosenTokens.push({ t: chosen, p: chosenTk.p });
+        builtSentence = builtSentence + " " + chosen;
+
         s.tokens.forEach(function(tk){
           var safeId = tk.t.replace(/[^a-z0-9]/gi,'_');
           var bar = document.getElementById('tgb-'+safeId);
           var lbl = document.getElementById('tgl-'+safeId);
           if(bar) bar.style.width = tk.p + '%';
-          if(lbl) lbl.textContent = 'probability: ' + tk.p + '%';
+          if(lbl) lbl.textContent = 'Wahrscheinlichkeit: ' + tk.p + '%';
         });
 
-        // Style the buttons
         var btns = document.getElementById('tg-choices').querySelectorAll('.tgc');
         btns.forEach(function(b){
           var w = b.querySelector('.tw');
           if(!w) return;
           var token = w.textContent.replace(/"/g,'');
           if(token === best.t) b.classList.add('best');
-          else if(token === chosen && !isTop) b.classList.add('wrong');
+          if(token === chosen && !isTop) b.classList.add('wrong');
           if(token === chosen) b.classList.add('chose');
         });
 
-        score += chosenTk.p;
-        document.getElementById('tg-score').textContent = score;
+        var runningProb = sentenceProbability();
 
         var fb = document.getElementById('tg-fb');
+        var isLast = (step === steps.length - 1);
+        var nextLabel = isLast ? 'Ergebnis →' : 'Weiter →';
+        var nextStyle = isTop
+          ? 'background:rgba(78,204,163,0.2);border:1px solid #4ecca3;color:#4ecca3;'
+          : 'background:rgba(245,166,35,0.15);border:1px solid #f5a623;color:#f5a623;';
+        var nextBtn = '&nbsp;<button onclick="tgStep()" style="'+nextStyle+'border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">'+nextLabel+'</button>';
+
         if(isTop){
           fb.style.color = '#4ecca3';
-          fb.innerHTML = '✅ <strong>Top-Wahl!</strong> "'+chosen+'" — '+chosenTk.p+'% wahrscheinlich. +'+chosenTk.p+' Punkte! &nbsp;<button onclick="tgStep()" style="background:rgba(78,204,163,0.2);border:1px solid #4ecca3;color:#4ecca3;border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">Weiter →</button>';
+          fb.innerHTML = '✅ <strong>Top-Wahl!</strong> "'+chosen+'" hatte eine Wahrscheinlichkeit von '+chosenTk.p+'% — sehr gut! Laufende Satzwahrscheinlichkeit: <strong>'+runningProb+'%</strong>'+nextBtn;
         } else {
           fb.style.color = '#f5a623';
-          fb.innerHTML = '💡 Das LLM würde <strong>"'+best.t+'"</strong> wählen ('+best.p+'%). Du bekommst +'+chosenTk.p+' Punkte. &nbsp;<button onclick="tgStep()" style="background:rgba(245,166,35,0.15);border:1px solid #f5a623;color:#f5a623;border-radius:16px;padding:4px 14px;cursor:pointer;font-family:\'Fredoka One\',cursive;font-size:0.9rem;">Weiter →</button>';
+          fb.innerHTML = '💡 Claudes Top-Wahl wäre <strong>"'+best.t+'"</strong> ('+best.p+'%), aber du hast "'+chosen+'" gewählt ('+chosenTk.p+'%) — und das Wort verwenden wir! Laufende Wahrscheinlichkeit: <strong>'+runningProb+'%</strong>'+nextBtn;
         }
       }
 
       function showDone(){
-        document.getElementById('tg-sent').innerHTML = 'Der Ozean bedeckt etwa 71 % der Erdoberfläche. ✅';
+        document.getElementById('tg-sent').innerHTML = builtSentence + ' ✅';
         document.getElementById('tg-choices').innerHTML = '';
-        var maxPts = steps.reduce(function(s,st){return s+st.tokens[0].p;},0);
+        var finalProb = sentenceProbability();
         var fb = document.getElementById('tg-fb');
         fb.style.color = '#a29bfe';
-        fb.innerHTML = '🎉 <strong>Fertig!</strong> Du hast <strong>'+score+'</strong> / '+maxPts+' Punkte. So baut ein LLM Text auf — eine Wahrscheinlichkeitswahl nach der anderen!';
+        fb.innerHTML =
+          '🎉 <strong>Satz fertig!</strong><br><br>' +
+          '<span style="font-size:0.97rem;color:var(--subtext);">Dein Satz: <em style="color:var(--white);">'+builtSentence+'</em></span><br><br>' +
+          '<span style="display:inline-block;background:rgba(162,155,254,0.15);border:1px solid rgba(162,155,254,0.4);border-radius:12px;padding:12px 18px;margin-top:4px;font-size:0.97rem;">' +
+          '🎲 Es gab eine Wahrscheinlichkeit von <strong style="color:#a29bfe;font-size:1.2rem;">'+finalProb+'%</strong>, dass Claude genau diesen Satz erzeugt hätte — eine Token-Wahl nach der anderen!' +
+          '</span>' +
+          '<br><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.35);">Je mehr du von der Top-Wahl abweichst, desto unwahrscheinlicher wird dein Satz. Deshalb ist jedes Wort wichtig!</span>';
       }
 
       window.tgStep = function(){ step++; render(); };
-      window.tgReset = function(){ step=0; score=0; document.getElementById('tg-score').textContent='0'; render(); };
+      window.tgReset = function(){
+        step=0; chosenTokens=[]; builtSentence=START;
+        render();
+      };
 
-      // Always call render immediately — no waiting for DOMContentLoaded
       render();
     })();
     </script>
@@ -778,12 +834,12 @@
         <text x="272" y="36" text-anchor="middle" fill="#4ecca3" font-family="'Fredoka One',cursive" font-size="13">LLM</text>
         <text x="272" y="68" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">Hmm, Ich weiß</text>
         <text x="272" y="81" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">das nicht</text>
-        <text x="272" y="94" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">=> Websuche!</text>
+        <text x="272" y="90" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">=> Websuche!</text>
         <text x="272" y="148" text-anchor="middle" fill="rgba(78,204,163,0.6)" font-family="Nunito,sans-serif" font-size="11">Ich hab's! Jetzt</text>
         <text x="272" y="161" text-anchor="middle" fill="rgba(78,204,163,0.6)" font-family="Nunito,sans-serif" font-size="11">kann ich antworten.</text>
         <!-- Arrow down to web -->
-        <path d="M272 112 L272 130" stroke="#e94560" stroke-width="2" stroke-dasharray="4,3"/>
-        <polygon points="267,130 272,142 277,130" fill="#e94560"/>
+        <path d="M272 115 L272 127" stroke="#e94560" stroke-width="2" stroke-dasharray="4,3"/>
+        <polygon points="267,127 272,136 277,127" fill="#e94560"/>
         <!-- WEB SEARCH box below LLM -->
         <text x="272" y="107" text-anchor="middle" fill="#e94560" font-family="'Fredoka One',cursive" font-size="11">🔍 WEBSUCHE</text>
         <!-- Arrow to answer -->
@@ -797,8 +853,8 @@
         <text x="622" y="98" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="Nunito,sans-serif" font-size="13">38 Tore erzielt (alle Wettbewerbe)."</text>
         <text x="622" y="126" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">✅ Used the web search tool —</text>
         <text x="622" y="140" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="Nunito,sans-serif" font-size="11">answer reflects current info</text>
-        <text x="622" y="158" text-anchor="middle" fill="rgba(233,69,96,0.55)" font-family="Nunito,sans-serif" font-size="11">⚠ Still verify — web results</text>
-        <text x="622" y="171" text-anchor="middle" fill="rgba(233,69,96,0.55)" font-family="Nunito,sans-serif" font-size="11">can be wrong too!</text>
+        <text x="622" y="158" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">⚠ Still verify — web results</text>
+        <text x="622" y="171" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Nunito,sans-serif" font-size="11">can be wrong too!</text>
       </svg>
     </div>
   </div>
