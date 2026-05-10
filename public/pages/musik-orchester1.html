@@ -939,18 +939,27 @@ function toggleFamily(f) {
 }
 
 // ─── AUDIO ────────────────────────────────────
-// iOS Safari: AudioContext starts suspended even inside a user-gesture handler,
-// and ctx.resume() is async. All node scheduling must happen inside the .then()
-// callback — never synchronously after calling resume().
+// iOS Safari quirks:
+// 1. AudioContext starts suspended even inside a user-gesture — resume() is async.
+// 2. Web Audio defaults to the "ambient" session category, which the mute/silent
+//    switch silences. Playing a 1-sample silent buffer on first touch upgrades the
+//    session to "playback" (same as <audio>/<video>), bypassing the mute switch.
 let ctx = null;
+let _sessionUnlocked = false;
 
 function playWhenReady(fn) {
   if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-  if (ctx.state === 'running') {
+  const run = () => {
+    if (!_sessionUnlocked) {
+      // Silent 1-sample buffer → switches iOS audio session to playback mode
+      const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
+      const src = ctx.createBufferSource();
+      src.buffer = buf; src.connect(ctx.destination); src.start(0);
+      _sessionUnlocked = true;
+    }
     fn(ctx);
-  } else {
-    ctx.resume().then(() => fn(ctx));
-  }
+  };
+  if (ctx.state === 'running') { run(); } else { ctx.resume().then(run); }
 }
 
 function tone(freq, dur, type='sine', vol=0.25, atk=0.02, rel=0.3) {
