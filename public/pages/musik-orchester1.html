@@ -176,7 +176,8 @@ main { max-width:960px; margin:0 auto; padding:1rem 1rem 4rem; }
 .orch-info p { font-size:.85rem; color:var(--text-dim); line-height:1.6; }
 
 /* ─── COMPARE TABLE ─── */
-.compare-table { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); margin-top:.8rem; }
+.compare-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:16px; margin-top:.8rem; }
+.compare-table { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); min-width:380px; }
 .compare-header { display:grid; grid-template-columns:1.1fr 1.4fr 1.4fr; background:var(--bg2); border-bottom:2px solid var(--border); }
 .compare-header div { padding:.85rem .9rem; font-family:'Righteous',cursive; font-size:1rem; text-align:center; }
 .col-asp { color:var(--text-dim); font-size:.8rem; }
@@ -557,13 +558,21 @@ main { max-width:960px; margin:0 auto; padding:1rem 1rem 4rem; }
       <div class="instrument-item"><h4>Taktstock</h4><p>Zeigt Rhythmus und Einsätze an – das Werkzeug des Dirigenten.</p></div>
       <div class="instrument-item"><h4>Partitur</h4><p>Gesamtnotenübersicht mit ALLEN Stimmen übereinander gedruckt.</p></div>
       <div class="instrument-item"><h4>Notenpult</h4><p>Ständer, auf dem die Partitur vor dem Dirigenten liegt.</p></div>
-      <div class="instrument-item"><h4>Harfen-Extras</h4><p>Harfe: Saiten · Säule · Hals · Wirbel · Corpus · Pedale (für Halb-/Ganztöne).</p></div>
+    </div>
+  </div>
+
+  <!-- Harfe-Box -->
+  <div class="detail-panel" style="margin-top:.8rem">
+    <h3>🎵 Harfe – wichtige Begriffe</h3>
+    <div class="instrument-grid">
+      <div class="instrument-item"><h4>Aufbau</h4><p>Saiten · Säule · Hals · Wirbel · Corpus · Pedale (für Halb-/Ganztöne).</p></div>
+      <div class="instrument-item"><h4>Einordnung</h4><p>Die Harfe ist ein <strong>Saiteninstrument</strong> – die Saiten werden gezupft. Sie gehört aber <em>nicht</em> zu den <strong>Streichinstrumenten</strong>, denn es wird kein Bogen verwendet.</p></div>
     </div>
   </div>
 
   <!-- Orchester vs Chor Vergleich -->
   <div class="section-title" style="font-size:1.25rem; margin-top:2rem">🎵 Orchester vs. Chor – Gemeinsamkeiten</div>
-  <div class="compare-table">
+  <div class="compare-wrap"><div class="compare-table">
     <div class="compare-header">
       <div class="col-asp">Aspekt</div>
       <div class="col-or">🎼 Orchester</div>
@@ -604,7 +613,7 @@ main { max-width:960px; margin:0 auto; padding:1rem 1rem 4rem; }
       <div>Instrumente erzeugen Klang</div>
       <div>Menschliche Stimme = Instrument</div>
     </div>
-  </div>
+  </div></div><!-- /compare-wrap -->
 </div><!-- /s-sitz -->
 
 
@@ -931,7 +940,17 @@ function toggleFamily(f) {
 
 // ─── AUDIO ────────────────────────────────────
 let ctx = null;
-function ac() { if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); return ctx; }
+function ac() {
+  if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+  // iOS Safari starts AudioContext in 'suspended' state; must resume inside a user gesture
+  if (ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+// Unlock on first touch so subsequent taps are instant (belt + suspenders for iOS)
+document.addEventListener('touchstart', function unlock() {
+  if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (ctx.state === 'suspended') ctx.resume();
+}, { once: true, passive: true });
 
 function tone(freq, dur, type='sine', vol=0.25, atk=0.02, rel=0.3) {
   const c = ac(), o = c.createOscillator(), g = c.createGain();
