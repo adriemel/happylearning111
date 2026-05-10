@@ -54,6 +54,10 @@
   --tag-aikids-text:    #2ee8d9;
   --tag-aikids-border:  rgba(46, 232, 217, 0.30);
 
+  --tag-musik-bg:       rgba(255, 107, 157, 0.10);
+  --tag-musik-text:     #ff6b9d;
+  --tag-musik-border:   rgba(255, 107, 157, 0.30);
+
   --tag-games-bg:       rgba(255, 92, 56, 0.10);
   --tag-games-text:     #ff5c38;
   --tag-games-border:   rgba(255, 92, 56, 0.30);
@@ -454,6 +458,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 [data-subject="Chemie"]     .subject-tag { --tag-bg: var(--tag-chemie-bg); --tag-text: var(--tag-chemie-text); --tag-border: var(--tag-chemie-border); }
 [data-subject="Deutsch"]    .subject-tag { --tag-bg: var(--tag-deutsch-bg); --tag-text: var(--tag-deutsch-text); --tag-border: var(--tag-deutsch-border); }
 [data-subject="Allgemein"]  .subject-tag { --tag-bg: var(--tag-allgemein-bg); --tag-text: var(--tag-allgemein-text); --tag-border: var(--tag-allgemein-border); }
+[data-subject="Musik"]      .subject-tag { --tag-bg: var(--tag-musik-bg);     --tag-text: var(--tag-musik-text);     --tag-border: var(--tag-musik-border); }
+[data-subject="AI für Kinder"] .subject-tag { --tag-bg: var(--tag-aikids-bg); --tag-text: var(--tag-aikids-text);   --tag-border: var(--tag-aikids-border); }
+[data-subject="Games"]      .subject-tag { --tag-bg: var(--tag-games-bg);     --tag-text: var(--tag-games-text);     --tag-border: var(--tag-games-border); }
 
 .card-lang {
   margin-left: auto;

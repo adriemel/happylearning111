@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎵 Musik-Quest – Klasse 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1b2a;
+  --bg2: #162032;
+  --card: #1e2f45;
+  --border: #2a4060;
+  --yellow: #FFE14D;
+  --orange: #FF6B35;
+  --mint: #06D6A0;
+  --coral: #FF6B6B;
+  --blue: #4ECDC4;
+  --text: #E8F4FD;
+  --text-dim: #7a9bbf;
+  --streicher: #FF6B6B;
+  --holz: #06D6A0;
+  --blech: #FFE14D;
+  --schlag: #C084FC;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 15% 15%, rgba(255,225,77,.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 85%, rgba(6,214,160,.06) 0%, transparent 55%);
+}
+
+/* ─── HEADER ─── */
+header { text-align:center; padding:2rem 1rem 0.5rem; }
+.title-main {
+  font-family:'Righteous',cursive;
+  font-size: clamp(2.2rem,7vw,4.5rem);
+  background: linear-gradient(130deg,#FFE14D,#FF6B35,#FF6B6B);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  letter-spacing:2px;
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.15)} }
+.title-sub { color:var(--text-dim); font-size:.85rem; font-weight:700; letter-spacing:4px; text-transform:uppercase; margin-top:.3rem; }
+.points-bar {
+  display:flex; align-items:center; justify-content:center; gap:1.2rem;
+  margin:.8rem auto; padding:.5rem 1.4rem;
+  background:var(--card); border:1px solid var(--border); border-radius:50px;
+  width:fit-content; font-weight:700; font-size:.95rem;
+}
+.pts { color:var(--yellow); }
+
+/* ─── NAV ─── */
+nav {
+  display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap;
+  padding:.8rem 1rem; max-width:900px; margin:0 auto;
+}
+.nav-btn {
+  background:var(--card); border:2px solid var(--border);
+  color:var(--text-dim); padding:.55rem 1rem; border-radius:10px;
+  cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:.88rem;
+  transition:all .2s; white-space:nowrap;
+}
+.nav-btn:hover { border-color:var(--yellow); color:var(--yellow); transform:translateY(-2px); }
+.nav-btn.active { background:var(--yellow); border-color:var(--yellow); color:#0d1b2a; }
+
+/* ─── SECTIONS ─── */
+main { max-width:960px; margin:0 auto; padding:1rem 1rem 4rem; }
+.section { display:none; animation:fadeIn .3s ease; }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.section-title { font-family:'Righteous',cursive; font-size:1.7rem; margin-bottom:1.2rem; display:flex; align-items:center; gap:.5rem; }
+
+/* ─── INFO BOX ─── */
+.info-box {
+  background:rgba(255,225,77,.07); border:1px solid rgba(255,225,77,.25);
+  border-radius:12px; padding:.9rem 1rem; margin-bottom:1rem;
+  font-size:.88rem; line-height:1.6;
+}
+.info-box strong { color:var(--yellow); }
+
+/* ─── FAMILY CARDS ─── */
+.family-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1rem; margin-bottom:.5rem; }
+.family-card {
+  background:var(--card); border:2px solid var(--border); border-radius:16px;
+  padding:1.4rem 1rem; cursor:pointer; transition:all .25s; text-align:center; position:relative; overflow:hidden;
+}
+.family-card::before { content:''; position:absolute; top:0;left:0;right:0; height:4px; border-radius:16px 16px 0 0; }
+.family-card.streicher::before { background:var(--streicher); }
+.family-card.holz::before { background:var(--holz); }
+.family-card.blech::before { background:var(--blech); }
+.family-card.schlag::before { background:var(--schlag); }
+.family-card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,.35); }
+.family-card.selected.streicher { border-color:var(--streicher); }
+.family-card.selected.holz { border-color:var(--holz); }
+.family-card.selected.blech { border-color:var(--blech); }
+.family-card.selected.schlag { border-color:var(--schlag); }
+.family-icon { font-size:2.8rem; margin-bottom:.4rem; display:block; }
+.family-name { font-family:'Righteous',cursive; font-size:1.15rem; margin-bottom:.25rem; }
+.family-card.streicher .family-name { color:var(--streicher); }
+.family-card.holz .family-name { color:var(--holz); }
+.family-card.blech .family-name { color:var(--blech); }
+.family-card.schlag .family-name { color:var(--schlag); }
+.family-tip { font-size:.78rem; color:var(--text-dim); }
+.card-instruments { list-style:none; text-align:left; margin-top:.7rem; padding:0; border-top:1px solid var(--border); padding-top:.6rem; }
+.card-instruments li { font-size:.8rem; color:var(--text-dim); padding:.12rem 0; display:flex; align-items:center; gap:.45rem; }
+.family-card.streicher .card-instruments li::before { content:'•'; color:var(--streicher); }
+.family-card.holz .card-instruments li::before { content:'•'; color:var(--holz); }
+.family-card.blech .card-instruments li::before { content:'•'; color:var(--blech); }
+.family-card.schlag .card-instruments li::before { content:'•'; color:var(--schlag); }
+.sound-btn {
+  background:transparent; border:1px solid currentColor;
+  border-radius:8px; padding:.28rem .65rem; font-size:.78rem;
+  cursor:pointer; margin-top:.65rem; font-family:'Nunito',sans-serif; font-weight:700; transition:all .2s;
+}
+.family-card.streicher .sound-btn { color:var(--streicher); }
+.family-card.holz .sound-btn { color:var(--holz); }
+.family-card.blech .sound-btn { color:var(--blech); }
+.family-card.schlag .sound-btn { color:var(--schlag); }
+.sound-btn:hover { background:rgba(255,255,255,.1); transform:scale(1.05); }
+
+/* ─── DETAIL PANEL ─── */
+.detail-panel { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.4rem; margin-top:.8rem; }
+.detail-panel h3 { font-family:'Righteous',cursive; font-size:1.1rem; margin-bottom:1rem; color:var(--yellow); }
+.instrument-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:.9rem; }
+.instrument-item { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1rem; transition:all .2s; }
+.instrument-item:hover { border-color:var(--yellow); transform:translateY(-2px); }
+.instrument-item h4 { font-family:'Righteous',cursive; font-size:.95rem; margin-bottom:.4rem; }
+.instrument-item p { font-size:.82rem; color:var(--text-dim); line-height:1.5; margin-bottom:.3rem; }
+.role-badge { display:inline-block; background:rgba(255,225,77,.12); color:var(--yellow); border-radius:6px; padding:.12rem .45rem; font-size:.72rem; font-weight:700; margin-top:.3rem; }
+
+/* ─── KLANG GRID ─── */
+.klang-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.9rem; }
+.klang-card { background:var(--card); border-radius:12px; padding:1rem; border:1px solid var(--border); }
+.klang-card h4 { font-family:'Righteous',cursive; color:var(--blue); margin-bottom:.5rem; font-size:1rem; }
+.klang-tags { display:flex; flex-wrap:wrap; gap:.35rem; }
+.klang-tag { background:rgba(78,205,196,.12); color:var(--blue); border-radius:6px; padding:.18rem .55rem; font-size:.78rem; font-weight:600; }
+.klang-tag[data-klang] { cursor:pointer; touch-action:manipulation; transition:all .15s; }
+.klang-tag[data-klang]:hover { background:rgba(78,205,196,.3); transform:scale(1.08); }
+.klang-tag[data-klang]:active { transform:scale(.93); }
+
+/* ─── MOBILE / TOUCH ─── */
+.nav-btn, .sound-btn, .voice-play-btn, .quiz-opt, .quiz-next, .quiz-restart, .orch-group, .family-card, .voice-card { touch-action:manipulation; }
+.quiz-opt { min-height:48px; }
+.nav-btn { min-height:42px; }
+.sound-btn, .voice-play-btn { min-height:36px; padding:.4rem .75rem; }
+.fb-cell { min-height:2.5rem; }
+@media (hover:none) {
+  .family-card:hover { transform:none; box-shadow:none; }
+  .instrument-item:hover { transform:none; }
+  .voice-card:hover { transform:none; box-shadow:none; }
+  .orch-group:hover { transform:none; }
+}
+
+/* ─── ORCHESTRA ─── */
+.orchestra-stage { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:1.8rem 1rem; text-align:center; }
+.stage-label { font-family:'Righteous',cursive; font-size:.75rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:3px; margin:.5rem 0; }
+.orch-row { display:flex; justify-content:center; gap:.35rem; margin:.3rem 0; flex-wrap:wrap; }
+.orch-group {
+  border-radius:9px; padding:.38rem .75rem; font-size:.78rem; font-weight:700;
+  cursor:pointer; transition:all .2s; border:2px solid transparent;
+}
+.orch-group:hover, .orch-group.lit { transform:scale(1.1); border-color:rgba(255,255,255,.5); }
+.g-str { background:rgba(255,107,107,.22); color:var(--streicher); }
+.g-holz { background:rgba(6,214,160,.2); color:var(--holz); }
+.g-blech { background:rgba(255,225,77,.2); color:var(--blech); }
+.g-schlag { background:rgba(192,132,252,.2); color:var(--schlag); }
+.g-special { background:rgba(78,205,196,.2); color:var(--blue); }
+.g-dir { background:rgba(255,107,53,.35); color:var(--orange); }
+.orch-info { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1.1rem; margin-top:.9rem; min-height:70px; }
+.orch-info h4 { font-family:'Righteous',cursive; color:var(--yellow); margin-bottom:.4rem; font-size:1rem; }
+.orch-info p { font-size:.85rem; color:var(--text-dim); line-height:1.6; }
+
+/* ─── COMPARE TABLE ─── */
+.compare-table { background:var(--card); border-radius:16px; overflow:hidden; border:1px solid var(--border); margin-top:.8rem; }
+.compare-header { display:grid; grid-template-columns:1.1fr 1.4fr 1.4fr; background:var(--bg2); border-bottom:2px solid var(--border); }
+.compare-header div { padding:.85rem .9rem; font-family:'Righteous',cursive; font-size:1rem; text-align:center; }
+.col-asp { color:var(--text-dim); font-size:.8rem; }
+.col-or { color:var(--yellow); }
+.col-ch { color:var(--mint); }
+.compare-row { display:grid; grid-template-columns:1.1fr 1.4fr 1.4fr; border-bottom:1px solid var(--border); transition:background .15s; }
+.compare-row:hover { background:rgba(255,255,255,.025); }
+.compare-row:last-child { border-bottom:none; }
+.compare-row div { padding:.7rem .9rem; font-size:.85rem; display:flex; align-items:flex-start; gap:.3rem; line-height:1.5; }
+.compare-row .col-asp { color:var(--text-dim); font-weight:700; font-size:.75rem; text-transform:uppercase; letter-spacing:.5px; align-items:center; }
+.ck { color:var(--mint); flex-shrink:0; margin-top:.1rem; }
+
+/* ─── VOICE CARDS ─── */
+.voice-section-label { font-family:'Righteous',cursive; font-size:1.1rem; margin:1.2rem 0 .7rem; }
+.voice-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.9rem; margin-bottom:.5rem; }
+.voice-card { background:var(--card); border:2px solid var(--border); border-radius:14px; padding:1.1rem; cursor:pointer; transition:all .2s; }
+.voice-card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,.3); }
+.voice-card.f { border-top:4px solid #FF9FF3; }
+.voice-card.m { border-top:4px solid #74B9FF; }
+.voice-type { font-family:'Righteous',cursive; font-size:1.2rem; margin-bottom:.15rem; }
+.voice-card.f .voice-type { color:#FF9FF3; }
+.voice-card.m .voice-type { color:#74B9FF; }
+.voice-sub { font-size:.78rem; color:var(--text-dim); margin-bottom:.5rem; }
+.voice-bar-wrap { background:rgba(255,255,255,.05); border-radius:4px; height:7px; margin:.5rem 0; overflow:hidden; }
+.voice-bar { height:100%; border-radius:4px; }
+.voice-card.f .voice-bar { background:linear-gradient(90deg,#FF9FF3,#d63af9); }
+.voice-card.m .voice-bar { background:linear-gradient(90deg,#74B9FF,#0984e3); }
+.voice-desc { font-size:.8rem; color:var(--text-dim); line-height:1.5; margin-top:.4rem; }
+.voice-play-btn { font-size:.75rem; font-weight:700; cursor:pointer; margin-top:.6rem; padding:.25rem .6rem; border-radius:7px; border:1px solid currentColor; background:transparent; font-family:'Nunito',sans-serif; transition:all .15s; }
+.voice-card.f .voice-play-btn { color:#FF9FF3; }
+.voice-card.m .voice-play-btn { color:#74B9FF; }
+.voice-play-btn:hover { background:rgba(255,255,255,.08); }
+
+/* ─── UKULELE ─── */
+.uke-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; align-items:start; }
+@media(max-width:620px){ .uke-grid{grid-template-columns:1fr;} }
+.uke-panel { background:var(--card); border-radius:16px; padding:1.3rem; border:1px solid var(--border); }
+.uke-panel h3 { font-family:'Righteous',cursive; color:var(--orange); margin-bottom:.9rem; font-size:1.1rem; }
+.part-list { list-style:none; }
+.part-list li { padding:.38rem 0; border-bottom:1px solid var(--border); font-size:.83rem; display:flex; gap:.6rem; align-items:flex-start; }
+.part-list li:last-child { border-bottom:none; }
+.part-list li strong { color:var(--text); }
+.part-list li span.dim { color:var(--text-dim); font-size:.75rem; }
+
+/* ─── FRETBOARD ─── */
+.fretboard { display:grid; grid-template-columns:1.8rem repeat(8,1fr); gap:2px; user-select:none; margin-bottom:.8rem; }
+.fb-head { text-align:center; font-size:.6rem; color:var(--text-dim); padding:2px; display:flex; align-items:center; justify-content:center; }
+.fb-str { font-weight:800; font-size:.78rem; display:flex; align-items:center; justify-content:center; }
+.fb-cell {
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:5px;
+  height:2rem; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:all .13s; font-weight:700; color:var(--text-dim); font-size:.65rem;
+}
+.fb-cell:hover { background:rgba(255,225,77,.18); color:var(--yellow); border-color:var(--yellow); transform:scale(1.08); }
+.fb-cell.open-str { border-color:inherit; }
+.fb-cell.playing { background:var(--yellow) !important; color:#0d1b2a !important; border-color:var(--yellow) !important; animation:ping .35s ease; }
+@keyframes ping { 0%{transform:scale(1.2)} 100%{transform:scale(1)} }
+.strings-legend { display:grid; grid-template-columns:1fr 1fr; gap:.35rem .7rem; font-size:.8rem; margin-top:.6rem; }
+.strings-legend span strong { font-size:.85rem; }
+
+/* ─── QUIZ ─── */
+.quiz-wrap { max-width:700px; margin:0 auto; }
+.quiz-prog { background:var(--card); border-radius:8px; height:7px; margin-bottom:1.3rem; overflow:hidden; }
+.quiz-prog-bar { height:100%; background:linear-gradient(90deg,var(--yellow),var(--orange)); border-radius:8px; transition:width .4s ease; }
+.quiz-qnum { color:var(--text-dim); font-size:.82rem; margin-bottom:.4rem; font-weight:600; }
+.quiz-box { background:var(--card); border:2px solid var(--border); border-radius:16px; padding:1.4rem; margin-bottom:.9rem; }
+.quiz-box h3 { font-size:1.1rem; font-weight:800; line-height:1.45; }
+.quiz-opts { display:grid; gap:.6rem; margin-top:.9rem; }
+.quiz-opt {
+  background:var(--bg2); border:2px solid var(--border); border-radius:11px;
+  padding:.8rem 1.1rem; cursor:pointer; font-family:'Nunito',sans-serif; font-size:.95rem;
+  font-weight:600; color:var(--text); text-align:left; transition:all .18s;
+}
+.quiz-opt:hover:not(:disabled) { border-color:var(--yellow); background:rgba(255,225,77,.07); transform:translateX(4px); }
+.quiz-opt.correct { border-color:var(--mint); background:rgba(6,214,160,.13); color:var(--mint); }
+.quiz-opt.wrong { border-color:var(--coral); background:rgba(255,107,107,.13); color:var(--coral); }
+.quiz-fb { border-radius:11px; padding:.9rem 1rem; margin-bottom:.9rem; font-weight:600; font-size:.88rem; line-height:1.55; display:none; }
+.quiz-fb.show { display:block; }
+.quiz-fb.ok { border-left:4px solid var(--mint); background:rgba(6,214,160,.07); color:var(--mint); }
+.quiz-fb.nok { border-left:4px solid var(--coral); background:rgba(255,107,107,.07); color:var(--text); }
+.quiz-fb.nok em { color:var(--coral); font-style:normal; font-weight:800; }
+.quiz-next { background:var(--yellow); color:#0d1b2a; border:none; border-radius:11px; padding:.8rem 1.8rem; font-family:'Nunito',sans-serif; font-size:.95rem; font-weight:800; cursor:pointer; transition:all .18s; display:none; }
+.quiz-next.show { display:inline-block; }
+.quiz-next:hover { background:var(--orange); transform:translateY(-2px); }
+.quiz-result { text-align:center; background:var(--card); border-radius:20px; padding:3rem 2rem; display:none; border:2px solid var(--border); }
+.quiz-result.show { display:block; }
+.res-score { font-family:'Righteous',cursive; font-size:5rem; background:linear-gradient(135deg,var(--yellow),var(--orange)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.res-emoji { font-size:4rem; display:block; margin:1rem 0; }
+.res-msg { font-size:1.25rem; font-weight:700; margin-bottom:.5rem; }
+.res-detail { color:var(--text-dim); font-size:.88rem; }
+.quiz-restart { background:transparent; border:2px solid var(--yellow); color:var(--yellow); border-radius:11px; padding:.7rem 1.6rem; font-family:'Nunito',sans-serif; font-size:.95rem; font-weight:800; cursor:pointer; margin-top:1.2rem; transition:all .2s; }
+.quiz-restart:hover { background:var(--yellow); color:#0d1b2a; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-main">🎵 MUSIK-QUEST</div>
+  <div class="title-sub">Klasse 6 · Gymnasium Niedersachsen</div>
+  <div class="points-bar">
+    ⭐ <span class="pts">Punkte: <span id="pts">0</span></span>
+    &nbsp;|&nbsp;
+    🏆 <span class="pts">Quiz: <span id="qscore">–</span></span>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="go('fam',this)">🎻 Instrumentenfamilien</button>
+  <button class="nav-btn" onclick="go('sitz',this)">🎼 Orchester &amp; Chor</button>
+  <button class="nav-btn" onclick="go('stimm',this)">🎤 Stimmgruppen</button>
+  <button class="nav-btn" onclick="go('uke',this)">🎸 Ukulele</button>
+  <button class="nav-btn" onclick="go('quiz',this)">🏆 Quiz</button>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════════════════
+     SECTION 1: INSTRUMENTENFAMILIEN
+════════════════════════════════════════════════ -->
+<div class="section active" id="s-fam">
+  <div class="section-title">🎻 Instrumentenfamilien</div>
+
+  <div class="info-box">
+    Klicke auf eine Familie für Details – und auf <strong>🔊 Klang</strong> zum Hören!
+  </div>
+
+  <div class="family-grid">
+    <div class="family-card streicher" onclick="toggleFamily('streicher')">
+      <span class="family-icon">🎻</span>
+      <div class="family-name">Streicher</div>
+      <div class="family-tip">Saiten schwingen. Ton durch Bogenstrich (arco) oder Zupfen (pizzicato).</div>
+      <ul class="card-instruments">
+        <li>Violine</li><li>Viola</li><li>Violoncello</li><li>Kontrabass</li>
+      </ul>
+      <button class="sound-btn" onclick="event.stopPropagation();playFamily('streicher')">🔊 Klang</button>
+    </div>
+    <div class="family-card holz" onclick="toggleFamily('holz')">
+      <span class="family-icon">🎶</span>
+      <div class="family-name">Holzbläser</div>
+      <div class="family-tip">Luft schwingt an Kante oder Rohrblatt. Nicht alle sind aus Holz.</div>
+      <ul class="card-instruments">
+        <li>Querflöte</li><li>Oboe</li><li>Klarinette</li><li>Fagott</li>
+      </ul>
+      <button class="sound-btn" onclick="event.stopPropagation();playFamily('holz')">🔊 Klang</button>
+    </div>
+    <div class="family-card blech" onclick="toggleFamily('blech')">
+      <span class="family-icon">🎺</span>
+      <div class="family-name">Blechbläser</div>
+      <div class="family-tip">Lippenvibration im Mundstück. Ventile oder Zug verändern die Rohrlänge.</div>
+      <ul class="card-instruments">
+        <li>Trompete</li><li>Horn</li><li>Posaune</li><li>Tuba</li>
+      </ul>
+      <button class="sound-btn" onclick="event.stopPropagation();playFamily('blech')">🔊 Klang</button>
+    </div>
+    <div class="family-card schlag" onclick="toggleFamily('schlag')">
+      <span class="family-icon">🥁</span>
+      <div class="family-name">Schlagwerk</div>
+      <div class="family-tip">Schlagen, Reiben oder Schütteln. Manche sind stimmbar, manche nicht.</div>
+      <ul class="card-instruments">
+        <li>Pauken</li><li>Kleine Trommel</li><li>Becken</li><li>Xylofon</li>
+      </ul>
+      <button class="sound-btn" onclick="event.stopPropagation();playFamily('schlag')">🔊 Klang</button>
+    </div>
+  </div>
+
+  <!-- Streicher -->
+  <div class="detail-panel" id="dp-streicher" style="display:none">
+    <h3>🎻 Streicher – Tonerzeugung: Bogen streicht Saite (arco) oder zupfen (pizzicato)</h3>
+    <div class="instrument-grid">
+      <div class="instrument-item">
+        <h4>🎻 Violine</h4>
+        <p>Kleinste &amp; höchste Stimme. Bogen über 4 Saiten.</p>
+        <p><strong>Teile:</strong> Schnecke · Wirbel · Hals &amp; Griffbrett · Corpus · F-Löcher · Steg · Saiten · Bogen · Saitenhalter</p>
+        <span class="role-badge">oft Melodie · hell</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎻 Viola (Bratsche)</h4>
+        <p>Etwas größer und tiefer als die Violine. Wärmerer Klang.</p>
+        <p><strong>Teile:</strong> Schnecke · Wirbel · Corpus · F-Loch · Steg · Bogen</p>
+        <span class="role-badge">Mittelstimme · warm</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎻 Violoncello (Cello)</h4>
+        <p>Sitzend gespielt, Stachel auf dem Boden.</p>
+        <p><strong>Teile:</strong> Schnecke · Griffbrett · F-Löcher · Steg · Corpus · Stachel · Saitenhalter · Bogen</p>
+        <span class="role-badge">Melodie und Bass</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎻 Kontrabass</h4>
+        <p>Größtes Streichinstrument, sehr tief. Im Stehen oder auf hohem Hocker.</p>
+        <span class="role-badge">Bassfundament</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Holzbläser -->
+  <div class="detail-panel" id="dp-holz" style="display:none">
+    <h3>🎶 Holzbläser – Luft zum Klingen bringen, auf drei verschiedene Arten</h3>
+    <div class="instrument-grid">
+      <div class="instrument-item">
+        <h4>🪈 Querflöte</h4>
+        <p>Kein Rohrblatt! Ton entsteht an der <strong>Luftkante</strong> des Anblaslochs.</p>
+        <p><strong>Teile:</strong> Kopfstück · Klappen und Löcher</p>
+        <span class="role-badge">hell · beweglich · ohne Rohrblatt</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎵 Oboe</h4>
+        <p><strong>Doppelrohrblatt</strong> – zwei dünne Rohrblätter schwingen gegeneinander. Nasaler, tragender Klang.</p>
+        <p><strong>Teile:</strong> Mundstück &amp; Rohr · Klappen &amp; Löcher</p>
+        <span class="role-badge">Stimmton a¹ · Soli</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎵 Klarinette</h4>
+        <p><strong>Einfachrohrblatt</strong> – ein Rohrblatt vibriert am Mundstück. Runder, weicher Ton.</p>
+        <p><strong>Teile:</strong> Mundstück &amp; Blatt · Klappen &amp; Löcher</p>
+        <span class="role-badge">Mittel- bis Hochlage · flexibel</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎵 Fagott</h4>
+        <p><strong>Doppelrohrblatt</strong> wie Oboe, aber viel größer und tiefer. S-Bogen führt zum Mundstück.</p>
+        <p><strong>Teile:</strong> S-Bogen · Mundstück &amp; Rohr · Klappen &amp; Gestänge</p>
+        <span class="role-badge">Bass der Holzbläser · tief/warm</span>
+      </div>
+    </div>
+    <div class="info-box" style="margin-top:.9rem">
+      <strong>Merkhilfe Rohrblatt:</strong> Querflöte = kein Blatt &nbsp;|&nbsp; Klarinette = <em>1</em> Blatt (Einfach) &nbsp;|&nbsp; Oboe &amp; Fagott = <em>2</em> Blätter (Doppel)
+    </div>
+  </div>
+
+  <!-- Blechbläser -->
+  <div class="detail-panel" id="dp-blech" style="display:none">
+    <h3>🎺 Blechbläser – Tonerzeugung: Lippenvibration + Mundstück (Ventile oder Zug)</h3>
+    <div class="instrument-grid">
+      <div class="instrument-item">
+        <h4>🎺 Trompete</h4>
+        <p>Höchste Blechbläserstimme. 3 Ventile zum Tonwechsel.</p>
+        <p><strong>Teile:</strong> Mundstück · Ventile · Rohr · Schallbecher</p>
+        <span class="role-badge">Signale · strahlend</span>
+      </div>
+      <div class="instrument-item">
+        <h4>📯 Horn (Waldhorn)</h4>
+        <p>Weiter Schallbecher (Stürze), weicher Klang. Viele Windungen im Rohr.</p>
+        <p><strong>Teile:</strong> Mundstück · Rohr · Ventile · Stürze</p>
+        <span class="role-badge">Harmonie · Mittel-/Tieflage</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎵 Posaune</h4>
+        <p>Keine Ventile! Stattdessen ein <strong>Zug (Slide)</strong> – verändert die Rohrlänge.</p>
+        <p><strong>Teile:</strong> Mundstück · Rohr · Zug/Slide · Schallbecher</p>
+        <span class="role-badge">Akzentuiert · mächtig</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎵 Tuba</h4>
+        <p>Größtes Blechblasinstrument. Sehr tiefer Klang. Ventile.</p>
+        <p><strong>Teile:</strong> Mundstück · Ventile · Rohr · Stürze</p>
+        <span class="role-badge">Bassfundament</span>
+      </div>
+    </div>
+    <div class="info-box" style="margin-top:.9rem">
+      <strong>Merkhilfe:</strong> Posaune = <em>kein Ventil</em>, sondern <em>ZUG!</em> &nbsp; Alle anderen Blechbläser haben Ventile.
+    </div>
+  </div>
+
+  <!-- Schlagwerk -->
+  <div class="detail-panel" id="dp-schlag" style="display:none">
+    <h3>🥁 Schlagwerk – Schlagen, stimmbar (bestimmte Tonhöhe) vs. nicht stimmbar</h3>
+    <div class="instrument-grid">
+      <div class="instrument-item">
+        <h4>🥁 Pauken <span style="color:var(--mint);font-size:.72rem;font-weight:700"> ✓ stimmbar</span></h4>
+        <p>Fellspannung durch Mechanismus verstellbar → Tonhöhe änderbar!</p>
+        <p><strong>Teile:</strong> Fell · Kessel · Fell-Spanner · Schlägel · Kopf</p>
+        <span class="role-badge">Akzente · Spannung</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🎵 Xylofon <span style="color:var(--mint);font-size:.72rem;font-weight:700"> ✓ stimmbar</span></h4>
+        <p>Holzstäbe in verschiedenen Längen → verschiedene Töne. Gespielt mit Mallets.</p>
+        <span class="role-badge">klare, helle Töne</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🥁 Kleine Trommel <span style="color:var(--coral);font-size:.72rem;font-weight:700"> ✗ nicht stimmbar</span></h4>
+        <p>Schnarrteppich unter dem Fell. Keine bestimmte Tonhöhe.</p>
+        <span class="role-badge">Rhythmus · Wirbel</span>
+      </div>
+      <div class="instrument-item">
+        <h4>🪘 Becken <span style="color:var(--coral);font-size:.72rem;font-weight:700"> ✗ nicht stimmbar</span></h4>
+        <p>Zwei Metallplatten, gegeneinander geschlagen oder mit Schlägel.</p>
+        <p><strong>Teile:</strong> Becken (Metallplatten)</p>
+        <span class="role-badge">Höhepunkte · Crash</span>
+      </div>
+    </div>
+    <div class="info-box" style="margin-top:.9rem">
+      <strong>Merkhilfe:</strong> Stimmbar = Tonhöhe änderbar (Pauken, Xylofon) &nbsp;|&nbsp; Nicht stimmbar = kein bestimmter Ton (Trommel, Becken)
+    </div>
+  </div>
+
+  <!-- Klangbeschreibung -->
+  <div style="margin-top:2rem">
+    <div class="section-title" style="font-size:1.25rem">🎨 Klang beschreiben – Fachbegriffe</div>
+    <div class="info-box">Bei <strong>Klangfarbe</strong> und <strong>Artikulation</strong>: auf die Begriffe tippen/klicken → Ton hören! 🔊</div>
+    <div class="klang-grid">
+      <div class="klang-card"><h4>Klangfarbe 🔊</h4><div class="klang-tags">
+        <span class="klang-tag" data-klang="warm">warm</span>
+        <span class="klang-tag" data-klang="hell">hell</span>
+        <span class="klang-tag" data-klang="dunkel">dunkel</span>
+        <span class="klang-tag" data-klang="klar">klar</span>
+        <span class="klang-tag" data-klang="weich">weich</span>
+      </div></div>
+      <div class="klang-card"><h4>Lautstärke</h4><div class="klang-tags"><span class="klang-tag">leise</span><span class="klang-tag">mittel</span><span class="klang-tag">laut</span><span class="klang-tag">kräftig</span><span class="klang-tag">zart</span></div></div>
+      <div class="klang-card"><h4>Artikulation 🔊</h4><div class="klang-tags">
+        <span class="klang-tag" data-klang="kurz">kurz</span>
+        <span class="klang-tag" data-klang="lang">lang</span>
+        <span class="klang-tag" data-klang="gebunden">gebunden</span>
+        <span class="klang-tag" data-klang="abgehackt">abgehackt</span>
+        <span class="klang-tag" data-klang="deutlich">deutlich</span>
+      </div></div>
+      <div class="klang-card"><h4>Bewegung</h4><div class="klang-tags"><span class="klang-tag">ruhig</span><span class="klang-tag">fließend</span><span class="klang-tag">hüpfend</span><span class="klang-tag">schnell</span><span class="klang-tag">langsam</span></div></div>
+      <div class="klang-card"><h4>Stimmung</h4><div class="klang-tags"><span class="klang-tag">fröhlich</span><span class="klang-tag">traurig</span><span class="klang-tag">geheimnisvoll</span><span class="klang-tag">feierlich</span><span class="klang-tag">spannend</span></div></div>
+      <div class="klang-card"><h4>Oberfläche</h4><div class="klang-tags"><span class="klang-tag">glatt</span><span class="klang-tag">rau</span><span class="klang-tag">matt</span><span class="klang-tag">glänzend</span><span class="klang-tag">körnig</span></div></div>
+    </div>
+  </div>
+</div><!-- /s-fam -->
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION 2: SITZORDNUNG & ORCHESTER vs CHOR
+════════════════════════════════════════════════ -->
+<div class="section" id="s-sitz">
+  <div class="section-title">🎼 Sitzordnung &amp; Orchester vs. Chor</div>
+
+  <div class="info-box">Klicke auf eine Gruppe im Orchesterplan um mehr zu erfahren!</div>
+
+  <div class="orchestra-stage">
+    <div class="stage-label">↑ Hinten (Wand) ↑</div>
+    <div class="orch-row">
+      <div class="orch-group g-schlag" onclick="orchInfo('schlag')">🥁 Pauken</div>
+      <div class="orch-group g-schlag" onclick="orchInfo('schlag')">🥁 Kleine Trommel</div>
+      <div class="orch-group g-schlag" onclick="orchInfo('schlag')">🪘 Becken / Xylofon</div>
+    </div>
+    <div class="orch-row">
+      <div class="orch-group g-blech" onclick="orchInfo('blech')">📯 Horn</div>
+      <div class="orch-group g-blech" onclick="orchInfo('blech')">🎺 Trompete</div>
+      <div class="orch-group g-blech" onclick="orchInfo('blech')">🎵 Posaune</div>
+      <div class="orch-group g-blech" onclick="orchInfo('blech')">🎵 Tuba</div>
+    </div>
+    <div class="orch-row">
+      <div class="orch-group g-special" onclick="orchInfo('klavier')">🎹 Klavier ◀ Rand</div>
+      <div class="orch-group g-holz" onclick="orchInfo('holz')">🪈 Flöte</div>
+      <div class="orch-group g-holz" onclick="orchInfo('holz')">🎵 Oboe</div>
+      <div class="orch-group g-holz" onclick="orchInfo('holz')">🎵 Klarinette</div>
+      <div class="orch-group g-holz" onclick="orchInfo('holz')">🎵 Fagott</div>
+    </div>
+    <div class="orch-row">
+      <div class="orch-group g-special" onclick="orchInfo('harfe')">🎵 Harfe ◀ Rand</div>
+      <div class="orch-group g-str" onclick="orchInfo('kontrabass')">🎻 Kontrabass</div>
+    </div>
+    <div class="orch-row">
+      <div class="orch-group g-str" onclick="orchInfo('viola')">🎻 Viola</div>
+      <div class="orch-group g-str" onclick="orchInfo('cello')">🎻 Cello</div>
+    </div>
+    <div class="orch-row">
+      <div class="orch-group g-str" onclick="orchInfo('viol1')">🎻 Violine I</div>
+      <div class="orch-group g-str" onclick="orchInfo('viol2')">🎻 Violine II</div>
+    </div>
+    <div class="orch-row">
+      <div class="orch-group g-dir" onclick="orchInfo('dir')">🎼 Dirigent</div>
+    </div>
+    <div class="stage-label">↓ Vorne – Publikum sitzt hier ↓</div>
+  </div>
+
+  <div class="orch-info" id="oi">
+    <p>👆 Klicke auf eine Gruppe oben, um mehr zu erfahren.</p>
+  </div>
+
+  <!-- Dirigent-Box -->
+  <div class="detail-panel" style="margin-top:1.2rem">
+    <h3>🎼 Der Dirigent – wichtige Begriffe</h3>
+    <div class="instrument-grid">
+      <div class="instrument-item"><h4>Taktstock</h4><p>Zeigt Rhythmus und Einsätze an – das Werkzeug des Dirigenten.</p></div>
+      <div class="instrument-item"><h4>Partitur</h4><p>Gesamtnotenübersicht mit ALLEN Stimmen übereinander gedruckt.</p></div>
+      <div class="instrument-item"><h4>Notenpult</h4><p>Ständer, auf dem die Partitur vor dem Dirigenten liegt.</p></div>
+      <div class="instrument-item"><h4>Harfen-Extras</h4><p>Harfe: Saiten · Säule · Hals · Wirbel · Corpus · Pedale (für Halb-/Ganztöne).</p></div>
+    </div>
+  </div>
+
+  <!-- Orchester vs Chor Vergleich -->
+  <div class="section-title" style="font-size:1.25rem; margin-top:2rem">🎵 Orchester vs. Chor – Gemeinsamkeiten</div>
+  <div class="compare-table">
+    <div class="compare-header">
+      <div class="col-asp">Aspekt</div>
+      <div class="col-or">🎼 Orchester</div>
+      <div class="col-ch">🎤 Chor</div>
+    </div>
+    <div class="compare-row">
+      <div class="col-asp">Leitung</div>
+      <div><span class="ck">✓</span>Dirigent mit Taktstock</div>
+      <div><span class="ck">✓</span>Chorleiter</div>
+    </div>
+    <div class="compare-row">
+      <div class="col-asp">Gruppen</div>
+      <div><span class="ck">✓</span>Instrumentenfamilien</div>
+      <div><span class="ck">✓</span>Stimmgruppen (S/A/T/B)</div>
+    </div>
+    <div class="compare-row">
+      <div class="col-asp">Mehrstimmig</div>
+      <div><span class="ck">✓</span>Viele verschiedene Stimmen</div>
+      <div><span class="ck">✓</span>Sopran, Alt, Tenor, Bass</div>
+    </div>
+    <div class="compare-row">
+      <div class="col-asp">Noten</div>
+      <div><span class="ck">✓</span>Noten am Notenpult</div>
+      <div><span class="ck">✓</span>Noten (oft auswendig)</div>
+    </div>
+    <div class="compare-row">
+      <div class="col-asp">Sitzordnung</div>
+      <div><span class="ck">✓</span>Feste Anordnung nach Familien</div>
+      <div><span class="ck">✓</span>Feste Anordnung nach Stimmlagen</div>
+    </div>
+    <div class="compare-row">
+      <div class="col-asp">Proben</div>
+      <div><span class="ck">✓</span>Regelmäßige Orchesterproben</div>
+      <div><span class="ck">✓</span>Regelmäßige Chorproben</div>
+    </div>
+    <div class="compare-row">
+      <div class="col-asp">Unterschied</div>
+      <div>Instrumente erzeugen Klang</div>
+      <div>Menschliche Stimme = Instrument</div>
+    </div>
+  </div>
+</div><!-- /s-sitz -->
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION 3: STIMMGRUPPEN
+════════════════════════════════════════════════ -->
+<div class="section" id="s-stimm">
+  <div class="section-title">🎤 Stimmgruppen</div>
+  <div class="info-box">
+    Menschliche Stimmen werden nach Höhe und Geschlecht eingeteilt. Klicke auf eine Stimme, um ihren Ton zu hören!
+  </div>
+
+  <div class="voice-section-label" style="color:#FF9FF3">♀ Frauenstimmen</div>
+  <div class="voice-grid">
+    <div class="voice-card f" onclick="playVoice(880);addPts(5)">
+      <div class="voice-type">Sopran</div>
+      <div class="voice-sub">höchste Frauenstimme</div>
+      <div class="voice-bar-wrap"><div class="voice-bar" style="width:100%;margin-left:0"></div></div>
+      <div class="voice-desc">Helle, hohe Stimme – singt oft die Hauptmelodie.</div>
+      <button class="voice-play-btn" onclick="event.stopPropagation();playVoice(880);addPts(5)">🔊 Anhören</button>
+    </div>
+    <div class="voice-card f" onclick="playVoice(659);addPts(5)">
+      <div class="voice-type">Mezzosopran</div>
+      <div class="voice-sub">mittlere Frauenstimme</div>
+      <div class="voice-bar-wrap"><div class="voice-bar" style="width:75%"></div></div>
+      <div class="voice-desc">Wärmer als Sopran, etwas tiefer. Zwischen Sopran und Alt.</div>
+      <button class="voice-play-btn" onclick="event.stopPropagation();playVoice(659);addPts(5)">🔊 Anhören</button>
+    </div>
+    <div class="voice-card f" onclick="playVoice(392);addPts(5)">
+      <div class="voice-type">Alt</div>
+      <div class="voice-sub">tiefste Frauenstimme</div>
+      <div class="voice-bar-wrap"><div class="voice-bar" style="width:50%"></div></div>
+      <div class="voice-desc">Dunkle, tiefe Frauenstimme – singt oft Harmonien.</div>
+      <button class="voice-play-btn" onclick="event.stopPropagation();playVoice(392);addPts(5)">🔊 Anhören</button>
+    </div>
+  </div>
+
+  <div class="voice-section-label" style="color:#74B9FF; margin-top:1.4rem">♂ Männerstimmen</div>
+  <div class="voice-grid">
+    <div class="voice-card m" onclick="playVoice(523);addPts(5)">
+      <div class="voice-type">Tenor</div>
+      <div class="voice-sub">höchste Männerstimme</div>
+      <div class="voice-bar-wrap"><div class="voice-bar" style="width:100%"></div></div>
+      <div class="voice-desc">Helle Männerstimme – in der Oper oft die Heldenrolle.</div>
+      <button class="voice-play-btn" onclick="event.stopPropagation();playVoice(523);addPts(5)">🔊 Anhören</button>
+    </div>
+    <div class="voice-card m" onclick="playVoice(370);addPts(5)">
+      <div class="voice-type">Bariton</div>
+      <div class="voice-sub">mittlere Männerstimme</div>
+      <div class="voice-bar-wrap"><div class="voice-bar" style="width:65%"></div></div>
+      <div class="voice-desc">Zwischen Tenor und Bass. Häufigste Männerstimme.</div>
+      <button class="voice-play-btn" onclick="event.stopPropagation();playVoice(370);addPts(5)">🔊 Anhören</button>
+    </div>
+    <div class="voice-card m" onclick="playVoice(220);addPts(5)">
+      <div class="voice-type">Bass</div>
+      <div class="voice-sub">tiefste Männerstimme</div>
+      <div class="voice-bar-wrap"><div class="voice-bar" style="width:35%"></div></div>
+      <div class="voice-desc">Dunkelste, tiefste Männerstimme – Fundament des Chors.</div>
+      <button class="voice-play-btn" onclick="event.stopPropagation();playVoice(220);addPts(5)">🔊 Anhören</button>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:1.3rem">
+    <strong>Reihenfolge hoch→tief:</strong> Sopran → Mezzosopran → Alt &nbsp;|&nbsp; Tenor → Bariton → Bass<br>
+    Im Chor meist 4 Gruppen: <strong>S · A · T · B</strong> (Sopran, Alt, Tenor, Bass)
+  </div>
+</div><!-- /s-stimm -->
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION 4: UKULELE
+════════════════════════════════════════════════ -->
+<div class="section" id="s-uke">
+  <div class="section-title">🎸 Die Ukulele</div>
+  <div class="uke-grid">
+
+    <!-- Aufbau -->
+    <div class="uke-panel">
+      <h3>Aufbau der Ukulele</h3>
+      <!-- SVG Ukulele Diagram -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 490" style="width:100%;max-width:520px;display:block;margin:.3rem auto 1rem;border-radius:10px">
+        <defs>
+          <linearGradient id="gBody" x1="15%" y1="0%" x2="85%" y2="100%">
+            <stop offset="0%" stop-color="#6B3410"/>
+            <stop offset="25%" stop-color="#D4894A"/>
+            <stop offset="55%" stop-color="#C07030"/>
+            <stop offset="85%" stop-color="#A05520"/>
+            <stop offset="100%" stop-color="#6B3410"/>
+          </linearGradient>
+          <radialGradient id="gBodyHl" cx="38%" cy="30%" r="55%">
+            <stop offset="0%" stop-color="#F0C070" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#C07030" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="gNeck" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#5A2C0A"/>
+            <stop offset="45%" stop-color="#A86428"/>
+            <stop offset="100%" stop-color="#5A2C0A"/>
+          </linearGradient>
+          <filter id="ukeShadow" x="-20%" y="-10%" width="140%" height="130%">
+            <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#050914" flood-opacity="0.35"/>
+          </filter>
+        </defs>
+        <g transform="translate(42 0)" filter="url(#ukeShadow)">
+        <!-- BODY (Corpus) -->
+        <path d="M 232,210 C 270,213 284,240 282,265 C 281,285 266,302 251,312 C 283,326 300,355 298,378 C 296,410 270,446 218,448 C 166,446 140,410 138,378 C 136,355 153,326 185,312 C 170,302 155,285 154,265 C 152,240 166,213 204,210 Z"
+          fill="url(#gBody)" stroke="#4A2008" stroke-width="2"/>
+        <path d="M 232,210 C 270,213 284,240 282,265 C 281,285 266,302 251,312 C 283,326 300,355 298,378 C 296,410 270,446 218,448 C 166,446 140,410 138,378 C 136,355 153,326 185,312 C 170,302 155,285 154,265 C 152,240 166,213 204,210 Z"
+          fill="url(#gBodyHl)"/>
+        <!-- Binding strips -->
+        <path d="M 232,213 C 268,216 281,241 279,264 C 278,283 265,299 250,309" fill="none" stroke="#E8C060" stroke-width="1.5" opacity="0.55"/>
+        <path d="M 204,213 C 168,216 155,241 157,264 C 158,283 171,299 186,309" fill="none" stroke="#E8C060" stroke-width="1.5" opacity="0.55"/>
+        <!-- NECK (Hals + Griffbrett) -->
+        <rect x="201" y="78" width="34" height="134" rx="3" fill="url(#gNeck)" stroke="#3A1C08" stroke-width="1.5"/>
+        <rect x="208" y="80" width="7" height="130" rx="2" fill="rgba(240,190,80,0.12)"/>
+        <line x1="204" y1="82" x2="204" y2="210" stroke="rgba(80,30,5,0.3)" stroke-width="0.7"/>
+        <line x1="230" y1="82" x2="230" y2="210" stroke="rgba(80,30,5,0.3)" stroke-width="0.7"/>
+        <!-- FRET LINES (Bünde) -->
+        <line x1="201" y1="95"  x2="235" y2="95"  stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="109" x2="235" y2="109" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="122" x2="235" y2="122" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="134" x2="235" y2="134" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="145" x2="235" y2="145" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="155" x2="235" y2="155" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="164" x2="235" y2="164" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="172" x2="235" y2="172" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="179" x2="235" y2="179" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="185" x2="235" y2="185" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="190" x2="235" y2="190" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="201" y1="195" x2="235" y2="195" stroke="#D4A830" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Position dots (3rd, 5th fret) -->
+        <circle cx="218" cy="128" r="2.5" fill="#D4A830" opacity="0.75"/>
+        <circle cx="218" cy="150" r="2.5" fill="#D4A830" opacity="0.75"/>
+        <!-- NUT (Sattel) -->
+        <rect x="199" y="73" width="38" height="6" rx="1.5" fill="#EDD8A0" stroke="#C09040" stroke-width="1"/>
+        <!-- HEADSTOCK (Kopf) -->
+        <path d="M 199,14 L 237,14 L 236,73 L 200,73 Z" fill="url(#gNeck)" stroke="#3A1C08" stroke-width="1.5"/>
+        <rect x="209" y="12" width="18" height="22" rx="4" fill="rgba(10,8,20,0.88)" stroke="#3A1C08" stroke-width="1"/>
+        <line x1="200" y1="40" x2="236" y2="40" stroke="rgba(210,168,40,0.35)" stroke-width="0.8"/>
+        <!-- TUNING PEGS (Wirbel) – left -->
+        <rect x="176" y="23" width="24" height="11" rx="5" fill="#C8A020" stroke="#806810" stroke-width="1"/>
+        <rect x="176" y="42" width="24" height="11" rx="5" fill="#C8A020" stroke="#806810" stroke-width="1"/>
+        <!-- right -->
+        <rect x="236" y="23" width="24" height="11" rx="5" fill="#C8A020" stroke="#806810" stroke-width="1"/>
+        <rect x="236" y="42" width="24" height="11" rx="5" fill="#C8A020" stroke="#806810" stroke-width="1"/>
+        <!-- Peg buttons -->
+        <circle cx="178" cy="28" r="5" fill="#D4B030" stroke="#806810" stroke-width="0.8"/>
+        <circle cx="178" cy="47" r="5" fill="#D4B030" stroke="#806810" stroke-width="0.8"/>
+        <circle cx="258" cy="28" r="5" fill="#D4B030" stroke="#806810" stroke-width="0.8"/>
+        <circle cx="258" cy="47" r="5" fill="#D4B030" stroke="#806810" stroke-width="0.8"/>
+        <!-- STRINGS (Saiten) – 4 strings -->
+        <line x1="211" y1="12" x2="211" y2="432" stroke="#F0E8D0" stroke-width="0.9" opacity="0.85"/>
+        <line x1="215" y1="12" x2="215" y2="432" stroke="#F0E8D0" stroke-width="0.9" opacity="0.85"/>
+        <line x1="220" y1="12" x2="220" y2="432" stroke="#F0E8D0" stroke-width="0.9" opacity="0.85"/>
+        <line x1="225" y1="12" x2="225" y2="432" stroke="#F0E8D0" stroke-width="0.9" opacity="0.85"/>
+        <!-- SOUNDHOLE (Schallloch) -->
+        <circle cx="218" cy="330" r="31" fill="#180C04" stroke="#4A2008" stroke-width="2"/>
+        <circle cx="218" cy="330" r="34.5" fill="none" stroke="#C8A020" stroke-width="1.5" stroke-dasharray="5,3.5" opacity="0.65"/>
+        <circle cx="218" cy="330" r="36.5" fill="none" stroke="#7A4C10" stroke-width="0.8" opacity="0.5"/>
+        <!-- Body wood-grain hints -->
+        <path d="M 140,375 Q 158,360 141,345" fill="none" stroke="#8B4E18" stroke-width="0.8" opacity="0.35"/>
+        <path d="M 296,375 Q 278,360 295,345" fill="none" stroke="#8B4E18" stroke-width="0.8" opacity="0.35"/>
+        <path d="M 170,240 Q 205,258 246,236" fill="none" stroke="#F0C070" stroke-width="0.8" opacity="0.22"/>
+        <path d="M 158,395 Q 205,420 278,386" fill="none" stroke="#F0C070" stroke-width="0.8" opacity="0.2"/>
+        <path d="M 176,286 Q 215,300 260,278" fill="none" stroke="#5A2C0A" stroke-width="0.7" opacity="0.25"/>
+        <!-- BRIDGE (Steg) -->
+        <rect x="204" y="426" width="28" height="10" rx="2" fill="#3C1808" stroke="#200D04" stroke-width="1"/>
+        <rect x="205" y="423" width="26" height="5" rx="1.5" fill="#EDD8A0" stroke="#B09040" stroke-width="0.8"/>
+        </g>
+        <g font-family="Arial,sans-serif" stroke-linecap="round" stroke-linejoin="round">
+          <g stroke="#DCEBFF" stroke-width="1.2" opacity="0.9">
+            <line x1="378" y1="38" x2="279" y2="33"/>
+            <line x1="142" y1="54" x2="218" y2="47"/>
+            <line x1="142" y1="82" x2="241" y2="76"/>
+            <line x1="142" y1="121" x2="243" y2="116"/>
+            <line x1="142" y1="158" x2="243" y2="145"/>
+            <line x1="378" y1="165" x2="267" y2="175"/>
+            <line x1="378" y1="263" x2="323" y2="263"/>
+            <line x1="378" y1="330" x2="294" y2="330"/>
+            <line x1="378" y1="430" x2="274" y2="430"/>
+          </g>
+          <g fill="#DCEBFF">
+            <circle cx="279" cy="33" r="2.8"/>
+            <circle cx="218" cy="47" r="2.8"/>
+            <circle cx="241" cy="76" r="2.8"/>
+            <circle cx="243" cy="116" r="2.8"/>
+            <circle cx="243" cy="145" r="2.8"/>
+            <circle cx="267" cy="175" r="2.8"/>
+            <circle cx="323" cy="263" r="2.8"/>
+            <circle cx="294" cy="330" r="2.8"/>
+            <circle cx="274" cy="430" r="2.8"/>
+          </g>
+          <g fill="#F4F8FF" font-weight="700" font-size="13">
+            <text x="386" y="35">Kopf (Headstock)</text>
+            <text x="14" y="51">Wirbel</text>
+            <text x="14" y="79">Sattel (Nut)</text>
+            <text x="14" y="118">Hals &amp; Griffbrett</text>
+            <text x="14" y="155">Bünde (Frets)</text>
+            <text x="386" y="162">Saiten</text>
+            <text x="386" y="260">Corpus</text>
+            <text x="386" y="327">Schallloch</text>
+            <text x="386" y="427">Steg</text>
+          </g>
+          <g fill="#9EC1E8" font-size="11">
+            <text x="386" y="48">trägt die Wirbel</text>
+            <text x="14" y="64">zum Stimmen</text>
+            <text x="14" y="92">zwischen Kopf und Hals</text>
+            <text x="14" y="131">hier greift man Töne</text>
+            <text x="14" y="168">ein Bund = Halbton</text>
+            <text x="386" y="175">4 Nylon-Saiten</text>
+            <text x="386" y="273">verstärkt den Klang</text>
+            <text x="386" y="340">rundes Loch im Körper</text>
+            <text x="386" y="440">hält die Saiten unten</text>
+          </g>
+        </g>
+        <!-- ══ ANNOTATION LINES ══ -->
+        <!-- 1. Kopf -->
+        <!-- 2. Wirbel -->
+        <!-- 3. Sattel -->
+        <!-- 4. Hals / Griffbrett -->
+        <!-- 5. Bünde -->
+        <!-- 6. Saiten -->
+        <!-- 7. Corpus -->
+        <!-- 8. Schallloch -->
+        <!-- 9. Steg -->
+      </svg>
+      <ul class="part-list" hidden>
+        <li><span>🔝</span><div><strong>Kopf (Headstock)</strong><br><span class="dim">Oberer Teil, trägt die Wirbel</span></div></li>
+        <li><span>🔩</span><div><strong>Wirbel (Tuning Pegs)</strong><br><span class="dim">Schrauben zum Stimmen der Saiten</span></div></li>
+        <li><span>─</span><div><strong>Sattel (Nut)</strong><br><span class="dim">Kleiner Steg zwischen Kopf und Hals</span></div></li>
+        <li><span>🪵</span><div><strong>Hals &amp; Griffbrett</strong><br><span class="dim">Langer Teil – hier greift man die Töne</span></div></li>
+        <li><span>|</span><div><strong>Bünde (Frets)</strong><br><span class="dim">Metallstäbchen quer über das Griffbrett – ein Bund = ein Halbton</span></div></li>
+        <li><span>📦</span><div><strong>Corpus (Resonanzkörper)</strong><br><span class="dim">Der Körper aus Holz, verstärkt den Klang</span></div></li>
+        <li><span>⭕</span><div><strong>Schallloch (Soundhole)</strong><br><span class="dim">Rundes Loch im Corpus</span></div></li>
+        <li><span>〰️</span><div><strong>Saiten (4 Stück, Nylon)</strong><br><span class="dim">G – C – E – A</span></div></li>
+        <li><span>🔗</span><div><strong>Steg (Bridge)</strong><br><span class="dim">Befestigt die Saiten unten am Corpus</span></div></li>
+      </ul>
+      <div class="info-box" style="margin-top:.9rem; padding:.8rem">
+        <strong>Stimmung (von oben nach unten beim Spielen):</strong><br>
+        <div style="margin-top:.5rem; line-height:2; font-size:.95rem;">
+          Saite 1: <strong style="color:#FFE14D">G</strong> &nbsp;·&nbsp;
+          Saite 2: <strong style="color:#06D6A0">C</strong> &nbsp;·&nbsp;
+          Saite 3: <strong style="color:#FF6B35">E</strong> &nbsp;·&nbsp;
+          Saite 4: <strong style="color:#FF6B6B">A</strong>
+        </div>
+        <div style="font-size:.8rem;margin-top:.3rem">Merksatz: <em>„<strong>G</strong>eht <strong>C</strong>laudia <strong>E</strong>inkaufen <strong>A</strong>bendessen?"</em></div>
+      </div>
+    </div>
+
+    <!-- Fretboard -->
+    <div class="uke-panel">
+      <h3>Interaktives Griffbrett</h3>
+      <div style="font-size:.78rem;color:var(--text-dim);margin-bottom:.8rem">Klicke auf ein Feld → Ton abspielen. Bund 0 = offene Saite.</div>
+      <div class="fretboard" id="fb"></div>
+      <div class="strings-legend">
+        <span><strong style="color:#FFE14D">G</strong>-Saite (1): G4 · 392 Hz</span>
+        <span><strong style="color:#06D6A0">C</strong>-Saite (2): C4 · 262 Hz</span>
+        <span><strong style="color:#FF6B35">E</strong>-Saite (3): E4 · 330 Hz</span>
+        <span><strong style="color:#FF6B6B">A</strong>-Saite (4): A4 · 440 Hz</span>
+      </div>
+      <div class="info-box" style="margin-top:.8rem; padding:.7rem; font-size:.78rem">
+        <strong>Wie Töne steigen:</strong> Jeder Bund = +1 Halbton.<br>
+        Bsp. C-Saite: Bund 0 = C · 1 = C# · 2 = D · 3 = D# · 4 = E · 5 = F …
+      </div>
+    </div>
+  </div>
+</div><!-- /s-uke -->
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION 5: QUIZ
+════════════════════════════════════════════════ -->
+<div class="section" id="s-quiz">
+  <div class="section-title">🏆 Quiz – Teste dein Wissen!</div>
+  <div class="quiz-wrap">
+    <div class="quiz-prog"><div class="quiz-prog-bar" id="qpb" style="width:0%"></div></div>
+    <div id="qarea">
+      <div class="quiz-qnum" id="qqnum">Frage 1 von 12</div>
+      <div class="quiz-box"><h3 id="qqtxt">Lade...</h3></div>
+      <div class="quiz-opts" id="qopts"></div>
+      <button class="quiz-next" id="qnext" onclick="nextQ()" style="margin-bottom:.9rem">Weiter →</button>
+      <div class="quiz-fb" id="qfb"></div>
+    </div>
+    <div class="quiz-result" id="qresult">
+      <span class="res-emoji" id="remoji">🎉</span>
+      <div class="res-score" id="rscore">0/12</div>
+      <div class="res-msg" id="rmsg">Gut gemacht!</div>
+      <p class="res-detail" id="rdetail"></p>
+      <button class="quiz-restart" onclick="restartQ()">🔄 Nochmal spielen</button>
+    </div>
+  </div>
+</div><!-- /s-quiz -->
+
+</main>
+
+<script>
+// ─── NAVIGATION ───────────────────────────────
+function go(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  btn.classList.add('active');
+  addPts(2);
+}
+
+// ─── POINTS ───────────────────────────────────
+let pts = 0;
+function addPts(n) { pts += n; document.getElementById('pts').textContent = pts; }
+
+// ─── FAMILIES ─────────────────────────────────
+let curFamily = null;
+function toggleFamily(f) {
+  ['streicher','holz','blech','schlag'].forEach(x => {
+    document.getElementById('dp-'+x).style.display = 'none';
+    document.querySelectorAll('.family-card.'+x).forEach(c => c.classList.remove('selected'));
+  });
+  if (curFamily === f) { curFamily = null; return; }
+  curFamily = f;
+  const el = document.getElementById('dp-'+f);
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  document.querySelectorAll('.family-card.'+f).forEach(c => c.classList.add('selected'));
+  addPts(10);
+}
+
+// ─── AUDIO ────────────────────────────────────
+let ctx = null;
+function ac() { if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); return ctx; }
+
+function tone(freq, dur, type='sine', vol=0.25, atk=0.02, rel=0.3) {
+  const c = ac(), o = c.createOscillator(), g = c.createGain();
+  o.connect(g); g.connect(c.destination);
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0, c.currentTime);
+  g.gain.linearRampToValueAtTime(vol, c.currentTime + atk);
+  g.gain.setValueAtTime(vol, c.currentTime + dur - rel);
+  g.gain.linearRampToValueAtTime(0, c.currentTime + dur);
+  o.start(c.currentTime); o.stop(c.currentTime + dur);
+}
+
+function strNote(freq, dur) {
+  const c = ac();
+  // Hauptoszillator: Sägezahn (reich an Obertönen = Bogenstrich-Charakter)
+  const osc = c.createOscillator();
+  // Vibrato-LFO: ~5.5 Hz, leichte Frequenzschwankung
+  const lfo = c.createOscillator();
+  const lfoG = c.createGain();
+  // Tiefpassfilter: dämpft die schrillsten Obertöne → wärmer, weniger Bläser-artig
+  const flt = c.createBiquadFilter();
+  const g = c.createGain();
+  lfo.type = 'sine'; lfo.frequency.value = 5.5;
+  lfoG.gain.value = freq * 0.013; // Vibrato-Tiefe ca. 1,3%
+  lfo.connect(lfoG); lfoG.connect(osc.frequency);
+  osc.type = 'sawtooth'; osc.frequency.value = freq;
+  flt.type = 'lowpass'; flt.frequency.value = freq * 5.5; flt.Q.value = 0.7;
+  osc.connect(flt); flt.connect(g); g.connect(c.destination);
+  g.gain.setValueAtTime(0, c.currentTime);
+  g.gain.linearRampToValueAtTime(0.14, c.currentTime + 0.13); // langsamer Einsatz = Bogendruck
+  g.gain.setValueAtTime(0.14, c.currentTime + dur - 0.28);
+  g.gain.linearRampToValueAtTime(0, c.currentTime + dur);
+  lfo.start(c.currentTime); osc.start(c.currentTime);
+  lfo.stop(c.currentTime + dur); osc.stop(c.currentTime + dur);
+}
+
+function drum(vol) {
+  const c = ac();
+  const sz = c.sampleRate * 0.3, buf = c.createBuffer(1, sz, c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < sz; i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/sz, 3);
+  const src = c.createBufferSource(); src.buffer = buf;
+  const g = c.createGain(); g.gain.setValueAtTime(vol, c.currentTime); g.gain.linearRampToValueAtTime(0, c.currentTime+0.3);
+  const o = c.createOscillator(), og = c.createGain();
+  o.frequency.setValueAtTime(100, c.currentTime); o.frequency.exponentialRampToValueAtTime(30, c.currentTime+0.15);
+  og.gain.setValueAtTime(vol*0.7, c.currentTime); og.gain.linearRampToValueAtTime(0, c.currentTime+0.2);
+  src.connect(g); g.connect(c.destination);
+  o.connect(og); og.connect(c.destination);
+  src.start(c.currentTime); o.start(c.currentTime);
+  src.stop(c.currentTime+0.3); o.stop(c.currentTime+0.2);
+}
+
+function playFamily(f) {
+  switch(f) {
+    case 'streicher':
+      strNote(440,1.4); setTimeout(()=>strNote(494,1.4),600); setTimeout(()=>strNote(523,2),1200); break;
+    case 'holz':
+      tone(523,1.3,'triangle',0.22,0.1,0.4); setTimeout(()=>tone(587,1,'triangle',0.22,0.05,0.3),750);
+      setTimeout(()=>tone(659,1.5,'triangle',0.22,0.05,0.4),1500); break;
+    case 'blech':
+      tone(523,0.35,'sawtooth',0.22,0.01,0.08); setTimeout(()=>tone(659,0.35,'sawtooth',0.22,0.01,0.08),350);
+      setTimeout(()=>tone(784,1.5,'sawtooth',0.22,0.01,0.3),700); break;
+    case 'schlag':
+      drum(0.8); setTimeout(()=>drum(0.55),500); setTimeout(()=>drum(1.0),900); setTimeout(()=>drum(0.65),1100); break;
+  }
+}
+
+function playVoice(freq) {
+  const c = ac(), o = c.createOscillator(), g = c.createGain(), flt = c.createBiquadFilter();
+  o.type = 'sawtooth'; o.frequency.value = freq;
+  flt.type = 'bandpass'; flt.frequency.value = 1100; flt.Q.value = 2;
+  o.connect(flt); flt.connect(g); g.connect(c.destination);
+  g.gain.setValueAtTime(0, c.currentTime);
+  g.gain.linearRampToValueAtTime(0.18, c.currentTime+0.1);
+  g.gain.setValueAtTime(0.18, c.currentTime+0.9);
+  g.gain.linearRampToValueAtTime(0, c.currentTime+1.3);
+  o.start(c.currentTime); o.stop(c.currentTime+1.3);
+}
+
+// ─── KLANGFARBE & ARTIKULATION SOUNDS ─────────
+function playKlang(type) {
+  const c = ac();
+  function mkOsc(freq, dur, wtype, vol, fltFreq) {
+    const o=c.createOscillator(), f=c.createBiquadFilter(), g=c.createGain();
+    o.type=wtype; o.frequency.value=freq;
+    f.type='lowpass'; f.frequency.value=fltFreq||freq*10;
+    o.connect(f); f.connect(g); g.connect(c.destination);
+    g.gain.setValueAtTime(0,c.currentTime);
+    g.gain.linearRampToValueAtTime(vol,c.currentTime+0.05);
+    g.gain.setValueAtTime(vol,c.currentTime+dur-0.15);
+    g.gain.linearRampToValueAtTime(0,c.currentTime+dur);
+    o.start(c.currentTime); o.stop(c.currentTime+dur);
+  }
+  switch(type) {
+    case 'warm':
+      // Gefilterter Sägezahn, tief – wie ein Cello
+      mkOsc(220, 1.3, 'sawtooth', 0.18, 600); break;
+    case 'hell':
+      // Hohe Sinuswelle – klar und hell
+      tone(1047, 1.0, 'sine', 0.2, 0.02, 0.3); break;
+    case 'dunkel':
+      // Sehr stark gefiltert und tief
+      mkOsc(110, 1.3, 'sawtooth', 0.18, 350); break;
+    case 'klar':
+      // Reine Sinuswelle – klar und sauber
+      tone(440, 1.0, 'sine', 0.22, 0.01, 0.3); break;
+    case 'weich':
+      // Dreieck-Welle, sanfter Einsatz
+      tone(440, 1.2, 'triangle', 0.2, 0.2, 0.5); break;
+    case 'kurz': {
+      // Kurze, abgehackte Töne (staccato)
+      const delays = [0, 350, 700];
+      delays.forEach(d => setTimeout(() => tone(440, 0.18, 'sine', 0.28, 0.01, 0.04), d));
+      break;
+    }
+    case 'lang':
+      // Ein langer, ausgehaltener Ton
+      tone(440, 2.0, 'sine', 0.2, 0.1, 0.5); break;
+    case 'gebunden': {
+      // Legato G–A–H–C–D: klare Einzeltöne, leicht überlappend = verbunden
+      const notes = [392, 440, 494, 523, 587]; // G4, A4, H4, C5, D5
+      const step = 0.42; // Abstand zwischen Notenanfängen
+      const dur  = 0.50; // Klingt etwas länger als der Abstand → Überlappung = gebunden
+      notes.forEach((f, i) => {
+        setTimeout(() => tone(f, dur, 'sine', 0.22, 0.02, 0.1), i * step * 1000);
+      });
+      break;
+    }
+    case 'abgehackt': {
+      // Staccato mit klaren Pausen zwischen den Tönen
+      [[440,0],[523,320],[587,640],[523,960]].forEach(([f,d]) =>
+        setTimeout(() => tone(f, 0.22, 'sine', 0.28, 0.01, 0.05), d)
+      );
+      break;
+    }
+    case 'deutlich':
+      // Deutlicher, akzentuierter Einsatz
+      tone(440, 0.7, 'sine', 0.32, 0.005, 0.25); break;
+  }
+}
+
+// Plucked string (ukulele)
+function playUke(freq) {
+  const c = ac(), o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain();
+  o.type = 'triangle'; o2.type = 'sine';
+  o.frequency.value = freq; o2.frequency.value = freq * 2;
+  o.connect(g); o2.connect(g); g.connect(c.destination);
+  g.gain.setValueAtTime(0.3, c.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+1.6);
+  o.start(c.currentTime); o2.start(c.currentTime);
+  o.stop(c.currentTime+1.6); o2.stop(c.currentTime+1.6);
+}
+
+// ─── FRETBOARD ────────────────────────────────
+const STRINGS = [
+  { name:'G', color:'#FFE14D', freq:392.00 },
+  { name:'C', color:'#06D6A0', freq:261.63 },
+  { name:'E', color:'#FF6B35', freq:329.63 },
+  { name:'A', color:'#FF6B6B', freq:440.00 },
+];
+const NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','H'];
+const BASE  = { 261.63:0, 329.63:4, 392.00:7, 440.00:9 };
+
+function noteName(f, fret) { return NOTES[(BASE[f] + fret) % 12]; }
+
+function buildFretboard() {
+  const fb = document.getElementById('fb');
+  const FRETS = 8;
+  // header row
+  const emp = document.createElement('div'); emp.className='fb-head'; fb.appendChild(emp);
+  for (let f=0; f<=FRETS-1; f++) {
+    const d = document.createElement('div'); d.className='fb-head';
+    d.textContent = f===0 ? '0' : String(f); fb.appendChild(d);
+  }
+  STRINGS.forEach(s => {
+    const sl = document.createElement('div');
+    sl.className='fb-str fb-head'; sl.style.color=s.color; sl.textContent=s.name; fb.appendChild(sl);
+    for (let f=0; f<=FRETS-1; f++) {
+      const cell = document.createElement('div');
+      cell.className = 'fb-cell' + (f===0?' open-str':'');
+      if (f===0) cell.style.borderColor = s.color;
+      cell.textContent = noteName(s.freq, f);
+      const freq = s.freq * Math.pow(2, f/12);
+      cell.onclick = () => {
+        document.querySelectorAll('.fb-cell.playing').forEach(c=>c.classList.remove('playing'));
+        cell.classList.add('playing');
+        setTimeout(()=>cell.classList.remove('playing'), 600);
+        playUke(freq); addPts(1);
+      };
+      fb.appendChild(cell);
+    }
+  });
+}
+buildFretboard();
+
+// ─── KLANG TAG CLICK HANDLER ──────────────────
+document.querySelectorAll('.klang-tag[data-klang]').forEach(el => {
+  el.addEventListener('click', () => { playKlang(el.dataset.klang); addPts(1); });
+});
+
+// ─── ORCHESTRA INFO ────────────────────────────
+const OD = {
+  viol1:    { t:'🎻 Violine I', p:'Sitzen vorne links vom Dirigenten – nahe am Publikum. Warum vorne? Streicher spielen die Hauptmelodie und haben einen feinen Klang, der von vorne am besten zum Publikum trägt. Außerdem hat der Dirigent direkten Blick- und Ohrenkontakt. Größte Gruppe. Teile: Schnecke · Wirbel · Griffbrett · Corpus · F-Löcher · Steg · Saiten · Bogen · Saitenhalter.' },
+  viol2:    { t:'🎻 Violine II', p:'Vorne rechts. Spielt Gegenstimmen und Harmonien. Gleiche Instrumente wie Violine I, andere Noten.' },
+  viola:    { t:'🎻 Viola (Bratsche)', p:'Größer als Violine, etwas tiefer, wärmerer Klang. Sitzt in der Mitte. Rolle: Mittelstimme.' },
+  cello:    { t:'🎻 Cello', p:'Sitzend gespielt mit Stachel auf dem Boden. Tiefer, ausdrucksstarker Klang. Sitzt rechts außen in der Streichergruppe. Teile: Schnecke · Griffbrett · Corpus · F-Loch · Steg · Stachel · Saitenhalter · Bogen.' },
+  kontrabass:{ t:'🎻 Kontrabass', p:'Größtes Streichinstrument. Sehr tief. Im Stehen oder auf hohem Hocker. Sitzt ganz hinten in der Streichergruppe – das Bassfundament.' },
+  holz:     { t:'🎶 Holzbläser', p:'Sitzen in der Mitte hinter den Streichern: Querflöte · Oboe · Klarinette · Fagott. Tonerzeugung: Luftkante (Flöte), Einfachrohrblatt (Klarinette) oder Doppelrohrblatt (Oboe, Fagott).' },
+  blech:    { t:'🎺 Blechbläser', p:'Hinter den Holzbläsern: Horn · Trompete · Posaune · Tuba. Alle: Lippenvibration + Mundstück. Posaune = Zug, alle anderen = Ventile.' },
+  schlag:   { t:'🥁 Schlagwerk', p:'Sitzt ganz hinten – weil die Instrumente sehr laut sind! Von hinten kann die Lautstärke besser dosiert werden, ohne den Rest des Orchesters zu übertönen. Außerdem: die Instrumente sind groß und brauchen Platz. Enthält: Pauken (stimmbar) · Xylofon (stimmbar) · Kleine Trommel · Becken.' },
+  harfe:    { t:'🎵 Harfe – am Rand', p:'Steht am Rand (seitlich), weil sie sehr groß ist und viel Platz braucht. So stört sie die anderen Gruppen nicht. Teile: Saiten · Säule · Hals · Wirbel · Corpus · Pedale (für Halb-/Ganztöne).' },
+  klavier:  { t:'🎹 Klavier/Flügel – am Rand', p:'Steht am Rand (seitlich), weil der Flügel sehr groß ist und viel Platz braucht. Wird nicht in jedem Stück gespielt. Oft auch als Soloinstrument mit Orchester.' },
+  dir:      { t:'🎼 Dirigent', p:'Steht vorne auf dem Podium, dem Orchester zugewandt, Rücken zum Publikum. Hält den Taktstock. Liest die Partitur (alle Stimmen auf einmal) am Notenpult.' },
+};
+function orchInfo(k) {
+  const d = OD[k]; if (!d) return;
+  document.getElementById('oi').innerHTML = `<h4>${d.t}</h4><p>${d.p}</p>`;
+  document.querySelectorAll('.orch-group').forEach(g=>g.classList.remove('lit'));
+  event.target.classList.add('lit');
+  addPts(5);
+}
+
+// ─── QUIZ ─────────────────────────────────────
+const QS = [
+  { q:'Welche Instrumentenfamilie spielt mit einem Bogen?',
+    opts:['Blechbläser','Schlagwerk','Streicher','Holzbläser'], ans:2,
+    exp:'Streicher spielen arco (Bogen) oder pizzicato (zupfen): Violine, Viola, Cello, Kontrabass.' },
+  { q:'Wie erzeugt die Querflöte ihren Ton?',
+    opts:['Mit Doppelrohrblatt','Mit Einfachrohrblatt','An der Luftkante','Durch Lippenvibration'], ans:2,
+    exp:'Die Querflöte hat KEIN Rohrblatt! Ton entsteht, weil Luft an der Kante des Anblaslochs bricht.' },
+  { q:'Was ist das größte Streichinstrument?',
+    opts:['Cello','Viola','Violine','Kontrabass'], ans:3,
+    exp:'Der Kontrabass ist das größte und tiefste Streichinstrument, gespielt im Stehen.' },
+  { q:'Was macht die Posaune besonders, verglichen mit anderen Blechbläsern?',
+    opts:['Sie hat Ventile','Sie hat einen Zug (Slide)','Sie hat ein Rohrblatt','Sie ist aus Holz'], ans:1,
+    exp:'Die Posaune hat KEINEN Ventile – sie hat einen Zug (Slide) der die Rohrlänge ändert.' },
+  { q:'Welche Schlagwerkinstrumente haben eine bestimmte Tonhöhe (stimmbar)?',
+    opts:['Kleine Trommel und Becken','Becken und Pauken','Pauken und Xylofon','Trommel und Xylofon'], ans:2,
+    exp:'Pauken (Fellspannung) und Xylofon (Stablängen) sind stimmbar. Trommel und Becken sind es nicht.' },
+  { q:'Was ist der „Stachel" beim Violoncello?',
+    opts:['Ein Teil des Bogens','Ein Metallstab der das Cello auf dem Boden stützt','Eine besondere Spieltechnik','Der Hals des Instruments'], ans:1,
+    exp:'Der Stachel ist ein ausfahrbarer Metallstab am unteren Ende des Cellos. Er stützt das Instrument auf dem Boden ab (in den Detailzeichnungen gut zu sehen).' },
+  { q:'Welches Holzblasinstrument hat KEIN Rohrblatt?',
+    opts:['Oboe','Fagott','Klarinette','Querflöte'], ans:3,
+    exp:'Die Querflöte hat kein Rohrblatt – ihr Ton entsteht an der Luftkante. Klarinette = Einfachrohrblatt, Oboe und Fagott = Doppelrohrblatt.' },
+  { q:'Wo sitzt das Schlagwerk im Sinfonieorchester?',
+    opts:['Vorne links','Vorne rechts','Ganz hinten','In der Mitte'], ans:2,
+    exp:'Das Schlagwerk sitzt immer ganz hinten, erhöht auf dem Podium.' },
+  { q:'Was hält der Dirigent in der Hand?',
+    opts:['Partitur','Taktstock','Notenblatt','Metronom'], ans:1,
+    exp:'Der Taktstock zeigt Rhythmus und Einsätze an. Die Partitur liegt auf dem Notenpult.' },
+  { q:'Was bedeutet „pizzicato" bei Streichern?',
+    opts:['Mit dem Bogen streichen','Sehr laut spielen','Die Saiten zupfen','Eine Pause machen'], ans:2,
+    exp:'Pizzicato = Saiten mit dem Finger zupfen. Arco = mit dem Bogen spielen.' },
+  { q:'Welches Instrument gibt den Stimmton „a¹" im Orchester vor?',
+    opts:['Querflöte','Klarinette','Trompete','Oboe'], ans:3,
+    exp:'Die Oboe gibt den Stimmton a¹ (440 Hz) an. Ihr Ton ist stabil und trägt gut durch den Raum.' },
+  { q:'Was ist die „Partitur"?',
+    opts:['Das Notenpult des Dirigenten','Die Gesamtnotenübersicht aller Stimmen für den Dirigenten','Der Taktstock','Das Notenblatt eines einzelnen Musikers'], ans:1,
+    exp:'Die Partitur enthält alle Stimmen des Orchesters übereinandergedruckt – nur der Dirigent liest sie. Alle anderen Musiker haben nur ihre eigene Stimme vor sich.' },
+];
+
+let curQ=0, qScore=0, qAnswered=false;
+
+function loadQ() {
+  const q = QS[curQ];
+  document.getElementById('qqnum').textContent = `Frage ${curQ+1} von ${QS.length}`;
+  document.querySelector('.quiz-box h3').textContent = q.q;
+  document.getElementById('qpb').style.width = `${(curQ/QS.length)*100}%`;
+  const oa = document.getElementById('qopts'); oa.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b = document.createElement('button'); b.className='quiz-opt'; b.textContent=o;
+    b.onclick=()=>answer(i); oa.appendChild(b);
+  });
+  const fb=document.getElementById('qfb'); fb.className='quiz-fb';
+  document.getElementById('qnext').className='quiz-next';
+  qAnswered=false;
+}
+
+function answer(i) {
+  if (qAnswered) return; qAnswered=true;
+  const q=QS[curQ];
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('qfb');
+  if (i===q.ans) {
+    document.querySelectorAll('.quiz-opt')[i].classList.add('correct');
+    fb.className='quiz-fb ok show'; fb.textContent='✅ Richtig! '+q.exp;
+    qScore++; addPts(20);
+    tone(880,0.25,'sine',0.2); setTimeout(()=>tone(1047,0.25,'sine',0.2),150);
+  } else {
+    document.querySelectorAll('.quiz-opt')[i].classList.add('wrong');
+    document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+    fb.className='quiz-fb nok show';
+    fb.innerHTML=`❌ Nicht ganz. Richtig war: <em>${q.opts[q.ans]}</em> – ${q.exp}`;
+    tone(200,0.4,'sawtooth',0.12);
+  }
+  document.getElementById('qnext').className='quiz-next show';
+}
+
+function nextQ() {
+  curQ++;
+  if (curQ>=QS.length) showResult(); else loadQ();
+}
+
+function showResult() {
+  document.getElementById('qarea').style.display='none';
+  const r=document.getElementById('qresult'); r.className='quiz-result show';
+  const pct=qScore/QS.length;
+  document.getElementById('rscore').textContent=`${qScore}/${QS.length}`;
+  document.getElementById('qscore').textContent=`${qScore}/${QS.length}`;
+  document.getElementById('qpb').style.width='100%';
+  let emoji,msg,detail;
+  if(pct>=0.9){emoji='🏆';msg='Musik-Meister!';detail='Sensationell – du rockst die Arbeit!';addPts(50);}
+  else if(pct>=0.7){emoji='🎵';msg='Sehr gut!';detail='Fast perfekt! Noch kurz wiederholen, dann läuft das.';addPts(30);}
+  else if(pct>=0.5){emoji='👍';msg='Gut gemacht!';detail='Du bist auf dem richtigen Weg. Falsche Antworten nochmal anschauen!';addPts(15);}
+  else{emoji='💪';msg='Weiter üben!';detail='Lies die Infos nochmal durch – du schaffst das!';}
+  document.getElementById('remoji').textContent=emoji;
+  document.getElementById('rmsg').textContent=msg;
+  document.getElementById('rdetail').textContent=detail;
+}
+
+function restartQ() {
+  curQ=0; qScore=0; qAnswered=false;
+  document.getElementById('qarea').style.display='block';
+  document.getElementById('qresult').className='quiz-result';
+  loadQ();
+}
+
+loadQ();
+</script>
+</body>
+</html>
