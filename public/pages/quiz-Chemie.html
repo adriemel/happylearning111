@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz – Chemie Klassenarbeit 🧪</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f5f9;--card:#fff;--text:#1e2a38;--muted:#64748b;
+  --primary:#7c3aed;--primary-l:#f5f3ff;--primary-b:#ede9fe;
+  --success:#16a34a;--success-l:#f0fdf4;--success-b:#bbf7d0;
+  --error:#dc2626;--error-l:#fef2f2;--error-b:#fecaca;
+  --warn:#d97706;--warn-l:#fffbeb;--warn-b:#fef3c7;
+  --shadow:0 3px 16px rgba(0,0,0,.09);--r:16px;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{max-width:740px;margin:0 auto;padding:20px 16px 60px}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#7c3aed,#2563eb,#0ea5e9);border-radius:22px;padding:30px 28px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.hero h1{font-family:'Fredoka',sans-serif;font-size:2rem;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.2);margin-bottom:4px;position:relative}
+.hero p{color:rgba(255,255,255,.85);font-weight:700;font-size:.9rem;position:relative}
+.hero .stats{display:flex;gap:14px;justify-content:center;margin-top:16px;position:relative}
+.stat-chip{background:rgba(255,255,255,.2);backdrop-filter:blur(6px);border-radius:50px;padding:6px 16px;color:#fff;font-weight:800;font-size:.85rem;font-family:'Fredoka',sans-serif}
+
+/* Progress */
+.progress-wrap{background:#e2e8f0;border-radius:50px;height:10px;margin-bottom:6px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#7c3aed,#2563eb);border-radius:50px;transition:width .4s ease}
+.progress-label{font-size:.78rem;font-weight:700;color:var(--muted);text-align:right;margin-bottom:20px}
+
+/* Question card */
+.q-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-bottom:20px;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary-b);color:var(--primary);font-family:'Fredoka',sans-serif;font-weight:700;font-size:.8rem;padding:3px 12px;border-radius:20px;margin-bottom:12px}
+.q-text{font-size:1.05rem;font-weight:700;line-height:1.5;margin-bottom:16px}
+.q-hint{font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:14px;font-style:italic}
+
+/* Options */
+.options{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:12px;border:2.5px solid #e2e8f0;background:#f8fafc;cursor:pointer;transition:all .2s ease;font-weight:600;font-size:.9rem;text-align:left;width:100%;font-family:'Nunito',sans-serif;color:var(--text)}
+.opt:hover:not(.disabled){border-color:#7c3aed;background:var(--primary-l);transform:translateY(-1px)}
+.opt .letter{width:26px;height:26px;border-radius:8px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;flex-shrink:0;color:var(--muted);transition:all .2s}
+.opt.correct{border-color:var(--success);background:var(--success-l)}
+.opt.correct .letter{background:var(--success);color:#fff}
+.opt.wrong{border-color:var(--error);background:var(--error-l)}
+.opt.wrong .letter{background:var(--error);color:#fff}
+.opt.disabled{cursor:default}
+
+/* Match question */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.match-left{display:flex;flex-direction:column;gap:8px}
+.match-right{display:flex;flex-direction:column;gap:8px}
+.match-item{padding:9px 13px;border-radius:10px;border:2px solid #e2e8f0;background:#f8fafc;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;text-align:center}
+.match-item:hover{border-color:var(--primary)}
+.match-item.selected{border-color:var(--primary);background:var(--primary-l);color:var(--primary)}
+.match-item.matched{border-color:var(--success);background:var(--success-l);color:var(--success);cursor:default}
+.match-item.wrong-match{border-color:var(--error);background:var(--error-l);color:var(--error)}
+.match-pair{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.match-pair .term{flex:1;padding:9px 13px;border-radius:10px;background:#f0f9ff;border:2px solid #bae6fd;font-weight:800;font-size:.85rem;text-align:center}
+.match-pair select{flex:1;padding:9px 10px;border-radius:10px;border:2px solid #e2e8f0;background:white;font-family:'Nunito',sans-serif;font-weight:600;font-size:.85rem;color:var(--text);cursor:pointer;outline:none}
+.match-pair select:focus{border-color:var(--primary)}
+.match-pair select.correct{border-color:var(--success);background:var(--success-l)}
+.match-pair select.wrong{border-color:var(--error);background:var(--error-l)}
+
+/* Fill blank */
+.fill-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.95rem;font-weight:600;line-height:2}
+.fill-input{border:none;border-bottom:2.5px solid var(--primary);background:var(--primary-l);border-radius:6px 6px 0 0;padding:4px 8px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;width:140px;outline:none;color:var(--text);text-align:center}
+.fill-input.correct{border-bottom-color:var(--success);background:var(--success-l);color:var(--success)}
+.fill-input.wrong{border-bottom-color:var(--error);background:var(--error-l);color:var(--error)}
+
+/* Feedback */
+.feedback{display:none;margin-top:14px;border-radius:12px;padding:12px 16px;font-size:.88rem;font-weight:700;border-left:4px solid}
+.feedback.visible{display:block}
+.feedback.correct{background:var(--success-l);border-color:var(--success);color:#14532d}
+.feedback.wrong{background:var(--error-l);border-color:var(--error);color:#7f1d1d}
+
+/* Buttons */
+.btn{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1rem;padding:12px 28px;border-radius:12px;border:none;cursor:pointer;transition:all .22s}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.btn-secondary{background:#f1f5f9;color:var(--muted);border:2px solid #e2e8f0}
+.btn-secondary:hover{border-color:#7c3aed;color:var(--primary)}
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+
+/* Section header */
+.section-header{background:var(--primary);color:#fff;border-radius:12px;padding:10px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.1rem}
+
+/* Result screen */
+.result{display:none;background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:36px 28px;text-align:center}
+.result.visible{display:block}
+.result .emoji-big{font-size:4rem;margin-bottom:12px}
+.result h2{font-family:'Fredoka',sans-serif;font-size:2rem;font-weight:700;margin-bottom:8px}
+.result .score-circle{width:120px;height:120px;border-radius:50%;margin:16px auto;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:1.8rem;font-weight:700;color:#fff;background:conic-gradient(var(--success) 0deg, var(--success) var(--deg), #e2e8f0 var(--deg))}
+.result .breakdown{text-align:left;margin-top:20px}
+.result .breakdown-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:.88rem;font-weight:600}
+
+/* Star rating */
+.stars{font-size:2rem;margin:12px 0}
+
+/* Particle SVG decoration */
+.particle-deco{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;opacity:.4}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="hero">
+    <h1>🧪 Chemie Quiz</h1>
+    <p>Klassenarbeit Vorbereitung · 6. Klasse · Gymnasium Niedersachsen</p>
+    <div class="stats">
+      <div class="stat-chip" id="chip-q">Frage <span id="cur-q">1</span> / <span id="total-q">25</span></div>
+      <div class="stat-chip" id="chip-s">✅ <span id="score-disp">0</span> richtig</div>
+      <div class="stat-chip" id="chip-t">⏱ <span id="timer">0:00</span></div>
+    </div>
+  </div>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:4%"></div></div>
+  <div class="progress-label" id="progress-label">Frage 1 von 25</div>
+
+  <div id="quiz-area"></div>
+
+  <div class="result" id="result-screen">
+    <div class="emoji-big" id="result-emoji">🎉</div>
+    <h2 id="result-title">Super gemacht!</h2>
+    <p id="result-subtitle" style="font-size:.95rem;color:var(--muted);font-weight:700"></p>
+    <div class="score-circle" id="score-circle">
+      <span id="score-pct">0%</span>
+    </div>
+    <div class="stars" id="stars"></div>
+    <p id="result-msg" style="font-size:.9rem;font-weight:600;margin-bottom:16px;color:var(--muted)"></p>
+    <div class="breakdown" id="breakdown"></div>
+    <div style="margin-top:24px">
+      <button class="btn btn-primary" onclick="restartQuiz()">🔄 Nochmal spielen!</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =============================================
+// QUIZ DATA
+// =============================================
+const questions = [
+  // --- BLOCK 1: Brown'sche Teilchenbewegung ---
+  {
+    block: "⚛️ Brown'sche Teilchenbewegung",
+    type: "mc",
+    q: "Was versteht man unter der Brown'schen Teilchenbewegung?",
+    opts: [
+      "Die geordnete Bewegung von Teilchen in eine bestimmte Richtung",
+      "Die ständige, zufällige und ungeordnete Eigenbewegung aller Teilchen",
+      "Die Bewegung von Teilchen nur in Flüssigkeiten",
+      "Die Bewegung von Teilchen nur bei Erwärmung"
+    ],
+    correct: 1,
+    feedback: "Richtig! Brown'sche Teilchenbewegung = ständige, chaotische Eigenbewegung ALLER Teilchen – in Festkörpern, Flüssigkeiten und Gasen."
+  },
+  {
+    block: "⚛️ Brown'sche Teilchenbewegung",
+    type: "mc",
+    q: "Robert Brown beobachtete 1827 Pollenkörner in Wasser. Was sah er?",
+    opts: [
+      "Die Pollenkörner sanken schnell zu Boden",
+      "Die Pollenkörner blieben ruhig an einer Stelle",
+      "Die Pollenkörner bewegten sich zufällig und ungeordnet",
+      "Die Pollenkörner schwammen alle in dieselbe Richtung"
+    ],
+    correct: 2,
+    feedback: "Genau! Die Pollenkörner tanzen zufällig umher, weil die viel kleineren Wasserteilchen sie von allen Seiten anstoßen."
+  },
+  {
+    block: "⚛️ Brown'sche Teilchenbewegung",
+    type: "mc",
+    q: "Wie sieht die Brown'sche Teilchenbewegung auf der Teilchenebene aus?",
+    opts: [
+      "Alle Teilchen bewegen sich in dieselbe Richtung",
+      "Die Teilchen stehen still und zittern nur minimal",
+      "Die Teilchen bewegen sich chaotisch in alle Richtungen und stoßen zusammen",
+      "Nur große Teilchen bewegen sich, kleine stehen still"
+    ],
+    correct: 2,
+    feedback: "Auf der Teilchenebene sieht man Teilchen, die in alle Richtungen fliegen und ständig miteinander zusammenstoßen – chaotisch und ungeordnet."
+  },
+  {
+    block: "⚛️ Brown'sche Teilchenbewegung",
+    type: "mc",
+    q: "In welchem Aggregatzustand tritt Brown'sche Teilchenbewegung auf?",
+    opts: [
+      "Nur in Gasen",
+      "Nur in Flüssigkeiten",
+      "Nur in Feststoffen",
+      "In allen Aggregatzuständen (Feststoff, Flüssigkeit, Gas)"
+    ],
+    correct: 3,
+    feedback: "In ALLEN Zuständen! Im Feststoff zittern Teilchen an ihrem Platz, in Flüssigkeiten und Gasen bewegen sie sich freier."
+  },
+
+  // --- BLOCK 2: Diffusion ---
+  {
+    block: "🌊 Diffusion",
+    type: "mc",
+    q: "Was ist Diffusion?",
+    opts: [
+      "Das Rühren von Stoffen durch einen Löffel",
+      "Das selbstständige Ausbreiten und Vermischen von Teilchen durch ihre Eigenbewegung",
+      "Das Absinken von Teilchen durch die Schwerkraft",
+      "Das Verdampfen einer Flüssigkeit beim Erhitzen"
+    ],
+    correct: 1,
+    feedback: "Diffusion läuft selbstständig ab – ohne Rühren! Teilchen bewegen sich von alleine von Orten hoher zu Orten niedriger Konzentration."
+  },
+  {
+    block: "🌊 Diffusion",
+    type: "mc",
+    q: "In welche Richtung läuft Diffusion?",
+    opts: [
+      "Von niedriger Konzentration zu hoher Konzentration",
+      "Immer nach unten (durch die Schwerkraft)",
+      "Von hoher Konzentration zu niedriger Konzentration",
+      "Nur von rechts nach links"
+    ],
+    correct: 2,
+    feedback: "Richtig! Diffusion läuft immer vom Ort, wo viele Teilchen sind → zum Ort, wo wenige Teilchen sind. Bis alles gleichmäßig verteilt ist."
+  },
+  {
+    block: "🌊 Diffusion",
+    type: "mc",
+    q: "Parfüm wird in einem Zimmer gesprüht. Nach kurzer Zeit riecht man es überall. Was ist das?",
+    opts: [
+      "Filtrieren",
+      "Sedimentieren",
+      "Diffusion",
+      "Dekantieren"
+    ],
+    correct: 2,
+    feedback: "Diffusion! Die Parfümteilchen verteilen sich durch ihre Eigenbewegung gleichmäßig im ganzen Zimmer."
+  },
+
+  // --- BLOCK 3: Temperaturabhängigkeit ---
+  {
+    block: "🌡️ Temperaturabhängigkeit",
+    type: "mc",
+    q: "Was passiert mit der Brown'schen Teilchenbewegung, wenn man die Temperatur erhöht?",
+    opts: [
+      "Die Teilchen bewegen sich langsamer",
+      "Die Teilchen hören auf sich zu bewegen",
+      "Die Teilchen bewegen sich schneller",
+      "Die Temperatur hat keinen Einfluss"
+    ],
+    correct: 2,
+    feedback: "Wärme = Energie = schnellere Teilchen! Bei höherer Temperatur haben die Teilchen mehr Bewegungsenergie und bewegen sich schneller."
+  },
+  {
+    block: "🌡️ Temperaturabhängigkeit",
+    type: "mc",
+    q: "Tinte wird in kaltes und heißes Wasser getropft. In welchem Wasser verteilt sich die Tinte schneller?",
+    opts: [
+      "Im kalten Wasser – da sinkt die Tinte schneller",
+      "Im heißen Wasser – da bewegen sich die Teilchen schneller",
+      "Es ist egal – Temperatur beeinflusst Diffusion nicht",
+      "Im kalten Wasser – da ist mehr Platz"
+    ],
+    correct: 1,
+    feedback: "Im heißen Wasser! Die Wasserteilchen haben mehr Energie, bewegen sich schneller, und die Tinteteilchen verteilen sich dadurch viel schneller."
+  },
+  {
+    block: "🌡️ Temperaturabhängigkeit",
+    type: "mc",
+    q: "Was beschreibt eine kalte Temperatur in Bezug auf Teilchenbewegung?",
+    opts: [
+      "Teilchen bewegen sich schnell und Diffusion läuft rasch ab",
+      "Teilchen stehen komplett still",
+      "Teilchen bewegen sich langsam und Diffusion dauert länger",
+      "Teilchen ordnen sich alle in einer Reihe an"
+    ],
+    correct: 2,
+    feedback: "Bei kalter Temperatur haben Teilchen wenig Bewegungsenergie → langsame Bewegung → langsame Diffusion. Tee braucht in kaltem Wasser viel länger!"
+  },
+  {
+    block: "🌡️ Temperaturabhängigkeit",
+    type: "mc",
+    q: "Was bewirkt eine hohe Temperatur bei Teilchen?",
+    opts: [
+      "Langsame Teilchenbewegung und langsame Diffusion",
+      "Keine Änderung der Teilchenbewegung",
+      "Teilchen hören auf sich zu stoßen",
+      "Schnelle Teilchenbewegung und schnelle Diffusion"
+    ],
+    correct: 3,
+    feedback: "Hohe Temperatur = viel Energie = schnelle Teilchen = schnelle Diffusion! Das ist der direkte Zusammenhang."
+  },
+  {
+    block: "🌡️ Temperaturabhängigkeit",
+    type: "mc",
+    q: "Wenn die Temperatur steigt, was passiert mit den Teilchen?",
+    opts: [
+      "Sie verlieren Bewegungsenergie und werden langsamer",
+      "Sie werden größer und nehmen mehr Platz ein",
+      "Sie erhalten mehr Bewegungsenergie und bewegen sich schneller",
+      "Sie ordnen sich nach Größe sortiert an"
+    ],
+    correct: 2,
+    feedback: "Temperatur ist ein Maß für Bewegungsenergie. Mehr Wärme = mehr Energie = schnellere Bewegung. Einfache aber wichtige Grundregel!"
+  },
+  {
+    block: "🌡️ Temperaturabhängigkeit",
+    type: "mc",
+    q: "Was passiert beim Diffusions-Gleichgewicht?",
+    opts: [
+      "Alle Teilchen bewegen sich in dieselbe Richtung",
+      "Eine Seite hat deutlich mehr Teilchen als die andere",
+      "Die Teilchen sind gleichmäßig verteilt und es gibt keine Nettobewegung mehr",
+      "Alle Teilchen stehen still"
+    ],
+    correct: 2,
+    feedback: "Gleichgewicht = gleichmäßige Verteilung. Die Teilchen bewegen sich noch (Brown'sche Bewegung!), aber netto wandert kein Stoff mehr in eine Richtung."
+  },
+
+  // --- BLOCK 4: Stoffgemische ---
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Was ist der Unterschied zwischen einem Reinstoff und einem Stoffgemisch?",
+    opts: [
+      "Ein Reinstoff ist immer flüssig, ein Gemisch immer fest",
+      "Ein Reinstoff besteht aus einer Teilchensorte, ein Stoffgemisch aus mehreren",
+      "Ein Stoffgemisch kann nicht getrennt werden, ein Reinstoff schon",
+      "Es gibt keinen Unterschied"
+    ],
+    correct: 1,
+    feedback: "Reinstoff = eine Teilchensorte (z.B. Wasser, Eisen). Stoffgemisch = mindestens zwei Teilchensorten (z.B. Salzwasser = Wasser + Salz)."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Salzwasser ist...",
+    opts: [
+      "Ein heterogenes Stoffgemisch, weil man das Salz sieht",
+      "Ein homogenes Stoffgemisch, weil die Bestandteile gleichmäßig verteilt sind",
+      "Ein Reinstoff",
+      "Eine Suspension"
+    ],
+    correct: 1,
+    feedback: "Salzwasser ist eine Lösung – ein homogenes Gemisch. Die Salzteilchen sind einzeln zwischen den Wasserteilchen verteilt, man sieht keine Grenze."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Welches dieser Beispiele ist ein HETEROGENES Stoffgemisch?",
+    opts: [
+      "Salzwasser",
+      "Luft",
+      "Legierung (Bronze)",
+      "Schlamm (Sand in Wasser)"
+    ],
+    correct: 3,
+    feedback: "Schlamm ist heterogen – man kann die Sandteilchen sehen und von Wasser unterscheiden. Salzwasser, Luft und Bronze sind homogen."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Milch ist ein Beispiel für...",
+    opts: [
+      "Eine Lösung (homogen)",
+      "Eine Emulsion (heterogen)",
+      "Eine Suspension (heterogen)",
+      "Ein Gasgemisch (homogen)"
+    ],
+    correct: 1,
+    feedback: "Milch ist eine Emulsion – Fettkügelchen (Flüssigkeit) sind in Wasser (Flüssigkeit) verteilt. Heterogen, weil sich Fett und Wasser normalerweise nicht mischen."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Was ist eine Suspension?",
+    opts: [
+      "Ein gelöster Feststoff, gleichmäßig verteilt (homogen)",
+      "Zwei nicht mischbare Flüssigkeiten",
+      "Ein Feststoff in einer Flüssigkeit, nicht gelöst, setzt sich ab (heterogen)",
+      "Ein Gas gleichmäßig in einer Flüssigkeit verteilt"
+    ],
+    correct: 2,
+    feedback: "Suspension = Feststoff + Flüssigkeit, heterogen. Die Feststoffteilchen sind nicht gelöst und setzen sich beim Stehen ab. Beispiele: Schlamm, Farbe, Schokoladenmilch."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Was ist eine Emulsion?",
+    opts: [
+      "Feststoff in Flüssigkeit, setzt sich ab",
+      "Gas in Flüssigkeit als Blasen eingeschlossen",
+      "Feststoff + Feststoff gemischt, erkennbar",
+      "Zwei nicht mischbare Flüssigkeiten, eine als Tröpfchen in der anderen verteilt"
+    ],
+    correct: 3,
+    feedback: "Emulsion = Flüssigkeit in Flüssigkeit (nicht mischbar), heterogen. Die eine Flüssigkeit ist als Tröpfchen in der anderen verteilt. Beispiele: Milch (Fett in Wasser), Mayonnaise."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Was ist ein Gemenge?",
+    opts: [
+      "Flüssigkeit in Flüssigkeit, nicht mischbar",
+      "Feststoff in Flüssigkeit gelöst, homogen",
+      "Feststoff + Feststoff gemischt, Bestandteile erkennbar (heterogen)",
+      "Gas in Gas gleichmäßig verteilt"
+    ],
+    correct: 2,
+    feedback: "Gemenge = Feststoff + Feststoff, heterogen. Die Bestandteile sind mit bloßem Auge erkennbar. Beispiele: Granit, Müsli, Sand + Kies."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Was ist eine Lösung (im chemischen Sinne)?",
+    opts: [
+      "Feststoff in Flüssigkeit, heterogen, setzt sich ab",
+      "Feststoff in Flüssigkeit vollständig gelöst, gleichmäßig verteilt (homogen)",
+      "Zwei nicht mischbare Flüssigkeiten",
+      "Gas in Feststoff eingeschlossen"
+    ],
+    correct: 1,
+    feedback: "Lösung = homogen! Die Feststoffteilchen (z.B. Salz) sind einzeln und unsichtbar zwischen den Flüssigkeitsteilchen verteilt. Man sieht keine Grenze mehr. Beispiel: Salzwasser."
+  },
+  {
+    block: "🧩 Stoffgemische",
+    type: "mc",
+    q: "Wie sieht eine Lösung (z.B. Salzwasser) auf der Teilchenebene aus?",
+    opts: [
+      "Große Salzbrocken schwimmen zwischen Wasserteilchen",
+      "Salzteilchen sitzen alle am Boden, Wasser oben",
+      "Einzelne Salzteilchen sind gleichmäßig zwischen den Wasserteilchen verteilt",
+      "Wasserteilchen und Salzteilchen sind klar voneinander getrennt"
+    ],
+    correct: 2,
+    feedback: "In einer Lösung sind die gelösten Teilchen einzeln und gleichmäßig zwischen den Flüssigkeitsteilchen verteilt – deshalb ist sie homogen."
+  },
+
+  // --- BLOCK 5: Trennverfahren ---
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Welches Trennverfahren nutzt unterschiedliche Korngrößen zur Trennung?",
+    opts: ["Filtrieren", "Sieben", "Destillation", "Zentrifugieren"],
+    correct: 1,
+    feedback: "Beim Sieben passen kleine Körner durch die Maschen, große bleiben oben. Das Prinzip ist die Größe der Teilchen."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Warum kann man Salzwasser NICHT durch Filtrieren trennen?",
+    opts: [
+      "Weil Filterpapier nass wird",
+      "Weil die Salzteilchen gelöst sind und kleiner als die Poren des Filterpapiers sind – sie gehen einfach durch",
+      "Weil Salz zu schwer ist",
+      "Weil das Filterpapier sich auflöst"
+    ],
+    correct: 1,
+    feedback: "Perfekt begründet! Gelöste Teilchen (z.B. Salz) sind im Nanometerbereich – viel kleiner als die Filterporen. Sie gehen einfach mit dem Wasser durch."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Bei der Destillation wird Salzwasser erhitzt. Was passiert?",
+    opts: [
+      "Das Salz verdampft zuerst, das Wasser bleibt",
+      "Beides verdampft gleichzeitig",
+      "Das Wasser verdampft, kondensiert im Kühler und wird als reines Wasser aufgefangen; das Salz bleibt zurück",
+      "Nichts passiert, weil Wasser sich nicht trennen lässt"
+    ],
+    correct: 2,
+    feedback: "Wasser hat einen niedrigeren Siedepunkt als Salz. Wasser verdampft, steigt auf, kühlt ab (kondensiert) und wird als destilliertes Wasser aufgefangen."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Ein Schüler hat eine Suspension aus Sand und Wasser. Welche zwei Verfahren nacheinander machen Sinn?",
+    opts: [
+      "Destillation, dann Sieben",
+      "Eindampfen, dann Auslesen",
+      "Sedimentieren (Sand absetzen lassen), dann Dekantieren (Wasser abgießen)",
+      "Zentrifugieren, dann Destillation"
+    ],
+    correct: 2,
+    feedback: "Zuerst Sedimentieren – der Sand setzt sich ab. Dann Dekantieren – das klare Wasser wird abgegossen. Logische Reihenfolge!"
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Was ist der Unterschied zwischen Sedimentieren und Zentrifugieren auf der Teilchenebene?",
+    opts: [
+      "Es gibt keinen Unterschied",
+      "Beim Sedimentieren sinken Teilchen durch Schwerkraft langsam ab; beim Zentrifugieren werden sie durch Fliehkraft viel schneller nach außen/unten gedrückt",
+      "Beim Zentrifugieren wird erhitzt, beim Sedimentieren nicht",
+      "Zentrifugieren trennt nur Gase, Sedimentieren nur Feststoffe"
+    ],
+    correct: 1,
+    feedback: "Gleiche Richtung (schwere Teilchen nach unten/außen), aber Zentrifugieren ist durch die Fliehkraft viel schneller und effektiver als das langsame Absinken durch die Schwerkraft."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Welches Trennverfahren passt zu Sand + Kies?",
+    opts: [
+      "Filtrieren – das Filterpapier trennt beide",
+      "Destillation – wegen verschiedener Siedepunkte",
+      "Sieben – Sand und Kies haben verschiedene Korngrößen",
+      "Eindampfen – Kies verdampft als erstes"
+    ],
+    correct: 2,
+    feedback: "Sieben! Sand hat kleinere Körner als Kies. Beim Sieben fallen die Sandkörner durch die Maschen, die Kieselsteine bleiben oben."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Wie gewinnt man am besten Salz aus Meerwasser?",
+    opts: [
+      "Filtrieren – das Filterpapier hält das Salz zurück",
+      "Sieben – weil Salz größer als Wasser ist",
+      "Eindampfen – das Wasser verdampft, das Salz bleibt als Kristalle zurück",
+      "Zentrifugieren – wegen der Fliehkraft"
+    ],
+    correct: 2,
+    feedback: "Eindampfen! Meerwasser ist eine Lösung. Filtrieren klappt nicht (Salzteilchen sind gelöst und zu klein). Beim Eindampfen verdampft das Wasser und das Salz kristallisiert zurück."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Welches Verfahren eignet sich, um Alkohol und Wasser zu trennen?",
+    opts: [
+      "Sieben – wegen der Korngröße",
+      "Destillation – Alkohol und Wasser haben verschiedene Siedepunkte",
+      "Filtrieren – das Filterpapier trennt beide",
+      "Auslesen – man kann beide aussortieren"
+    ],
+    correct: 1,
+    feedback: "Destillation! Alkohol siedet bei ~78°C, Wasser bei 100°C. Der Alkohol verdampft zuerst, steigt im Kühlrohr auf, kondensiert und wird aufgefangen."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Wie trennt man Blut in Plasma und Blutzellen?",
+    opts: [
+      "Filtrieren – Blutzellen bleiben im Filter",
+      "Eindampfen – das Plasma verdampft",
+      "Dekantieren – kurz warten und abgießen",
+      "Zentrifugieren – Fliehkraft drückt schwere Blutzellen nach unten"
+    ],
+    correct: 3,
+    feedback: "Zentrifugieren! Blutzellen sind schwerer als Plasma. Die Fliehkraft drückt sie nach außen/unten, wo sie sich als Pellet sammeln. Plasma bleibt oben. Schnell und effektiv!"
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Warum kann man Schlamm (Sand + Wasser) NICHT durch Destillation trennen?",
+    opts: [
+      "Weil Schlamm zu schwer ist",
+      "Weil Sand keinen (nutzbaren) Siedepunkt hat – Destillation trennt Flüssigkeiten mit verschiedenen Siedepunkten, keine Feststoffe",
+      "Weil Schlamm zu heiß wird",
+      "Destillation funktioniert immer für alle Gemische"
+    ],
+    correct: 1,
+    feedback: "Destillation trennt anhand verschiedener Siedepunkte. Sand hat als Feststoff keinen nutzbaren Siedepunkt – dafür brauchen wir Filtrieren oder Sedimentieren+Dekantieren."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Beim Filtrieren einer Suspension bleibt der Feststoff im Filter (= Rückstand). Warum?",
+    opts: [
+      "Weil der Feststoff zu schwer ist und nicht fließen kann",
+      "Weil die Feststoffteilchen größer als die Poren des Filterpapiers sind und deshalb nicht hindurchpassen",
+      "Weil Filterpapier Feststoffe anzieht wie ein Magnet",
+      "Weil der Feststoff sich im Filterpapier auflöst"
+    ],
+    correct: 1,
+    feedback: "Richtige Teilchenebenen-Erklärung! Feststoffteilchen sind größer als die Filterporen → sie bleiben im Filter. Flüssigkeitsteilchen sind kleiner → sie gehen durch (= Filtrat)."
+  },
+  {
+    block: "🔧 Trennverfahren",
+    type: "mc",
+    q: "Für welches Gemisch ist das Auslesen NICHT sinnvoll?",
+    opts: [
+      "Bohnen und Steine trennen",
+      "Salzwasser trennen",
+      "Rote und grüne Linsen trennen",
+      "Münzen nach Wert sortieren"
+    ],
+    correct: 1,
+    feedback: "Auslesen braucht sichtbare Unterschiede zwischen großen Teilen. Salzwasser ist eine Lösung – die Salzteilchen sind unsichtbar und winzig. Auslesen ist hier völlig unmöglich."
+  }
+];
+
+// =============================================
+// QUIZ LOGIC
+// =============================================
+let currentQ = 0;
+let score = 0;
+let answered = 0;
+let answeredCorrect = [];
+let timerInterval;
+let seconds = 0;
+let blockScores = {};
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const m = Math.floor(seconds/60), s = seconds%60;
+    document.getElementById('timer').textContent = `${m}:${s<10?'0':''}${s}`;
+  }, 1000);
+}
+
+function updateProgress() {
+  const pct = ((currentQ) / questions.length) * 100;
+  document.getElementById('progress-bar').style.width = Math.max(4, pct) + '%';
+  document.getElementById('progress-label').textContent = `Frage ${currentQ+1} von ${questions.length}`;
+  document.getElementById('cur-q').textContent = currentQ+1;
+  document.getElementById('total-q').textContent = questions.length;
+  document.getElementById('score-disp').textContent = score;
+}
+
+function renderQuestion() {
+  updateProgress();
+  const q = questions[currentQ];
+  const area = document.getElementById('quiz-area');
+
+  let html = `<div class="q-card">
+    <div class="q-badge">📝 ${q.block}</div>
+    <div class="q-text">${q.q}</div>`;
+
+  if (q.type === 'mc') {
+    html += `<div class="options" id="options">`;
+    const letters = ['A','B','C','D'];
+    q.opts.forEach((opt, i) => {
+      html += `<button class="opt" id="opt-${i}" onclick="checkMC(${i})">
+        <span class="letter">${letters[i]}</span>${opt}</button>`;
+    });
+    html += `</div>`;
+  } else if (q.type === 'match') {
+    html += `<div class="q-hint">Wähle für jeden Begriff die passende Erklärung aus dem Dropdown.</div>`;
+    const shuffled = [...q.pairs.map(p=>p.right)].sort(() => Math.random()-.5);
+    html += `<div id="match-form">`;
+    q.pairs.forEach((pair, i) => {
+      html += `<div class="match-pair">
+        <div class="term">${pair.left}</div>
+        <select id="ms-${i}" onchange="checkMatchLive()">
+          <option value="">-- wähle --</option>
+          ${shuffled.map(r=>`<option value="${r}">${r}</option>`).join('')}
+        </select>
+      </div>`;
+    });
+    html += `</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="check-match-btn" onclick="checkMatch()">Prüfen ✓</button>
+    </div>`;
+  }
+
+  html += `<div class="feedback" id="feedback"></div>
+    <div class="btn-row" id="next-row" style="display:none">
+      <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+    </div>
+  </div>`;
+
+  area.innerHTML = html;
+  area.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function checkMC(i) {
+  const q = questions[currentQ];
+  if (document.querySelector('.opt.correct, .opt.wrong')) return;
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(o => o.classList.add('disabled'));
+
+  const isCorrect = i === q.correct;
+  opts[i].classList.add(isCorrect ? 'correct' : 'wrong');
+  opts[q.correct].classList.add('correct');
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback visible ' + (isCorrect ? 'correct' : 'wrong');
+  fb.innerHTML = (isCorrect ? '✅ ' : '❌ ') + q.feedback;
+
+  if (isCorrect) { score++; document.getElementById('score-disp').textContent = score; }
+  answeredCorrect.push(isCorrect);
+  trackBlock(q.block, isCorrect);
+
+  document.getElementById('next-row').style.display = 'flex';
+}
+
+function checkMatchLive() {}
+
+function checkMatch() {
+  const q = questions[currentQ];
+  let allCorrect = true;
+  q.pairs.forEach((pair, i) => {
+    const sel = document.getElementById(`ms-${i}`);
+    const correct = sel.value === pair.right;
+    sel.className = correct ? 'correct' : 'wrong';
+    if (!correct) allCorrect = false;
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback visible ' + (allCorrect ? 'correct' : 'wrong');
+  fb.innerHTML = (allCorrect ? '✅ ' : '❌ Nicht ganz! ') + q.feedback;
+
+  if (allCorrect) { score++; document.getElementById('score-disp').textContent = score; }
+  answeredCorrect.push(allCorrect);
+  trackBlock(q.block, allCorrect);
+
+  document.getElementById('check-match-btn').style.display = 'none';
+  document.getElementById('next-row').style.display = 'flex';
+}
+
+function trackBlock(block, correct) {
+  if (!blockScores[block]) blockScores[block] = {correct:0, total:0};
+  blockScores[block].total++;
+  if (correct) blockScores[block].correct++;
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-area').innerHTML = '';
+  const pct = Math.round((score / questions.length) * 100);
+
+  let emoji, title, msg;
+  if (pct >= 90) { emoji='🏆'; title='Brilliant!'; msg='Du bist bereit für die Klassenarbeit! Top-Leistung!'; }
+  else if (pct >= 75) { emoji='🎉'; title='Super gemacht!'; msg='Sehr gut! Schau dir nochmal die falschen Antworten an.'; }
+  else if (pct >= 60) { emoji='💪'; title='Gut so!'; msg='Solide Basis! Nochmal üben und du schaffst das!'; }
+  else if (pct >= 40) { emoji='📚'; title='Weiter üben!'; msg='Schau dir die Lernblätter nochmal an und versuch es erneut!'; }
+  else { emoji='🔬'; title='Nochmal versuchen!'; msg='Gib nicht auf! Mit den Lernblättern wird es besser!'; }
+
+  const stars = pct >= 90 ? '⭐⭐⭐' : pct >= 70 ? '⭐⭐' : '⭐';
+  const deg = Math.round(pct * 3.6);
+
+  const rs = document.getElementById('result-screen');
+  rs.className = 'result visible';
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-subtitle').textContent = `${score} von ${questions.length} Fragen richtig`;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-circle').style.setProperty('--deg', deg + 'deg');
+  document.getElementById('stars').textContent = stars;
+  document.getElementById('result-msg').textContent = msg;
+
+  const m = Math.floor(seconds/60), s = seconds%60;
+  let breakdownHTML = `<div class="breakdown-row"><b>Gesamtzeit</b><span>${m}:${s<10?'0':''}${s} Minuten</span></div>`;
+  Object.entries(blockScores).forEach(([block, sc]) => {
+    const blockPct = Math.round(sc.correct/sc.total*100);
+    breakdownHTML += `<div class="breakdown-row"><span>${block}</span><span>${sc.correct}/${sc.total} (${blockPct}%) ${'⭐'.repeat(blockPct>=80?2:blockPct>=50?1:0)}</span></div>`;
+  });
+  document.getElementById('breakdown').innerHTML = breakdownHTML;
+  rs.scrollIntoView({behavior:'smooth'});
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0; answered = 0;
+  answeredCorrect = []; blockScores = {}; seconds = 0;
+  document.getElementById('result-screen').className = 'result';
+  clearInterval(timerInterval);
+  startTimer();
+  renderQuestion();
+}
+
+// Shuffle questions (keep blocks somewhat together)
+function shuffleWithinBlocks() {
+  // just shuffle all for simplicity
+  // actually let's keep order for pedagogical flow
+}
+
+// Start
+startTimer();
+renderQuestion();
+</script>
+</body>
+</html>
