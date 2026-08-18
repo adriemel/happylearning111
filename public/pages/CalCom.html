@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CalCom</title>
+  <meta name="description" content="CalCom ist eine freundliche Kalorientabelle für Lebensmittel pro 100 g oder pro Stück.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg-0: #07090d;
+      --bg-1: #0d1117;
+      --panel: #131822;
+      --panel-soft: #171d29;
+      --panel-raised: #1b2230;
+      --ink: #eef1f6;
+      --muted: #8992a6;
+      --muted-dim: #5c6478;
+      --line: #232a38;
+      --line-soft: #1b212d;
+      --lime: #3fe1e8;
+      --lime-soft: rgba(63, 225, 232, 0.14);
+      --lime-dim: rgba(63, 225, 232, 0.06);
+      --cyan: #cfff45;
+      --cyan-soft: rgba(207, 255, 69, 0.14);
+      --danger: #ff5d7e;
+      --danger-soft: rgba(255, 93, 126, 0.14);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+      --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+      --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+      font-family: var(--font-body);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 88% -6%, rgba(207, 255, 69, 0.16), transparent 40rem),
+        radial-gradient(circle at 8% 4%, rgba(63, 225, 232, 0.12), transparent 34rem),
+        repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.018) 0px, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 64px),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    ::selection {
+      background: var(--lime);
+      color: #0a0d12;
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(155deg, #1a2130, #10141c);
+      color: var(--lime);
+      border: 1px solid rgba(63, 225, 232, 0.35);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(63, 225, 232, 0.08), 0 0 28px rgba(63, 225, 232, 0.18);
+      font-size: 24px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3vw, 2.15rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel-soft);
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .main-panel,
+    .basket,
+    .note {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-soft) 100%);
+      box-shadow: var(--shadow);
+    }
+
+    .main-panel {
+      padding: 20px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted-dim);
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px 0 43px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--bg-0);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    #search::placeholder {
+      color: var(--muted-dim);
+    }
+
+    #search:focus {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 4px var(--lime-soft);
+    }
+
+    .segment {
+      display: flex;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--bg-0);
+    }
+
+    .segment button {
+      min-width: 54px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 600;
+      transition: background 140ms ease, color 140ms ease;
+    }
+
+    .segment button:last-child {
+      border-right: 0;
+    }
+
+    .segment button.active {
+      background: var(--lime);
+      color: #0a0d12;
+    }
+
+    .quick-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg-0);
+      color: var(--muted);
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+    }
+
+    .chip:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .chip.active {
+      border-color: var(--lime);
+      background: var(--lime-soft);
+      color: var(--lime);
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 12px;
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .food-card {
+      display: grid;
+      grid-template-rows: 82px auto;
+      min-height: 176px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--panel-raised);
+      color: var(--ink);
+      text-align: left;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      animation: cardIn 320ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+    }
+
+    .food-grid .food-card:nth-child(1) { animation-delay: 0ms; }
+    .food-grid .food-card:nth-child(2) { animation-delay: 15ms; }
+    .food-grid .food-card:nth-child(3) { animation-delay: 30ms; }
+    .food-grid .food-card:nth-child(4) { animation-delay: 45ms; }
+    .food-grid .food-card:nth-child(5) { animation-delay: 60ms; }
+    .food-grid .food-card:nth-child(6) { animation-delay: 75ms; }
+    .food-grid .food-card:nth-child(7) { animation-delay: 90ms; }
+    .food-grid .food-card:nth-child(8) { animation-delay: 105ms; }
+    .food-grid .food-card:nth-child(n+9) { animation-delay: 120ms; }
+
+    .food-card:hover,
+    .food-card:focus-within {
+      transform: translateY(-3px);
+      border-color: rgba(63, 225, 232, 0.55);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(63, 225, 232, 0.12), 0 0 26px rgba(63, 225, 232, 0.14);
+    }
+
+    .food-art {
+      display: grid;
+      place-items: center;
+      position: relative;
+      background: var(--tile);
+      font-size: 2.75rem;
+      line-height: 1;
+      filter: saturate(0.92) brightness(0.97);
+    }
+
+    .food-art::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(7, 9, 13, 0.28) 100%);
+    }
+
+    .food-info {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .food-name {
+      min-height: 2.55em;
+      font-size: 0.98rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .food-meta {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .kcal {
+      color: var(--lime);
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: nowrap;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .add-line {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 38px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .grams {
+      width: 100%;
+      min-width: 0;
+      height: 36px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--bg-0);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      text-align: center;
+      outline: none;
+      transition: border-color 140ms ease;
+    }
+
+    .grams:focus {
+      border-color: var(--cyan);
+    }
+
+    .add-btn {
+      display: grid;
+      width: 38px;
+      height: 36px;
+      place-items: center;
+      border: 0;
+      border-radius: 7px;
+      background: var(--lime);
+      color: #0a0d12;
+      font-size: 1.2rem;
+      font-weight: 900;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .add-btn:hover {
+      box-shadow: 0 0 0 4px var(--lime-soft);
+    }
+
+    .add-btn:active {
+      transform: scale(0.92);
+    }
+
+    .side {
+      position: sticky;
+      top: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .basket {
+      padding: 20px;
+    }
+
+    .basket-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .ghost-btn {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      transition: border-color 140ms ease, color 140ms ease;
+    }
+
+    .ghost-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .total {
+      position: relative;
+      display: grid;
+      gap: 6px;
+      padding: 20px;
+      border-radius: var(--radius-sm);
+      background: radial-gradient(circle at 100% 0%, rgba(207, 255, 69, 0.16), transparent 60%), var(--bg-0);
+      border: 1px solid var(--line);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .total-label {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .total strong {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      line-height: 1;
+    }
+
+    #totalKcal {
+      font-family: var(--font-mono);
+      font-size: clamp(2.9rem, 8vw, 3.9rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--lime);
+      text-shadow: 0 0 30px rgba(63, 225, 232, 0.35);
+    }
+
+    .total-unit {
+      font-family: var(--font-mono);
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .meal-list {
+      display: grid;
+      gap: 8px;
+      max-height: 378px;
+      overflow: auto;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line) transparent;
+    }
+
+    .meal-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .meal-list::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 999px;
+    }
+
+    @keyframes rowIn {
+      from {
+        opacity: 0;
+        transform: translateX(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .meal-item {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--panel-raised);
+      animation: rowIn 220ms ease backwards;
+    }
+
+    .meal-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--bg-0);
+      font-size: 1.5rem;
+    }
+
+    .meal-main {
+      min-width: 0;
+    }
+
+    .meal-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .meal-detail {
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+    }
+
+    .remove-btn {
+      display: grid;
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      border: 0;
+      border-radius: 7px;
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-size: 1.1rem;
+      font-weight: 900;
+      transition: background 140ms ease;
+    }
+
+    .remove-btn:hover {
+      background: var(--danger);
+      color: #0a0d12;
+    }
+
+    .empty {
+      padding: 20px 12px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .note {
+      padding: 16px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .note strong {
+      color: var(--cyan);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(18px);
+      min-width: min(360px, calc(100% - 32px));
+      padding: 13px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--panel-raised);
+      border: 1px solid var(--lime);
+      color: var(--ink);
+      font-weight: 600;
+      text-align: center;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 24px rgba(63, 225, 232, 0.18);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+      z-index: 10;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        width: min(100% - 20px, 1180px);
+        padding-top: 16px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .badge {
+        display: none;
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .segment {
+        width: 100%;
+      }
+
+      .segment button {
+        flex: 1;
+      }
+
+      .main-panel,
+      .basket {
+        padding: 12px;
+      }
+
+      .food-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .food-card {
+        grid-template-rows: 72px auto;
+        min-height: 166px;
+      }
+
+      .food-art {
+        font-size: 2.4rem;
+      }
+
+      .food-info {
+        padding: 10px;
+      }
+
+      .food-meta {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🍽️</div>
+        <div>
+          <h1>CalCom</h1>
+          <p class="subtitle">Lebensmittel suchen, Menge eintragen und zusammenrechnen.</p>
+        </div>
+      </div>
+      <div class="badge" title="Alle Werte sind Durchschnittswerte pro 100 Gramm oder pro Stück.">Ø Werte pro 100 g / Stück</div>
+    </header>
+
+    <main class="layout">
+      <section class="main-panel" aria-label="Lebensmittel suchen und auswaehlen">
+        <div class="controls">
+          <label class="search-wrap" for="search">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="search" type="search" placeholder="Suche, z. B. Gurke, Nudeln, Joghurt..." autocomplete="off">
+          </label>
+          <div class="segment" aria-label="Standardmenge">
+            <button class="amount-btn" type="button" data-amount="50" title="50 Gramm">50</button>
+            <button class="amount-btn active" type="button" data-amount="100" title="100 Gramm">100</button>
+            <button class="amount-btn" type="button" data-amount="200" title="200 Gramm">200</button>
+          </div>
+        </div>
+
+        <div class="quick-row" id="categories" aria-label="Kategorien"></div>
+        <div class="food-grid" id="foodGrid" aria-live="polite"></div>
+      </section>
+
+      <aside class="side">
+        <section class="basket" aria-label="Meine Zusammenstellung">
+          <div class="basket-head">
+            <h2>Meine Portion</h2>
+            <button class="ghost-btn" id="clearMeal" type="button">Leeren</button>
+          </div>
+          <div class="total">
+            <span class="total-label">Gesamt</span>
+            <strong><span id="totalKcal">0</span><span class="total-unit">kcal</span></strong>
+          </div>
+          <div class="meal-list" id="mealList"></div>
+        </section>
+
+        <p class="note">
+          <strong>Hinweis:</strong> Das sind grobe Mittelwerte. Kalorien sind nur ein Baustein:
+          Obst, Gemüse, Eiweiß, Kohlenhydrate, Fett, Geschmack und Sattheit gehören zusammen.
+        </p>
+      </aside>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const foods = [
+      { name: "Gurke", kcal: 12, emoji: "🥒", category: "Gemüse", color: "#dff3e2", aliases: "gurken salatgurke" },
+      { name: "Karotten", kcal: 41, emoji: "🥕", category: "Gemüse", color: "#ffe1bf", aliases: "moehren mohren karotte" },
+      { name: "Tomaten", kcal: 18, emoji: "🍅", category: "Gemüse", color: "#f7d6d0", aliases: "tomate" },
+      { name: "Paprika", kcal: 31, emoji: "🫑", category: "Gemüse", color: "#e4f3da", aliases: "gemuesepaprika" },
+      { name: "Brokkoli", kcal: 34, emoji: "🥦", category: "Gemüse", color: "#d9f0db", aliases: "broccoli" },
+      { name: "Kartoffeln", kcal: 77, emoji: "🥔", category: "Gemüse", color: "#efe2c2", aliases: "kartoffel" },
+      { name: "Erbsen", kcal: 81, emoji: "🟢", category: "Gemüse", color: "#dff3d8", aliases: "erbse" },
+      { name: "Mais", kcal: 96, emoji: "🌽", category: "Gemüse", color: "#fff0a9", aliases: "zuckermais" },
+      { name: "Salat", kcal: 15, emoji: "🥬", category: "Gemüse", color: "#dff3e2", aliases: "kopfsalat eisbergsalat" },
+      { name: "Zwiebeln", kcal: 40, emoji: "🧅", category: "Gemüse", color: "#efe3f1", aliases: "zwiebel" },
+      { name: "Champignons", kcal: 22, emoji: "🍄", category: "Gemüse", color: "#eee4d8", aliases: "champignon pilze pilz mushrooms" },
+
+      { name: "Banane", kcal: 105, unit: "piece", emoji: "🍌", category: "Obst", color: "#fff0a9", aliases: "bananen mittelgroß mittelgross" },
+      { name: "Apfel", kcal: 52, emoji: "🍎", category: "Obst", color: "#f8d5d1", aliases: "aepfel apfel" },
+      { name: "Orange", kcal: 47, emoji: "🍊", category: "Obst", color: "#ffd9b8", aliases: "orangen" },
+      { name: "Erdbeeren", kcal: 32, emoji: "🍓", category: "Obst", color: "#f7d6df", aliases: "erdbeere" },
+      { name: "Trauben", kcal: 69, emoji: "🍇", category: "Obst", color: "#eadbf6", aliases: "weintrauben" },
+      { name: "Birne", kcal: 57, emoji: "🍐", category: "Obst", color: "#e9f1c9", aliases: "birnen" },
+      { name: "Wassermelone", kcal: 30, emoji: "🍉", category: "Obst", color: "#dff3e2", aliases: "melone" },
+      { name: "Blaubeeren", kcal: 57, emoji: "🫐", category: "Obst", color: "#dfe7fb", aliases: "heidelbeeren" },
+      { name: "Ananas", kcal: 50, emoji: "🍍", category: "Obst", color: "#fff0a9", aliases: "pineapple" },
+
+      { name: "Nudeln gekocht", kcal: 150, emoji: "🍝", category: "Beilage", color: "#fff0c8", aliases: "pasta spaghetti makaroni" },
+      { name: "Spätzle gekocht", kcal: 160, emoji: "🍜", category: "Beilage", color: "#fff1cf", aliases: "spaetzle spatzle" },
+      { name: "Reis gekocht", kcal: 130, emoji: "🍚", category: "Beilage", color: "#f3f5ef", aliases: "reis" },
+      { name: "Brot", kcal: 240, emoji: "🍞", category: "Beilage", color: "#f3dfc3", aliases: "mischbrot" },
+      { name: "Brötchen", kcal: 270, emoji: "🥯", category: "Beilage", color: "#f1d2a9", aliases: "broetchen semmel weck" },
+      { name: "Vollkornbrot", kcal: 220, emoji: "🥖", category: "Beilage", color: "#ead0ad", aliases: "vollkorn" },
+      { name: "Haferflocken", kcal: 370, emoji: "🥣", category: "Beilage", color: "#eee0ca", aliases: "oats muesli" },
+      { name: "Cornflakes ohne Zucker", kcal: 360, emoji: "🥣", category: "Beilage", color: "#fff1c9", aliases: "cornflakes flakes ungesuesst ungesüßt" },
+      { name: "Pommes", kcal: 312, emoji: "🍟", category: "Beilage", color: "#ffe5ba", aliases: "fritten" },
+      { name: "Müsli", kcal: 360, emoji: "🥣", category: "Beilage", color: "#eadcc0", aliases: "muesli cereal" },
+
+      { name: "Hühnchenbrust", kcal: 165, emoji: "🍗", category: "Eiweiß", color: "#f5dccf", aliases: "huehnchen huhn haehnchen chicken" },
+      { name: "Lachs", kcal: 208, emoji: "🐟", category: "Eiweiß", color: "#ffd9c5", aliases: "fisch" },
+      { name: "Ei", kcal: 78, unit: "piece", emoji: "🥚", category: "Eiweiß", color: "#fff4d8", aliases: "eier mittelgroß mittelgross" },
+      { name: "Fischstäbchen", kcal: 220, emoji: "🐟", category: "Eiweiß", color: "#ffe2ba", aliases: "fischstaebchen fischstabchen fisch" },
+      { name: "Rindfleisch mager", kcal: 170, emoji: "🥩", category: "Eiweiß", color: "#f2cfcf", aliases: "rind steak" },
+      { name: "Schinken", kcal: 145, emoji: "🥓", category: "Eiweiß", color: "#f4c8c0", aliases: "kochschinken" },
+      { name: "Lyoner (Aufschnitt)", kcal: 270, emoji: "🥪", category: "Eiweiß", color: "#f4c8c0", aliases: "lyoner aufschnitt wurst fleischwurst" },
+
+      { name: "Joghurt 3,5 %", kcal: 65, emoji: "🥛", category: "Milch", color: "#eef5fb", aliases: "yoghurt yogurt joghurt naturjoghurt" },
+      { name: "Milch 1,5 %", kcal: 47, emoji: "🥛", category: "Milch", color: "#eef5fb", aliases: "milch fettarm" },
+      { name: "Quark mager", kcal: 67, emoji: "🍶", category: "Milch", color: "#eef5fb", aliases: "magerquark" },
+      { name: "Gouda", kcal: 356, emoji: "🧀", category: "Milch", color: "#ffe59f", aliases: "kaese käse" },
+      { name: "Mozzarella", kcal: 250, emoji: "🧀", category: "Milch", color: "#f7f3dc", aliases: "kaese käse" },
+
+      { name: "Schokolade", kcal: 535, emoji: "🍫", category: "Snacks", color: "#dcc5ad", aliases: "schoko vollmilchschokolade" },
+      { name: "Gummibärchen", kcal: 340, emoji: "🍬", category: "Snacks", color: "#f6d6df", aliases: "gummibaerchen suessigkeiten" },
+      { name: "Salzstangen", kcal: 380, emoji: "🥨", category: "Snacks", color: "#f5d8ad", aliases: "salzstange brezel sticks" },
+      { name: "Chips", kcal: 540, emoji: "🥔", category: "Snacks", color: "#ffe0b0", aliases: "kartoffelchips" },
+      { name: "Kekse", kcal: 480, emoji: "🍪", category: "Snacks", color: "#ead0ad", aliases: "cookie plaetzchen" },
+      { name: "Eiscreme", kcal: 210, emoji: "🍦", category: "Snacks", color: "#f9dce8", aliases: "eis" },
+      { name: "Pizza Margherita", kcal: 266, emoji: "🍕", category: "Snacks", color: "#ffd6b8", aliases: "pizza" },
+
+      { name: "Butter", kcal: 717, emoji: "🧈", category: "Fette", color: "#fff0a9", aliases: "butter" },
+      { name: "Olivenöl", kcal: 884, emoji: "🫒", category: "Fette", color: "#e2edc6", aliases: "olivenoel öl oel" }
+    ];
+
+    const categories = ["Alle", "Gemüse", "Obst", "Beilage", "Eiweiß", "Milch", "Snacks", "Fette"];
+    const state = {
+      query: "",
+      category: "Alle",
+      defaultAmount: 100,
+      meal: []
+    };
+
+    const foodGrid = document.querySelector("#foodGrid");
+    const categoriesEl = document.querySelector("#categories");
+    const searchEl = document.querySelector("#search");
+    const mealList = document.querySelector("#mealList");
+    const totalKcal = document.querySelector("#totalKcal");
+    const toast = document.querySelector("#toast");
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ß/g, "ss");
+    }
+
+    function renderCategories() {
+      categoriesEl.innerHTML = "";
+      categories.forEach((category) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `chip${state.category === category ? " active" : ""}`;
+        button.textContent = category;
+        button.addEventListener("click", () => {
+          state.category = category;
+          render();
+        });
+        categoriesEl.appendChild(button);
+      });
+    }
+
+    function filteredFoods() {
+      const query = normalize(state.query.trim());
+      return foods.filter((food) => {
+        const inCategory = state.category === "Alle" || food.category === state.category;
+        const searchText = normalize(`${food.name} ${food.category} ${food.aliases}`);
+        return inCategory && (!query || searchText.includes(query));
+      });
+    }
+
+    function isPieceFood(food) {
+      return food.unit === "piece";
+    }
+
+    function defaultAmountFor(food) {
+      return isPieceFood(food) ? 1 : state.defaultAmount;
+    }
+
+    function amountText(amount, unit) {
+      return unit === "piece" ? `${amount} Stück` : `${amount} g`;
+    }
+
+    function baseText(food) {
+      return isPieceFood(food) ? "pro Stück" : "pro 100 g";
+    }
+
+    function renderFoods() {
+      const list = filteredFoods();
+      foodGrid.innerHTML = "";
+
+      if (list.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Kein Lebensmittel gefunden. Probiere einen anderen Suchbegriff.";
+        foodGrid.appendChild(empty);
+        return;
+      }
+
+      list.forEach((food) => {
+        const card = document.createElement("article");
+        card.className = "food-card";
+        card.style.setProperty("--tile", food.color);
+
+        const art = document.createElement("button");
+        art.type = "button";
+        art.className = "food-art";
+        art.textContent = food.emoji;
+        art.title = `${food.name} mit ${amountText(defaultAmountFor(food), food.unit)} hinzufügen`;
+        art.addEventListener("click", () => addFood(food, defaultAmountFor(food)));
+
+        const info = document.createElement("div");
+        info.className = "food-info";
+
+        const name = document.createElement("div");
+        name.className = "food-name";
+        name.textContent = food.name;
+
+        const meta = document.createElement("div");
+        meta.className = "food-meta";
+        meta.innerHTML = `<span>${baseText(food)}</span><span class="kcal">${food.kcal} kcal</span>`;
+
+        const addLine = document.createElement("div");
+        addLine.className = "add-line";
+
+        const amount = document.createElement("input");
+        amount.className = "grams";
+        amount.type = "number";
+        amount.min = "1";
+        amount.max = isPieceFood(food) ? "99" : "5000";
+        amount.step = isPieceFood(food) ? "1" : "5";
+        amount.value = defaultAmountFor(food);
+        amount.inputMode = "numeric";
+        amount.ariaLabel = isPieceFood(food) ? `Stückzahl für ${food.name}` : `Gramm für ${food.name}`;
+
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.className = "add-btn";
+        addButton.textContent = "+";
+        addButton.title = `${food.name} hinzufügen`;
+        addButton.addEventListener("click", () => addFood(food, Number(amount.value)));
+
+        addLine.append(amount, addButton);
+        info.append(name, meta, addLine);
+        card.append(art, info);
+        foodGrid.appendChild(card);
+      });
+    }
+
+    function addFood(food, amount) {
+      const isPiece = isPieceFood(food);
+      const cleanAmount = Math.max(1, Math.min(isPiece ? 99 : 5000, Math.round(Number(amount) || defaultAmountFor(food))));
+      state.meal.push({
+        id: window.crypto && typeof window.crypto.randomUUID === "function" ? window.crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+        name: food.name,
+        kcalBase: food.kcal,
+        emoji: food.emoji,
+        amount: cleanAmount,
+        unit: food.unit || "grams",
+        kcal: isPiece ? food.kcal * cleanAmount : Math.round((food.kcal * cleanAmount) / 100)
+      });
+      renderMeal();
+      showToast(`${amountText(cleanAmount, food.unit)} ${food.name} hinzugefügt`);
+    }
+
+    function renderMeal() {
+      mealList.innerHTML = "";
+      const sum = state.meal.reduce((total, item) => total + item.kcal, 0);
+      totalKcal.textContent = sum.toLocaleString("de-DE");
+
+      if (state.meal.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Tippe auf ein Bild oder auf +, um Lebensmittel zu addieren.";
+        mealList.appendChild(empty);
+        return;
+      }
+
+      state.meal.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "meal-item";
+
+        const icon = document.createElement("div");
+        icon.className = "meal-icon";
+        icon.textContent = item.emoji;
+
+        const main = document.createElement("div");
+        main.className = "meal-main";
+        main.innerHTML = `
+          <div class="meal-name">${item.name}</div>
+          <div class="meal-detail">${amountText(item.amount, item.unit)} · ${item.kcalBase} kcal / ${item.unit === "piece" ? "Stück" : "100 g"} · ${item.kcal} kcal</div>
+        `;
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "remove-btn";
+        remove.textContent = "×";
+        remove.title = `${item.name} entfernen`;
+        remove.addEventListener("click", () => {
+          state.meal = state.meal.filter((mealItem) => mealItem.id !== item.id);
+          renderMeal();
+        });
+
+        row.append(icon, main, remove);
+        mealList.appendChild(row);
+      });
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1500);
+    }
+
+    function render() {
+      renderCategories();
+      renderFoods();
+    }
+
+    searchEl.addEventListener("input", (event) => {
+      state.query = event.target.value;
+      renderFoods();
+    });
+
+    document.querySelectorAll(".amount-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.defaultAmount = Number(button.dataset.amount);
+        document.querySelectorAll(".amount-btn").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        renderFoods();
+      });
+    });
+
+    document.querySelector("#clearMeal").addEventListener("click", () => {
+      state.meal = [];
+      renderMeal();
+    });
+
+    render();
+    renderMeal();
+  </script>
+</body>
+</html>
