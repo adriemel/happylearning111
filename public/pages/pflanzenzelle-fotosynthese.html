@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pflanzenzelle &amp; Fotosynthese | Biologie Klasse 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papier:#f4ecda;
+  --papier-tief:#e8dcc2;
+  --tinte:#183a26;
+  --tinte-hell:#3d6b4f;
+  --blatt:#4f9b3e;
+  --blatt-hell:#8fc45c;
+  --sonne:#e5a017;
+  --wasser:#2b83a6;
+  --wasser-hell:#5bc0eb;
+  --membran:#c0392b;
+  --plasma:#cfcabd;
+  --wand:#5f5f57;
+  --kern:#26262a;
+  --schatten:rgba(24,58,38,.18);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:'Karla',sans-serif;
+  color:var(--tinte);
+  background-color:var(--papier);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(143,196,92,.28), transparent 42%),
+    radial-gradient(circle at 88% 4%, rgba(229,160,23,.26), transparent 38%),
+    radial-gradient(circle at 78% 92%, rgba(43,131,166,.20), transparent 45%),
+    repeating-linear-gradient(115deg, rgba(24,58,38,.035) 0 2px, transparent 2px 9px);
+  line-height:1.6;
+}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 90px}
+
+/* ---------- Kopf ---------- */
+header.hero{
+  padding:56px 0 34px;
+  border-bottom:3px double var(--tinte-hell);
+  margin-bottom:44px;
+  animation:auf .7s ease-out both;
+}
+.kicker{
+  font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--tinte-hell);font-weight:700;margin:0 0 10px;
+}
+h1{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(2.3rem,6vw,4.1rem);
+  line-height:1.02;margin:0 0 14px;letter-spacing:-.02em;
+}
+h1 .gruen{color:var(--blatt)}
+h1 .sonnig{color:var(--sonne)}
+.hero p{max-width:60ch;font-size:1.08rem;margin:0}
+
+/* ---------- Abschnitte ---------- */
+section{margin-bottom:78px;animation:auf .6s ease-out both}
+.sec-kopf{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.nr{
+  font-family:'Fraunces',serif;font-weight:900;font-size:2.6rem;
+  color:var(--blatt-hell);line-height:1;
+}
+h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.5rem,3.4vw,2.1rem);margin:0}
+.sec-intro{max-width:66ch;margin:0 0 26px}
+
+/* ---------- Zelle ---------- */
+.zell-layout{display:grid;grid-template-columns:minmax(260px,1fr) 1.05fr;gap:30px;align-items:start}
+@media(max-width:860px){.zell-layout{grid-template-columns:1fr}}
+
+.buehne{
+  background:linear-gradient(160deg,#fffaef,#efe4c8);
+  border:2px solid var(--tinte);
+  border-radius:4px;
+  padding:18px;
+  box-shadow:9px 9px 0 var(--schatten);
+}
+.buehne svg{width:100%;height:auto;display:block}
+
+.teil{cursor:pointer;transition:opacity .18s, transform .18s}
+.teil:hover{opacity:.75}
+.teil.aktiv{filter:drop-shadow(0 0 6px rgba(229,160,23,.95))}
+
+.legende{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:520px){.legende{grid-template-columns:1fr}}
+.legende li{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 11px;border:1.5px solid var(--tinte);border-radius:3px;
+  background:rgba(255,255,255,.55);cursor:pointer;font-size:.93rem;font-weight:500;
+  transition:background .15s,transform .15s;
+}
+.legende li:hover{background:#fff;transform:translateX(3px)}
+.legende li.gefunden{background:var(--blatt-hell);border-color:var(--tinte)}
+.legende li.gefunden::after{content:"✓";margin-left:auto;font-weight:700}
+.punkt{width:14px;height:14px;border-radius:50%;flex:none;border:1.5px solid var(--tinte)}
+
+.info{
+  border:2px solid var(--tinte);border-radius:4px;
+  background:#fffaef;padding:22px;min-height:230px;
+  box-shadow:6px 6px 0 var(--schatten);
+}
+.info h3{font-family:'Fraunces',serif;font-size:1.55rem;margin:0 0 4px}
+.info .rolle{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tinte-hell);font-weight:700;margin:0 0 14px}
+.info p{margin:0 0 12px}
+.merk{
+  border-left:5px solid var(--sonne);background:rgba(229,160,23,.14);
+  padding:10px 14px;font-size:.94rem;
+}
+.merk b{font-family:'Fraunces',serif}
+
+.fortschritt{font-size:.9rem;font-weight:700;margin:0 0 12px;color:var(--tinte-hell)}
+.balken{height:9px;background:var(--papier-tief);border:1.5px solid var(--tinte);margin-bottom:20px}
+.balken i{display:block;height:100%;background:var(--blatt);width:0;transition:width .35s}
+
+/* ---------- Fotosynthese ---------- */
+.blatt-buehne{
+  border:2px solid var(--tinte);border-radius:4px;
+  background:linear-gradient(180deg,#fffdf4,#eef3dd);
+  padding:14px;box-shadow:9px 9px 0 var(--schatten);margin-bottom:34px;
+}
+.blatt-buehne svg{width:100%;height:auto;display:block}
+
+.wort-herkunft{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:30px}
+.wort-herkunft div{
+  font-family:'Fraunces',serif;font-style:italic;font-size:1.05rem;
+  border-bottom:3px solid var(--blatt-hell);padding-bottom:4px;
+}
+
+/* Gleichungs-Puzzle */
+.puzzle{
+  border:2px dashed var(--tinte-hell);border-radius:4px;
+  padding:24px;background:rgba(255,255,255,.5);
+}
+.gleichung{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.slot{
+  min-width:185px;min-height:52px;border:2px solid var(--tinte);border-radius:3px;
+  background:var(--papier-tief);display:flex;align-items:center;justify-content:center;
+  font-weight:700;cursor:pointer;padding:6px 10px;text-align:center;transition:all .18s;
+}
+.slot.leer{color:rgba(24,58,38,.35);font-weight:400;font-style:italic}
+.slot.voll{background:#fff}
+.slot.richtig{background:var(--blatt-hell);border-color:var(--tinte)}
+.slot.falsch{background:#f3b8b2;border-color:var(--membran);animation:wackel .3s}
+.op{font-family:'Fraunces',serif;font-size:2rem;font-weight:900}
+.pfeil{position:relative;text-align:center;font-size:.8rem;font-weight:700;color:var(--sonne);line-height:1.1}
+.pfeil span{font-size:2rem;color:var(--tinte);display:block}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px}
+.chip{
+  font-family:'Karla',sans-serif;font-size:.98rem;font-weight:700;
+  padding:10px 16px;border:2px solid var(--tinte);border-radius:3px;
+  background:#fffaef;cursor:pointer;transition:transform .15s,background .15s;
+}
+.chip:hover{transform:translateY(-3px);background:var(--sonne)}
+.chip.weg{opacity:.25;pointer-events:none;text-decoration:line-through}
+
+.knopf{
+  font-family:'Karla',sans-serif;font-weight:700;font-size:1rem;
+  padding:12px 26px;border:2px solid var(--tinte);border-radius:3px;
+  background:var(--tinte);color:var(--papier);cursor:pointer;
+  box-shadow:4px 4px 0 var(--schatten);transition:transform .12s;
+}
+.knopf:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--schatten)}
+.knopf.zweit{background:transparent;color:var(--tinte)}
+.knopfreihe{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.rueckmeldung{text-align:center;font-weight:700;margin-top:18px;min-height:26px}
+
+/* Licht-Labor */
+.labor{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center}
+@media(max-width:780px){.labor{grid-template-columns:1fr}}
+.regler-box{border:2px solid var(--tinte);background:#fffaef;padding:22px;box-shadow:6px 6px 0 var(--schatten)}
+input[type=range]{width:100%;accent-color:var(--sonne);height:26px}
+.wert{font-family:'Fraunces',serif;font-size:2.6rem;font-weight:900;color:var(--sonne);line-height:1}
+.messwert{display:flex;justify-content:space-between;font-size:.95rem;padding:7px 0;border-bottom:1px dotted var(--tinte-hell)}
+.messwert b{font-variant-numeric:tabular-nums}
+.laborszene{border:2px solid var(--tinte);background:linear-gradient(180deg,#dff0fb,#f4f7e4);padding:0;overflow:hidden;box-shadow:6px 6px 0 var(--schatten)}
+.laborszene svg{width:100%;height:auto;display:block}
+.status{margin-top:14px;padding:10px 14px;background:rgba(43,131,166,.13);border-left:5px solid var(--wasser);font-size:.95rem}
+
+/* Quiz */
+.frage{border:2px solid var(--tinte);background:#fffaef;padding:20px;margin-bottom:18px;box-shadow:5px 5px 0 var(--schatten)}
+.frage p.f{font-weight:700;margin:0 0 14px;font-size:1.05rem}
+.antw{display:grid;gap:8px}
+.antw button{
+  text-align:left;font-family:'Karla',sans-serif;font-size:.98rem;
+  padding:11px 14px;border:1.5px solid var(--tinte);background:var(--papier);
+  cursor:pointer;border-radius:3px;transition:background .15s,transform .15s;
+}
+.antw button:hover:not(:disabled){background:#fff;transform:translateX(4px)}
+.antw button.ok{background:var(--blatt-hell);font-weight:700}
+.antw button.nope{background:#f3b8b2}
+.antw button:disabled{cursor:default}
+.erklaerung{margin-top:12px;font-size:.94rem;border-left:5px solid var(--blatt);padding-left:12px;display:none}
+.erklaerung.zeig{display:block;animation:auf .35s ease-out both}
+.punkte{
+  font-family:'Fraunces',serif;font-size:1.35rem;font-weight:600;
+  text-align:center;padding:18px;border:2px solid var(--tinte);background:var(--blatt-hell);
+  box-shadow:6px 6px 0 var(--schatten);
+}
+
+.profi{
+  margin-top:26px;border:2px solid var(--tinte-hell);border-radius:4px;
+  background:rgba(24,58,38,.05);padding:18px 22px;
+}
+.profi summary{font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;cursor:pointer}
+.profi[open] summary{margin-bottom:12px}
+.formel{
+  font-family:'Fraunces',serif;font-size:1.2rem;text-align:center;
+  padding:14px;background:#fffaef;border:1.5px solid var(--tinte);margin:12px 0;
+}
+.formel sub{font-size:.7em}
+
+footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem;color:var(--tinte-hell)}
+
+@keyframes auf{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes wackel{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.blase{
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:blubber 3.2s linear infinite;
+}
+.teilchen{animation-duration:4s}
+@keyframes blubber{
+  0%{transform:translateY(0);opacity:0}
+  12%{opacity:.95}
+  80%{opacity:.85}
+  100%{transform:translateY(var(--auf,-150px));opacity:0}
+}
+@keyframes strahl{0%,100%{opacity:.35}50%{opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <p class="kicker">Biologie · Klasse 7 · Gymnasium Niedersachsen</p>
+  <h1>Die <span class="gruen">Pflanzenzelle</span><br>und die <span class="sonnig">Fotosynthese</span></h1>
+  <p>Pflanzen bauen sich ihre Nahrung selbst. Dafür brauchen sie nur Licht, Wasser und ein Gas aus der Luft. Auf dieser Seite schaust du dir zuerst an, wie eine Pflanzenzelle aufgebaut ist. Danach findest du heraus, was in ihr passiert, wenn die Sonne scheint.</p>
+</header>
+
+<!-- ============ 1. ZELLE ============ -->
+<section id="zelle" style="animation-delay:.1s">
+  <div class="sec-kopf"><span class="nr">01</span><h2>Die Pflanzenzelle erkunden</h2></div>
+  <p class="sec-intro">Klicke in der Zeichnung auf ein Zellbestandteil oder wähle einen Begriff aus der Liste. Rechts erscheint, was dieses Teil kann. Schaffst du alle zehn?</p>
+
+  <div class="zell-layout">
+    <div class="buehne">
+      <svg viewBox="0 0 420 620" role="img" aria-label="Schema einer Pflanzenzelle">
+        <!-- Zellwand -->
+        <g class="teil" data-teil="zellwand">
+          <rect x="12" y="12" width="396" height="596" rx="46" fill="none" stroke="#5f5f57" stroke-width="18"/>
+        </g>
+        <!-- Zellplasma -->
+        <g class="teil" data-teil="zellplasma">
+          <rect x="24" y="24" width="372" height="572" rx="38" fill="#cfcabd"/>
+        </g>
+        <!-- Zellmembran -->
+        <g class="teil" data-teil="zellmembran">
+          <rect x="29" y="29" width="362" height="562" rx="34" fill="none" stroke="#c0392b" stroke-width="3.5"/>
+        </g>
+
+        <!-- Vakuole + Tonoplast -->
+        <g class="teil" data-teil="vakuole">
+          <path id="vak" d="M212,78 C298,74 332,124 330,206 C328,300 320,382 326,470 C332,542 282,566 210,560 C152,555 124,522 122,462 C120,404 152,376 152,336 C152,296 112,278 114,216 C116,148 142,82 212,78 Z" fill="#5bc0eb"/>
+          <text x="228" y="230" font-family="Karla,sans-serif" font-size="19" fill="#ffffff" text-anchor="middle">Zellsaft</text>
+        </g>
+        <g class="teil" data-teil="tonoplast">
+          <path d="M212,78 C298,74 332,124 330,206 C328,300 320,382 326,470 C332,542 282,566 210,560 C152,555 124,522 122,462 C120,404 152,376 152,336 C152,296 112,278 114,216 C116,148 142,82 212,78 Z" fill="none" stroke="rgba(0,0,0,0)" stroke-width="13"/>
+          <path d="M212,78 C298,74 332,124 330,206 C328,300 320,382 326,470 C332,542 282,566 210,560 C152,555 124,522 122,462 C120,404 152,376 152,336 C152,296 112,278 114,216 C116,148 142,82 212,78 Z" fill="none" stroke="#c0392b" stroke-width="3.5" stroke-linejoin="round"/>
+        </g>
+
+        <!-- Zellkern + Kernmembran -->
+        <g class="teil" data-teil="zellkern">
+          <circle cx="76" cy="404" r="42" fill="#26262a"/>
+          <g stroke="#8d8d96" stroke-width="1.6" fill="none" opacity=".85">
+            <circle cx="66" cy="392" r="11"/><circle cx="88" cy="400" r="14"/>
+            <circle cx="70" cy="420" r="13"/><circle cx="92" cy="424" r="9"/>
+            <circle cx="60" cy="410" r="7"/>
+          </g>
+        </g>
+        <g class="teil" data-teil="kernmembran">
+          <circle cx="76" cy="404" r="42" fill="none" stroke="#c0392b" stroke-width="3.5"/>
+        </g>
+
+        <!-- Chloroplasten -->
+        <g class="teil" data-teil="chloroplast">
+          <g transform="translate(300,64) rotate(12)">
+            <ellipse rx="30" ry="19" fill="#e9e6dc" stroke="#6f6f66" stroke-width="2"/>
+            <g fill="#1f6f52"><rect x="-17" y="-9" width="15" height="5" rx="2"/><rect x="-17" y="0" width="15" height="5" rx="2"/><rect x="2" y="-5" width="15" height="5" rx="2"/><rect x="2" y="4" width="15" height="5" rx="2"/></g>
+          </g>
+          <g transform="translate(362,258) rotate(78)">
+            <ellipse rx="30" ry="19" fill="#e9e6dc" stroke="#6f6f66" stroke-width="2"/>
+            <g fill="#1f6f52"><rect x="-17" y="-9" width="15" height="5" rx="2"/><rect x="-17" y="0" width="15" height="5" rx="2"/><rect x="2" y="-5" width="15" height="5" rx="2"/><rect x="2" y="4" width="15" height="5" rx="2"/></g>
+          </g>
+          <g transform="translate(80,556) rotate(-8)">
+            <ellipse rx="30" ry="19" fill="#e9e6dc" stroke="#6f6f66" stroke-width="2"/>
+            <g fill="#1f6f52"><rect x="-17" y="-9" width="15" height="5" rx="2"/><rect x="-17" y="0" width="15" height="5" rx="2"/><rect x="2" y="-5" width="15" height="5" rx="2"/><rect x="2" y="4" width="15" height="5" rx="2"/></g>
+          </g>
+          <g transform="translate(70,246) rotate(-84)">
+            <ellipse rx="30" ry="19" fill="#e9e6dc" stroke="#6f6f66" stroke-width="2"/>
+            <g fill="#1f6f52"><rect x="-17" y="-9" width="15" height="5" rx="2"/><rect x="-17" y="0" width="15" height="5" rx="2"/><rect x="2" y="-5" width="15" height="5" rx="2"/><rect x="2" y="4" width="15" height="5" rx="2"/></g>
+          </g>
+        </g>
+
+        <!-- Mitochondrien -->
+        <g class="teil" data-teil="mitochondrium">
+          <g transform="translate(74,120) rotate(-14)">
+            <ellipse rx="27" ry="16" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/>
+            <path d="M-16,-8 q6,8 0,16 M-8,-9 q6,9 0,18 M0,-9 q6,9 0,18 M8,-9 q6,9 0,18 M16,-8 q5,8 0,16" fill="none" stroke="#4a7fa5" stroke-width="1.8"/>
+          </g>
+          <g transform="translate(362,168) rotate(84)">
+            <ellipse rx="27" ry="16" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/>
+            <path d="M-16,-8 q6,8 0,16 M-8,-9 q6,9 0,18 M0,-9 q6,9 0,18 M8,-9 q6,9 0,18 M16,-8 q5,8 0,16" fill="none" stroke="#4a7fa5" stroke-width="1.8"/>
+          </g>
+          <g transform="translate(360,388) rotate(96)">
+            <ellipse rx="27" ry="16" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/>
+            <path d="M-16,-8 q6,8 0,16 M-8,-9 q6,9 0,18 M0,-9 q6,9 0,18 M8,-9 q6,9 0,18 M16,-8 q5,8 0,16" fill="none" stroke="#4a7fa5" stroke-width="1.8"/>
+          </g>
+          <g transform="translate(170,580) rotate(-4)">
+            <ellipse rx="27" ry="16" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/>
+            <path d="M-16,-8 q6,8 0,16 M-8,-9 q6,9 0,18 M0,-9 q6,9 0,18 M8,-9 q6,9 0,18 M16,-8 q5,8 0,16" fill="none" stroke="#4a7fa5" stroke-width="1.8"/>
+          </g>
+        </g>
+
+        <!-- Ribosomen -->
+        <g class="teil" data-teil="ribosomen" fill="#1a1a1a">
+          <circle cx="52" cy="70" r="4"/><circle cx="92" cy="58" r="4"/><circle cx="140" cy="52" r="4"/>
+          <circle cx="186" cy="48" r="4"/><circle cx="240" cy="52" r="4"/><circle cx="352" cy="96" r="4"/>
+          <circle cx="376" cy="130" r="4"/><circle cx="380" cy="210" r="4"/><circle cx="374" cy="300" r="4"/>
+          <circle cx="378" cy="336" r="4"/><circle cx="366" cy="446" r="4"/><circle cx="374" cy="490" r="4"/>
+          <circle cx="352" cy="530" r="4"/><circle cx="316" cy="560" r="4"/><circle cx="214" cy="586" r="4"/>
+          <circle cx="120" cy="584" r="4"/><circle cx="56" cy="520" r="4"/><circle cx="48" cy="470" r="4"/>
+          <circle cx="52" cy="330" r="4"/><circle cx="44" cy="286" r="4"/><circle cx="60" cy="240" r="4"/>
+          <circle cx="46" cy="180" r="4"/><circle cx="98" cy="472" r="4"/><circle cx="126" cy="140" r="4"/>
+          <circle cx="160" cy="96" r="4"/><circle cx="300" cy="118" r="4"/><circle cx="290" cy="590" r="4"/>
+        </g>
+      </svg>
+    </div>
+
+    <div>
+      <p class="fortschritt"><span id="zaehler">0</span> von 10 Bestandteilen entdeckt</p>
+      <div class="balken"><i id="balken"></i></div>
+      <ul class="legende" id="legende"></ul>
+      <div class="info" id="info">
+        <h3>Wähle ein Bauteil</h3>
+        <p class="rolle">Noch nichts ausgewählt</p>
+        <p>Tippe links in die Zeichnung oder auf einen Begriff in der Liste. Hier steht dann, wofür dieses Teil in der Zelle zuständig ist.</p>
+      </div>
+    </div>
+  </div>
+
+  <details class="profi">
+    <summary>Für Profis: Was hat die Pflanzenzelle, was die Tierzelle nicht hat?</summary>
+    <p>Drei Dinge findest du nur in der Pflanzenzelle: die feste <b>Zellwand</b> aus Cellulose, die grünen <b>Chloroplasten</b> und die riesige <b>Vakuole</b>. Alles andere, also Zellkern, Zellmembran, Zellplasma, Mitochondrien und Ribosomen, besitzt die Tierzelle auch. Deshalb sieht eine Tierzelle rundlich aus, während Pflanzenzellen eckig wirken und ihre Form behalten.</p>
+  </details>
+</section>
+
+<!-- ============ 2. FOTOSYNTHESE ============ -->
+<section id="fotosynthese" style="animation-delay:.15s">
+  <div class="sec-kopf"><span class="nr">02</span><h2>Fotosynthese: Zucker aus Licht</h2></div>
+  <p class="sec-intro">In den Chloroplasten steckt der grüne Farbstoff Chlorophyll. Er fängt das Sonnenlicht ein. Mit dieser Energie baut das Blatt aus Wasser und Kohlenstoffdioxid den Zucker Glukose. Sauerstoff bleibt dabei übrig und wird abgegeben.</p>
+
+  <div class="wort-herkunft">
+    <div>griechisch <b>phos</b> = Licht</div>
+    <div>griechisch <b>synthesis</b> = Aufbau</div>
+  </div>
+
+  <div class="blatt-buehne">
+    <svg viewBox="0 0 900 480" role="img" aria-label="Wortgleichung der Fotosynthese am Blatt">
+      <defs>
+        <marker id="sp" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="13" refX="13" refY="6.5" orient="auto">
+          <path d="M0,0 L15,6.5 L0,13 z" fill="#183a26"/>
+        </marker>
+        <marker id="sg" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto">
+          <path d="M0,0 L14,6 L0,12 z" fill="#e5a017"/>
+        </marker>
+        <marker id="sb" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="13" refX="13" refY="6.5" orient="auto">
+          <path d="M0,0 L15,6.5 L0,13 z" fill="#2b83a6"/>
+        </marker>
+        <radialGradient id="sonneG"><stop offset="0%" stop-color="#ffe58a"/><stop offset="100%" stop-color="#e5a017"/></radialGradient>
+      </defs>
+
+      <!-- Blatt -->
+      <path d="M268,150 C370,60 660,68 800,180 C720,340 470,410 330,345 C262,313 232,215 268,150 Z"
+            fill="#e7efd4" stroke="#8fc45c" stroke-width="2"/>
+      <path d="M330,345 C440,300 620,232 800,180" fill="none" stroke="#b6cf94" stroke-width="3"/>
+      <g fill="none" stroke="#cfe0b4" stroke-width="1.8">
+        <path d="M390,318 C400,270 404,225 396,180"/>
+        <path d="M460,290 C476,246 486,206 484,166"/>
+        <path d="M540,262 C562,222 580,192 588,160"/>
+        <path d="M620,232 C646,202 668,180 690,164"/>
+        <path d="M370,326 C340,300 320,270 310,238"/>
+        <path d="M470,286 C490,310 510,326 534,336"/>
+        <path d="M560,254 C582,278 606,292 634,300"/>
+      </g>
+
+      <!-- Sonne -->
+      <path d="M58,58 A112,112 0 0,1 170,170 L58,170 Z" fill="url(#sonneG)" opacity=".92"/>
+      <text x="74" y="120" font-family="Fraunces,serif" font-size="23" font-weight="600" fill="#5b4109">Lichtenergie</text>
+      <g stroke="#e5a017" stroke-width="3" marker-end="url(#sg)">
+        <line x1="178" y1="164" x2="286" y2="222" style="animation:strahl 2.4s ease-in-out infinite"/>
+        <line x1="188" y1="138" x2="298" y2="192" style="animation:strahl 2.4s ease-in-out .3s infinite"/>
+        <line x1="192" y1="110" x2="308" y2="162" style="animation:strahl 2.4s ease-in-out .6s infinite"/>
+        <line x1="188" y1="82" x2="310" y2="132" style="animation:strahl 2.4s ease-in-out .9s infinite"/>
+      </g>
+
+      <!-- Kohlenstoffdioxid von oben -->
+      <line x1="470" y1="56" x2="470" y2="188" stroke="#183a26" stroke-width="3" marker-end="url(#sp)"/>
+      <text x="470" y="42" font-family="Karla,sans-serif" font-size="16" fill="#183a26" text-anchor="middle">Kohlenstoffdioxid aus der Luft</text>
+
+      <!-- Gleichung -->
+      <text x="265" y="222" font-family="Karla,sans-serif" font-size="21" font-weight="700" fill="#183a26">Wasser + Kohlenstoffdioxid</text>
+      <line x1="556" y1="215" x2="592" y2="215" stroke="#183a26" stroke-width="3" marker-end="url(#sp)"/>
+      <text x="606" y="222" font-family="Karla,sans-serif" font-size="21" font-weight="700" fill="#183a26">Sauerstoff + Glukose</text>
+      <rect x="352" y="242" width="156" height="32" rx="4" fill="#d6e8c4"/>
+      <text x="430" y="265" font-family="Fraunces,serif" font-size="20" font-weight="600" fill="#1f6f52" text-anchor="middle">Fotosynthese</text>
+
+      <!-- Sauerstoff raus -->
+      <path d="M645,203 L645,124 L852,124" fill="none" stroke="#2b83a6" stroke-width="3" marker-end="url(#sb)"/>
+      <text x="855" y="110" font-family="Karla,sans-serif" font-size="15" fill="#2b83a6" text-anchor="end">Sauerstoff in die Luft</text>
+
+      <!-- Glukose zu Stärke -->
+      <path d="M792,234 L792,322 L706,322" fill="none" stroke="#183a26" stroke-width="3" marker-end="url(#sp)"/>
+      <text x="692" y="329" font-family="Karla,sans-serif" font-size="21" font-weight="700" fill="#183a26" text-anchor="end">Stärke</text>
+      <text x="692" y="350" font-family="Karla,sans-serif" font-size="14" fill="#3d6b4f" text-anchor="end">Speicherform des Zuckers</text>
+
+      <!-- Wasser von unten -->
+      <path d="M132,432 L300,368 L300,242" fill="none" stroke="#2b83a6" stroke-width="3" marker-end="url(#sb)"/>
+      <text x="118" y="424" font-family="Karla,sans-serif" font-size="21" font-weight="700" fill="#2b83a6" text-anchor="end">Wasser</text>
+      <text x="118" y="446" font-family="Karla,sans-serif" font-size="14" fill="#3d6b4f" text-anchor="end">aus der Wurzel</text>
+    </svg>
+  </div>
+
+  <!-- Puzzle -->
+  <div class="puzzle">
+    <h3 style="font-family:Fraunces,serif;font-size:1.4rem;margin:0 0 6px;text-align:center">Setze die Wortgleichung zusammen</h3>
+    <p style="text-align:center;margin:0 0 22px">Klicke auf einen Begriff, um ihn in das nächste freie Feld zu setzen. Ein Klick auf ein Feld nimmt den Begriff wieder heraus. Achtung, zwei Begriffe gehören nicht dazu.</p>
+
+    <div class="gleichung">
+      <div class="slot leer" data-slot="0">Ausgangsstoff 1</div>
+      <div class="op">+</div>
+      <div class="slot leer" data-slot="1">Ausgangsstoff 2</div>
+      <div class="pfeil">Lichtenergie<span>&#10230;</span>Chlorophyll</div>
+      <div class="slot leer" data-slot="2">Produkt 1</div>
+      <div class="op">+</div>
+      <div class="slot leer" data-slot="3">Produkt 2</div>
+    </div>
+
+    <div class="chips" id="chips"></div>
+    <div class="knopfreihe">
+      <button class="knopf" id="pruefen">Prüfen</button>
+      <button class="knopf zweit" id="reset">Nochmal</button>
+    </div>
+    <p class="rueckmeldung" id="rueck"></p>
+  </div>
+
+  <details class="profi">
+    <summary>Für Profis: Die Gleichung mit chemischen Formeln</summary>
+    <p>In der Oberstufe schreibt man dieselbe Reaktion mit Formeln und passenden Zahlen davor:</p>
+    <div class="formel">6 H<sub>2</sub>O + 6 CO<sub>2</sub> &#10230; C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6 O<sub>2</sub></div>
+    <p>Sechs Wassermoleküle und sechs Kohlenstoffdioxidmoleküle ergeben ein Molekül Glukose und sechs Moleküle Sauerstoff. Der Sauerstoff, den du gerade einatmest, stammt übrigens aus dem <b>Wasser</b>, nicht aus dem Kohlenstoffdioxid. Das Licht spaltet die Wassermoleküle auf.</p>
+  </details>
+</section>
+
+<!-- ============ 3. LICHT-LABOR ============ -->
+<section id="labor" style="animation-delay:.2s">
+  <div class="sec-kopf"><span class="nr">03</span><h2>Licht-Labor: Versuch am Bildschirm</h2></div>
+  <p class="sec-intro">Eine Wasserpflanze steht im Glas. Ziehe den Regler und beobachte, wie viele Sauerstoffbläschen aufsteigen. So haben Forscherinnen und Forscher die Fotosynthese wirklich gemessen: durch Zählen der Bläschen.</p>
+
+  <div class="labor">
+    <div class="regler-box">
+      <p style="margin:0 0 2px;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--tinte-hell)">Lichtstärke</p>
+      <p class="wert" id="lichtwert">50 %</p>
+      <input type="range" id="licht" min="0" max="100" value="50" aria-label="Lichtstärke einstellen">
+      <div class="messwert"><span>Fotosynthese stellt her</span><b id="mFoto">–</b></div>
+      <div class="messwert"><span>Zellatmung verbraucht</span><b id="mAtm">–</b></div>
+      <div class="messwert"><span>Bleibt übrig, steigt als Bläschen auf</span><b id="mNetto">–</b></div>
+      <p style="font-size:.8rem;margin:8px 0 0;color:var(--tinte-hell)">Alle Werte in Sauerstoffteilchen pro Minute. Es sind Beispielzahlen für diesen Versuch, keine echten Messwerte.</p>
+      <p style="font-size:.85rem;margin:12px 0 0;display:flex;flex-direction:column;gap:6px">
+        <span><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#fff;border:1.5px solid var(--tinte);vertical-align:-1px;margin-right:7px"></span>weiße Bläschen: Sauerstoff, den die Pflanze abgibt</span>
+        <span><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--wasser);vertical-align:-1px;margin-right:7px"></span>blaue Punkte: Sauerstoff, den die Pflanze aus dem Wasser aufnimmt</span>
+      </p>
+      <p class="status" id="status"></p>
+    </div>
+
+    <div class="laborszene">
+      <svg viewBox="0 0 400 330" role="img" aria-label="Wasserpflanze im Becherglas">
+        <rect id="himmel" x="0" y="0" width="400" height="330" fill="#dff0fb"/>
+        <circle id="sonnekreis" cx="332" cy="52" r="30" fill="#e5a017"/>
+        <g id="sonnenstrahlen" stroke="#e5a017" stroke-width="4" stroke-linecap="round">
+          <line x1="332" y1="4" x2="332" y2="16"/><line x1="290" y1="52" x2="278" y2="52"/>
+          <line x1="374" y1="52" x2="386" y2="52"/><line x1="300" y1="20" x2="292" y2="12"/>
+          <line x1="364" y1="20" x2="372" y2="12"/><line x1="300" y1="84" x2="292" y2="92"/>
+        </g>
+        <!-- Glas -->
+        <path d="M120,70 L120,300 Q120,316 140,316 L280,316 Q300,316 300,300 L300,70" fill="#bfe4f5" opacity=".65" stroke="#7aa8bd" stroke-width="3"/>
+        <line x1="120" y1="92" x2="300" y2="92" stroke="#7aa8bd" stroke-width="2" opacity=".7"/>
+        <!-- Pflanze -->
+        <path d="M210,308 C206,250 200,200 214,150" fill="none" stroke="#2f7d32" stroke-width="6"/>
+        <g fill="#4f9b3e">
+          <ellipse cx="188" cy="264" rx="26" ry="11" transform="rotate(-18 188 264)"/>
+          <ellipse cx="236" cy="238" rx="26" ry="11" transform="rotate(16 236 238)"/>
+          <ellipse cx="186" cy="212" rx="24" ry="10" transform="rotate(-22 186 212)"/>
+          <ellipse cx="238" cy="186" rx="24" ry="10" transform="rotate(20 238 186)"/>
+          <ellipse cx="196" cy="160" rx="22" ry="9" transform="rotate(-14 196 160)"/>
+        </g>
+        <rect x="140" y="300" width="140" height="16" fill="#c9b48a"/>
+        <g id="blasen" fill="#ffffff" opacity=".95"></g>
+      </svg>
+    </div>
+  </div>
+
+  <details class="profi">
+    <summary>Für Profis: Warum produziert die Pflanze bei Dunkelheit keinen Sauerstoff?</summary>
+    <p>Die Zellatmung läuft rund um die Uhr, auch tagsüber. Sie verbraucht Sauerstoff und Zucker und liefert der Zelle Energie. Bei Dunkelheit läuft nur sie, deshalb gibt die Pflanze dann Kohlenstoffdioxid ab statt Sauerstoff. Ab einer bestimmten Lichtstärke halten sich Fotosynthese und Zellatmung genau die Waage. Diesen Punkt nennt man <b>Lichtkompensationspunkt</b>. Im Regler liegt er ungefähr bei 12 Prozent. Bei sehr viel Licht steigt die Fotosynthese nicht weiter an, weil Kohlenstoffdioxid und Enzyme zum Begrenzer werden.</p>
+  </details>
+</section>
+
+<!-- ============ 4. QUIZ ============ -->
+<section id="quiz" style="animation-delay:.25s">
+  <div class="sec-kopf"><span class="nr">04</span><h2>Teste dich selbst</h2></div>
+  <p class="sec-intro">Acht Fragen zu allem, was oben steht. Nach jedem Klick siehst du sofort, ob es gestimmt hat.</p>
+  <div id="quizbox"></div>
+  <p class="punkte" id="punkte">0 von 8 richtig</p>
+</section>
+
+<footer>
+  <p>Lernseite Biologie, Jahrgang 7. Inhalte nach dem Kerncurriculum Niedersachsen: Zellaufbau der Pflanzenzelle und Fotosynthese als Wortgleichung. Die Zeichnungen orientieren sich am Schulbuchschema.</p>
+</footer>
+
+</div>
+
+<script>
+/* =========================================================
+   TEIL 1: Pflanzenzelle
+   ========================================================= */
+const teile = {
+  zellwand:{name:"Zellwand", rolle:"Stützgerüst", farbe:"#5f5f57",
+    text:"Die Zellwand liegt außen um die ganze Zelle. Sie besteht aus Cellulose und ist fest wie ein Pappkarton. Dadurch behält die Pflanze ihre Form und knickt nicht um.",
+    merk:"Nur Pflanzenzellen haben eine Zellwand. Tierzellen nicht."},
+  zellmembran:{name:"Zellmembran", rolle:"Türsteher", farbe:"#c0392b",
+    text:"Die Zellmembran liegt direkt innen an der Zellwand. Sie ist dünn und beweglich und entscheidet, welche Stoffe in die Zelle hinein und wieder heraus dürfen.",
+    merk:"Die Zellwand ist die Mauer, die Zellmembran die Tür mit Schloss."},
+  zellplasma:{name:"Zellplasma", rolle:"Werkstatt", farbe:"#cfcabd",
+    text:"Das Zellplasma füllt die Zelle als zähflüssige Masse. In ihm schwimmen alle Zellbestandteile. Es ist ständig in Bewegung und transportiert Stoffe durch die Zelle.",
+    merk:"Zellplasma besteht zum größten Teil aus Wasser."},
+  zellkern:{name:"Zellkern", rolle:"Schaltzentrale", farbe:"#26262a",
+    text:"Der Zellkern enthält die Erbinformation in den Chromosomen. Von hier aus wird gesteuert, was die Zelle baut und wann sie sich teilt.",
+    merk:"Ohne Zellkern weiß die Zelle nicht, was sie tun soll."},
+  kernmembran:{name:"Kernmembran", rolle:"Schutzhülle", farbe:"#c0392b",
+    text:"Die Kernmembran umgibt den Zellkern und trennt die Erbinformation vom übrigen Zellplasma. Kleine Poren darin lassen Botenstoffe durch.",
+    merk:"Sie ist eine eigene Membran, nicht dasselbe wie die Zellmembran."},
+  chloroplast:{name:"Chloroplast", rolle:"Zuckerfabrik", farbe:"#1f6f52",
+    text:"Chloroplasten sind grün, weil in ihnen der Farbstoff Chlorophyll steckt. Er fängt Sonnenlicht ein. Genau hier läuft die Fotosynthese ab und es entsteht Glukose.",
+    merk:"Chloroplasten machen die Pflanze grün und ernähren sie."},
+  mitochondrium:{name:"Mitochondrium", rolle:"Kraftwerk", farbe:"#4a7fa5",
+    text:"Im Mitochondrium läuft die Zellatmung. Zucker wird mit Sauerstoff abgebaut, dabei wird Energie frei, die die Zelle für alles Weitere braucht.",
+    merk:"Fotosynthese baut Zucker auf, Zellatmung baut ihn wieder ab."},
+  vakuole:{name:"Vakuole mit Zellsaft", rolle:"Wassertank", farbe:"#5bc0eb",
+    text:"Die Vakuole ist der große blaue Raum in der Mitte. Sie ist mit Zellsaft gefüllt, also mit Wasser, gelösten Salzen, Zucker und Farbstoffen. Ihr Druck von innen hält Blätter und Stängel straff.",
+    merk:"Fehlt Wasser, schrumpft die Vakuole und die Pflanze lässt die Blätter hängen."},
+  tonoplast:{name:"Tonoplast", rolle:"Tankwand", farbe:"#c0392b",
+    text:"Der Tonoplast ist die Membran, die die Vakuole umschließt. Er regelt, welche Stoffe im Zellsaft eingelagert oder wieder abgegeben werden.",
+    merk:"Merkwort: Tonoplast gehört zur Vakuole, Kernmembran zum Zellkern."},
+  ribosomen:{name:"Ribosomen", rolle:"Baumeister", farbe:"#1a1a1a",
+    text:"Ribosomen sind winzige Körnchen im Zellplasma. In ihnen werden Eiweiße hergestellt, aus denen die Zelle ihre Bauteile und Werkzeuge zusammensetzt.",
+    merk:"Ribosomen sind so klein, dass man sie nur im Elektronenmikroskop sieht."}
+};
+
+const gefunden = new Set();
+const legende = document.getElementById('legende');
+const infoBox = document.getElementById('info');
+
+Object.keys(teile).forEach(key=>{
+  const t = teile[key];
+  const li = document.createElement('li');
+  li.dataset.teil = key;
+  li.innerHTML = '<span class="punkt" style="background:'+t.farbe+'"></span>'+t.name;
+  li.addEventListener('click', ()=>zeigeTeil(key));
+  legende.appendChild(li);
+});
+
+document.querySelectorAll('.teil').forEach(g=>{
+  g.addEventListener('click', e=>{ e.stopPropagation(); zeigeTeil(g.dataset.teil); });
+});
+
+function zeigeTeil(key){
+  const t = teile[key];
+  gefunden.add(key);
+
+  document.querySelectorAll('.teil').forEach(g=>g.classList.toggle('aktiv', g.dataset.teil===key));
+  document.querySelectorAll('.legende li').forEach(li=>{
+    if(gefunden.has(li.dataset.teil)) li.classList.add('gefunden');
+  });
+
+  infoBox.innerHTML =
+    '<h3>'+t.name+'</h3>'+
+    '<p class="rolle">'+t.rolle+'</p>'+
+    '<p>'+t.text+'</p>'+
+    '<p class="merk"><b>Merke:</b> '+t.merk+'</p>';
+  infoBox.style.animation='none';
+  void infoBox.offsetWidth;
+  infoBox.style.animation='auf .35s ease-out both';
+
+  document.getElementById('balken').style.width = (gefunden.size/10*100)+'%';
+
+  const z = document.getElementById('zaehler');
+  if(z){
+    if(gefunden.size===10){
+      z.parentElement.textContent = 'Alle 10 Bestandteile entdeckt. Weiter geht es mit der Fotosynthese.';
+    } else {
+      z.textContent = gefunden.size;
+    }
+  }
+}
+
+/* =========================================================
+   TEIL 2: Wortgleichungs-Puzzle
+   ========================================================= */
+const begriffe = ["Glukose","Wasser","Stickstoff","Sauerstoff","Wärme","Kohlenstoffdioxid"];
+const links = ["Wasser","Kohlenstoffdioxid"];
+const rechts = ["Sauerstoff","Glukose"];
+const platzhalter = ["Ausgangsstoff 1","Ausgangsstoff 2","Produkt 1","Produkt 2"];
+let slots = [null,null,null,null];
+
+const chipBox = document.getElementById('chips');
+begriffe.forEach(b=>{
+  const c = document.createElement('button');
+  c.className='chip'; c.textContent=b; c.dataset.wort=b;
+  c.addEventListener('click',()=>setzeChip(b));
+  chipBox.appendChild(c);
+});
+
+function setzeChip(wort){
+  const frei = slots.indexOf(null);
+  if(frei===-1) return;
+  slots[frei]=wort;
+  zeichneSlots();
+}
+
+document.querySelectorAll('.slot').forEach(s=>{
+  s.addEventListener('click',()=>{
+    const i = +s.dataset.slot;
+    if(slots[i]){ slots[i]=null; zeichneSlots(); }
+  });
+});
+
+function zeichneSlots(){
+  document.querySelectorAll('.slot').forEach(s=>{
+    const i = +s.dataset.slot;
+    s.className = 'slot ' + (slots[i] ? 'voll' : 'leer');
+    s.textContent = slots[i] || platzhalter[i];
+  });
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.classList.toggle('weg', slots.includes(c.dataset.wort));
+  });
+  document.getElementById('rueck').textContent='';
+}
+
+document.getElementById('pruefen').addEventListener('click',()=>{
+  if(slots.includes(null)){
+    document.getElementById('rueck').textContent='Es sind noch nicht alle Felder gefüllt.';
+    return;
+  }
+  const linkeOk  = links.includes(slots[0]) && links.includes(slots[1]) && slots[0]!==slots[1];
+  const rechteOk = rechts.includes(slots[2]) && rechts.includes(slots[3]) && slots[2]!==slots[3];
+
+  document.querySelectorAll('.slot').forEach(s=>{
+    const i=+s.dataset.slot;
+    const ok = i<2 ? links.includes(slots[i]) : rechts.includes(slots[i]);
+    s.classList.add(ok?'richtig':'falsch');
+  });
+
+  const r = document.getElementById('rueck');
+  if(linkeOk && rechteOk){
+    r.textContent='Richtig. Wasser und Kohlenstoffdioxid gehen hinein, Sauerstoff und Glukose kommen heraus.';
+    r.style.color='var(--blatt)';
+  } else {
+    r.textContent='Noch nicht ganz. Denk daran: Stickstoff und Wärme spielen in dieser Gleichung keine Rolle.';
+    r.style.color='var(--membran)';
+  }
+});
+
+document.getElementById('reset').addEventListener('click',()=>{
+  slots=[null,null,null,null];
+  zeichneSlots();
+});
+zeichneSlots();
+
+/* =========================================================
+   TEIL 3: Licht-Labor
+   ========================================================= */
+const regler = document.getElementById('licht');
+const blasenG = document.getElementById('blasen');
+
+function laborUpdate(){
+  const l = +regler.value;
+  // Sättigungskurve: viel Licht bringt irgendwann kaum noch mehr
+  const foto = Math.round(100*(1-Math.exp(-l/28)));   // erzeugte Sauerstoffteilchen pro Minute
+  const atmung = 30;                                  // verbrauchte Teilchen, Tag und Nacht gleich
+  const netto = foto - atmung;
+
+  document.getElementById('lichtwert').textContent = l+' %';
+  document.getElementById('mFoto').textContent  = foto+' Teilchen';
+  document.getElementById('mAtm').textContent   = atmung+' Teilchen';
+  document.getElementById('mNetto').textContent = (netto>0?'+':'')+netto+' Teilchen';
+
+  // Himmel und Sonne
+  const hell = Math.round(l*0.01*255);
+  document.getElementById('himmel').setAttribute('fill',
+    l<10 ? '#16243a' : 'rgb('+(180+hell*0.28)+','+(215+hell*0.14)+',245)');
+  document.getElementById('sonnekreis').setAttribute('opacity', Math.max(0.08, l/100));
+  document.getElementById('sonnenstrahlen').setAttribute('opacity', Math.max(0, (l-15)/85));
+
+  // Zwei Fälle: Überschuss steigt als weiße Bläschen auf,
+  // Unterschuss wird als blaue Teilchen aus dem Wasser aufgenommen (nach unten in die Blätter).
+  const blattpunkte = [[188,262],[236,238],[186,212],[238,186],[196,160],[214,286],[224,300]];
+  const abgabe = netto >= 0;
+  const anzahl = Math.max(0, Math.round(Math.abs(netto)/5));
+  blasenG.innerHTML='';
+  for(let i=0;i<anzahl;i++){
+    const p = blattpunkte[i % blattpunkte.length];
+    const zielX = p[0] + (Math.random()-0.5)*16;
+    const zielY = p[1] - 6 + (Math.random()-0.5)*10;
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+
+    if(abgabe){
+      // Start am Blatt, Weg nach oben bis kurz unter die Wasseroberfläche
+      c.setAttribute('cx', zielX);
+      c.setAttribute('cy', zielY);
+      c.setAttribute('r', 3+Math.random()*2.5);
+      c.setAttribute('fill', '#ffffff');
+      c.setAttribute('class','blase');
+      c.style.setProperty('--auf', -(zielY-104)+'px');
+    } else {
+      // Start im freien Wasser über dem Blatt, Weg nach unten bis ins Blatt
+      const startY = Math.max(110, zielY-92);
+      c.setAttribute('cx', zielX + (Math.random()-0.5)*30);
+      c.setAttribute('cy', startY);
+      c.setAttribute('r', 2.4+Math.random()*1.4);
+      c.setAttribute('fill', '#2b83a6');
+      c.setAttribute('class','blase teilchen');
+      c.style.setProperty('--auf', (zielY-startY)+'px');
+    }
+    c.style.animationDelay = (Math.random()*3.6)+'s';
+    blasenG.appendChild(c);
+  }
+
+  const s = document.getElementById('status');
+  if(l===0){
+    s.innerHTML='<b>Stockdunkel.</b> Die Fotosynthese steht still, die Zellatmung läuft weiter. Die blauen Punkte zeigen Sauerstoff, den die Pflanze jetzt aus dem Wasser aufnimmt, statt welchen abzugeben.';
+  } else if(netto<0){
+    s.innerHTML='<b>Dämmerung.</b> Die Fotosynthese hat begonnen, stellt aber noch weniger Sauerstoff her, als die Zellatmung verbraucht. Die Pflanze holt sich den Rest weiterhin aus dem Wasser, blaue Punkte nach innen.';
+  } else if(netto<15){
+    s.innerHTML='<b>Trüber Tag.</b> Herstellung und Verbrauch halten sich fast die Waage. Nur einzelne Bläschen kommen durch.';
+  } else if(l<75){
+    s.innerHTML='<b>Guter Lichttag.</b> Die Pflanze stellt deutlich mehr Sauerstoff her, als sie selbst braucht. Der Überschuss steigt als weiße Bläschen auf.';
+  } else {
+    s.innerHTML='<b>Volle Sonne.</b> Mehr Licht bringt kaum noch mehr Zucker. Jetzt begrenzen Kohlenstoffdioxid und Wärme die Fotosynthese, nicht mehr das Licht.';
+  }
+}
+regler.addEventListener('input', laborUpdate);
+laborUpdate();
+
+/* =========================================================
+   TEIL 4: Quiz
+   ========================================================= */
+const fragen = [
+  {f:"Wo genau in der Zelle läuft die Fotosynthese ab?",
+   a:["Im Zellkern","In den Chloroplasten","In den Mitochondrien","In der Vakuole"], r:1,
+   e:"In den Chloroplasten sitzt das Chlorophyll, das Licht einfängt."},
+  {f:"Welche Stoffe braucht die Pflanze für die Fotosynthese?",
+   a:["Sauerstoff und Zucker","Wasser und Kohlenstoffdioxid","Stickstoff und Wasser","Glukose und Wärme"], r:1,
+   e:"Wasser kommt aus der Wurzel, Kohlenstoffdioxid aus der Luft."},
+  {f:"Was entsteht bei der Fotosynthese?",
+   a:["Sauerstoff und Glukose","Kohlenstoffdioxid und Wasser","Nur Wärme","Stärke und Stickstoff"], r:0,
+   e:"Glukose bleibt in der Pflanze, überschüssiger Sauerstoff geht in die Luft."},
+  {f:"Als was speichert die Pflanze den Zucker?",
+   a:["Als Fett","Als Stärke","Als Eiweiß","Als Zellsaft"], r:1,
+   e:"Stärke ist die Speicherform. Deshalb weist man sie in Blättern mit Jodlösung nach."},
+  {f:"Welche drei Teile hat nur die Pflanzenzelle, nicht die Tierzelle?",
+   a:["Zellkern, Ribosomen, Membran","Zellwand, Chloroplasten, Vakuole","Mitochondrien, Zellplasma, Zellkern","Tonoplast, Zellkern, Ribosomen"], r:1,
+   e:"Zellwand, Chloroplasten und die große Vakuole sind typisch pflanzlich."},
+  {f:"Wofür ist die Vakuole zuständig?",
+   a:["Sie stellt Eiweiße her","Sie speichert Zellsaft und hält die Zelle prall","Sie steuert die Zellteilung","Sie fängt Licht ein"], r:1,
+   e:"Ihr Innendruck stützt Blätter und Stängel. Fehlt Wasser, welkt die Pflanze."},
+  {f:"Was passiert in den Mitochondrien?",
+   a:["Fotosynthese","Zellatmung","Speicherung von Wasser","Herstellung von Chlorophyll"], r:1,
+   e:"Zellatmung baut Zucker mit Sauerstoff ab und liefert Energie. Sie läuft auch nachts."},
+  {f:"Woher kommt das Wort Fotosynthese?",
+   a:["Licht und Aufbau","Blatt und Grün","Wasser und Luft","Sonne und Zucker"], r:0,
+   e:"Griechisch phos heißt Licht, synthesis heißt Aufbau."}
+];
+
+let score=0, beantwortet=0;
+const box = document.getElementById('quizbox');
+
+fragen.forEach((q,qi)=>{
+  const d=document.createElement('div'); d.className='frage';
+  const p=document.createElement('p'); p.className='f'; p.textContent=(qi+1)+'. '+q.f; d.appendChild(p);
+  const g=document.createElement('div'); g.className='antw';
+  q.a.forEach((txt,ai)=>{
+    const b=document.createElement('button'); b.textContent=txt;
+    b.addEventListener('click',()=>{
+      if(d.dataset.fertig) return;
+      d.dataset.fertig='1'; beantwortet++;
+      g.querySelectorAll('button').forEach((bb,bi)=>{
+        bb.disabled=true;
+        if(bi===q.r) bb.classList.add('ok');
+      });
+      if(ai!==q.r) b.classList.add('nope'); else score++;
+      d.querySelector('.erklaerung').classList.add('zeig');
+      document.getElementById('punkte').textContent =
+        score+' von '+fragen.length+' richtig'+(beantwortet===fragen.length?' – fertig.':'');
+    });
+    g.appendChild(b);
+  });
+  d.appendChild(g);
+  const e=document.createElement('p'); e.className='erklaerung'; e.textContent=q.e; d.appendChild(e);
+  box.appendChild(d);
+});
+</script>
+</body>
+</html>

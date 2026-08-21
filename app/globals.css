@@ -42,6 +42,10 @@
   --tag-chemie-text:   #5ddc95;
   --tag-chemie-border: rgba(80, 220, 140, 0.30);
 
+  --tag-bio-bg:        rgba(201, 149, 74, 0.10);
+  --tag-bio-text:      #c9954a;
+  --tag-bio-border:    rgba(201, 149, 74, 0.30);
+
   --tag-deutsch-bg:     rgba(220, 110, 200, 0.10);
   --tag-deutsch-text:   #de7bcc;
   --tag-deutsch-border: rgba(220, 110, 200, 0.30);
@@ -456,6 +460,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 [data-subject="Mathematik"] .subject-tag { --tag-bg: var(--tag-mathe-bg); --tag-text: var(--tag-mathe-text); --tag-border: var(--tag-mathe-border); }
 [data-subject="Physik"]     .subject-tag { --tag-bg: var(--tag-physik-bg); --tag-text: var(--tag-physik-text); --tag-border: var(--tag-physik-border); }
 [data-subject="Chemie"]     .subject-tag { --tag-bg: var(--tag-chemie-bg); --tag-text: var(--tag-chemie-text); --tag-border: var(--tag-chemie-border); }
+[data-subject="Biologie"]   .subject-tag { --tag-bg: var(--tag-bio-bg);     --tag-text: var(--tag-bio-text);     --tag-border: var(--tag-bio-border); }
 [data-subject="Deutsch"]    .subject-tag { --tag-bg: var(--tag-deutsch-bg); --tag-text: var(--tag-deutsch-text); --tag-border: var(--tag-deutsch-border); }
 [data-subject="Allgemein"]  .subject-tag { --tag-bg: var(--tag-allgemein-bg); --tag-text: var(--tag-allgemein-text); --tag-border: var(--tag-allgemein-border); }
 [data-subject="Musik"]      .subject-tag { --tag-bg: var(--tag-musik-bg);     --tag-text: var(--tag-musik-text);     --tag-border: var(--tag-musik-border); }
