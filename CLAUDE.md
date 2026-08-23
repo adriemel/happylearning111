@@ -17,7 +17,7 @@ Two steps only:
 ```js
 {
   id: "short-unique-id",          // lowercase, no spaces, used as React key
-  subject: "Physik",              // one of: Mathematik | Physik | Chemie | Biologie | Deutsch | Musik | Allgemein | AI für Kinder | Games
+  subject: "Physik",              // one of: Mathematik | Physik | Chemie | Biologie | Erdkunde | Deutsch | Musik | Allgemein | AI für Kinder | Games
   file: "filename.html",          // must match the file in /public/pages/ exactly
   href: "/pages/filename.html",   // same as file, prefixed with /pages/
   lang: "DE",                     // language of the target page: "DE" or "EN"
@@ -74,7 +74,7 @@ HappyLearning/
 ## Design System
 - **Fonts:** Instrument Serif (title/card titles) · Syne (UI/body) · DM Mono (tags/labels/mono)
 - **Key colors:** `#0b0c0f` bg · `#e4ddd4` text · `#b5f23d` lime accent
-- **Subject tag colors:** Mathematik `#ffb02e` · Physik `#8e9dff` · Chemie `#5ddc95` · Biologie `#c9954a` · Deutsch `#de7bcc` · Musik `#ff6b9d` · Allgemein `#b398ff`
+- **Subject tag colors:** Mathematik `#ffb02e` · Physik `#8e9dff` · Chemie `#5ddc95` · Biologie `#c9954a` · Erdkunde `#2fb0c9` · Deutsch `#de7bcc` · Musik `#ff6b9d` · Allgemein `#b398ff`
 - **CSS variables** defined in `:root` in `globals.css` — change there to retheme
 - Dark theme throughout; cards lift on hover with lime border glow
 - `data-density` on `<html>` drives grid columns + card padding (set by `LernhubApp` via `useEffect`)
@@ -87,7 +87,7 @@ Persists `{ density: "cozy", descriptions: "show", lang: "de" }`. Toggled from t
 - **Spacious** — 3 cols with more gap/padding
 
 ## HTML Files
-All 22 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets.
+All 23 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets.
 
 | File | DE Title | Subject | Lang | API |
 |------|----------|---------|------|-----|
@@ -99,6 +99,7 @@ All 22 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts
 | stoffgemische-labor.html | Heterogene Stoffgemische | Chemie | DE | |
 | quiz-Chemie.html | Quiz: Chemie-Klassenarbeit | Chemie | DE | |
 | pflanzenzelle-fotosynthese.html | Pflanzenzelle & Fotosynthese | Biologie | DE | |
+| wetter-klima.html | Wetter & Klima Kompass | Erdkunde | DE | |
 | Fabulator.html | Fabulator | Deutsch | DE | ✓ |
 | pangaea_ai_training_wiki.html | KI-Training & Pangaea | Allgemein | EN | |
 | html-lernen.html | HTML Lernen | Allgemein | DE | |
