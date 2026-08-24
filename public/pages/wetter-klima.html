@@ -290,66 +290,127 @@
 
   /* ============ JAHRESZEITEN ============ */
   .orbit-wrap{
-    display:grid; grid-template-columns:1.05fr .95fr; gap:34px; align-items:center;
+    display:grid; grid-template-columns:minmax(0,1fr) 230px; gap:24px; align-items:start;
   }
-  .orbit{
-    position:relative; width:100%; max-width:420px; aspect-ratio:1; margin:76px auto 84px;
-    border:2px dashed var(--line-strong); border-radius:50%;
+  .season-stage{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px;
+    box-shadow:var(--shadow);
   }
-  .orbit-sun{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:64px; height:64px; border-radius:50%;
-    background:radial-gradient(circle at 35% 32%, #FFE7B0, var(--amber) 72%);
-    box-shadow:0 0 0 10px var(--amber-tint);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'IBM Plex Mono',monospace; font-size:.62rem; font-weight:700; color:var(--teal-deep);
+  .season-graph-title{
+    color:#315D9F;
+    font-family:'Fraunces', Georgia, serif;
+    font-size:1.35rem;
+    font-weight:700;
+    line-height:1.15;
+    padding:2px 4px 10px;
+    border-bottom:1px solid color-mix(in srgb, #315D9F 55%, transparent);
+    margin-bottom:12px;
   }
-  .earth-btn{
-    position:absolute; width:112px; height:112px; border-radius:50%;
-    border:2px solid var(--line-strong); background:var(--card);
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-    padding:0;
+  .season-visual{
+    position:relative;
+    min-height:360px;
   }
-  .earth-btn .globe{
-    position:relative; width:82px; height:82px; border-radius:50%; overflow:hidden;
-    display:flex; align-items:center; justify-content:center; font-size:52px;
+  .season-svg{
+    display:block;
+    width:100%;
+    height:auto;
+    min-height:360px;
+    background:linear-gradient(180deg, #fff 0%, color-mix(in srgb, var(--sky-tint) 32%, #fff) 100%);
+    border-radius:6px;
+  }
+  .orbit-line{ stroke:#75C8F7; stroke-width:2.4; stroke-dasharray:12 10; fill:none; }
+  .season-sun-glow{ filter:drop-shadow(0 0 12px rgba(255,210,42,.62)); }
+  .season-earth{
+    transition:transform .45s cubic-bezier(.2,.72,.2,1);
+    transform-box:fill-box;
+    transform-origin:center;
+  }
+  .earth-axis{ stroke:#34383F; stroke-width:6; stroke-linecap:round; }
+  .earth-rim{ fill:none; stroke:rgba(11,26,48,.5); stroke-width:2; }
+  .earth-grid{ stroke:rgba(47,74,92,.22); stroke-width:1; fill:none; }
+  .earth-equator{ stroke:rgba(84,66,34,.55); stroke-width:2; fill:none; }
+  .earth-label{
+    font-family:'Figtree', sans-serif;
+    font-size:13px;
+    font-weight:800;
+    fill:#fff;
+    paint-order:stroke;
+    stroke:rgba(20,34,58,.48);
+    stroke-width:3px;
+  }
+  .season-date-label{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:14px;
+    font-weight:700;
+    fill:var(--teal-deep);
+  }
+  .season-ray{
+    stroke:#FFD54A;
+    stroke-width:3;
+    stroke-linecap:round;
+    opacity:.65;
+  }
+  .season-side{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-width:0;
+    grid-column:2;
+    grid-row:1 / span 2;
+  }
+  .season-buttons{
+    display:grid;
+    gap:10px;
+  }
+  .season-choice{
+    border:0;
+    border-radius:6px;
+    background:#3768A8;
+    color:#fff;
+    min-height:42px;
+    padding:8px 14px;
+    font-size:1rem;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 1px 0 rgba(0,0,0,.08);
+    transition:background .16s ease, transform .16s ease, box-shadow .16s ease;
+  }
+  .season-choice:hover{ transform:translateY(-1px); box-shadow:0 6px 14px -12px rgba(22,45,82,.7); }
+  .season-choice.active{ background:#F5CD4D; color:#fff; }
+  .season-choice:focus-visible{ outline-color:#F5CD4D; }
+  .solar-angle-card{
+    margin:2px 0 0;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .solar-angle-card svg{
+    display:block;
+    width:100%;
+    height:auto;
+    background:linear-gradient(180deg,#fff 0%, #EEF6FB 100%);
+  }
+  .solar-angle-card figcaption{
+    padding:10px 12px;
+    border-top:1px solid var(--line);
     background:var(--sky-tint);
+    color:var(--ink-soft);
+    font-size:.78rem;
+    line-height:1.35;
   }
-  .earth-btn .night{
-    position:absolute; inset:0; border-radius:50%;
-    background:linear-gradient(var(--nrot,0deg), transparent 0%, transparent var(--day,50%), rgba(6,9,16,.88) var(--day,50%), rgba(6,9,16,.88) 100%);
-  }
-  .earth-btn .axis{
-    position:absolute; width:2px; height:104px; background:var(--ink-faint);
-    left:50%; top:50%; transform:translate(-50%,-50%) rotate(-20deg);
-    pointer-events:none;
-  }
-  .earth-btn .axis::after{
-    content:"N"; position:absolute; top:-16px; left:50%; transform:translateX(-50%) rotate(20deg);
-    font-family:'IBM Plex Mono',monospace; font-size:.66rem; font-weight:700; color:var(--ink-faint);
-  }
-  .earth-btn.pos-top{ top:-56px; left:50%; transform:translateX(-50%); }
-  .earth-btn.pos-right{ top:50%; right:-56px; transform:translateY(-50%); }
-  .earth-btn.pos-bottom{ bottom:-56px; left:50%; transform:translateX(-50%); }
-  .earth-btn.pos-left{ top:50%; left:-56px; transform:translateY(-50%); }
-  .earth-btn:hover{ border-color:var(--teal); }
-  .earth-btn.active{
-    border-color:var(--teal); box-shadow:0 0 0 6px var(--teal-tint);
-    transform:translateX(-50%) scale(1.08);
-  }
-  .earth-btn.pos-right.active{ transform:translateY(-50%) scale(1.08); }
-  .earth-btn.pos-left.active{ transform:translateY(-50%) scale(1.08); }
-  .earth-btn .label{
-    position:absolute; font-family:'IBM Plex Mono',monospace; font-size:.7rem; font-weight:600;
-    color:var(--ink-faint); white-space:nowrap;
-  }
-  .earth-btn.pos-top .label{ top:-24px; }
-  .earth-btn.pos-bottom .label{ bottom:-24px; }
-  .earth-btn.pos-left .label{ left:50%; top:100%; transform:translateX(-50%); margin-top:6px; }
-  .earth-btn.pos-right .label{ left:50%; top:100%; transform:translateX(-50%); margin-top:6px; }
+  .solar-angle-card strong{ color:var(--ink); }
 
   .season-info{ min-height:260px; }
+  .season-info-under{
+    grid-column:1;
+    grid-row:2;
+    min-height:auto;
+  }
   .season-info .tag{
     display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:.74rem; font-weight:600;
     padding:4px 10px; border-radius:100px; background:var(--teal-tint); color:var(--teal); margin-bottom:12px;
@@ -539,14 +600,15 @@
     .hero-photo, .hero-photo img{ min-height:230px; }
     .media-grid{ grid-template-columns:1fr; }
     .orbit-wrap{ grid-template-columns:1fr; }
-    .orbit{ max-width:300px; margin:64px auto 70px; }
-    .earth-btn{ width:92px; height:92px; }
-    .earth-btn .globe{ width:66px; height:66px; font-size:40px; }
-    .earth-btn .axis{ height:86px; }
-    .earth-btn.pos-top{ top:-46px; }
-    .earth-btn.pos-right{ right:-46px; }
-    .earth-btn.pos-bottom{ bottom:-46px; }
-    .earth-btn.pos-left{ left:-46px; }
+    .season-stage{ padding:10px; }
+    .season-graph-title{ font-size:1.1rem; padding-bottom:8px; }
+    .season-visual{ min-height:280px; }
+    .season-svg{ min-height:280px; }
+    .season-buttons{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .season-choice{ min-height:38px; font-size:.92rem; padding:8px 10px; }
+    .season-info{ min-height:auto; }
+    .season-side{ grid-column:auto; grid-row:auto; }
+    .season-info-under{ grid-column:auto; grid-row:auto; }
     .vs-grid{ grid-template-columns:1fr; }
     .cycle-wrap{ grid-template-columns:1fr; }
     .zones-wrap{ grid-template-columns:88px 1fr; gap:16px; }
@@ -610,35 +672,156 @@
           <p>Die Erde umkreist die Sonne einmal im Jahr auf einer leicht ovalen Bahn. Entscheidend für die Jahreszeiten ist aber nicht die Entfernung zur Sonne &ndash; sondern dass die Erdachse um <strong>23,5&deg;</strong> geneigt ist, und zwar <strong>immer in dieselbe Richtung</strong>. Dadurch wandert der Punkt, an dem die Sonne mittags senkrecht steht (der <strong>Zenitstand</strong>), im Laufe des Jahres zwischen dem nördlichen und südlichen Wendekreis hin und her. Klicke auf eine der vier Erdpositionen:</p>
         </div>
         <div class="lesson-points" aria-label="Wichtigste Merkpunkte zu den Jahreszeiten">
-          <div><strong>Nicht die Entfernung</strong> Die Erdumlaufbahn ist nur leicht oval. Der Abstand zur Sonne erklärt unsere Jahreszeiten nicht.</div>
+          <div><strong>Nicht die Entfernung zur Sonne zählt</strong> Die Erdumlaufbahn ist nur leicht oval. Der Abstand zur Sonne erklärt unsere Jahreszeiten nicht.</div>
           <div><strong>Die Achse zählt</strong> Die Erdachse bleibt beim Umlauf parallel ausgerichtet und ist um 23,5&deg; geneigt.</div>
           <div><strong>Nord und Süd entgegengesetzt</strong> Ist bei uns Sommer, ist auf der Südhalbkugel Winter.</div>
         </div>
         <div class="orbit-wrap">
-          <div class="orbit" id="orbit">
-            <div class="orbit-sun">Sonne<br>☀️</div>
-            <button class="earth-btn pos-top" data-season="sommer" style="--nrot:0deg; --day:100%" aria-label="Sommeranfang">
-              <span class="label">21. Juni</span>
-              <span class="globe"><span>🌍</span><span class="night"></span></span>
-              <span class="axis"></span>
-            </button>
-            <button class="earth-btn pos-right" data-season="herbst" style="--nrot:90deg; --day:50%" aria-label="Herbstanfang">
-              <span class="globe"><span>🌍</span><span class="night"></span></span>
-              <span class="axis"></span>
-              <span class="label">23. Sept.</span>
-            </button>
-            <button class="earth-btn pos-bottom" data-season="winter" style="--nrot:180deg; --day:0%" aria-label="Winteranfang">
-              <span class="globe"><span>🌍</span><span class="night"></span></span>
-              <span class="axis"></span>
-              <span class="label">21. Dez.</span>
-            </button>
-            <button class="earth-btn pos-left" data-season="fruehling" style="--nrot:270deg; --day:50%" aria-label="Frühlingsanfang">
-              <span class="label">20. März</span>
-              <span class="globe"><span>🌍</span><span class="night"></span></span>
-              <span class="axis"></span>
-            </button>
+          <div class="season-stage">
+            <div class="season-graph-title">Jahreszeiten der Nordhalbkugel</div>
+            <div class="season-visual">
+              <svg class="season-svg" id="seasonSvg" viewBox="0 0 900 470" role="img" aria-labelledby="seasonSvgTitle seasonSvgDesc">
+                <title id="seasonSvgTitle">Jahreszeiten der Nordhalbkugel</title>
+                <desc id="seasonSvgDesc">Eine geneigte Erde bewegt sich auf einer elliptischen Bahn um die Sonne. Die Erdachse bleibt parallel ausgerichtet; die Nordhalbkugel zeigt im Sommer zur Sonne und im Winter von ihr weg.</desc>
+                <defs>
+                  <radialGradient id="sunGradient" cx="35%" cy="32%" r="72%">
+                    <stop offset="0%" stop-color="#FFF8B8"></stop>
+                    <stop offset="55%" stop-color="#FFE238"></stop>
+                    <stop offset="100%" stop-color="#F4B21E"></stop>
+                  </radialGradient>
+                  <radialGradient id="earthGradient" cx="35%" cy="28%" r="74%">
+                    <stop offset="0%" stop-color="#D8F3FF"></stop>
+                    <stop offset="38%" stop-color="#69B9EA"></stop>
+                    <stop offset="72%" stop-color="#366FA9"></stop>
+                    <stop offset="100%" stop-color="#1F335F"></stop>
+                  </radialGradient>
+                  <linearGradient id="earthNightGradient" gradientUnits="userSpaceOnUse" x1="58" y1="0" x2="-58" y2="0">
+                    <stop offset="0%" stop-color="#050814" stop-opacity=".78"></stop>
+                    <stop offset="44%" stop-color="#07101D" stop-opacity=".48"></stop>
+                    <stop offset="56%" stop-color="#07101D" stop-opacity=".12"></stop>
+                    <stop offset="100%" stop-color="#07101D" stop-opacity="0"></stop>
+                  </linearGradient>
+                  <clipPath id="earthClip">
+                    <circle cx="0" cy="0" r="58"></circle>
+                  </clipPath>
+                  <filter id="softEarthShadow" x="-40%" y="-40%" width="180%" height="180%">
+                    <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#10213A" flood-opacity=".22"></feDropShadow>
+                  </filter>
+                </defs>
+
+                <ellipse class="orbit-line" cx="438" cy="242" rx="350" ry="150"></ellipse>
+
+                <g class="season-sun-glow" aria-hidden="true">
+                  <circle cx="438" cy="242" r="62" fill="#FFF4A2" opacity=".36"></circle>
+                  <circle cx="438" cy="242" r="49" fill="url(#sunGradient)"></circle>
+                  <path d="M438 188 L446 213 L472 205 L455 226 L478 240 L451 242 L466 265 L443 253 L438 280 L432 253 L408 265 L424 242 L398 240 L421 226 L404 205 L430 213 Z" fill="#FFE84D" opacity=".58"></path>
+                </g>
+
+                <g id="seasonRays" aria-hidden="true"></g>
+
+                <text id="seasonDateLabel" class="season-date-label" x="0" y="0">21. Dezember</text>
+
+                <g id="seasonEarth" class="season-earth" filter="url(#softEarthShadow)" transform="translate(788 242)">
+                  <line class="earth-axis" x1="-25" y1="78" x2="25" y2="-78"></line>
+                  <circle r="58" fill="url(#earthGradient)"></circle>
+                  <g clip-path="url(#earthClip)">
+                    <path d="M-38 -38 C-18 -60 16 -50 36 -30 C15 -24 7 -13 -3 -4 C-20 -7 -35 -15 -38 -38 Z" fill="#D8B15B" opacity=".9"></path>
+                    <path d="M-42 -4 C-22 -18 -2 -15 14 0 C5 20 -20 35 -42 28 C-50 16 -52 5 -42 -4 Z" fill="#C9A14B" opacity=".82"></path>
+                    <path d="M22 14 C40 8 53 21 49 39 C33 47 20 37 22 14 Z" fill="#C4A04A" opacity=".8"></path>
+                    <g id="seasonHemispheres" transform="rotate(23.5)">
+                      <rect id="northTint" x="-82" y="-82" width="164" height="82" fill="#F5CD4D" opacity=".24"></rect>
+                      <rect id="southTint" x="-82" y="0" width="164" height="82" fill="#4EA5E8" opacity=".18"></rect>
+                      <line class="earth-equator" x1="-78" y1="0" x2="78" y2="0"></line>
+                    </g>
+                    <g class="earth-grid">
+                      <ellipse rx="58" ry="17"></ellipse>
+                      <ellipse rx="58" ry="34"></ellipse>
+                      <ellipse rx="16" ry="58"></ellipse>
+                      <ellipse rx="34" ry="58"></ellipse>
+                      <line x1="-58" y1="0" x2="58" y2="0"></line>
+                      <line x1="0" y1="-58" x2="0" y2="58"></line>
+                    </g>
+                    <rect id="earthNight" x="-58" y="-58" width="116" height="116" fill="url(#earthNightGradient)"></rect>
+                  </g>
+                  <circle class="earth-rim" r="58"></circle>
+                  <text class="earth-label" x="0" y="-11" text-anchor="middle" transform="rotate(23.5)">Nordhalbkugel</text>
+                  <text class="earth-label" x="0" y="20" text-anchor="middle" transform="rotate(23.5)">Südhalbkugel</text>
+                </g>
+              </svg>
+            </div>
           </div>
-          <div class="card season-info" id="seasonInfo"><!-- filled by JS --></div>
+          <div class="season-side">
+            <div class="season-buttons" aria-label="Jahreszeit auswählen">
+              <button class="season-choice" data-season="winter" type="button">Winter</button>
+              <button class="season-choice" data-season="fruehling" type="button">Frühling</button>
+              <button class="season-choice" data-season="sommer" type="button">Sommer</button>
+              <button class="season-choice" data-season="herbst" type="button">Herbst</button>
+            </div>
+            <figure class="solar-angle-card" aria-labelledby="solarAngleTitle">
+              <svg viewBox="0 0 310 245" role="img" aria-labelledby="solarAngleTitle solarAngleDesc">
+                <title id="solarAngleTitle">Gleiche Strahlenmenge, verschiedene Fläche</title>
+                <desc id="solarAngleDesc">Flach eintreffende Sonnenstrahlen verteilen dieselbe Energie auf eine größere Erdoberfläche als steil eintreffende Strahlen.</desc>
+                <defs>
+                  <radialGradient id="miniEarthGrad" cx="33%" cy="28%" r="78%">
+                    <stop offset="0%" stop-color="#F3FBFF"></stop>
+                    <stop offset="26%" stop-color="#89D3F5"></stop>
+                    <stop offset="58%" stop-color="#2F78B9"></stop>
+                    <stop offset="100%" stop-color="#18244E"></stop>
+                  </radialGradient>
+                  <linearGradient id="miniRayGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#FFF46A" stop-opacity=".72"></stop>
+                    <stop offset="45%" stop-color="#FFE449"></stop>
+                    <stop offset="100%" stop-color="#FFC51F" stop-opacity=".82"></stop>
+                  </linearGradient>
+                  <linearGradient id="miniNightGrad" x1="168" y1="80" x2="322" y2="152" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#07101D" stop-opacity="0"></stop>
+                    <stop offset="58%" stop-color="#07101D" stop-opacity=".42"></stop>
+                    <stop offset="100%" stop-color="#030712" stop-opacity=".86"></stop>
+                  </linearGradient>
+                  <filter id="miniBlueGlow" x="-35%" y="-35%" width="170%" height="170%">
+                    <feGaussianBlur stdDeviation="14" result="blur"></feGaussianBlur>
+                    <feMerge>
+                      <feMergeNode in="blur"></feMergeNode>
+                      <feMergeNode in="SourceGraphic"></feMergeNode>
+                    </feMerge>
+                  </filter>
+                  <clipPath id="miniEarthClip"><circle cx="224" cy="126" r="108"></circle></clipPath>
+                </defs>
+                <rect x="0" y="0" width="310" height="245" fill="#F4F8FB"></rect>
+                <circle cx="224" cy="126" r="126" fill="#7EB6F2" opacity=".34" filter="url(#miniBlueGlow)"></circle>
+                <rect x="-18" y="41" width="179" height="24" fill="url(#miniRayGrad)" opacity="1"></rect>
+                <rect x="-18" y="132" width="161" height="24" fill="url(#miniRayGrad)" opacity="1"></rect>
+                <line x1="-18" y1="52" x2="161" y2="52" stroke="#FFF27A" stroke-width="3" opacity=".8"></line>
+                <line x1="-18" y1="143" x2="143" y2="143" stroke="#FFF27A" stroke-width="3" opacity=".8"></line>
+                <rect x="83" y="40" width="39" height="116" fill="#DCE9F4" opacity=".42"></rect>
+                <line x1="193" y1="248" x2="255" y2="8" stroke="#252A31" stroke-width="7" stroke-linecap="round"></line>
+                <circle cx="224" cy="126" r="108" fill="url(#miniEarthGrad)"></circle>
+                <g clip-path="url(#miniEarthClip)">
+                  <path d="M134 61 C154 33 198 23 235 38 C222 55 196 65 168 62 C153 60 143 61 134 61 Z" fill="#F0E8D6" opacity=".9"></path>
+                  <path d="M147 72 C171 58 204 66 222 88 C205 100 177 99 154 89 C145 84 142 78 147 72 Z" fill="#7DB17A" opacity=".88"></path>
+                  <path d="M136 105 C162 82 196 88 218 111 C210 142 175 169 142 148 C129 133 126 116 136 105 Z" fill="#D9B65E" opacity=".86"></path>
+                  <path d="M217 139 C240 129 266 146 259 174 C237 187 214 168 217 139 Z" fill="#CFA955" opacity=".84"></path>
+                  <path d="M184 21 C211 11 238 16 257 33 C238 40 209 38 184 21 Z" fill="#3F8D67" opacity=".8"></path>
+                  <rect x="112" y="126" width="236" height="118" fill="#6A561D" opacity=".54" transform="rotate(17 224 126)"></rect>
+                  <line x1="110" y1="126" x2="340" y2="126" stroke="#6B5522" stroke-width="3" transform="rotate(17 224 126)"></line>
+                  <g stroke="rgba(66,73,73,.25)" fill="none">
+                    <ellipse cx="224" cy="126" rx="108" ry="30"></ellipse>
+                    <ellipse cx="224" cy="126" rx="108" ry="58"></ellipse>
+                    <ellipse cx="224" cy="126" rx="30" ry="108"></ellipse>
+                    <ellipse cx="224" cy="126" rx="61" ry="108"></ellipse>
+                    <line x1="116" y1="126" x2="332" y2="126"></line>
+                    <line x1="224" y1="18" x2="224" y2="234"></line>
+                  </g>
+                  <rect x="112" y="18" width="220" height="216" fill="url(#miniNightGrad)"></rect>
+                </g>
+                <circle cx="224" cy="126" r="108" fill="none" stroke="rgba(20,35,65,.55)" stroke-width="2.4"></circle>
+                <text x="222" y="108" text-anchor="middle" transform="rotate(17 222 108)" fill="#fff" font-family="Figtree, sans-serif" font-size="24" font-weight="900" paint-order="stroke" stroke="rgba(25,35,48,.65)" stroke-width="5">Nordhalbkugel</text>
+                <text x="218" y="145" text-anchor="middle" transform="rotate(17 218 145)" fill="#fff" font-family="Figtree, sans-serif" font-size="24" font-weight="900" paint-order="stroke" stroke="rgba(25,35,48,.65)" stroke-width="5">Südhalbkugel</text>
+              </svg>
+              <figcaption><strong>Flacher Sonnenstand:</strong> Dieselbe Strahlenmenge verteilt sich auf eine größere Fläche.</figcaption>
+            </figure>
+          </div>
+          <div class="card season-info season-info-under" id="seasonInfo"><!-- filled by JS --></div>
         </div>
         <div class="note-box">💡 <strong>Achtung, Denkfalle:</strong> Die Erdachse zeigt während des <em>gesamten</em> Umlaufs immer in dieselbe Richtung (parallel) &ndash; sie „kippt" nicht extra zur Sonne hin. Nur weil die Erde weiterwandert, zeigt mal die Nordhalbkugel stärker zur Sonne, mal die Südhalbkugel. Genau das erzeugt Sommer auf der einen und gleichzeitig Winter auf der anderen Hälfte der Erde.</div>
       </div>
@@ -896,51 +1079,101 @@
 
   /* ================= 1. JAHRESZEITEN ================= */
   var seasons = {
+    winter: {
+      date:'21. Dezember', name:'Winteranfang', sub:'Wintersonnenwende',
+      zenit:'südlichen Wendekreis (23,5° S)',
+      text:'Die Nordhalbkugel ist von der Sonne weg geneigt. Die Sonnenstrahlen treffen bei uns sehr flach auf, die Tage sind kurz und die Nächte lang.',
+      tag:'🌙 kürzester Tag, längste Nacht in Niedersachsen (ca. 8 Std. Tageslicht)',
+      x:788, y:242, north:'#67A7DE', northOpacity:.44, south:'#F5CD4D', southOpacity:.24
+    },
+    fruehling: {
+      date:'20. März', name:'Frühlingsanfang', sub:'Frühlings-Tagundnachtgleiche (Äquinoktium)',
+      zenit:'Äquator (0°)',
+      text:'Die Sonne steht senkrecht über dem Äquator. Ab jetzt werden die Tage bei uns länger als die Nächte.',
+      tag:'⚖️ Tag und Nacht je ca. 12 Std.',
+      x:486, y:93, north:'#F5CD4D', northOpacity:.18, south:'#67A7DE', southOpacity:.18
+    },
     sommer: {
       date:'21. Juni', name:'Sommeranfang', sub:'Sommersonnenwende',
       zenit:'nördlichen Wendekreis (23,5° N)',
       text:'Die Nordhalbkugel ist der Sonne zugeneigt. Die Sonnenstrahlen treffen bei uns steiler auf, die Tage sind lang und die Nächte kurz.',
-      tag:'☀️ längster Tag, kürzeste Nacht in Niedersachsen (ca. 16,5 Std. Tageslicht)'
+      tag:'☀️ längster Tag, kürzeste Nacht in Niedersachsen (ca. 16,5 Std. Tageslicht)',
+      x:88, y:242, north:'#F5CD4D', northOpacity:.42, south:'#67A7DE', southOpacity:.32
     },
     herbst: {
       date:'23. September', name:'Herbstanfang', sub:'Herbst-Tagundnachtgleiche (Äquinoktium)',
       zenit:'Äquator (0°)',
       text:'Die Sonne steht mittags senkrecht über dem Äquator. Weltweit sind Tag und Nacht heute etwa gleich lang.',
-      tag:'⚖️ Tag und Nacht je ca. 12 Std.'
-    },
-    winter: {
-      date:'21. Dezember', name:'Winteranfang', sub:'Wintersonnenwende',
-      zenit:'südlichen Wendekreis (23,5° S)',
-      text:'Die Nordhalbkugel ist von der Sonne weg geneigt. Die Sonnenstrahlen treffen bei uns sehr flach auf, die Tage sind kurz und die Nächte lang.',
-      tag:'🌙 kürzester Tag, längste Nacht in Niedersachsen (ca. 8 Std. Tageslicht)'
-    },
-    fruehling: {
-      date:'20. März', name:'Frühlingsanfang', sub:'Frühlings-Tagundnachtgleiche (Äquinoktium)',
-      zenit:'Äquator (0°)',
-      text:'Wie im September steht die Sonne senkrecht über dem Äquator. Ab jetzt werden die Tage bei uns länger als die Nächte.',
-      tag:'⚖️ Tag und Nacht je ca. 12 Std.'
+      tag:'⚖️ Tag und Nacht je ca. 12 Std.',
+      x:486, y:391, north:'#F5CD4D', northOpacity:.18, south:'#67A7DE', southOpacity:.18
     }
   };
-  var earthBtns = document.querySelectorAll('.earth-btn');
+  var seasonBtns = document.querySelectorAll('.season-choice');
   var seasonInfo = document.getElementById('seasonInfo');
+  var seasonEarth = document.getElementById('seasonEarth');
+  var seasonDateLabel = document.getElementById('seasonDateLabel');
+  var seasonRays = document.getElementById('seasonRays');
+  var nightGradient = document.getElementById('earthNightGradient');
+  var northTint = document.getElementById('northTint');
+  var southTint = document.getElementById('southTint');
+  var sunPoint = { x:438, y:242 };
+
+  function setNightGradient(s){
+    var dx = sunPoint.x - s.x;
+    var dy = sunPoint.y - s.y;
+    var len = Math.sqrt(dx * dx + dy * dy) || 1;
+    var ux = dx / len;
+    var uy = dy / len;
+    nightGradient.setAttribute('x1', (-ux * 58).toFixed(2));
+    nightGradient.setAttribute('y1', (-uy * 58).toFixed(2));
+    nightGradient.setAttribute('x2', (ux * 58).toFixed(2));
+    nightGradient.setAttribute('y2', (uy * 58).toFixed(2));
+  }
+
+  function renderSunRays(s){
+    var dx = s.x - sunPoint.x;
+    var dy = s.y - sunPoint.y;
+    var len = Math.sqrt(dx * dx + dy * dy) || 1;
+    var ux = dx / len;
+    var uy = dy / len;
+    var px = -uy;
+    var py = ux;
+    var rays = '';
+    [-30, 0, 30].forEach(function(offset){
+      var x1 = sunPoint.x + ux * 64 + px * offset;
+      var y1 = sunPoint.y + uy * 64 + py * offset;
+      var x2 = s.x - ux * 72 + px * offset;
+      var y2 = s.y - uy * 72 + py * offset;
+      rays += '<line class="season-ray" x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"></line>';
+    });
+    seasonRays.innerHTML = rays;
+  }
+
   function renderSeason(key){
     var s = seasons[key];
+    seasonBtns.forEach(function(btn){ btn.classList.toggle('active', btn.dataset.season === key); });
+    seasonEarth.setAttribute('transform', 'translate('+s.x+' '+s.y+')');
+    seasonDateLabel.textContent = s.date;
+    seasonDateLabel.setAttribute('x', Math.max(18, Math.min(750, s.x - 56)));
+    seasonDateLabel.setAttribute('y', s.y < 150 ? s.y + 92 : s.y - 74);
+    northTint.setAttribute('fill', s.north);
+    northTint.setAttribute('opacity', s.northOpacity);
+    southTint.setAttribute('fill', s.south);
+    southTint.setAttribute('opacity', s.southOpacity);
+    setNightGradient(s);
+    renderSunRays(s);
     seasonInfo.innerHTML =
       '<span class="tag">'+s.tag+'</span>'+
       '<h3>'+s.name+'</h3>'+
       '<span class="date">'+s.date+' &middot; '+s.sub+'</span>'+
-      '<p style="margin:0 0 8px;">'+s.text+'</p>'+
-      '<dl><dt>Zenitstand der Sonne</dt><dd>'+s.zenit+'</dd></dl>';
+      '<p style="margin:0;">'+s.text+'</p>';
   }
-  earthBtns.forEach(function(btn){
+  seasonBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
-      earthBtns.forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
       renderSeason(btn.dataset.season);
     });
   });
-  earthBtns[0].classList.add('active');
-  renderSeason('sommer');
+  renderSeason('winter');
 
   /* ================= 2. WETTERELEMENTE ================= */
   var instruments = [
