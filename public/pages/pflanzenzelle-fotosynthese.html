@@ -120,6 +120,31 @@ h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.5rem,3.4vw,2.1
 .balken{height:9px;background:var(--papier-tief);border:1.5px solid var(--tinte);margin-bottom:20px}
 .balken i{display:block;height:100%;background:var(--blatt);width:0;transition:width .35s}
 
+/* ---------- Mikroskop ---------- */
+.mikro-buehne{
+  background:linear-gradient(160deg,#fffaef,#efe4c8);
+  border:2px solid var(--tinte);
+  border-radius:4px;
+  padding:18px;
+  box-shadow:9px 9px 0 var(--schatten);
+}
+.mikro-stage{position:relative}
+.mikro-stage img{width:100%;height:auto;display:block}
+.mikro-overlay{position:absolute;top:0;left:0;width:100%;height:100%}
+
+.dot{fill:#fffaef;stroke:var(--tinte);stroke-width:2.5;cursor:pointer;transition:fill .15s}
+.dot:hover{fill:var(--blatt-hell)}
+.dot.aktiv{fill:var(--sonne);filter:drop-shadow(0 0 7px rgba(229,160,23,.9))}
+.hot-hitbox{fill:transparent;cursor:pointer}
+
+.marker-pfeil{opacity:0;transition:opacity .2s;transform-box:fill-box;transform-origin:center}
+.marker-pfeil.aktiv{opacity:1;animation:pfeilpuls 1.1s ease-in-out infinite}
+@keyframes pfeilpuls{0%,100%{transform:translate(0,0)}50%{transform:translate(-4px,4px)}}
+
+.stativ-box{fill:none;stroke:var(--membran);stroke-width:3.5;stroke-dasharray:9 7;opacity:0;transition:opacity .2s}
+.stativ-box.aktiv{opacity:1;animation:rahmenpuls 1.6s ease-in-out infinite}
+@keyframes rahmenpuls{0%,100%{opacity:1}50%{opacity:.55}}
+
 /* ---------- Fotosynthese ---------- */
 .blatt-buehne{
   border:2px solid var(--tinte);border-radius:4px;
@@ -246,9 +271,46 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
   <p>Pflanzen bauen sich ihre Nahrung selbst. Dafür brauchen sie nur Licht, Wasser und ein Gas aus der Luft. Auf dieser Seite schaust du dir zuerst an, wie eine Pflanzenzelle aufgebaut ist. Danach findest du heraus, was in ihr passiert, wenn die Sonne scheint.</p>
 </header>
 
-<!-- ============ 1. ZELLE ============ -->
+<!-- ============ 1. MIKROSKOP ============ -->
+<section id="mikroskop" style="animation-delay:.05s">
+  <div class="sec-kopf"><span class="nr">01</span><h2>Aufbau des Mikroskops</h2></div>
+  <p class="sec-intro">Eines der wichtigsten Geräte der Biologen ist das Lichtmikroskop. Es liefert ein stärker vergrößertes und viel genaueres Bild als eine Lupe. Klicke auf einen Punkt in der Zeichnung oder auf einen Begriff in der Liste, um herauszufinden, wofür das jeweilige Bauteil zuständig ist.</p>
+
+  <div class="zell-layout">
+    <div class="mikro-buehne">
+      <div class="mikro-stage">
+        <img src="Microscope.png" alt="Zeichnung eines Lichtmikroskops" class="mikro-bild">
+        <svg class="mikro-overlay" id="mikroOverlay" viewBox="0 0 1023 1537" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Anklickbare Teile des Mikroskops">
+          <defs>
+            <marker id="mikropfeil" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+              <path d="M0,0 L9,4.5 L0,9 z" fill="#e5a017"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <div>
+      <p class="fortschritt"><span id="mzaehler">0</span> von 9 Bauteilen entdeckt</p>
+      <div class="balken"><i id="mbalken"></i></div>
+      <ul class="legende" id="mlegende"></ul>
+      <div class="info" id="minfo">
+        <h3>Wähle ein Bauteil</h3>
+        <p class="rolle">Noch nichts ausgewählt</p>
+        <p>Tippe links in die Zeichnung auf einen Punkt oder auf einen Begriff in der Liste. Hier steht dann, wofür dieses Bauteil zuständig ist.</p>
+      </div>
+    </div>
+  </div>
+
+  <details class="profi">
+    <summary>Für Profis: Wie berechnet man die Gesamtvergrößerung?</summary>
+    <p>Ein Lichtmikroskop vergrößert in zwei Schritten: zuerst das Objektiv, dann noch einmal das Okular. Die Gesamtvergrößerung ergibt sich, wenn man beide Zahlen multipliziert. Ein Objektiv mit 40x und ein Okular mit 10x ergeben zusammen eine 400-fache Vergrößerung. Lichtmikroskope schaffen so meist bis etwa 1000- bis 1500-fache Vergrößerung, mehr geht wegen der Wellenlänge des Lichts nicht.</p>
+  </details>
+</section>
+
+<!-- ============ 2. ZELLE ============ -->
 <section id="zelle" style="animation-delay:.1s">
-  <div class="sec-kopf"><span class="nr">01</span><h2>Die Pflanzenzelle erkunden</h2></div>
+  <div class="sec-kopf"><span class="nr">02</span><h2>Die Pflanzenzelle erkunden</h2></div>
   <p class="sec-intro">Klicke in der Zeichnung auf ein Zellbestandteil oder wähle einen Begriff aus der Liste. Rechts erscheint, was dieses Teil kann. Schaffst du alle zehn?</p>
 
   <div class="zell-layout">
@@ -363,9 +425,9 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
   </details>
 </section>
 
-<!-- ============ 2. FOTOSYNTHESE ============ -->
+<!-- ============ 3. FOTOSYNTHESE ============ -->
 <section id="fotosynthese" style="animation-delay:.15s">
-  <div class="sec-kopf"><span class="nr">02</span><h2>Fotosynthese: Zucker aus Licht</h2></div>
+  <div class="sec-kopf"><span class="nr">03</span><h2>Fotosynthese: Zucker aus Licht</h2></div>
   <p class="sec-intro">In den Chloroplasten steckt der grüne Farbstoff Chlorophyll. Er fängt das Sonnenlicht ein. Mit dieser Energie baut das Blatt aus Wasser und Kohlenstoffdioxid den Zucker Glukose. Sauerstoff bleibt dabei übrig und wird abgegeben.</p>
 
   <div class="wort-herkunft">
@@ -470,9 +532,9 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
   </details>
 </section>
 
-<!-- ============ 3. LICHT-LABOR ============ -->
+<!-- ============ 4. LICHT-LABOR ============ -->
 <section id="labor" style="animation-delay:.2s">
-  <div class="sec-kopf"><span class="nr">03</span><h2>Licht-Labor: Versuch am Bildschirm</h2></div>
+  <div class="sec-kopf"><span class="nr">04</span><h2>Licht-Labor: Versuch am Bildschirm</h2></div>
   <p class="sec-intro">Eine Wasserpflanze steht im Glas. Ziehe den Regler und beobachte, wie viele Sauerstoffbläschen aufsteigen. So haben Forscherinnen und Forscher die Fotosynthese wirklich gemessen: durch Zählen der Bläschen.</p>
 
   <div class="labor">
@@ -524,9 +586,9 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
   </details>
 </section>
 
-<!-- ============ 4. QUIZ ============ -->
+<!-- ============ 5. QUIZ ============ -->
 <section id="quiz" style="animation-delay:.25s">
-  <div class="sec-kopf"><span class="nr">04</span><h2>Teste dich selbst</h2></div>
+  <div class="sec-kopf"><span class="nr">05</span><h2>Teste dich selbst</h2></div>
   <p class="sec-intro">Acht Fragen zu allem, was oben steht. Nach jedem Klick siehst du sofort, ob es gestimmt hat.</p>
   <div id="quizbox"></div>
   <p class="punkte" id="punkte">0 von 8 richtig</p>
@@ -540,7 +602,124 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
 
 <script>
 /* =========================================================
-   TEIL 1: Pflanzenzelle
+   TEIL 1: Mikroskop
+   ========================================================= */
+const mikroskopTeile = {
+  okular:{name:"Okular", rolle:"Vergrößerung fürs Auge", punkt:[390,85], pfeil:[[520,32],[413,76]],
+    text:"Durch das Okular schaust du auf das Bild. Es vergrößert das Bild noch einmal, das die Objektive schon vergrößert haben. Die Vergrößerungszahl steht direkt neben der Linse.",
+    merk:"Gesamtvergrößerung = Vergrößerung des Okulars mal Vergrößerung des Objektivs."},
+  tubus:{name:"Tubus", rolle:"Verbindungsrohr", punkt:[512,250], pfeil:[[668,178],[540,238]],
+    text:"Der Tubus ist die Röhre, die das Okular oben trägt. Er verbindet das Okular mit dem Objektivrevolver und hält den genauen Abstand ein, der für ein scharfes Bild nötig ist.",
+    merk:"Ohne den richtigen Abstand im Tubus wird das Bild nicht scharf, egal wie gut die Linsen sind."},
+  revolver:{name:"Objektivrevolver", rolle:"Wechselvorrichtung", punkt:[660,495], pfeil:[[832,428],[697,487]],
+    text:"Am Objektivrevolver sind mehrere Objektive mit unterschiedlicher Vergrößerung befestigt. Durch Drehen bringst du das gewünschte Objektiv über das Objekt, ohne das Mikroskop neu einstellen zu müssen.",
+    merk:"Man beginnt immer mit der kleinsten Vergrößerung und dreht erst danach weiter."},
+  objektiv:{name:"Objektiv", rolle:"Vergrößerung am Objekt", punkt:[600,655], pfeil:[[453,562],[579,634]],
+    text:"Das Objektiv sitzt direkt über dem Objekt und erzeugt die erste, stärkere Vergrößerung. Seine Vergrößerungszahl ist meistens seitlich am Gehäuse eingraviert.",
+    merk:"Je stärker die Vergrößerung, desto näher steht das Objektiv am Objekt."},
+  objekttisch:{name:"Objekttisch", rolle:"Auflagefläche", punkt:[760,800], pfeil:[[912,728],[791,787]],
+    text:"Auf dem Objekttisch liegt der Objektträger mit dem Präparat. In der Mitte hat er eine Öffnung, durch die das Licht von unten nach oben scheinen kann.",
+    merk:"Ohne Licht durch die Öffnung bleibt das Bild im Okular schwarz."},
+  blende:{name:"Blende", rolle:"Licht-Regler", punkt:[615,935], pfeil:[[772,997],[646,947]],
+    text:"Mit der Blende regulierst du, wie viel Licht durch das Präparat fällt. Sie steuert Helligkeit und Kontrast des Bildes.",
+    merk:"Die richtige Blendeneinstellung ist oft wichtiger für ein gutes Bild als die reine Lampenhelligkeit."},
+  triebrad:{name:"Triebrad", rolle:"Scharfstellung", punkt:[230,950], pfeil:[[68,866],[193,928]],
+    text:"Mit dem Triebrad veränderst du den Abstand zwischen Objekttisch und Objektiv und stellst so das Bild scharf. Meistens gibt es ein Rad für die grobe und eins für die feine Einstellung.",
+    merk:"Erst grob, dann fein einstellen, sonst verkantet leicht das Präparat."},
+  leuchte:{name:"Mikroskopleuchte", rolle:"Lichtquelle", punkt:[620,1110], pfeil:[[793,1188],[657,1133]],
+    text:"Die Mikroskopleuchte durchleuchtet das Objekt von unten. Ohne diese Lichtquelle käme kein Bild durch die Linsen ins Auge, denn ein Lichtmikroskop braucht durchscheinendes Licht.",
+    merk:"Präparate müssen deshalb dünn genug sein, damit Licht hindurchkommt."},
+  stativ:{name:"Stativ und Fuß", rolle:"Halterung & Transportgriff", bereich:[150,565,720,860],
+    text:"Stativ und Fuß halten alle Teile des Mikroskops zusammen und sorgen für einen sicheren Stand. Am Stativ trägt man das Mikroskop beim Transport.",
+    merk:"Ein Mikroskop trägt man immer mit beiden Händen: eine am Stativ, eine unter dem Fuß."}
+};
+
+const mGefunden = new Set();
+const mLegende = document.getElementById('mlegende');
+const mInfo = document.getElementById('minfo');
+const mOverlay = document.getElementById('mikroOverlay');
+
+Object.keys(mikroskopTeile).forEach(key=>{
+  const t = mikroskopTeile[key];
+
+  const li = document.createElement('li');
+  li.dataset.teil = key;
+  li.innerHTML = '<span class="punkt" style="background:#e5a017"></span>'+t.name;
+  li.addEventListener('click', ()=>zeigeMikroTeil(key));
+  mLegende.appendChild(li);
+
+  if(t.punkt){
+    const [x,y] = t.punkt;
+    const hit = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    hit.setAttribute('cx',x); hit.setAttribute('cy',y); hit.setAttribute('r',40);
+    hit.setAttribute('class','hot-hitbox'); hit.dataset.teil = key;
+    mOverlay.appendChild(hit);
+
+    const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('cx',x); dot.setAttribute('cy',y); dot.setAttribute('r',7);
+    dot.setAttribute('class','dot'); dot.dataset.teil = key;
+    dot.style.pointerEvents = 'none';
+    mOverlay.appendChild(dot);
+
+    const [[ax,ay],[bx,by]] = t.pfeil;
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg','line');
+    arrow.setAttribute('x1',ax); arrow.setAttribute('y1',ay);
+    arrow.setAttribute('x2',bx); arrow.setAttribute('y2',by);
+    arrow.setAttribute('stroke','#e5a017'); arrow.setAttribute('stroke-width','4');
+    arrow.setAttribute('stroke-linecap','round');
+    arrow.setAttribute('marker-end','url(#mikropfeil)');
+    arrow.setAttribute('class','marker-pfeil'); arrow.dataset.teil = key;
+    mOverlay.appendChild(arrow);
+  } else if(t.bereich){
+    const [x,y,w,h] = t.bereich;
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',x); rect.setAttribute('y',y);
+    rect.setAttribute('width',w); rect.setAttribute('height',h);
+    rect.setAttribute('rx',18);
+    rect.setAttribute('class','stativ-box'); rect.dataset.teil = key;
+    mOverlay.appendChild(rect);
+  }
+});
+
+mOverlay.addEventListener('click', e=>{
+  const el = e.target.closest('[data-teil]');
+  if(el) zeigeMikroTeil(el.dataset.teil);
+});
+
+function zeigeMikroTeil(key){
+  const t = mikroskopTeile[key];
+  mGefunden.add(key);
+
+  mOverlay.querySelectorAll('.dot').forEach(d=>d.classList.toggle('aktiv', d.dataset.teil===key));
+  mOverlay.querySelectorAll('.marker-pfeil').forEach(a=>a.classList.toggle('aktiv', a.dataset.teil===key));
+  mOverlay.querySelectorAll('.stativ-box').forEach(r=>r.classList.toggle('aktiv', r.dataset.teil===key));
+  document.querySelectorAll('#mlegende li').forEach(li=>{
+    if(mGefunden.has(li.dataset.teil)) li.classList.add('gefunden');
+  });
+
+  mInfo.innerHTML =
+    '<h3>'+t.name+'</h3>'+
+    '<p class="rolle">'+t.rolle+'</p>'+
+    '<p>'+t.text+'</p>'+
+    '<p class="merk"><b>Merke:</b> '+t.merk+'</p>';
+  mInfo.style.animation='none';
+  void mInfo.offsetWidth;
+  mInfo.style.animation='auf .35s ease-out both';
+
+  document.getElementById('mbalken').style.width = (mGefunden.size/9*100)+'%';
+
+  const z = document.getElementById('mzaehler');
+  if(z){
+    if(mGefunden.size===9){
+      z.parentElement.textContent = 'Alle 9 Bauteile entdeckt. Weiter geht es mit der Pflanzenzelle.';
+    } else {
+      z.textContent = mGefunden.size;
+    }
+  }
+}
+
+/* =========================================================
+   TEIL 2: Pflanzenzelle
    ========================================================= */
 const teile = {
   zellwand:{name:"Zellwand", rolle:"Stützgerüst", farbe:"#5f5f57",
@@ -623,7 +802,7 @@ function zeigeTeil(key){
 }
 
 /* =========================================================
-   TEIL 2: Wortgleichungs-Puzzle
+   TEIL 3: Wortgleichungs-Puzzle
    ========================================================= */
 const begriffe = ["Glukose","Wasser","Stickstoff","Sauerstoff","Wärme","Kohlenstoffdioxid"];
 const links = ["Wasser","Kohlenstoffdioxid"];
@@ -696,7 +875,7 @@ document.getElementById('reset').addEventListener('click',()=>{
 zeichneSlots();
 
 /* =========================================================
-   TEIL 3: Licht-Labor
+   TEIL 4: Licht-Labor
    ========================================================= */
 const regler = document.getElementById('licht');
 const blasenG = document.getElementById('blasen');
@@ -771,7 +950,7 @@ regler.addEventListener('input', laborUpdate);
 laborUpdate();
 
 /* =========================================================
-   TEIL 4: Quiz
+   TEIL 5: Quiz
    ========================================================= */
 const fragen = [
   {f:"Wo genau in der Zelle läuft die Fotosynthese ab?",
