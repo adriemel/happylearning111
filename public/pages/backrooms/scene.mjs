@@ -13,8 +13,22 @@ export class World {
     this.materials['#827654']=new THREE.MeshLambertMaterial({map:texture});
     this.materials['#f6f3d4']=new THREE.MeshBasicMaterial({color:'#f6f3d4'});
     this.group = new THREE.Group(); this.scene.add(this.group); this.doors = []; this.yaw = 0; this.pitch = 0;
-    this.resize();
+    this.makeDetails();this.resize();
   }
+  makeDetails(){
+    this.decalGeometry=new THREE.PlaneGeometry(1,1);this.decals={};
+    const make=(name,draw)=>{
+      const c=document.createElement('canvas');c.width=c.height=512;const g=c.getContext('2d');draw(g);
+      const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;
+      this.decals[name]=new THREE.MeshBasicMaterial({map,transparent:true,depthWrite:false,side:THREE.DoubleSide});
+    };
+    make('writing',g=>{g.translate(256,256);g.rotate(-.07);g.fillStyle='#383c2bc4';g.textAlign='center';g.font='bold 44px monospace';g.fillText('¿HAY ALGUIEN?',0,-28);g.font='28px monospace';g.fillText('SECTOR 07',0,28);g.lineWidth=5;g.strokeStyle='#383c2b88';g.beginPath();g.moveTo(-125,70);g.lineTo(100,70);g.lineTo(65,55);g.moveTo(100,70);g.lineTo(68,88);g.stroke();});
+    make('scratches',g=>{g.strokeStyle='#423e2caa';for(let i=0;i<6;i++){g.lineWidth=2+i%3;g.beginPath();g.moveTo(95+i*48,100+i%2*40);g.lineTo(70+i*46,370-i*13);g.stroke();}});
+    make('slime',g=>{const glow=g.createRadialGradient(260,260,15,256,256,220);glow.addColorStop(0,'#799629c9');glow.addColorStop(.65,'#435726bf');glow.addColorStop(1,'#39472600');g.fillStyle=glow;g.beginPath();for(let i=0;i<=60;i++){const a=i/60*Math.PI*2,r=160+22*Math.sin(a*5)+18*Math.cos(a*3);g.lineTo(256+Math.cos(a)*r,256+Math.sin(a)*r*.75);}g.fill();for(let i=0;i<12;i++){g.strokeStyle='#bdd47777';g.lineWidth=2;g.beginPath();g.ellipse(150+i*17,225+Math.sin(i*9)*45,3+i%5,2+i%3,0,0,Math.PI*2);g.stroke();}});
+    make('shadow',g=>{const shade=g.createRadialGradient(255,305,30,255,305,200);shade.addColorStop(0,'#151c18c4');shade.addColorStop(.55,'#1b21188a');shade.addColorStop(1,'#18201600');g.fillStyle=shade;g.fillRect(0,0,512,512);g.fillStyle='#151c1888';g.beginPath();g.ellipse(252,165,32,46,0,0,Math.PI*2);g.ellipse(250,295,47,98,.08,0,Math.PI*2);g.fill();});
+    make('damp',g=>{for(let i=0;i<18;i++){g.fillStyle='#514b2820';g.beginPath();g.ellipse(80+i*20,180+Math.sin(i*4)*95,25+i%3*12,70+i%5*22,.1,0,Math.PI*2);g.fill();}});
+  }
+  decal(name,x,y,z,w,h,rotationY=0,floor=false){const m=new THREE.Mesh(this.decalGeometry,this.decals[name]);m.position.set(x,y,z);m.scale.set(w,h,1);if(floor)m.rotation.x=-Math.PI/2;else m.rotation.y=rotationY;this.group.add(m);return m;}
   material(color) { return this.materials[color] ||= new THREE.MeshLambertMaterial({ color }); }
   box(x,y,z,w,h,d,color) { const m = new THREE.Mesh(this.geometry,this.material(color)); m.position.set(x,y,z);m.scale.set(w,h,d);this.group.add(m);return m; }
   resize() { this.camera.aspect = innerWidth / innerHeight; this.camera.fov = this.camera.aspect < .8 ? 110 : 68; this.camera.updateProjectionMatrix(); this.renderer.setSize(innerWidth,innerHeight); }
@@ -43,9 +57,17 @@ export class World {
     this.box(-5.8,.07,1,.15,.15,8,'#5a5841');this.box(5.8,.07,1,.15,.15,8,'#5a5841');
     this.exit=this.box(0,1.5,-12.8,2.2,3,.04,final?'#f7ffed':'#d1cea7');
     if(final){const sign=document.createElement('div');sign.className='door-label open';sign.textContent='AUSGANG ↗';document.querySelector('#labels').append(sign);this.exitLabel=sign;}else this.exitLabel=null;
-    this.decorate();
+    this.decorate(index);
   }
-  decorate(){
+  decorate(index){
+    this.decal('writing',-5.88,1.8,.2,2.5,2.5,Math.PI/2);
+    this.decal('scratches',5.88,1.6,-1.5,1.5,1.8,-Math.PI/2);
+    this.decal('damp',5.87,2.15,2.5,2.8,2.4,-Math.PI/2);
+    this.decal('damp',-5.87,2.4,-3.2,2,1.7,Math.PI/2);
+    this.decal('slime',(index%2?1:-1)*3.5,.025,1.5,2.8,2.2,0,true);
+    this.decal('shadow',index%2?5.35:-5.35,1.25,-4.88,1.05,2.5);
+    this.decal('scratches',1.8,1.6,5.88,2,2,Math.PI);
+
     // Props never depend on answer placement; all three approaches stay clear.
     const side=Math.random()<.5?-1:1,x=side*4.9,z=-.8+Math.random()*2;
     this.box(x,.52,z,.75,.12,.72,'#504b36');this.box(x,.98,z+.3,.75,.8,.12,'#69634a');
@@ -70,6 +92,7 @@ export class World {
     if(z< -4.55 && (!open || Math.abs(x-open.x)>.65)) { if(p.z>=-4.55)z=-4.55; else if(p.z> -5.6)x=p.x; }
     if(p.z< -4.55 && p.z> -5.6 && open)x=Math.max(open.x-.65,Math.min(open.x+.65,x));
     for(const o of this.obstacles){if(Math.hypot(x-o.x,z-o.z)<o.r){if(Math.hypot(p.x-o.x,z-o.z)>=o.r)x=p.x;else if(Math.hypot(x-o.x,p.z-o.z)>=o.r)z=p.z;else{x=p.x;z=p.z;}}}
+    this.lastDistance=Math.hypot(x-p.x,Math.max(-12,z)-p.z);
     p.set(x,1.65,Math.max(-12,z));
   }
   nearest() { if(this.camera.position.z< -5.4)return -1;return this.doors.findIndex(d=>Math.hypot(d.x-this.camera.position.x,-4.6-this.camera.position.z)<1.55); }

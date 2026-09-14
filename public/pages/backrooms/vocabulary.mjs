@@ -29,6 +29,24 @@ export function choices(entry, pool) {
   return shuffle([correct, ...shuffle(alternatives).slice(0, 2)]);
 }
 export function playable(pool) { return pool.filter(e => choices(e, pool).length >= 2); }
+// Change one letter inside a word, preserving punctuation, spacing and accents.
+// Exclude every known answer, including accepted variants in other categories.
+export function spellingChoices(entry, pool, random = Math.random) {
+  const correct = entry.answers[0], letters = [...correct];
+  const known = new Set(pool.flatMap(e => e.answers).concat(entry.answers).map(key));
+  const candidates = new Map();
+  for (let i = 0; i < letters.length; i++) {
+    if (!/[a-záéíóúüñ]/i.test(letters[i])) continue;
+    for (const replacement of 'aeioubvsczmnrltdp') {
+      const copy = [...letters];
+      copy[i] = letters[i] === letters[i].toUpperCase() ? replacement.toUpperCase() : replacement;
+      const text = copy.join('');
+      if (!known.has(key(text))) candidates.set(key(text), text);
+    }
+  }
+  const wrong = shuffle([...candidates.values()], random).slice(0, 2);
+  return wrong.length === 2 ? shuffle([correct, ...wrong], random) : choices(entry, pool);
+}
 export function lengths(n) { return [...new Set([5, 10, 15, 20].filter(v => v <= n).concat(n > 0 ? [n] : []))]; }
 export class Session {
   constructor(pool, count) { this.pool = pool; this.entries = shuffle(playable(pool)).slice(0, count); this.index = 0; this.lives = 3; this.wrong = 0; this.mistakes = new Set(); this.attempted = new Set(); this.solved = false; }

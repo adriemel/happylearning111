@@ -14,3 +14,14 @@
 .defeat-message small{font-size:12px;letter-spacing:6px;color:#ffc6b9;margin-bottom:18px}
 .defeat-message strong{font-size:clamp(37px,9vw,78px);line-height:1.05;color:#ff7973;letter-spacing:2px}
 .defeat-message span{font-size:14px;color:#f6d9ce;margin-top:24px}
+
+/* Keep the view and door signs clear; instructions sit above movement controls. */
+#feedback{top:auto;bottom:calc(max(26px,env(safe-area-inset-bottom)) + 140px);left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);padding:8px 14px;border-radius:8px;background:#1c241bd9;font-size:13px;font-weight:500}
+#feedback:empty{display:none}
+#listeningControls{position:absolute;left:16px;top:100px;display:flex;align-items:flex-start;flex-direction:column;gap:6px;max-width:calc(100% - 150px);pointer-events:auto}
+#listen{background:#dce898;color:#20291c;font-weight:750;padding:10px 14px}
+#hint{font-size:11px;padding:6px 9px;background:#20271fcc}
+#speechStatus{font-size:11px;max-width:260px;text-shadow:0 2px 4px #000;background:#20271fcc;border-radius:5px;padding:4px 6px}
+#speechStatus:empty{display:none}
+@media(pointer:fine){#feedback{bottom:calc(max(26px,env(safe-area-inset-bottom)) + 64px)}}
+@media(max-height:500px){#listeningControls{top:70px}.tools{top:70px}#feedback{font-size:11px;bottom:110px}#stick{width:80px;height:80px;bottom:18px}#knob{left:18px;top:18px}}
