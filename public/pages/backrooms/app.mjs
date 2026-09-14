@@ -2,7 +2,7 @@ import {parseTSV,playable,lengths,choices,spellingChoices,Session} from './vocab
 import {Sound} from './audio.mjs';
 import {DefeatSequence} from './defeat.mjs';
 const $=id=>document.getElementById(id),sound=new Sound(),defeat=new DefeatSequence();
-let categories,session,world,state='SETUP',previousState,labels=[],feedbackUntil=0,escapeTime=0,mode='spelling',heard=false,hintUsed=false;
+let categories,session,world,state='SETUP',previousState,labels=[],feedbackUntil=0,escapeTime=0,mode='spelling',sessionMode='spelling',heard=false,hintUsed=false;
 const wrongFlash=document.createElement('div');wrongFlash.id='wrongFlash';document.body.append(wrongFlash);
 const keys=new Set(),movement={x:0,y:0};let lookPointer=null,stickPointer=null,lastX=0,lastY=0;
 function resetInput(){keys.clear();movement.x=movement.y=0;lookPointer=stickPointer=null;$('knob').style.transform='';}
@@ -16,6 +16,7 @@ function updateHUD(){
   $('question').append(small,session.current?(mode==='listening'&&!hintUsed?'Höre zu. Finde das Wort.':session.current.de):'Der Ausgang wartet!');
 }
 function room(){
+  mode=sessionMode==='mixed'?['translation','spelling','listening'][Math.floor(Math.random()*3)]:sessionMode;
   sound.cancelSpeech();heard=false;hintUsed=false;$('speechStatus').textContent='';$('hint').disabled=false;
   labels=mode==='translation'?choices(session.current,session.pool):spellingChoices(session.current,[...categories.values()].flat());
   world.room(labels,session.index,session.index===session.entries.length-1);state='PLAYING';
@@ -34,10 +35,10 @@ function listen(){
 }
 $('listen').onclick=listen;
 $('hint').onclick=()=>{if(state!=='PLAYING')return;hintUsed=true;$('hint').disabled=true;session.mistakes.add(session.index);updateHUD();feedback('Mit Hinweis üben · Dieses Wort erscheint in deiner Wiederholung.');};
-$('mode').onchange=()=>{$('modeHelp').textContent={translation:'Finde die spanische Übersetzung unter verschiedenen Wörtern.',spelling:'Eine Tür ist richtig, zwei enthalten einen kleinen Schreibfehler.',listening:'Höre ein spanisches Wort und finde seine richtige Schreibweise. ▶ oder R wiederholt es. Benötigt Sprachausgabe; Hinweise zählen als Übungsbedarf.'}[$('mode').value];};
+$('mode').onchange=()=>{$('modeHelp').textContent={mixed:'Jeder Raum wählt zufällig: Übersetzen, genau lesen oder hören & lesen. Der Hinweis oben zeigt die aktuelle Aufgabe.',translation:'Finde die spanische Übersetzung unter verschiedenen Wörtern.',spelling:'Eine Tür ist richtig, zwei enthalten einen kleinen Schreibfehler.',listening:'Höre ein spanisches Wort und finde seine richtige Schreibweise. ▶ oder R wiederholt es. Benötigt Sprachausgabe; Hinweise zählen als Übungsbedarf.'}[$('mode').value];};
 function options(){const pool=playable(categories.get($('category').value));$('length').replaceChildren(...lengths(pool.length).map(n=>new Option(n===pool.length?`Alle ${n}`:`${n} Räume`,n)));$('form').querySelector('button').disabled=!pool.length;}
 async function start(){
-  mode=$('mode').value;sound.start();$('setup').hidden=true;$('results').hidden=true;$('hud').hidden=false;state='LOADING';feedback('Die Backrooms werden vorbereitet …');
+  sessionMode=$('mode').value;sound.start();$('setup').hidden=true;$('results').hidden=true;$('hud').hidden=false;state='LOADING';feedback('Die Backrooms werden vorbereitet …');
   try{if(!world){const {World}=await import('./scene.mjs');world=new World($('world'));bindScene();}session=new Session(categories.get($('category').value),Number($('length').value));if(!session.entries.length)throw Error('Diese Kategorie hat zu wenige unterschiedliche Antworten.');room();}
   catch(error){sound.stop();state='SETUP';$('hud').hidden=true;$('setup').hidden=false;$('loading').hidden=false;$('loading').textContent='Das 3D-Spiel konnte nicht starten. Bitte WebGL im Browser aktivieren oder einen anderen Browser versuchen. '+error.message;}
 }

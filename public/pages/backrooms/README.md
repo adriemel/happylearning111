@@ -29,3 +29,5 @@ Setup now offers translation, spelling (default), and listening with spelling ch
 Soft synthesized carpet footsteps follow actual distance travelled, including collision checks, and stop on mute/pause/exit. Cached procedural decals add wall writing, scratches, damp patches, green slime and a static corner silhouette. They are unrelated to correct-door placement. Navigation feedback sits at the bottom above controls.
 
 With Playwright available to Node, run `node tests/backrooms/learning-browser.test.cjs` for the new listening, hint, footsteps and layout checks in headless Edge. Speech events are simulated in automation; listening on the target device remains a manual check.
+
+The fourth challenge option, “Alle drei · zufällig gemischt”, independently selects translation, spelling or listening with equal probability for each new room. Consecutive rooms may use the same challenge. Pausing or retrying a door keeps the current room’s challenge.

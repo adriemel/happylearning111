@@ -32,6 +32,23 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+deco
   await page.locator('#pause').click();assert(await page.evaluate(()=>!testSound.active&&testSound.nodes.length===0));await page.locator('#resume').click();
   await page.evaluate(()=>{testWorld.camera.position.set(0,1.65,3.5);testWorld.yaw=0;testWorld.pitch=0;});await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(root,'../backrooms-listening-mobile.png')});
   const rects=await page.evaluate(()=>Object.fromEntries(['feedback','interact','listen'].map(id=>{const r=document.getElementById(id).getBoundingClientRect();return [id,{top:r.top,bottom:r.bottom,left:r.left,right:r.right}];})));assert(rects.feedback.bottom<rects.interact.top);assert(rects.listen.left>=0&&rects.listen.right<=390);
+  await page.locator('#pause').click();await page.locator('#change').click();await page.selectOption('#mode','mixed');
+  await page.evaluate(()=>{Math.random=()=>.1;});await page.locator('#form button').click();await page.locator('.door-label').first().waitFor();
+  const sequence=[['translation',.5],['spelling',.9],['listening',.1],['translation',.5],['spelling',.5]];
+  for(const [mode,nextRandom] of sequence){
+    const title=await page.locator('#question small').innerText();
+    assert.equal(title,{translation:'WIE HEISST DAS AUF SPANISCH?',spelling:'WELCHE SCHREIBWEISE STIMMT?',listening:'HÖREN & LESEN'}[mode]);
+    assert.equal(await page.locator('#listeningControls').isVisible(),mode==='listening');
+    await page.locator('#pause').click();await page.locator('#resume').click();assert.equal(await page.locator('#question small').innerText(),title);
+    let word;
+    if(mode==='listening'){
+      assert((await page.locator('#question').innerText()).includes('Höre zu.'));
+      await page.locator('#listen').click();word=await page.evaluate(()=>{const u=utterances.at(-1);u.onend();return u.text;});
+    }else word=await page.evaluate(async()=>{const {parseTSV}=await import('./vocabulary.mjs');const pool=parseTSV(await(await fetch('./words.tsv')).text()).get(document.querySelector('#category').value);return pool.find(e=>e.de===document.querySelector('#question').lastChild.textContent).answers[0];});
+    await page.evaluate(n=>{Math.random=()=>n;},nextRandom);await choose(word);
+  }
+  await page.locator('#results').waitFor({state:'visible'});assert.equal(await page.locator('#resultTitle').innerText(),'ENTKOMMEN!');assert((await page.locator('#stats').innerText()).includes('100%'));
+  console.log('PASS: mixed run switches through all three challenges, resets listening controls and prompt, keeps mode on pause, and completes with correct score');
   assert.deepEqual(errors,[]);console.log('PASS: listening hides prompt, waits for speech, repeats, handles failure, scores hints, resets rooms, completes five-room run; movement footsteps, mute/pause, responsive layout, no JS errors');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1;});
