@@ -1,0 +1,745 @@
+category	es	de	topics
+Saludar	el día	der Tag	Saludar
+Saludar	Buenos días	Guten Morgen! Guten Tag!	Saludar
+Saludar	Buenas tardes	Guten Tag! Guten Abend!	Saludar
+Saludar	Buenas noches	Guten Abend! Gute Nacht!	Saludar
+Saludar	Hola	Hallo	Saludar
+Saludar	¿Qué tal?	Wie geht's?	Saludar
+Saludar	¿Como estás? 	Wie geht's?	Saludar
+Saludar	bien	gut	Saludar
+Saludar	Estoy bien, gracias	Mir geht es gut, danke	Saludar
+Saludar	muy bien	sehr gut	Saludar
+Saludar	mal	schlecht	Saludar
+Saludar	fatal	(sehr) schlecht	Saludar
+Saludar	más o menos	mehr oder weniger (mittelmässig)	Saludar
+Saludar	mejor	besser	Saludar
+Saludar	Gracias	Danke	Saludar
+Saludar	¿Y tu?	Und du?	Saludar
+Saludar	Yo tambien	ich auch (mir auch)	Saludar
+Saludar	Yo	Ich	Saludar
+Saludar	¿Como te llamas?	Wie heißt du?	Saludar
+Saludar	Me llamo Pablo	Ich heiße Pablo	Saludar
+Saludar	No, es una broma, me llamo Bjarne.	Nein, das ist ein Witz, ich heiße Bjarne.	Saludar
+Saludar	Yo soy Bjarne	Ich bin Bjarne	Saludar
+Saludar	Soy Bjarne	Ich bin Bjarne	Saludar
+Saludar	Mi nombre es Pablo.	Mein Name ist Pablo.	Saludar
+Saludar	¿De donde eres?	Woher kommst du?	Saludar
+Saludar	Soy de Alemania.	Ich komme aus Deutschland.	Saludar
+Saludar	Soy de Madrid	Ich komme aus Madrid	Saludar
+Saludar	¿Cuántos años tienes?	Wie alt bist du?	Saludar
+Saludar	Tengo once años.	Ich bin 11 Jahre alt.	Saludar
+Saludar	no es correcto	das ist nicht richtig	Saludar
+Saludar	Adios	Auf Wiedersehen!, Tschüs!	Saludar
+Saludar	Hasta luego	Bis später!	Saludar
+Saludar	Perdón	Entschuldigung	Saludar
+Saludar	se dice	man sagt.., es heißt...	Saludar
+Saludar	¿Como se dice 'buenos días' en alemán?	Was heißt 'buenos días' auf deutsch?	Saludar
+Saludar	En alemán 'buenos días' se dice 'Guten Tag'.	'Buenos días' heißt 'Guten Tag' auf deutsch.	Saludar
+Saludar	¿Como es tu apellido?	Wie ist dein Nachname?	Saludar
+Saludar	el apellido	der Nachname	Saludar
+Saludar	Me llamo Bjarne y mi apellido es Driemel.	Ich heiße Bjarne und mit Nachnamen Driemel.	Saludar
+Saludar	de acuerdo	alles klar	Saludar
+Colores	negro	schwarz	Colores
+Colores	blanco	weiß	Colores
+Colores	naranja	orange	Colores
+Colores	gris	grau	Colores
+Colores	rosa	pink	Colores
+Colores	azul	blau	Colores
+Colores	verde	grün	Colores
+Colores	marrón	braun	Colores
+Colores	amarillo	gelb	Colores
+Colores	rojo	rot	Colores
+Colores	morado	violett	Colores
+Colores	¿De qué color es la tortuga?	Welche Farbe hat die Schildkröte?	Colores
+Colores	La tortuga es de color verde.	Die Schildkröte ist grün.	Colores
+Animales	el animal	das Tier	Animales
+Animales	el perro	der Hund	Animales
+Animales	el gato	die Katze	Animales
+Animales	la tortuga	die Schildkröte	Animales
+Animales	la serpiente	die Schlange	Animales
+Animales	el toro	der Stier	Animales
+Animales	el elefante	der Elefant	Animales
+Animales	el oso	der Bär	Animales
+Animales	el caballo	das Pferd	Animales
+xAnimales	el burro	der Esel	Animales
+xAnimales	la abeja	die Biene	Animales
+xAnimales	la tarantula	die Vogelspinne	Animales
+xAnimales	el mono	der Affe	Animales
+Animales	la rana	der Frosch	Animales
+Animales	la vaca	die Kuh	Animales
+Animales	la foca	die Robbe	Animales
+Animales	la oveja	das Schaf	Animales
+Animales	la jirafa	die Giraffe	Animales
+Animales	el koala	der Koala	Animales
+Animales	mi perro	mein Hund	Animales
+Casa_Familia	en casa	zu Hause	Casa_Familia
+Casa_Familia	el teléfono	das Telefon	Casa_Familia
+Casa_Familia	la silla	der Stuhl	Casa_Familia
+Casa_Familia	la cama	das Bett	Casa_Familia
+Casa_Familia	la ciudad	die Stadt	Casa_Familia
+Casa_Familia	el mundo	die Welt	Casa_Familia
+Casa_Familia	el profesor	der Lehrer	Casa_Familia
+Casa_Familia	la profesora	die Lehrerin	Casa_Familia
+Casa_Familia	la familia	die Familie	Casa_Familia
+Casa_Familia	los abuelos	die Großeltern (Pl.)	Casa_Familia
+Casa_Familia	el abuelo / la abuela	der Großvater / die Großmutter	Casa_Familia
+Casa_Familia	el tío	der Onkel	Casa_Familia
+Casa_Familia	la tía	die Tante	Casa_Familia
+Casa_Familia	el novio / la novia	der feste Freund / die feste Freundin	Casa_Familia
+Casa_Familia	los hijos	die Kinder (Pl.)	Casa_Familia
+Casa_Familia	Mi tío no tiene hijos.	Mein Onkel hat keine Kinder.	Casa_Familia
+Casa_Familia	el hijo / la hija	der Sohn / die Tochter	Casa_Familia
+Casa_Familia	la madre	die Mutter	Casa_Familia
+Casa_Familia	el padre	der Vater	Casa_Familia
+Casa_Familia	los padres	die Eltern	Casa_Familia
+Casa_Familia	el hermano	der Bruder	Casa_Familia
+Casa_Familia	la hermana	die Schwester	Casa_Familia
+Casa_Familia	los hermanos	die Geschwister	Casa_Familia
+Casa_Familia	el amigo	der Freund	Casa_Familia
+Casa_Familia	mi amigo	mein Freund	Casa_Familia
+Casa_Familia	Mi amigo se llama Ben.	Mein Freund heisst Ben.	Casa_Familia
+Casa_Familia	la amiga	die Freundin	Casa_Familia
+xCasa_Familia	el primo	der Cousin	Casa_Familia
+xCasa_Familia	la prima	die Cousine	Casa_Familia
+Casa_Familia	el chico	der Junge	Casa_Familia
+Casa_Familia	la chica	das Mädchen	Casa_Familia
+Casa_Familia	la mascota	das Haustier	Casa_Familia
+Casa_Familia	Mi mascota se llama Tigo.	Mein Haustier heisst Tigo.	Casa_Familia
+Casa_Familia	tu	dein(e)	Casa_Familia
+Casa_Familia	¿Como se llama tu mascota?	Wie heisst Dein Haustier?	Casa_Familia
+Palabras	la mochila	der Rucksack	Escuela
+Palabras	el zapato	der Schuh	Palabras
+Palabras	el juego	das Spiel	Palabras
+Palabras	el barco	das Schiff	Palabras
+Palabras	el hotel	das Hotel	Palabras
+Palabras	el restaurante	das Restaurant	Comida_Bebida
+Palabras	el museo	das Museum	Palabras
+Palabras	la nube	die Wolke	Palabras
+Palabras	la playa	der Strand	Palabras
+Palabras	la isla	die Insel	Palabras
+Palabras	el dado	der Würfel	Palabras
+Palabras	el sol	die Sonne	Palabras
+Palabras	la luna	der Mond	Palabras
+Palabras	el tomate	die Tomate	Comida_Bebida
+Palabras	el queso	der Käse	Comida_Bebida
+Palabras	el idioma	die Sprache	Escuela
+Palabras	estudiar algo	etw. lernen	Escuela
+Palabras	Yo estudio español en el instituto.	Ich lerne Spanisch in der Schule.	Escuela
+Palabras	el francés	Französisch, die französische Sprache	Escuela
+Palabras	¿Hablas francés?	Sprichst du Französisch?	Escuela
+Palabras	Hablo muy bien alemán.	Ich spreche sehr gut Deutsch.	
+Palabras	estudiar	lernen	Escuela
+Palabras	Se escribe	Man schreibt..	Escuela
+Palabras	¿Como se escribe?	Wie schreibt man das?	Escuela
+Palabras	con acento	mit Akzent	Escuela
+Palabras	con dos puntos	mit Umlaut	Escuela
+Palabras	la palabra	das Wort	Escuela
+Palabras	entonces	dann	Palabras
+Palabras	también	auch	Palabras
+Palabras	pero	aber	Palabras
+Palabras	donde	wo	Palabras
+Palabras	cuándo	wann	Palabras
+Palabras	quién	wer	Palabras
+Palabras	por qué	warum	Palabras
+Palabras	seguro	sicher	Palabras
+Palabras	Claro	Ja, natürlich!	Palabras
+Palabras	además	außerdem	Palabras
+Palabras	ahora	jetzt	Calendario
+Palabras	con	mit	Palabras
+Palabras	siempre	immer	Palabras
+Palabras	Qué	Was für ein? Was?	Palabras
+Palabras	nada	nichts	Palabras
+Palabras	Quién	Wer?	Palabras
+Palabras	trabajar	arbeiten	Palabras
+Palabras	quizás	vielleicht	Palabras
+Palabras	escuchar algo	etw. hören	Escuela
+Palabras	tener	haben	Palabras
+Palabras	contestar	antworten	Escuela
+Palabras	preguntar	fragen	Escuela
+Palabras	el chico 	der Junge	Palabras
+Palabras	Adelante!	Herein!	
+Palabras	¿Qué pasa?	Was ist los?	
+Palabras	el problema	das Problem	Palabras
+Palabras	buscar algo	etw. suchen	Palabras
+Palabras	nuevo	neu	Palabras
+Palabras	largo	lang	Palabras
+Palabras	diferente	anders	Palabras
+Palabras	importante	wichtig	Palabras
+Palabras	divertido	lustig	Palabras
+Palabras	serio	ernst	Palabras
+Palabras	fuerte	stark	Palabras
+Palabras	fácil	einfach	Palabras
+Palabras	difícil	schwierig	Palabras
+Palabras	pobre	arm	Palabras
+Palabras	rico	reich	Palabras
+Palabras	lindo, linda	schön	Palabras
+Palabras	feo	hässlich	Palabras
+Palabras	alto	hoch	Palabras
+Palabras	pequeño, pequeña	klein	Palabras
+Palabras	grande	groß	Palabras
+Palabras	viejo	alt	Palabras
+Palabras	joven	jung	Palabras
+Palabras	amable	freundlich, nett	Palabras
+Palabras	malo	schlecht, böse, gemein	Palabras
+Palabras	simpático	sympathisch	Palabras
+Palabras	el secreto	das Geheimnis	Palabras
+Palabras	la idea	die Idee	Palabras
+Palabras	ni idea	keine Ahnung	Palabras
+Palabras	la sorpresa	die Überraschung	Palabras
+Palabras	ahora	jetzt	Calendario
+Palabras	hoy	heute	Calendario
+Palabras	mañana	morgen	Calendario
+Palabras	ayer	gestern	Calendario
+Palabras	el segundo	die Sekunde	Calendario
+Palabras	el minuto	die Minute	Calendario
+Palabras	la hora	die Stunde, die Uhrzeit	Calendario
+Palabras	el dia	der Tag	Calendario
+Palabras	la semana	die Woche	Calendario
+Palabras	el mes	der Monat	Calendario
+Palabras	el año	das Jahr	Calendario
+Palabras	temprano	früh	Calendario
+Palabras	tarde	spät	Calendario
+Palabras	lunes	Montag	Calendario
+Palabras	martes	Dienstag	Calendario
+Palabras	miércoles	Mittwoch	Calendario
+Palabras	jueves	Donnerstag	Calendario
+Palabras	viernes	Freitag	Calendario
+Palabras	sábado	Samstag	Calendario
+Palabras	domingo	Sonntag	Calendario
+Palabras	la primavera	der Frühling	Calendario
+Palabras	el verano	der Sommer	Calendario
+Palabras	el otoño	der Herbst	Calendario
+Palabras	el invierno	der Winter	Calendario
+Palabras	enero	Januar	Calendario
+Palabras	febrero	Februar	Calendario
+Palabras	marzo	März	Calendario
+Palabras	abril	April	Calendario
+Palabras	mayo	Mai	Calendario
+Palabras	junio	Juni	Calendario
+Palabras	julio	Juli	Calendario
+Palabras	agosto	August	Calendario
+Palabras	septiembre	September	Calendario
+Palabras	octubre	Oktober	Calendario
+Palabras	noviembre	November	Calendario
+Palabras	diciembre	Dezember	Calendario
+Palabras	el tiempo	die Zeit	Calendario
+Palabras	¿Qué hora es?	Wie spät ist es?	Calendario
+Numeros	el número	die Nummer, die Zahl	Numeros
+Numeros	uno	eins	Numeros
+Numeros	dos	zwei	Numeros
+Numeros	tres	drei	Numeros
+Numeros	cuatro	vier	Numeros
+Numeros	cinco	fünf	Numeros
+Numeros	seis	sechs	Numeros
+Numeros	siete	sieben	Numeros
+Numeros	ocho	acht	Numeros
+Numeros	nueve	neun	Numeros
+Numeros	diez	zehn	Numeros
+Numeros	once	elf	Numeros
+Numeros	doce	zwölf	Numeros
+Numeros	trece	dreizehn	Numeros
+Numeros	catorce	vierzehn	Numeros
+Numeros	quince	fünfzehn	Numeros
+Numeros	dieciséis	sechszehn	Numeros
+Numeros	diecisiete	siebzehn	Numeros
+Numeros	dieciocho	achtzehn	Numeros
+Numeros	diecinueve	neunzehn	Numeros
+Numeros	veinte	zwanzig	Numeros
+Numeros	treinta	dreißig	Numeros
+Numeros	cuarenta	vierzig	Numeros
+Numeros	cincuenta	fünfzig	Numeros
+Numeros	sesenta	sechzig	Numeros
+Numeros	setenta	siebzig	Numeros
+Numeros	ochenta	achtzig	Numeros
+Numeros	noventa	neunzig	Numeros
+Numeros	cien	hundert	Numeros
+Numeros	doscientos	zweihundert	Numeros
+Numeros	mil	tausend	Numeros
+Numeros	millón	Million	Numeros
+Unidad2	¿De qué color es…?	Welche Farbe hat…?	
+Unidad2	El gato es de color negro.	Die Katze ist schwarz.	
+Unidad2	Veo…	Ich sehe…	Palabras
+Unidad2	Veo un perro, es de color blanco.	Ich sehe einen Hund, er ist weiß.	
+Unidad2	¿Qué ves? 	Was siehst du?	Palabras
+Unidad2	¿Qué es? 	Was ist das?	Palabras
+Unidad2	la cosa (la cosita)	die (kleine) Sache	Palabras
+Unidad2	No es correcto. 	Das ist nicht richtig.	Palabras
+Unidad2	mi mejor amigo	mein bester Freund	Casa_Familia
+Unidad2	la mejor amiga	die beste Freundin	Casa_Familia
+Unidad2	la mascota 	das Haustier	Casa_Familia
+Unidad2	el lugar 	der Ort, der Platz	Palabras
+Unidad2	la ciudad 	die Stadt	Casa_Familia
+Unidad2	favorito, favorita 	Lieblings-	Palabras
+Unidad2	Mi animal favorito es el perro.	Mein Lieblingstier ist der Hund.	
+Unidad2	el padre 	der Vater	Casa_Familia
+Unidad2	la madre 	die Mutter	Casa_Familia
+Unidad2	el hermano	der Bruder	Casa_Familia
+Unidad2	la hermana	die Schwester	Casa_Familia
+Unidad2	mis padres	meine Eltern	Casa_Familia
+Unidad2	¿Cómo se llama…? 	Wie heißt…?	Saludar
+Unidad2	¿Cómo se llama tu madre? 	Wie heißt deine Mutter?	Saludar
+Unidad2	¿Cuál es el apellido de…?	Wie ist der Nachname von..?	
+Unidad2	¿Tienes una mascota? 	Hast du ein Haustier?	Casa_Familia
+Unidad2	el nombre 	der Name	Saludar
+Unidad2	la edad 	das Alter	Saludar
+Unidad2	el color favorito 	die Lieblingsfarbe	Colores
+Unidad2	el año 	das Jahr	Calendario
+Unidad2	el número de teléfono 	die Telefonnummer	Casa_Familia
+Unidad2	el móvil 	das Handy	Casa_Familia
+Unidad2	¿Cuál es tu número de móvil?	Wie lautet deine Handynummer?	
+Unidad2	el teléfono 	das Telefon	Casa_Familia
+Unidad2	el hámster 	der Hamster	Animales
+Unidad2	¿Cuántos años tienes? 	Wie alt bist du?	Saludar
+Unidad2	el profesor, la profesora 	der Lehrer, die Lehrerin	Casa_Familia
+Unidad2	nosotros, nosotras 	wir	Palabras
+Unidad2	¿Cuál es tu color favorito? 	Was ist deine Lieblingsfarbe?	Colores
+Unidad2	Yo soy de Alemania.	Ich bin aus Deutschland.	
+Unidad2	tu eres	du bist	Palabras
+Unidad2	el es	er ist	Palabras
+Unidad2	ella es	sie ist	Palabras
+Unidad2	nosotros somos	wir sind	Palabras
+Unidad2	vosotros sois	ihr seid	Palabras
+Unidad2	Mira.	Schau mal	
+Unidad2	ahora	jetzt	Calendario
+Unidad2	¿Verdad?	..nicht wahr?	
+Unidad2	El regalo es para ti.	Das Geschenk ist für Dich.	
+Unidad2	Pasa, pasa	Komm rein!	Saludar
+Unidad2	tener algo	etwas haben	Palabras
+Unidad2	Tengo un perro	Ich habe einen Hund	Palabras
+Unidad2	¿Tienes un hermano?	Hast Du einen Bruder?	
+Unidad2	Basti tiene un gato.	Basti hat eine Katze.	
+Unidad2	Tenemos una casa	Wir haben ein Haus	Palabras
+Unidad2	¿Tenéis mascotas?	Habt ihr Haustiere?	
+Unidad2	Max y Moritz no tienen mascotas.	Max und Moritz haben keine Haustiere.	
+Unidad2	para	für	Palabras
+Unidad2	Tengo un regalo para mi amiga.	Ich habe ein Geschenk für meine Freundin.	
+Unidad2	Vale.	Einverstanden, OK	
+Unidad2	el chico	der Junge	Casa_Familia
+Unidad2	la chica	das Mädchen	Casa_Familia
+Unidad2	Bueno...	Nun (gut).., Also...	
+Unidad2	el momento	der Moment	Palabras
+Unidad2	Entiendo	Ich verstehe.	Palabras
+Unidad2	Tu eres de Berlin, ¿verdad?	Du bist aus Berlin, nicht wahr?	
+Unidad2	Qué sorpresa	Was für eine Überraschung	Palabras
+Unidad2	la sorpresa	die Überraschung	Palabras
+Unidad2	Muchas gracias	Vielen Dank	Saludar
+Unidad2	Por favor	Bitte	Saludar
+Unidad2	¿Qué pasa?	Was ist los? Was geht ab?	
+Unidad2	la caja	die Kiste	Palabras
+Unidad2	¿Qué tienes en la caja?	Was hast du in der Schachtel?	
+Unidad2	nada	nichts	Palabras
+Unidad2	el secreto	das Geheimnis	Palabras
+Unidad2	la tontería	die Dummheit	Palabras
+Unidad2	ni idea	keine Ahnung	Palabras
+Unidad2	A ver..	(Lass) mal sehen...	
+Unidad2	Qué asco!	Wie eklig!	
+Unidad3	el barrio	das (Stadt-)Viertel	Casa_Familia
+Unidad3	la casa	das Haus, die Wohnung	Casa_Familia
+Unidad3	la heladería	die Eisdiele	Palabras
+Unidad3	la panadería	die Bäckerei	Palabras
+Unidad3	el restaurante	das Restaurant	Palabras
+Unidad3	la farmacia	die Apotheke	Palabras
+Unidad3	el metro	die U-Bahn	Palabras
+Unidad3	la zapatería	das Schuhgeschäft	Palabras
+Unidad3	el zapato	der Schuh	Palabras
+Unidad3	el diálogo	der Dialog, das Gespräch	Escuela
+Unidad3	en	in, auf, an	Palabras
+Unidad3	No tenemos heladería en el barrio.	Wir haben keine Eisdiele im Viertel.	
+Unidad3	la cafetería	das Café, die Cafeteria	Palabras
+Unidad3	el centro comercial	das Einkaufszentrum	Palabras
+Unidad3	el cine	das Kino	Palabras
+Unidad3	la parada	die Haltestelle	Palabras
+Unidad3	La parada de metro se llama Karlstrasse.	Die U-Bahn-Haltestelle heißt Karlstrasse.	
+Unidad3	el autobús	der Bus	Palabras
+Unidad3	la plaza	der Platz	Palabras
+Unidad3	el supermercado	der Supermarkt	Palabras
+Unidad3	la tienda	der Laden, das Geschäft	Palabras
+Unidad3	la ropa	die Kleidung	Palabras
+Unidad3	Mis padres tienen una tienda de ropa.	Meine Eltern haben ein Bekleidungsgeschäft.	
+Unidad3	el polideportivo	das Sportzentrum	Palabras
+Unidad3	hay	es gibt, da ist, da sind	Palabras
+Unidad3	En mi ciudad no hay metro.	In meiner Stadt gibt es keine U-Bahn.	
+Unidad3	¿Dónde está mi amiga?	Wo ist meine Freundin?	
+Unidad3	estar	sein (sich befinden)	Palabras
+Unidad3	Mis amigos están en el parque.	Meine Freunde sind im Park.	
+Unidad3	el problema	das Problem	Palabras
+Unidad3	Tengo un problema en el instituto.	Ich habe ein Problem in der Schule.	
+Unidad3	con	mit	Palabras
+Unidad3	Estoy con mis padres en la heladería.	Ich bin mit meinen Eltern in der Eisdiele.	
+Unidad3	Estoy..	Ich bin (befinde mich)	
+Unidad3	Estás..	Du bist (befindest Dich)	
+Unidad3	Estámos..	Wir sind (befinden uns)	
+Unidad3	el parque	der Park	Palabras
+Unidad3	ahí	da	Palabras
+Unidad3	¿Dónde está la panadería?	Wo ist die Bäckerei?	
+Unidad3	en casa	zu Hause	Casa_Familia
+Unidad3	Mis padres no están en casa.	Meine Eltern sind nicht zu Hause.	
+Unidad3	Lo siento	Es tut mir leid	Saludar
+Unidad3	Lo siento, no hay tomates.	Tut mir leid, es gibt keine Tomaten.	
+Unidad3	aquí	hier	Palabras
+Unidad3	Tu perro está aquí.	Dein Hund ist hier.	
+Unidad3	importante	wichtig	Palabras
+Unidad3	Mi perro es muy importante para mí.	Mein Hund ist sehr wichtig für mich.	
+Unidad3	el tiempo	die Zeit	Calendario
+Unidad3	Lo siento, pero no tengo tiempo.	Tut mir leid, aber ich habe keine Zeit.	
+Unidad3	además	außerdem	Palabras
+Unidad3	genial	großartig, genial	Palabras
+Unidad3	De nada	Bitte (gern geschehen)	Saludar
+Unidad3	Muchas gracias - De nada.	Vielen Dank -Gern geschehen	
+Unidad3	el balcón	der Balkon	Casa_Familia
+Unidad3	¿Tiene la casa un balcón?	Hat die Wohnung einen Balkon?	
+Unidad3	allí	dort	Palabras
+Unidad3	Aquí está la biblioteca y allí hay una farmacia.	Hier ist die Bibliothek und dort ist eine Apotheke.	
+Unidad3	la calle	die Straße	Palabras
+Unidad3	encima de	auf	Palabras
+Unidad3	debajo de	unter	Palabras
+Unidad3	Debajo de mi casa hay una panadería.	Unter meiner Wohnung ist eine Bäckerei.	
+Unidad3	delante de	vor	Palabras
+Unidad3	detrás de	hinter	Palabras
+Unidad3	El polideportivo está detrás del centro comercial.	Das Sportzentrum ist hinter dem Einkaufszentrum.	
+Unidad3	derecha	rechts	Palabras
+Unidad3	izquierda	links	Palabras
+Unidad3	cerca de	in der Nähe von	Palabras
+Unidad3	Mi casa está cerca del parque.	Mein Haus ist in der Nähe des Parks.	
+Unidad3	buscar algo	etw. suchen	Palabras
+Unidad3	Busco un regalo para mi madre.	Ich suche ein Geschenk für meine Mutter.	
+Unidad3	después	dann, danach	Palabras
+Unidad3	el baño	das Bad, das Badezimmer, die Toilette	Casa_Familia
+Unidad3	la cocina	die Küche	Casa_Familia
+Unidad3	el pasillo	der Flur	Casa_Familia
+Unidad3	En el pasillo hay un gato.	Im Flur ist eine Katze.	
+Unidad3	el salón	das Wohnzimmer	Casa_Familia
+Unidad3	Mis padres están en el salón.	Meine Eltern sind im Wohnzimmer.	
+Unidad3	la habitación	das (Schlaf-)Zimmer	Casa_Familia
+Unidad3	Mi mochila está en mi habitación.	Mein Rucksack ist in meinem Zimmer.	
+Unidad3	porque	weil	Palabras
+Unidad3	No tengo tiempo porque estoy en el instituto.	Ich habe keine Zeit, weil ich in der Schule bin.	
+Unidad3	la cosa	die Sache, das Ding	Palabras
+Unidad3	la cosita	die (kleine) Sache	Palabras
+Unidad3	el libro	das Buch	Escuela
+Unidad3	Este es mi libro favorito.	Das ist mein Lieblingsbuch.	
+Unidad3	la familia	die Familie	Casa_Familia
+Unidad3	el enfermero	der Krankenpfleger	Palabras
+Unidad3	la enfermera	die Krankenpflegerin	Palabras
+Unidad3	La enfermera trabaja en el hospital.	Die Krankenpflegerin arbeitet im Krankenhaus.	
+Unidad3	trabajar	arbeiten	Palabras
+Unidad3	Mi madre trabaja en un instituto.	Meine Mutter arbeitet an einem Gymnasium.	
+Unidad3	el hospital	das Krankenhaus	Palabras
+Unidad3	hablar	sprechen, reden	Escuela
+Unidad3	Hablo con mi hermano.	Ich spreche mit meinem Bruder.	
+Unidad3	el inglés	Englisch, die englische Sprache	Escuela
+Unidad3	Mi padre habla muy bien inglés.	Mein Vater spricht sehr gut Englisch.	
+Unidad3	un poco	ein bisschen	Palabras
+Unidad3	Sí, un poco	Ja, ein bisschen	Palabras
+Unidad3	el aeropuerto	der Flughafen	Palabras
+Unidad3	la pasión	die Leidenschaft	Palabras
+Unidad3	Mi pasión son los animales, sobre todo los gatos.	Tiere sind meine Leidenschaft, vor allem Katzen.	
+Unidad3	sobre todo	vor allem	Palabras
+Unidad3	el hobby	das Hobby	Palabras
+Unidad3	¿Qué hobbies tienes?	Welche Hobbys hast du?	
+Unidad3	la música	die Musik	Palabras
+Unidad3	Escuchamos música	Wir hören Musik	Palabras
+Unidad3	escuchar algo	etw. hören	Escuela
+Unidad3	la canción	das Lied	Palabras
+Unidad3	Escucho canciones en inglés.	Ich höre Lieder auf Englisch.	
+Unidad3	el español	Spanisch, die spanische Sprache	Escuela
+Unidad3	tocar algo	etw. spielen (Musikinstrument)	Palabras
+Unidad3	María toca la guitarra muy bien.	María spielt sehr gut Gitarre.	
+Unidad3	la guitarra	die Gitarre	Palabras
+Unidad3	el fútbol	der Fußball	Palabras
+Unidad3	la moda	die Mode	Palabras
+Unidad3	mirar algo	(etw.) anschauen	Palabras
+Unidad3	¿Miramos fotos de tu mascota?	Schauen wir Fotos von deinem Haustier an?	
+Unidad3	la página (web)	die (Web-)Seite	Palabras
+Unidad3	el Internet	das Internet	Palabras
+Unidad3	Miro vídeos en Internet.	Ich schaue Videos im Internet an.	
+Unidad3	grabar algo	etw. filmen, etw. aufnehmen	Palabras
+Unidad3	Grabo un vídeo para el instituto.	Ich drehe ein Video für die Schule.	
+Unidad3	el vídeo	das Video	Palabras
+Unidad3	siempre	immer	Palabras
+Unidad3	Sara siempre trabaja en casa.	Sara arbeitet immer zu Hause.	
+Unidad3	el desastre	die Katastrophe	Palabras
+Unidad3	estudiar algo	etw. lernen	Escuela
+Unidad3	Yo estudio español en el instituto.	Ich lerne Spanisch in der Schule.	
+Unidad3	el francés	Französisch, die französische Sprache	Escuela
+Unidad3	¿Hablas francés?	Sprichst du Französisch?	
+Unidad3	horrible	schrecklich	Palabras
+Unidad3	el alemán	Deutsch, die deutsche Sprache	Escuela
+Unidad3	Hablo muy bien alemán.	Ich spreche sehr gut Deutsch.	
+Unidad3	Menos mal	Gott sei Dank!	Palabras
+Unidad3	el idioma	die Sprache	Escuela
+Unidad3	¿Qué idiomas hablas?	Welche Sprachen sprichst du?	
+Unidad3	el saludo	der Gruß	Saludar
+Unidad3	el instrumento	das (Musik-)Instrument	Palabras
+Unidad3	¿Qué instrumento tocas?	Welches Musikinstrument spielst du?	
+Unidad3	montar a caballo	reiten	Palabras
+Unidad3	practicar algo	etw. ausüben	Palabras
+Unidad3	Practico deporte en el parque.	Ich mache im Park Sport.	
+Unidad3	el deporte	der Sport	Palabras
+Unidad4	los abuelos	die Großeltern (Pl.)	Casa_Familia
+Unidad4	el abuelo / la abuela	der Großvater / die Großmutter	Casa_Familia
+Unidad4	Mi abuelo se llama Yusuf y mi abuela se llama Marta.	Mein Großvater heißt Yusuf und meine Großmutter heißt Marta.	
+Unidad4	el tío	der Onkel	Casa_Familia
+Unidad4	la tía	die Tante	Casa_Familia
+Unidad4	el novio / la novia	der feste Freund / die feste Freundin	Casa_Familia
+Unidad4	los hijos	die Kinder (Pl.)	Casa_Familia
+Unidad4	Mi tío no tiene hijos.	Mein Onkel hat keine Kinder.	
+Unidad4	el hijo / la hija	der Sohn / die Tochter	Casa_Familia
+Unidad4	el primo / la prima	der Cousin / die Cousine	Casa_Familia
+Unidad4	la estantería	das Regal	Casa_Familia
+Unidad4	Los libros están en la estantería.	Die Bücher sind im Regal.	
+Unidad4	el póster	das Poster	Casa_Familia
+Unidad4	la pared	die Wand	Casa_Familia
+Unidad4	En la pared tengo un póster de mis animales favoritos.	An der Wand habe ich ein Poster mit meinen Lieblingstieren.	
+Unidad4	la cama	das Bett	Casa_Familia
+Unidad4	la tableta	das Tablet	Palabras
+Unidad4	la mesa	der Tisch	Casa_Familia
+Unidad4	Los libros están en la mesa.	Die Bücher liegen auf dem Tisch.	
+Unidad4	la tele(visión)	das Fernsehen	Casa_Familia
+Unidad4	Veo la tele.	Ich sehe fern.	
+Unidad4	el armario	der Schrank	Casa_Familia
+Unidad4	La ropa está en el armario.	Die Kleidung ist im Schrank.	
+Unidad4	el espejo	der Spiegel	Casa_Familia
+Unidad4	la lámpara	die Lampe	Casa_Familia
+Unidad4	el suelo	der Boden	Casa_Familia
+Unidad4	la silla	der Stuhl	Casa_Familia
+Unidad4	El gato está en la silla.	Die Katze ist auf dem Stuhl.	
+Unidad4	aprender algo	etw. lernen	Escuela
+Unidad4	Aprendo inglés en el instituto.	Ich lerne Englisch in der Schule.	
+Unidad4	leer algo	etw. lesen	Escuela
+Unidad4	En el balcón leo libros.	Auf dem Balkon lese ich Bücher.	
+Unidad4	el cómic	der Comic	Palabras
+Unidad4	beber algo	etw. trinken	Comida_Bebida
+Unidad4	el zumo	der Saft	Comida_Bebida
+Unidad4	la fruta	das Obst	Comida_Bebida
+Unidad4	el agua	das Wasser	Comida_Bebida
+Unidad4	¿Qué bebes? ¿Agua o zumo?	Was trinkst du? Wasser oder Saft?	
+Unidad4	Bebo un zumo de frutas.	Ich trinke einen Fruchtsaft.	
+Unidad4	comer algo	etw. essen	Comida_Bebida
+Unidad4	el chocolate	die Schokolade	Comida_Bebida
+Unidad4	el plátano	die Banane	Comida_Bebida
+Unidad4	escribir algo	etw. schreiben	Escuela
+Unidad4	el poema	das Gedicht	Escuela
+Unidad4	Escribo poemas.	Ich schreibe Gedichte.	
+Unidad4	ya no	nicht mehr	Palabras
+Unidad4	Ya no tengo tiempo.	Ich habe keine Zeit mehr.	
+Unidad4	con nosotros/nosotras	mit uns	Palabras
+Unidad4	(No) es cierto.	Das stimmt (nicht).	
+Unidad4	el castigo	die Strafe	Palabras
+Unidad4	hacer algo	etw. machen	Palabras
+Unidad4	¿Qué haces? 	Was machst du?	Palabras
+Unidad4	los deberes 	die Hausaufgaben	Escuela
+Unidad4	Hago los deberes. 	Ich mache Hausaufgaben.	Escuela
+Unidad4	ver algo	etw. sehen	Palabras
+Unidad4	seguro 	sicher	Palabras
+Unidad4	mucho 	sehr, viel	Palabras
+Unidad4	la clase	die Klasse	Escuela
+Unidad4	En mi clase hay un chico de Perú. 	In meiner Klasse ist ein Junge aus Peru.	Escuela
+Unidad4	Ya basta	Es reicht	Palabras
+Unidad4	el comentario	der Kommentar	Palabras
+Unidad4	subir algo	etw. hochladen	Palabras
+Unidad4	Subo un vídeo a Internet. 	Ich lade ein Video ins Internet hoch.	Palabras
+Unidad4	la red social	das soziale Netzwerk	Palabras
+Unidad4	saber algo	etw. wissen	Palabras
+Unidad4	¿Sabes dónde vive Ana?	Weißt du, wo Ana wohnt?	
+Unidad4	No lo sé.	Ich weiß es nicht.	
+Unidad4	la fiesta	die Party, das Fest	Palabras
+Unidad4	Hay una fiesta en mi barrio.	Es gibt eine Party in meinem Viertel.	
+Unidad4	solo	nur	Palabras
+Unidad4	Juan solo bebe agua.	Juan trinkt nur Wasser.	
+Unidad4	o	oder	Palabras
+Unidad4	¿Hablas inglés o francés?	Sprichst du Englisch oder Französisch?	
+Unidad4	el hambre	der Hunger	Comida_Bebida
+Unidad4	Tengo hambre	Ich habe Hunger	Comida_Bebida
+Unidad4	por cierto	übrigens	Palabras
+Unidad4	Por cierto, mi abuela vive aquí.	Übrigens wohnt meine Großmutter hier.	
+Unidad4	la carne	das Fleisch	Comida_Bebida
+Unidad4	Yo no como carne.	Ich esse kein Fleisch.	
+Unidad4	e	und (vor i und hi)	Palabras
+Unidad4	Yo hablo español e inglés.	Ich spreche Spanisch und Englisch.	
+Unidad4	tampoco	auch nicht	Palabras
+Unidad4	Yo no tengo hambre.	Ich habe keinen Hunger.	
+Unidad4	también	auch	Palabras
+Unidad4	Yo tampoco	Ich auch nicht.	Palabras
+Unidad4	el bocadillo	das belegte Brötchen	Comida_Bebida
+Unidad4	el jamón	der Schinken	Comida_Bebida
+Unidad4	es que…	nämlich …	Palabras
+Unidad4	No entiendo.	Ich verstehe nicht.	
+Unidad4	la salchicha	die Wurst, das Würstchen	Comida_Bebida
+Unidad4	Es que no hablo francés.	Ich spreche nämlich kein Französisch.	
+Unidad4	rápido	schnell	Palabras
+Unidad4	a	nach, (hin) zu, auf	Palabras
+Unidad4	Este es el autobús a Madrid.	Das ist der Bus nach Madrid.	
+Unidad4	hoy	heute	Calendario
+Unidad4	en casa de alguien	bei jdm (zu Hause)	Casa_Familia
+Unidad4	Estoy en casa de mis abuelos.	Ich bin bei meinen Großeltern.	
+Unidad4	vivir	wohnen, leben	Palabras
+Unidad4	¿Dónde vives?	Wo wohnst du?	
+Unidad4	guay	super, cool	Palabras
+Unidad4	Vivo en Berlín.	Ich wohne in Berlin.	
+Unidad4	¡Silencio!	Ruhe!	
+Unidad4	alto	laut	Palabras
+Unidad4	Hablas muy alto.	Du sprichst sehr laut.	
+Unidad4	¿Por qué…?	Warum …?	
+Unidad4	¿Por qué Julia no está en el instituto?	Warum ist Julia nicht in der Schule?	
+Unidad4	algo	etwas	Palabras
+Unidad4	Miramos algo en la tableta.	Wir schauen etwas auf dem Tablet an.	
+Unidad5A	lunes	Montag	Calendario
+Unidad5A	martes	Dienstag	Calendario
+Unidad5A	miércoles	Mittwoch	Calendario
+Unidad5A	jueves	Donnerstag	Calendario
+Unidad5A	viernes	Freitag	Calendario
+Unidad5A	sábado	Samstag	Calendario
+Unidad5A	domingo	Sonntag	Calendario
+Unidad5A	usar algo	etw. verwenden, etw. benutzen	Palabras
+Unidad5A	dibujar algo	etw. zeichnen	Palabras
+Unidad5A	la bicicleta	das Fahrrad	Palabras
+Unidad5A	montar en bicicleta	Rad fahren	Palabras
+Unidad5A	nadar	schwimmen	Palabras
+Unidad5A	no hacer nada	nichts tun	Palabras
+Unidad5A	pasear	spazieren gehen	Palabras
+Unidad5A	Paseo con mis padres en el parque.	Ich gehe mit meinen Eltern im Park spazieren.	
+Unidad5A	pasear al perro	Gassi gehen	Palabras
+Unidad5A	la película	der Film	Palabras
+Unidad5A	Vemos una película en el cine.	Wir schauen einen Film im Kino an.	
+Unidad5A	la serie	die Serie	Palabras
+Unidad5A	Los miércoles veo mi serie favorita.	Mittwochs sehe ich meine Lieblingsserie.	
+Unidad5A	el tiempo libre	die Freizeit	Palabras
+Unidad5A	¿Qué haces en tu tiempo libre?	Was machst du in deiner Freizeit?	
+Unidad5A	¿Qué hora es?	Wie spät ist es?	
+Unidad5A	¿Qué hora es? Son las dos.	Wie spät ist es? Es ist zwei Uhr.	
+Unidad5A	menos	vor (zeitlich)	Calendario
+Unidad5A	un cuarto (Uhrzeit)	ein Viertel	Calendario
+Unidad5A	Son las dos menos cuarto.	Es ist Viertel vor zwei.	
+Unidad5A	el reloj	die Uhr	Calendario
+Unidad5A	¿A qué hora …?	Um wie viel Uhr …?	
+Unidad5A	¿A qué hora quedamos?	Um wie viel Uhr treffen wir uns?	
+Unidad5A	¿A las seis y media?	Um halb sieben?	
+Unidad5A	desayunar (algo)	(etw.) frühstücken	Comida_Bebida
+Unidad5A	Desayuno a las siete de la mañana.	Ich frühstücke um sieben Uhr morgens.	
+Unidad5A	la clase	der Unterricht, die Unterrichtsstunde	Escuela
+Unidad5A	Hoy no tenemos clase.	Heute haben wir keinen Unterricht.	
+Unidad5A	cenar	zu Abend essen	Comida_Bebida
+Unidad5A	El sábado cenamos en un restaurante.	Am Samstagabend essen wir in einem Restaurant.	
+Unidad5A	normalmente	normalerweise	Palabras
+Unidad5A	a las … / a la …	um … Uhr	Calendario
+Unidad5A	Comemos a las tres de la tarde.	Wir essen um drei Uhr nachmittags.	
+Unidad5A	… en punto	Punkt … Uhr	Calendario
+Unidad5A	Son las dos en punto.	Es ist Punkt zwei Uhr.	
+Unidad5A	de la tarde	nachmittags, abends	Calendario
+Unidad5A	¡Buenas tardes!	Guten Tag! Guten Abend!	
+Unidad5A	de … a …	von … bis … (Uhr/Tag/et)	Calendario
+Unidad5A	De lunes a miércoles mi padre trabaja en casa.	Von Montag bis Mittwoch arbeitet mein Vater zu Hause.	
+Unidad5A	de la mañana	morgens	Calendario
+Unidad5A	Son las ocho de la mañana.	Es ist acht Uhr morgens.	
+Unidad5A	¿Cuándo …?	Wann …?	
+Unidad5A	¿Cuándo tienes tiempo?	Wann hast du Zeit?	
+Unidad5A	de la noche	abends, nachts	Calendario
+Unidad5A	¡Buenas noches!	Guten Abend! Gute Nacht!	
+Unidad5A	las Ciencias Naturales	Naturkunde (Schulfach)	Escuela
+Unidad5A	las Matemáticas	Mathematik (Schulfach)	Escuela
+Unidad5A	la Geografía e Historia	Geschichte und Erdkunde (Schulfach)	Escuela
+Unidad5A	la Lengua Castellana y Literatura	Spanisch (als Schulfach)	Escuela
+Unidad5A	la Expresión Plástica	Kunst (Schulfach)	Escuela
+Unidad5A	la Educación Física	Sport (Schulfach)	Escuela
+Unidad5A	el recreo	die Pause	Escuela
+Unidad5A	la asignatura	das Unterrichtsfach	Escuela
+Unidad5A	¿Qué asignaturas tienes hoy?	Welche Fächer hast du heute?	
+Unidad5A	la carpeta	der Ordner	Escuela
+Unidad5A	el lápiz, (Pl.) los lápices	der Bleistift	Escuela
+Unidad5A	el cuaderno	das Heft	Escuela
+Unidad5A	el bolígrafo	der Kugelschreiber	Escuela
+Unidad5A	el estuche	das Federmäppchen	Escuela
+Unidad5A	Los lápices están en el estuche.	Die Bleistifte sind im Federmäppchen.	
+Unidad5A	ir	gehen, fahren	Palabras
+Unidad5A	voy / vas / va / vamos / vais / van	ich gehe / du gehst / er, sie, es geht / wir gehen / ihr geht / sie gehen	Palabras
+Unidad5A	Mañana vamos al cine.	Morgen gehen wir ins Kino.	
+Unidad5A	necesitar algo	etw. brauchen	Palabras
+Unidad5A	Necesito un estuche para el instituto.	Ich brauche ein Mäppchen für die Schule.	
+Unidad5A	tener que hacer algo	etw. tun müssen	Palabras
+Unidad5A	Tenemos que hacer los deberes.	Wir müssen die Hausaufgaben machen.	
+Unidad5A	comprar algo	etw. kaufen	Palabras
+Unidad5A	Tengo que comprar cuadernos.	Ich muss Hefte kaufen.	
+Unidad5A	primero	zuerst	Palabras
+Unidad5A	tomar algo	etw. trinken, etw. essen	Comida_Bebida
+Unidad5A	¿Tomamos un bocadillo en la cafetería?	Essen wir ein belegtes Brötchen in der Cafeteria?	
+Unidad5A	la cola	die (Menschen-)Schlange	Palabras
+Unidad5A	Delante del cine tenemos que hacer cola.	Vor dem Kino müssen wir Schlange stehen.	
+Unidad5A	enorme	enorm, riesig	Palabras
+Unidad5A	Madrid es una ciudad enorme.	Madrid ist eine riesige Stadt.	
+Unidad5A	esperar algo	auf etw. warten	Palabras
+Unidad5A	Tengo que esperar el autobús.	Ich muss auf den Bus warten.	
+Unidad5A	después de	nach (zeitlich)	Palabras
+Unidad5A	Después del cine, voy a casa.	Nach dem Kino gehe ich nach Hause.	
+Unidad5A	un buen rato	eine ganze Weile	Palabras
+Unidad5A	Tenemos que esperar un buen rato.	Wir müssen eine ganze Weile warten.	
+Unidad5A	regresar	zurückkehren	Palabras
+Unidad5A	el mensaje	die Nachricht	Palabras
+Unidad5A	increíble	unglaublich	Palabras
+Unidad5A	con tranquilidad	in Ruhe	Palabras
+Unidad5A	Leo mis mensajes con tranquilidad.	Ich lese meine Nachrichten in Ruhe.	
+Unidad5A	con nerviosismo	nervös	Palabras
+Unidad5A	Laura mira el reloj con nerviosismo.	Laura sieht nervös auf die Uhr.	
+Unidad5A	al final	zum Schluss, am Ende	Palabras
+Unidad5A	Primero vamos al parque, después al cine y, al final, tomamos un bocadillo.	Zuerst gehen wir in den Park, dann ins Kino und zum Schluss essen wir ein belegtes Brötchen.	
+Unidad5A	la gorra	die Kappe	Palabras
+Unidad5A	tomar algo	etw. nehmen	Palabras
+Unidad5A	Tomamos el metro al centro comercial.	Wir nehmen die U-Bahn zum Einkaufszentrum.	
+Unidad5A	el ascensor	der Aufzug	Palabras
+Unidad5A	subir a algo	auf etw. hinaufgehen, auf etw. hinauffahren	Palabras
+Unidad5A	la terraza	die Terrasse	Casa_Familia
+Unidad5A	Subimos a la terraza.	Wir gehen auf die Terrasse.	
+Unidad5A	el helado	das (Speise-)Eis	Comida_Bebida
+Unidad5A	la heladería	die Eisdiele	Palabras
+Unidad5A	todavía	(immer) noch	Palabras
+Unidad5A	Laura todavía no está en casa.	Laura ist noch nicht zu Hause.	
+Unidad5A	sin	ohne	Palabras
+Unidad5A	Voy al supermercado sin mis padres.	Ich gehe ohne meine Eltern zum Supermarkt.	
+Unidad5A	ya	schon	Palabras
+Unidad5A	Son las 11 y ya tengo hambre.	Es ist erst 11 Uhr und ich habe schon Hunger.	
+Unidad5A	¿Adónde?	Wohin?	
+Unidad5A	¿Adónde vas? Voy a casa.	Wo gehst du hin? Ich gehe nach Hause.	
+Unidad5B	el fin de semana	das Wochenende, am Wochenende	Calendario
+Unidad5B	la semana	die Woche	Calendario
+Unidad5B	bailar	tanzen	Palabras
+Unidad5B	ir a correr	joggen gehen, laufen gehen	Palabras
+Unidad5B	escalar	klettern	Palabras
+Unidad5B	esquiar	Ski fahren	Palabras
+Unidad5B	hacer surf	surfen	Palabras
+Unidad5B	jugar a algo	etw. spielen	Palabras
+Unidad5B	el baloncesto	das Basketball	Palabras
+Unidad5B	el curso	der Kurs	Escuela
+Unidad5B	la escalada	das Klettern	Palabras
+Unidad5B	tener ganas de hacer algo	Lust haben, etw. zu tun	Palabras
+Unidad5B	probar algo	etw. (aus-)probieren	Palabras
+Unidad5B	la idea	die Idee	Palabras
+Unidad5B	¿Qué tal...?	Wie wäre es mit ...?	Saludar
+Unidad5B	por la mañana	(am) Morgen, (am) Vormittag	Calendario
+Unidad5B	¡Qué pena!	Wie schade!	Saludar
+Unidad5B	poder hacer algo	etw. tun können, etw. tun dürfen	Palabras
+Unidad5B	temprano	früh	Calendario
+Unidad5B	No pasa nada.	Das macht doch nichts!	Saludar
+Unidad5B	por la tarde	(am) Nachmittag	Calendario
+Unidad5B	si	wenn, falls	Palabras
+Unidad5B	querer hacer algo	etw. (tun) wollen	Palabras
+Unidad5B	ordenar algo	etw. aufräumen	Palabras
+Unidad5B	¡Buena idea!	Gute Idee!	Saludar
+Unidad5B	la disculpa	die Entschuldigung, die Ausrede	Palabras
+Unidad5B	la silla de ruedas	der Rollstuhl	Palabras
+Unidad5B	En mi tiempo libre voy a correr por el parque.	In meiner Freizeit gehe ich im Park joggen.	
+Unidad5B	Yo esquío en mi tiempo libre.	In meiner Freizeit fahre ich Ski.	
+Unidad5B	Los sábados juego al baloncesto.	Samstags spiele ich Basketball.	
+Unidad5B	¿Tenéis ganas de ir al cine?	Habt ihr Lust, mit ins Kino zu gehen?	
+Unidad5B	¡Vale! ¿A qué hora quedamos?	Klar! Wann treffen wir uns?	
+Unidad5B	Pruebo el jamón.	Ich probiere den Schinken.	
+Unidad5B	Tengo una idea.	Ich habe eine Idee.	
+Unidad5B	¿Cuándo tienes tiempo?	Wann hast du Zeit?	
+Unidad5B	¿Qué tal hoy después de clase?	Wie wäre es mit heute nach der Schule?	
+Unidad5B	El sábado por la mañana podemos ir al centro comercial.	Am Samstagvormittag können wir ins Einkaufszentrum gehen.	
+Unidad5B	¡¿No vas a la fiesta?!	Gehst du nicht zur Party?!	
+Unidad5B	No puedo ir al parque porque tengo clase de guitarra.	Ich kann nicht in den Park gehen, weil ich Gitarrenunterricht habe.	
+Unidad5B	Mi madre desayuna muy temprano, a las seis de la mañana.	Meine Mutter frühstückt sehr früh, um sechs Uhr morgens.	
+Unidad5B	Siempre hago deporte por la tarde.	Am Nachmittag mache ich immer Sport.	
+Unidad5B	Si tengo tiempo, voy a tu casa.	Wenn ich Zeit habe, komme ich zu dir.	
+Unidad5B	Quiero ir en bicicleta.	Ich möchte mit dem Fahrrad fahren.	
+Unidad5B	Los sábados siempre ordeno la habitación.	Samstags räume ich immer das Zimmer auf.	
