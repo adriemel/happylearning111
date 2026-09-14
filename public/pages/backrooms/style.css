@@ -25,3 +25,6 @@
 #speechStatus:empty{display:none}
 @media(pointer:fine){#feedback{bottom:calc(max(26px,env(safe-area-inset-bottom)) + 64px)}}
 @media(max-height:500px){#listeningControls{top:70px}.tools{top:70px}#feedback{font-size:11px;bottom:110px}#stick{width:80px;height:80px;bottom:18px}#knob{left:18px;top:18px}}
+
+/* Door text is painted on fixed-size 3D signs; keep a readable DOM equivalent. */
+.door-label.world-sign-text{position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}

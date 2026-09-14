@@ -31,3 +31,5 @@ Soft synthesized carpet footsteps follow actual distance travelled, including co
 With Playwright available to Node, run `node tests/backrooms/learning-browser.test.cjs` for the new listening, hint, footsteps and layout checks in headless Edge. Speech events are simulated in automation; listening on the target device remains a manual check.
 
 The fourth challenge option, “Alle drei · zufällig gemischt”, independently selects translation, spelling or listening with equal probability for each new room. Consecutive rooms may use the same challenge. Pausing or retrying a door keeps the current room’s challenge.
+
+Vocabulary signs are fixed 1.9 × 0.56 world-unit panels mounted above the doors. Canvas text wraps to fit; perspective controls apparent size and walls occlude the signs naturally. Text equivalents remain in the DOM for accessibility. Per-room sign textures and geometry are disposed when changing rooms.

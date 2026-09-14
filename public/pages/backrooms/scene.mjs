@@ -33,6 +33,7 @@ export class World {
   box(x,y,z,w,h,d,color) { const m = new THREE.Mesh(this.geometry,this.material(color)); m.position.set(x,y,z);m.scale.set(w,h,d);this.group.add(m);return m; }
   resize() { this.camera.aspect = innerWidth / innerHeight; this.camera.fov = this.camera.aspect < .8 ? 110 : 68; this.camera.updateProjectionMatrix(); this.renderer.setSize(innerWidth,innerHeight); }
   room(labels, index, final) {
+    for(const d of this.doors){d.sign.geometry.dispose();d.sign.material.map.dispose();d.sign.material.dispose();}
     this.group.clear(); document.querySelector('#labels').replaceChildren(); this.doors=[];this.obstacles=[];this.openIndex=-1;this.final=final;
     this.camera.position.set(0,1.65,3.5);this.yaw=0;this.pitch=0;
     this.box(0,-.1,-2,12,.2,24,'#827654');this.box(0,3.3,-2,12,.2,24,'#b4ac87');
@@ -50,14 +51,35 @@ export class World {
       this.box(x-1,1.3,-4.94,.12,2.6,.25,'#4d4e38');this.box(x+1,1.3,-4.94,.12,2.6,.25,'#4d4e38');this.box(x,2.6,-4.94,2.1,.1,.25,'#4d4e38');
       const mesh=this.box(x,1.27,-5,1.82,2.52,.14,'#686d4a');
       const knob=this.box(x+.65,1.15,-4.86,.12,.12,.1,'#d7d9ac');
-      const label=document.createElement('div');label.className='door-label';label.textContent=labels[i];document.querySelector('#labels').append(label);
-      this.doors.push({x,mesh,knob,label,failed:false,open:false});
+      const label=document.createElement('div');label.className='door-label world-sign-text';label.textContent=labels[i];document.querySelector('#labels').append(label);
+      const sign=this.makeSign(labels[i],x);
+      this.doors.push({x,mesh,knob,label,sign,failed:false,open:false});
     });this.box((left+6)/2,1.6,-5,6-left,3.4,.2,'#b8ac72');
     this.box(0,1.6,-13,12,3.4,.2,final?'#eaf5e2':'#a59d71');
     this.box(-5.8,.07,1,.15,.15,8,'#5a5841');this.box(5.8,.07,1,.15,.15,8,'#5a5841');
     this.exit=this.box(0,1.5,-12.8,2.2,3,.04,final?'#f7ffed':'#d1cea7');
     if(final){const sign=document.createElement('div');sign.className='door-label open';sign.textContent='AUSGANG ↗';document.querySelector('#labels').append(sign);this.exitLabel=sign;}else this.exitLabel=null;
     this.decorate(index);
+  }
+  makeSign(text,x){
+    const canvas=document.createElement('canvas');canvas.width=768;canvas.height=224;
+    const map=new THREE.CanvasTexture(canvas);map.colorSpace=THREE.SRGBColorSpace;map.anisotropy=Math.min(4,this.renderer.capabilities.getMaxAnisotropy());
+    const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.9,.56),new THREE.MeshBasicMaterial({map}));
+    sign.position.set(x,2.96,-4.84);sign.userData={text,canvas};this.paintSign(sign);this.group.add(sign);return sign;
+  }
+  paintSign(sign,state='normal'){
+    const {canvas,text}=sign.userData,g=canvas.getContext('2d');
+    g.fillStyle=state==='failed'?'#604843':state==='open'?'#d6eaa5':'#eee7c9';g.fillRect(0,0,768,224);
+    g.strokeStyle='#6c674d';g.lineWidth=12;g.strokeRect(6,6,756,212);
+    let lines=[],size=84;
+    for(;size>=18;size-=2){
+      g.font=`700 ${size}px system-ui, sans-serif`;lines=[];let line='';
+      for(const word of text.split(/\s+/)){const next=line?line+' '+word:word;if(line&&g.measureText(next).width>712){lines.push(line);line=word;}else line=next;}
+      if(line)lines.push(line);
+      if(lines.length*size*1.18<=180&&lines.every(l=>g.measureText(l).width<=712))break;
+    }
+    g.fillStyle=state==='failed'?'#ffffff':'#24291e';g.textAlign='center';g.textBaseline='middle';
+    lines.forEach((line,i)=>g.fillText(line,384,112+(i-(lines.length-1)/2)*size*1.18,712));sign.material.map.needsUpdate=true;
   }
   decorate(index){
     this.decal('writing',-5.88,1.8,.2,2.5,2.5,Math.PI/2);
@@ -96,11 +118,11 @@ export class World {
     p.set(x,1.65,Math.max(-12,z));
   }
   nearest() { if(this.camera.position.z< -5.4)return -1;return this.doors.findIndex(d=>Math.hypot(d.x-this.camera.position.x,-4.6-this.camera.position.z)<1.55); }
-  open(i) { this.openIndex=i;this.doors[i].open=true;this.doors[i].label.classList.add('open'); }
-  fail(i) {this.doors[i].failed=true;this.doors[i].shake=.7;this.doors[i].label.classList.add('failed');}
+  open(i) { this.openIndex=i;this.doors[i].open=true;this.doors[i].label.classList.add('open');this.paintSign(this.doors[i].sign,'open'); }
+  fail(i) {this.doors[i].failed=true;this.doors[i].shake=.7;this.doors[i].label.classList.add('failed');this.paintSign(this.doors[i].sign,'failed');}
   render(dt) {
     this.camera.rotation.set(this.pitch,this.yaw,0);
-    for(const d of this.doors){if(d.shake>0){d.shake=Math.max(0,d.shake-dt);const offset=matchMedia('(prefers-reduced-motion: reduce)').matches?0:Math.sin(d.shake*65)*.09*d.shake/.7;d.mesh.position.x=d.x+offset;d.knob.position.x=d.x+.65+offset;}if(d.open){d.mesh.position.y=Math.min(4,d.mesh.position.y+dt*3);d.knob.visible=false;}this.project(d.label,d.x,2.9,-4.85);}
+    for(const d of this.doors){if(d.shake>0){d.shake=Math.max(0,d.shake-dt);const offset=matchMedia('(prefers-reduced-motion: reduce)').matches?0:Math.sin(d.shake*65)*.09*d.shake/.7;d.mesh.position.x=d.x+offset;d.knob.position.x=d.x+.65+offset;}if(d.open){d.mesh.position.y=Math.min(4,d.mesh.position.y+dt*3);d.knob.visible=false;}}
     if(this.exitLabel)this.project(this.exitLabel,0,2.7,-12.5);
     this.renderer.render(this.scene,this.camera);
   }
