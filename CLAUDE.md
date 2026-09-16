@@ -21,6 +21,7 @@ Two steps only:
   file: "filename.html",          // must match the file in /public/pages/ exactly
   href: "/pages/filename.html",   // same as file, prefixed with /pages/
   lang: "DE",                     // language of the target page: "DE" or "EN"
+  addedAt: "2026-09-16",           // first publication date, YYYY-MM-DD; keep unchanged on edits
   apiNeeded: false,               // set true if the page requires an API key (shows "API" badge)
   title: {
     de: "Deutscher Titel",
@@ -34,6 +35,10 @@ Two steps only:
 ```
 
 That's it — the card appears automatically in the correct subject section with the right tag color, language badge, and bilingual text.
+
+The homepage shows the three newest dated entries above a collapsed topic library. Keep `addedAt` unchanged when updating a page; it means first publication, not last edit. Existing dates were backfilled from the first catalog registration in Git history. Undated entries remain discoverable in their topic and search but are excluded from Recently added.
+
+Topics sort alphabetically by the current DE/EN display name and only one topic opens at a time. The library reveals 12 topics at a time, each topic reveals 6 pages at a time, and global search and the additions archive reveal 12 pages at a time. Search covers the whole catalog, including collapsed or not-yet-shown topics. The original dark/neon palette remains unchanged.
 
 ### Adding a new subject
 If the subject doesn't exist yet, also:
@@ -54,8 +59,8 @@ HappyLearning/
 │   ├── TopBar.jsx              # Sticky top bar: brand, search (⌘K / /), lang toggle, tweaks btn
 │   ├── Hero.jsx                # Badge + title row (with StickFigure) + subtitle + divider
 │   ├── StickFigure.jsx         # Waving stick figure SVG — do NOT merge the two nested <g>s
-│   ├── SubjectNav.jsx          # Sticky chip bar: Alle / subjects with counts
-│   ├── Section.jsx             # One subject section: italic header + card grid
+│   ├── SubjectNav.jsx          # Legacy chip bar (not used by the homepage)
+│   ├── Section.jsx             # Accessible collapsible topic + batched card grid
 │   ├── PageCard.js             # Card: subject tag, lang badge, title, desc, Öffnen/Open, API badge
 │   ├── Tweaks.jsx              # Floating panel: density (Compact/Cozy/Spacious) + descriptions on/off
 │   └── hooks/

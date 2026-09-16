@@ -27,6 +27,8 @@ function Search({ value, onChange, placeholder }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label={placeholder}
+        type="search"
       />
       <kbd>⌘K</kbd>
     </div>
