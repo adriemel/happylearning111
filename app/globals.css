@@ -485,9 +485,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ── Card title ── */
 .card-title {
-  font-family: var(--font-serif);
-  font-size: 1.18rem;
-  font-weight: 400;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--text-primary);
   line-height: 1.3;
 }
@@ -619,7 +619,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .hero-title { font-size: clamp(3rem, 6vw, 4rem); }
 .hero-sub { margin-bottom: 1rem; }
 .library-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
-.library-heading h2 { font: italic 1.9rem var(--font-serif); }
+.library-heading h2 { font: 600 1.25rem/1.4 var(--font-sans); }
 .library-count { font: 0.72rem var(--font-mono); color: var(--text-secondary); }
 .library-action { padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; color: var(--lime); font: 0.75rem var(--font-mono); }
 .library-action:hover { background: var(--lime-dim); border-color: var(--lime); }
@@ -631,7 +631,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .topic-section:first-of-type { border-top: 1px solid var(--border); }
 .topic-toggle { width: 100%; display: flex; align-items: center; gap: 18px; text-align: left; padding: 20px 12px; border-radius: 6px; }
 .topic-toggle:hover, .topic-toggle[aria-expanded="true"] { background: var(--lime-dim); }
-.topic-name { font: italic 1.55rem var(--font-serif); }
+.topic-name { font: 600 1rem/1.4 var(--font-sans); }
 .topic-blurb { font: 0.65rem var(--font-mono); text-transform: uppercase; color: var(--text-secondary); }
 .topic-count { margin-left: auto; white-space: nowrap; font: 0.72rem var(--font-mono); color: var(--text-secondary); }
 .topic-chevron { color: var(--lime); font: 1.5rem var(--font-mono); width: 24px; text-align: center; flex-shrink: 0; }
@@ -649,10 +649,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-
   .search input { font-size: 16px; padding-right: 45px; }
   .topic-blurb { display: none; }
   .topic-toggle { gap: 10px; padding: 18px 4px; }
-  .topic-name { font-size: 1.35rem; }
   .topic-count { font-size: 0.65rem; }
   .topic-content { padding-left: 0; padding-right: 0; }
   .main { padding-top: 1.5rem; }
-  .library-heading h2 { font-size: 1.7rem; }
   .library-heading .library-action { margin-left: 0; }
 }
