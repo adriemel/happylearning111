@@ -4,7 +4,7 @@ import {parseTSV,choices,spellingChoices,playable,lengths,Session,key} from '../
 const categories=parseTSV(readFileSync(new URL('../../public/pages/backrooms/words.tsv',import.meta.url),'utf8'));
 assert.equal(categories.size,11);assert(![...categories.keys()].some(c=>/^x/i.test(c)));
 for(const pool of categories.values())for(const entry of pool){const options=choices(entry,pool);assert(options.length>=2&&options.length<=3);assert.equal(new Set(options.map(key)).size,options.length);assert.equal(options.filter(o=>entry.answers.some(a=>key(a)===key(o))).length,1);}
-const pool=categories.get('Saludar');assert.equal(pool.filter(e=>e.de==='Ich bin Bjarne').length,1);assert.equal(pool.find(e=>e.de==='Ich bin Bjarne').answers.length,2);
+const pool=categories.get('Saludar');const duplicates=parseTSV('category\tes\tde\nTest\tSoy Bjarne\tIch bin Bjarne\nTest\tYo soy Bjarne\tIch bin Bjarne').get('Test');assert.equal(duplicates.length,1);assert.equal(duplicates[0].answers.length,2);
 assert.deepEqual(lengths(12),[5,10,12]);assert.deepEqual(lengths(2),[2]);assert.deepEqual(lengths(0),[]);
 assert.throws(()=>parseTSV('wrong\theader\na\tb'));
 assert.equal(playable([{de:'a',answers:['a']}]).length,0);

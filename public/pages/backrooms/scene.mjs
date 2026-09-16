@@ -31,7 +31,7 @@ export class World {
   decal(name,x,y,z,w,h,rotationY=0,floor=false){const m=new THREE.Mesh(this.decalGeometry,this.decals[name]);m.position.set(x,y,z);m.scale.set(w,h,1);if(floor)m.rotation.x=-Math.PI/2;else m.rotation.y=rotationY;this.group.add(m);return m;}
   material(color) { return this.materials[color] ||= new THREE.MeshLambertMaterial({ color }); }
   box(x,y,z,w,h,d,color) { const m = new THREE.Mesh(this.geometry,this.material(color)); m.position.set(x,y,z);m.scale.set(w,h,d);this.group.add(m);return m; }
-  resize() { this.camera.aspect = innerWidth / innerHeight; this.camera.fov = this.camera.aspect < .8 ? 110 : 68; this.camera.updateProjectionMatrix(); this.renderer.setSize(innerWidth,innerHeight); }
+  resize() { this.camera.aspect = innerWidth / innerHeight; this.camera.fov = this.camera.aspect < .8 ? 110 : 68; this.camera.updateProjectionMatrix(); this.renderer.setSize(innerWidth,innerHeight);if(this.encounterKind&&this.encounterKind!=='clear')this.encounter(this.encounterKind,this.encounterWrong); }
   room(labels, index, final) {
     for(const d of this.doors){d.sign.geometry.dispose();d.sign.material.map.dispose();d.sign.material.dispose();}
     this.group.clear(); document.querySelector('#labels').replaceChildren(); this.doors=[];this.obstacles=[];this.openIndex=-1;this.final=final;
@@ -104,6 +104,29 @@ export class World {
     for(const radius of [.25,.5,.75,1])for(let i=0;i<5;i++)strand(corner.clone().lerp(rays[i],radius),corner.clone().lerp(rays[i+1],radius));
   }
   look(dx,dy,sensitivity=1) { this.yaw-=dx*.004*sensitivity;this.pitch=Math.max(-.7,Math.min(.7,this.pitch-dy*.003*sensitivity)); }
+  encounter(kind,wrong=0) {
+    this.encounterKind=kind;this.encounterWrong=wrong;
+    if(!this.encounterGroup){this.encounterGroup=new THREE.Group();this.scene.add(this.encounterGroup);}
+    const group=this.encounterGroup;group.clear();
+    if(kind==='clear'){this.render(0);return;}
+    this.camera.position.x=0;this.yaw=0;this.pitch=innerWidth<=700?-1:0;
+    const distance=4-Math.min(wrong,2)*.65;
+    group.scale.setScalar(innerWidth<=700?.5:1);
+    group.position.set(innerWidth<=700?0:-1.3,0,this.camera.position.z-distance);
+    const box=(x,y,z,w,h,d,color)=>{const m=new THREE.Mesh(this.geometry,this.material(color));m.position.set(x,y,z);m.scale.set(w,h,d);group.add(m);};
+    if(kind==='monster'){
+      box(0,1.35,0,.65,1.15,.35,'#20272a');box(0,2.18,0,.5,.55,.4,'#38473e');
+      for(const side of [-1,1]){box(side*.24,.45,0,.18,.9,.2,'#20272a');box(side*.5,1.2,0,.17,1.25,.2,'#38473e');box(side*.12,2.23,.22,.08,.06,.025,'#f6f3d4');}
+    }else{
+      box(0,.7,0,1.2,1.4,.65,'#45483e');
+      box(0,1.12,.34,.9,.3,.04,'#20272a');
+      for(let i=0;i<3;i++)box(-.3+i*.3,1.12,.37,.1,.1,.04,kind==='generator'?'#dce898':'#b4ac87');
+      if(kind==='radio')box(.4,1.9,0,.035,1,.035,'#d1cea7');
+      if(kind==='cabinet')box(.4,.65,.38,.08,.22,.06,'#d1cea7');
+      if(kind==='generator')for(let i=0;i<4;i++)box(-.4+i*.26,.45,.35,.1,.5,.04,'#20272a');
+    }
+    this.render(0);
+  }
   move(side,forward,dt) {
     const length=Math.max(1,Math.hypot(side,forward)),speed=3*dt;
     const p=this.camera.position;

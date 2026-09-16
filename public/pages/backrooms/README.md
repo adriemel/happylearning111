@@ -33,3 +33,10 @@ With Playwright available to Node, run `node tests/backrooms/learning-browser.te
 The fourth challenge option, “Alle drei · zufällig gemischt”, independently selects translation, spelling or listening with equal probability for each new room. Consecutive rooms may use the same challenge. Pausing or retrying a door keeps the current room’s challenge.
 
 Vocabulary signs are fixed 1.9 × 0.56 world-unit panels mounted above the doors. Canvas text wraps to fit; perspective controls apparent size and walls occlude the signs naturally. Text equivalents remain in the DOM for accessibility. Per-room sign textures and geometry are disposed when changing rooms.
+
+## Generator mission (no time limit)
+Every run includes three checkpoints, spread across its room count: a radio translation unlocks a battery, a monster conversation unlocks a fuse, and a spelling cabinet unlocks a cable. Short runs can have two checkpoints after one room. The exit requires all three parts and explicit generator activation. Existing door modes and three-heart rules remain in place.
+
+Mission dialogs freeze movement and show the Spanish text, with optional replay through the existing speech synthesis. A monster moves closer only after a new wrong answer, never with elapsed time. Mission answers can be retried without losing hearts; wrong options are disabled, corrections are shown, and mistakes appear in the final review. Pause/resume preserves the encounter. Restart resets the mission. Monster conversations are a small curated set in `mission.mjs`; radio and spelling challenges use the selected vocabulary category.
+
+Run `node tests/backrooms/mission.test.mjs` as well as the vocabulary tests. The browser regression now covers mission collection, the untimed monster, pause/resume, generator activation, review and complete listening/mixed runs. The local browser test requires Playwright and Edge.

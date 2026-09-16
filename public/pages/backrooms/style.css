@@ -28,3 +28,16 @@
 
 /* Door text is painted on fixed-size 3D signs; keep a readable DOM equivalent. */
 .door-label.world-sign-text{position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* Untimed mission encounters: the world waits for the learner. */
+#missionProgress{position:absolute;top:76px;left:12px;max-width:calc(100% - 24px);padding:5px 8px;border-radius:6px;background:#20271fe8;color:#dce898;font-size:11px}
+#missionPanel{left:auto;right:5vw;width:min(460px,calc(100% - 32px));background:#20271ff5}
+#missionTitle{font-size:27px;margin:15px 0}
+#missionSpanish{font-size:24px;font-weight:700;color:#e5edaa;margin:12px 0}
+#missionSpanish:empty{display:none}
+#missionAnswers{display:grid;gap:6px;margin:12px 0}
+#missionAnswers button{text-align:left;overflow-wrap:anywhere}
+#missionFeedback{font-size:14px}
+#missionFeedback:empty{display:none}
+#missionSpeak,#missionPause{font-size:13px}
+@media(max-width:700px){#missionPanel{right:16px;padding:20px;top:auto;bottom:16px;transform:none;max-height:76dvh}#missionTitle{font-size:22px}#missionSpanish{font-size:20px}#missionPanel p{margin:8px 0}#missionPanel button{padding:10px 12px;margin:3px 0}#missionProgress{font-size:10px;top:78px}}
