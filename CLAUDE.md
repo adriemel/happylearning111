@@ -92,7 +92,7 @@ Persists `{ density: "cozy", descriptions: "show", lang: "de" }`. Toggled from t
 - **Spacious** — 3 cols with more gap/padding
 
 ## HTML Files
-All 23 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets.
+All 24 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets.
 
 | File | DE Title | Subject | Lang | API |
 |------|----------|---------|------|-----|
@@ -105,6 +105,7 @@ All 23 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts
 | quiz-Chemie.html | Quiz: Chemie-Klassenarbeit | Chemie | DE | |
 | pflanzenzelle-fotosynthese.html | Pflanzenzelle & Fotosynthese | Biologie | DE | |
 | wetter-klima.html | Wetter & Klima Kompass | Erdkunde | DE | |
+| wind-passat.html | Winde & Passat | Erdkunde | DE | |
 | Fabulator.html | Fabulator | Deutsch | DE | ✓ |
 | pangaea_ai_training_wiki.html | KI-Training & Pangaea | Allgemein | EN | |
 | html-lernen.html | HTML Lernen | Allgemein | DE | |

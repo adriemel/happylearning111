@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interaktive Lernseite zu Luftdruck, Wind, Land- und Seewind, Flurwind, Beaufort-Skala und Passatkreislauf für Erdkunde Klasse 7.">
+<title>Winde &amp; Passat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ TOKENS (same family as wetter-klima.html) ============ */
+  :root{
+    --paper:#F7FAF8; --paper-2:#EAF3F1; --card:#FFFFFF;
+    --ink:#192124; --ink-soft:#425057; --ink-faint:#6F7D83;
+    --line: rgba(25,33,36,.14); --line-strong: rgba(25,33,36,.28);
+    --teal:#137481; --teal-deep:#083F49; --teal-tint:#DDF0F1;
+    --amber:#D38B19; --amber-tint:#FFF1D6;
+    --rust:#C7512D; --rust-tint:#FBE4D9;
+    --sky:#3E78B2; --sky-tint:#E3EEF8;
+    --moss:#4F8A5B; --moss-tint:#E2F1E5;
+    --violet:#7B5CC4; --violet-tint:#EEE8FA;
+    --hoch:#C7512D; --tief:#2F6FD8;
+    --shadow: 0 1px 2px rgba(25,33,36,.06), 0 10px 24px -16px rgba(25,33,36,.22);
+    --radius: 8px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14191A; --paper-2:#1B2224; --card:#1F282A;
+      --ink:#EFE7D6; --ink-soft:#BCB09B; --ink-faint:#8C8574;
+      --line: rgba(239,231,214,.14); --line-strong: rgba(239,231,214,.28);
+      --teal:#5CBAC2; --teal-deep:#BFEAEA; --teal-tint: rgba(92,186,194,.14);
+      --amber:#F0B65E; --amber-tint: rgba(240,182,94,.14);
+      --rust:#E38659; --rust-tint: rgba(227,134,89,.16);
+      --sky:#89AEDD; --sky-tint: rgba(137,174,221,.14);
+      --moss:#93C178; --moss-tint: rgba(147,193,120,.14);
+      --violet:#B59CF0; --violet-tint: rgba(181,156,240,.14);
+      --hoch:#F08A63; --tief:#7FA9F0;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14191A; --paper-2:#1B2224; --card:#1F282A;
+    --ink:#EFE7D6; --ink-soft:#BCB09B; --ink-faint:#8C8574;
+    --line: rgba(239,231,214,.14); --line-strong: rgba(239,231,214,.28);
+    --teal:#5CBAC2; --teal-deep:#BFEAEA; --teal-tint: rgba(92,186,194,.14);
+    --amber:#F0B65E; --amber-tint: rgba(240,182,94,.14);
+    --rust:#E38659; --rust-tint: rgba(227,134,89,.16);
+    --sky:#89AEDD; --sky-tint: rgba(137,174,221,.14);
+    --moss:#93C178; --moss-tint: rgba(147,193,120,.14);
+    --violet:#B59CF0; --violet-tint: rgba(181,156,240,.14);
+    --hoch:#F08A63; --tief:#7FA9F0;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Figtree', -apple-system, 'Segoe UI', sans-serif;
+    font-size:16.5px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{ font-family:'Fraunces', Georgia, serif; font-weight:600; text-wrap:balance; margin:0 0 .4em; color:var(--ink); }
+  p{ margin:0 0 1em; color:var(--ink-soft); max-width:66ch; }
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+  button{ font-family:inherit; }
+  a{ color:var(--teal); }
+  :focus-visible{ outline:3px solid var(--teal); outline-offset:2px; }
+  svg{ max-width:100%; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  }
+  .page{ position:relative; overflow-x:hidden; }
+  main{ position:relative; z-index:1; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+
+  /* topbar */
+  .topbar{ position:sticky; top:0; z-index:50; background:color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  .topbar-inner{ max-width:1080px; margin:0 auto; padding:10px 24px; display:flex; align-items:center; gap:18px; }
+  .brand{ display:flex; align-items:center; gap:8px; font-family:'Fraunces', serif; font-weight:600; font-size:1.02rem; white-space:nowrap; color:var(--ink); }
+  .brand .mark{ font-size:1.25rem; }
+  nav.chips{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; padding:2px 0; }
+  nav.chips::-webkit-scrollbar{ display:none; }
+  nav.chips a{
+    flex:0 0 auto; text-decoration:none; font-size:.82rem; font-weight:600; color:var(--ink-soft);
+    padding:7px 12px; border-radius:100px; border:1px solid var(--line); background:var(--card); white-space:nowrap;
+    transition:background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
+  }
+  nav.chips a:hover{ border-color:var(--line-strong); transform:translateY(-1px); }
+  nav.chips a.active{ background:var(--teal); color:#fff; border-color:var(--teal); }
+
+  /* hero */
+  .hero{ padding:54px 0 40px; }
+  .hero-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,.9fr); gap:34px; align-items:center; }
+  .kicker{
+    display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Mono', monospace; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--teal); font-weight:600; background:var(--teal-tint); padding:5px 11px; border-radius:100px; margin-bottom:18px;
+  }
+  .hero h1{ font-size:clamp(2.3rem, 5vw, 3.4rem); line-height:1.04; letter-spacing:-.01em; }
+  .hero h1 em{ font-style:italic; color:var(--teal); }
+  .hero p.lead{ font-size:1.1rem; max-width:52ch; }
+  .hero-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .hero-actions a{ display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:800; font-size:.9rem; border:1px solid var(--line-strong); border-radius:8px; padding:10px 14px; background:var(--card); color:var(--ink); }
+  .hero-actions a.primary{ background:var(--teal); border-color:var(--teal); color:#fff; }
+  .hero-meta{ display:flex; gap:22px; flex-wrap:wrap; margin-top:22px; }
+  .hero-meta div{ font-size:.86rem; color:var(--ink-faint); }
+  .hero-meta strong{ display:block; color:var(--ink); font-family:'Fraunces',serif; font-size:1.1rem; font-weight:600; }
+  .hero-art{ border-radius:8px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); }
+  .hero-art svg{ display:block; width:100%; height:auto; }
+  .streak{ fill:none; stroke:#fff; stroke-width:3; stroke-linecap:round; stroke-dasharray:40 260; animation:streak 2.6s linear infinite; opacity:.85; }
+  @keyframes streak{ from{ stroke-dashoffset:300; } to{ stroke-dashoffset:0; } }
+  .kite{ animation:kite 3s ease-in-out infinite alternate; transform-box:fill-box; transform-origin:50% 100%; }
+  @keyframes kite{ from{ transform:translate(0,0) rotate(-4deg); } to{ transform:translate(6px,-8px) rotate(5deg); } }
+  .wave-move{ animation:waveMove 3s linear infinite; }
+  @keyframes waveMove{ from{ transform:translateX(0); } to{ transform:translateX(-60px); } }
+
+  /* sections */
+  .section{ padding:66px 0; border-top:1px solid var(--line); }
+  .section.alt{ background:var(--paper-2); }
+  .section-head{ max-width:64ch; margin-bottom:32px; }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:.76rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:10px; display:block; }
+  .section-head h2{ font-size:clamp(1.6rem, 3.2vw, 2.15rem); }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+  .two{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:22px; align-items:start; }
+  .two.wide-left{ grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); }
+  .scene{ display:block; width:100%; height:auto; border-radius:8px; }
+  .note-box{ margin-top:18px; padding:12px 14px; border-radius:8px; background:var(--amber-tint); border:1px solid color-mix(in srgb, var(--amber) 40%, transparent); font-size:.9rem; color:var(--ink-soft); }
+  .note-box strong{ color:var(--ink); }
+  .merk{ margin:20px 0 0; padding:14px 16px; border-radius:8px; background:var(--teal-tint); border-left:5px solid var(--teal); color:var(--ink); font-weight:600; }
+  .sub-h{ font-size:1.3rem; margin:46px 0 8px; }
+  .small-btn{ border:1px solid var(--line-strong); background:var(--card); color:var(--ink); border-radius:100px; padding:7px 14px; font-size:.84rem; font-weight:700; cursor:pointer; }
+  .small-btn.primary{ background:var(--teal); border-color:var(--teal); color:#fff; }
+  .small-btn.active{ background:var(--sky); border-color:var(--sky); color:#fff; }
+  .tool-row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+  .fine{ font-size:.76rem; color:var(--ink-faint); margin:8px 0 0; }
+  .HT{ font-family:'Fraunces',serif; font-weight:800; }
+  .H{ color:var(--hoch); } .T{ color:var(--tief); }
+
+  /* Luftdruck */
+  .press-grid{ display:grid; grid-template-columns:240px minmax(0,1fr); gap:20px; align-items:start; }
+  .press-read .big{ font-family:'Fraunces',serif; font-size:2.6rem; font-weight:700; line-height:1; color:var(--ink); }
+  .press-read input[type=range]{ width:100%; accent-color:var(--teal); }
+  .preset-row{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 14px; }
+  .preset-row button{ border:1px solid var(--line-strong); background:var(--card); color:var(--ink-soft); border-radius:100px; padding:6px 11px; font-size:.78rem; font-weight:700; cursor:pointer; }
+  .preset-row button:hover{ border-color:var(--teal); color:var(--ink); }
+  .meter .track{ height:12px; border-radius:100px; background:var(--paper-2); overflow:hidden; border:1px solid var(--line); }
+  .meter .fill{ height:100%; border-radius:100px; background:linear-gradient(90deg,#7FB2E5,#2F6FD8); transition:width .25s ease; }
+
+  /* compass */
+  .compass-wrap{ display:grid; grid-template-columns:260px minmax(0,1fr); gap:22px; align-items:center; }
+  .dir-btns{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:10px 0; }
+  .dir-btns button{ border:1px solid var(--line-strong); background:var(--card); color:var(--ink); border-radius:8px; padding:9px 10px; font-weight:700; cursor:pointer; font-size:.9rem; }
+  .dir-btns button.right{ background:var(--moss-tint); border-color:var(--moss); }
+  .dir-btns button.wrong{ background:var(--rust-tint); border-color:var(--rust); }
+  #dirFeedback{ min-height:48px; font-size:.92rem; }
+
+  /* beaufort */
+  .bft-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .bft-num{ font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--teal); }
+  .bft-name{ font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; }
+  .bft-speed{ font-family:'IBM Plex Mono',monospace; color:var(--ink-faint); }
+  #bftRange{ width:100%; accent-color:var(--teal); margin:10px 0 4px; }
+  .bft-scale{ display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-faint); }
+  .tree-sway{ transform-box:view-box; transform-origin:300px 232px; animation:sway var(--dur,2s) ease-in-out infinite alternate; }
+  @keyframes sway{ from{ transform:rotate(calc(var(--amp,0deg) * .35)); } to{ transform:rotate(var(--amp,0deg)); } }
+  .smoke-puff{ animation:puff 3s linear infinite; opacity:0; transform-box:fill-box; }
+  @keyframes puff{ 0%{ transform:translateY(0) scale(.6); opacity:.0; } 10%{ opacity:.75; } 100%{ transform:translateY(-90px) scale(1.6); opacity:0; } }
+  .cloud-drift{ animation:drift var(--cdur,40s) linear infinite; }
+  @keyframes drift{ from{ transform:translateX(-200px); } to{ transform:translateX(700px); } }
+
+  /* ordering game */
+  .order-wrap{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; margin-top:12px; }
+  .strip-list{ display:grid; gap:8px; align-content:start; min-height:120px; }
+  .strip{
+    text-align:left; border:1px solid color-mix(in srgb, var(--amber) 55%, transparent); background:#FBE9D6; color:#3A2A18;
+    border-radius:6px; padding:9px 12px; font-size:.88rem; font-weight:600; cursor:pointer; display:flex; gap:10px; align-items:flex-start;
+  }
+  :root[data-theme="dark"] .strip{ background:rgba(240,182,94,.16); color:var(--ink); }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .strip{ background:rgba(240,182,94,.16); color:var(--ink); } }
+  .strip .pos{ flex:0 0 auto; width:24px; height:24px; border-radius:50%; background:var(--teal); color:#fff; display:grid; place-items:center; font-family:'IBM Plex Mono',monospace; font-size:.78rem; font-weight:700; }
+  .strip.ok{ background:var(--moss-tint); border-color:var(--moss); }
+  .strip.bad{ background:var(--rust-tint); border-color:var(--rust); }
+  .strip.ok .pos{ background:var(--moss); } .strip.bad .pos{ background:var(--rust); }
+  .drop-label{ font-family:'IBM Plex Mono',monospace; font-size:.74rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+  .answer-box{ border:2px dashed var(--line-strong); border-radius:8px; padding:10px; min-height:140px; }
+  #orderResult{ font-weight:700; }
+
+  /* H/T slots */
+  .slot{ cursor:pointer; }
+  .slot circle{ transition:fill .15s ease; }
+  .slot:hover circle{ fill:#FFF6D6; }
+
+  /* passat */
+  .step-nav{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:12px 0; }
+  .step-dots{ display:flex; gap:6px; flex-wrap:wrap; }
+  .step-dots button{ width:34px; height:34px; border-radius:50%; border:1px solid var(--line-strong); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono',monospace; font-weight:700; cursor:pointer; }
+  .step-dots button.active{ background:var(--rust); border-color:var(--rust); color:#fff; }
+  .step-dots button.all{ width:auto; border-radius:100px; padding:0 12px; font-family:inherit; }
+  .step-box{ min-height:150px; }
+  .step-box h3{ font-size:1.25rem; }
+  .ps{ transition:opacity .3s ease; }
+  .dim .ps{ opacity:.18; }
+  .dim .ps.on{ opacity:1; }
+  .rain-line{ stroke:#4C8FE0; stroke-width:2.5; stroke-linecap:round; animation:rainFall 1s linear infinite; }
+  @keyframes rainFall{ from{ transform:translateY(-8px); opacity:.2; } 30%{ opacity:.9; } to{ transform:translateY(22px); opacity:0; } }
+  .ray{ stroke:#FFC928; stroke-width:4; opacity:.6; stroke-linecap:round; stroke-dasharray:10 10; animation:rayFlow 1s linear infinite; }
+  @keyframes rayFlow{ to{ stroke-dashoffset:-40; } }
+
+  .itc-places{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px; }
+  .place{ border:1px solid var(--line); border-radius:8px; padding:10px 12px; background:var(--card); font-size:.86rem; color:var(--ink-soft); }
+  .place b{ color:var(--ink); }
+  .badge{ display:inline-block; font-size:.72rem; font-weight:800; padding:3px 9px; border-radius:100px; margin:4px 0 6px; }
+  .badge.rain{ background:#DCEBFF; color:#1E4FA8; }
+  .badge.dry{ background:#FBE6C4; color:#8A5508; }
+  .months{ display:grid; grid-template-columns:repeat(12,1fr); gap:2px; margin-top:6px; }
+  .months span{ height:18px; border-radius:3px; font-size:.6rem; display:grid; place-items:center; color:#fff; font-weight:700; }
+  .months span.r{ background:#3E8EDB; } .months span.d{ background:#E8B25A; }
+  .months span.now{ outline:2px solid var(--ink); outline-offset:1px; }
+  #itcMonth{ width:100%; accent-color:var(--amber); }
+
+  .cmp-table{ width:100%; border-collapse:collapse; font-size:.88rem; margin-top:10px; }
+  .cmp-table th, .cmp-table td{ border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; color:var(--ink-soft); }
+  .cmp-table th{ background:var(--paper-2); color:var(--ink); font-weight:700; }
+  .cmp-table td:first-child{ font-weight:700; color:var(--ink); }
+
+  /* flip cards */
+  .flip-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-top:14px; }
+  .flip{ display:block; width:100%; perspective:900px; border:0; padding:0; background:none; cursor:pointer; min-height:176px; text-align:left; font:inherit; }
+  .flip-inner{ position:relative; width:100%; height:100%; min-height:176px; transition:transform .5s ease; transform-style:preserve-3d; }
+  .flip.on .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:8px; padding:14px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--line); box-shadow:var(--shadow); }
+  .flip-front{ background:var(--card); align-items:center; text-align:center; gap:6px; }
+  .flip-front .ico{ font-size:1.7rem; }
+  .flip-front .term{ font-family:'Fraunces',serif; font-weight:700; font-size:1.08rem; color:var(--ink); }
+  .flip-front .tap{ font-size:.7rem; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; }
+  .flip-back{ background:var(--amber-tint); transform:rotateY(180deg); font-size:.86rem; color:var(--ink); line-height:1.45; }
+  .flip-back b{ display:block; margin-bottom:4px; font-family:'Fraunces',serif; }
+
+  /* quiz */
+  .quiz-card{ max-width:660px; margin:0 auto; padding:28px; }
+  .quiz-progress{ height:6px; border-radius:100px; background:var(--paper-2); overflow:hidden; margin-bottom:22px; }
+  .quiz-progress-bar{ height:100%; background:var(--teal); width:0%; transition:width .3s ease; }
+  .quiz-count{ font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--ink-faint); margin-bottom:8px; display:block; }
+  #quizQuestion{ font-size:1.2rem; margin-bottom:18px; }
+  .quiz-options{ display:grid; gap:10px; }
+  .quiz-opt{ text-align:left; padding:12px 15px; border-radius:8px; border:1px solid var(--line-strong); background:var(--card); cursor:pointer; font-size:.95rem; color:var(--ink); }
+  .quiz-opt:hover{ border-color:var(--teal); }
+  .quiz-opt.correct{ background:var(--moss-tint); border-color:var(--moss); }
+  .quiz-opt.wrong{ background:var(--rust-tint); border-color:var(--rust); }
+  .quiz-opt[disabled]{ cursor:default; }
+  .quiz-explain{ margin-top:14px; padding:12px 14px; border-radius:8px; background:var(--paper-2); font-size:.88rem; color:var(--ink-soft); display:none; }
+  .quiz-next{ margin-top:18px; background:var(--teal); color:#fff; border:none; padding:11px 20px; border-radius:100px; font-weight:700; cursor:pointer; display:none; font-size:.9rem; }
+  .quiz-result{ text-align:center; display:none; }
+  .quiz-result .score{ font-family:'Fraunces',serif; font-size:3rem; font-weight:700; color:var(--teal); }
+  .quiz-restart{ margin-top:16px; background:none; border:1px solid var(--line-strong); padding:10px 20px; border-radius:100px; cursor:pointer; font-weight:600; color:var(--ink); }
+
+  .back-page{ display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; background:linear-gradient(120deg,#3E78B2,#137481); color:#fff; border-radius:8px; padding:20px 22px; margin-top:30px; }
+  .back-page p{ color:#E6F3F5; margin:0; }
+  .back-page a{ background:#fff; color:#0E4E59; font-weight:800; text-decoration:none; padding:10px 16px; border-radius:8px; white-space:nowrap; }
+  .zone-strip{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; }
+  .zone-btn{ border:2px solid transparent; border-radius:8px; padding:10px 6px; cursor:pointer; color:#fff; font-weight:800; font-size:.86rem; text-align:center; line-height:1.25; }
+  .zone-btn .z{ display:block; font-family:'Fraunces',serif; font-size:1.3rem; }
+  .zone-btn .e{ display:block; font-size:1.4rem; }
+  .zone-btn.active{ border-color:var(--ink); box-shadow:0 0 0 2px var(--card) inset; }
+  .hum-band{ display:flex; gap:2px; margin-top:8px; border-radius:6px; overflow:hidden; }
+  .hum-band span{ color:#fff; font-size:.74rem; font-weight:800; text-align:center; padding:5px 4px; }
+  .hum-ends{ display:flex; justify-content:space-between; font-size:.74rem; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; margin-top:4px; }
+  .tim-list{ display:grid; gap:8px; }
+  .tim-item{ display:grid; grid-template-columns:minmax(0,1fr) 150px; gap:10px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:.9rem; }
+  .tim-item select{ padding:7px; border-radius:6px; border:1px solid var(--line-strong); background:var(--paper); color:var(--ink); font-family:inherit; }
+  .tim-item .why{ grid-column:1 / -1; display:none; font-size:.84rem; color:var(--ink-soft); }
+  .tim-item.ok{ border-color:var(--moss); background:var(--moss-tint); }
+  .tim-item.bad{ border-color:var(--rust); background:var(--rust-tint); }
+  .tim-item.ok .why, .tim-item.bad .why, .tim-item.show .why{ display:block; }
+  .months span.r2{ background:#8DBBEA; }
+  @media (max-width: 760px){ .zone-strip{ grid-template-columns:repeat(5,minmax(0,1fr)); gap:3px; } .zone-btn{ font-size:.7rem; padding:8px 2px; } .tim-item{ grid-template-columns:1fr; } }
+
+  footer{ padding:40px 24px 60px; text-align:center; color:var(--ink-faint); font-size:.82rem; }
+
+  @media (max-width: 760px){
+    .wrap{ padding:0 16px; }
+    .topbar-inner{ padding-inline:16px; }
+    .hero-grid, .two, .two.wide-left, .press-grid, .compass-wrap, .order-wrap{ grid-template-columns:1fr; }
+    .itc-places{ grid-template-columns:1fr; }
+    .brand span.full{ display:none; }
+    .compass-wrap svg{ max-width:260px; margin:0 auto; display:block; }
+  }
+  @media (max-width: 520px){
+    .flip-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .flip, .flip-inner{ min-height:230px; }
+    .flip-face{ padding:10px; }
+    .flip-back{ font-size:.74rem; }
+    .flip-front .term{ font-size:.95rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="mark">💨</span><span class="full">Winde&nbsp;&amp;&nbsp;Passat</span></div>
+      <nav class="chips" id="chipNav">
+        <a href="wetter-klima.html">← Wetter &amp; Klima</a>
+        <a href="#luftdruck">🎈 Luftdruck</a>
+        <a href="#windrichtung">🧭 Windrichtung</a>
+        <a href="#beaufort">🌳 Beaufort</a>
+        <a href="#seewind">🏖️ Land- &amp; Seewind</a>
+        <a href="#flurwind">🏙️ Flurwind</a>
+        <a href="#passat">🌍 Passat</a>
+        <a href="#quiz">❓ Quiz</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="kicker">Erdkunde · 7. Klasse · Teil 2</span>
+          <h1>Winde &ndash; vom <em>Hoch</em> zum <em>Tief</em></h1>
+          <p class="lead">Ein Sommertag am Mittelmeer: Morgens ist es windstill, gegen 11 Uhr weht plötzlich ein kräftiger Wind vom Meer. Warum? Hier lernst du, wie Luftdruck entsteht, warum Wind weht, was Land- und Seewind sind und wie der riesige Passatkreislauf in den Tropen funktioniert.</p>
+          <div class="hero-actions">
+            <a class="primary" href="#luftdruck">Start: Luftdruck</a>
+            <a href="#passat">Direkt zum Passat</a>
+            <a href="#quiz">Quiz</a>
+          </div>
+          <div class="hero-meta">
+            <div><strong>6</strong>Kapitel</div>
+            <div><strong>~25 Min.</strong>Lesezeit</div>
+            <div><strong id="heroQuizCount">17</strong>Quizfragen am Ende</div>
+          </div>
+        </div>
+        <div class="hero-art">
+          <svg viewBox="0 0 520 340" role="img" aria-label="Kitesurfer im Seewind am Strand">
+            <defs>
+              <linearGradient id="hSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5DB7F0"></stop><stop offset="100%" stop-color="#CDEBFB"></stop></linearGradient>
+              <linearGradient id="hSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2BB3C0"></stop><stop offset="100%" stop-color="#127A9C"></stop></linearGradient>
+            </defs>
+            <rect width="520" height="340" fill="url(#hSky)"></rect>
+            <circle cx="440" cy="62" r="34" fill="#FFE066"></circle>
+            <circle cx="440" cy="62" r="48" fill="#FFE066" opacity=".25"></circle>
+            <g fill="#fff" opacity=".9"><ellipse cx="120" cy="70" rx="46" ry="14"></ellipse><circle cx="100" cy="62" r="16"></circle><circle cx="128" cy="56" r="20"></circle></g>
+            <rect x="0" y="236" width="520" height="104" fill="url(#hSea)"></rect>
+            <g class="wave-move"><path d="M120 246 q15 -8 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0" fill="none" stroke="#E6FBFF" stroke-width="2.5" opacity=".7"></path></g>
+            <!-- land: green hinterland, dunes, beach sloping into the sea -->
+            <path d="M0 196 C40 186 80 190 120 198 C150 204 175 214 196 226 L214 238 L0 238 Z" fill="#7DB35A"></path>
+            <path d="M0 214 C30 206 70 208 110 214 C140 218 165 226 186 234 L0 234 Z" fill="#5E9A46"></path>
+            <path d="M0 232 L200 232 C222 250 246 290 268 340 L0 340 Z" fill="#F2D49B"></path>
+            <path d="M200 232 C222 250 246 290 268 340 L254 340 C234 296 214 260 196 238 Z" fill="#E8C47E"></path>
+            <path d="M208 240 C226 262 246 300 262 340" fill="none" stroke="#fff" stroke-width="3" opacity=".75"></path>
+            <!-- palm -->
+            <path d="M62 236 C66 210 70 190 66 168" fill="none" stroke="#8A5A2B" stroke-width="6" stroke-linecap="round"></path>
+            <g fill="#2E8B47"><path d="M66 168 C50 158 34 160 24 170 C40 166 52 168 66 172 Z"></path><path d="M66 168 C80 154 98 154 108 164 C92 162 80 166 66 172 Z"></path><path d="M66 168 C60 150 50 142 38 142 C50 150 58 158 64 170 Z"></path><path d="M66 168 C76 150 88 144 98 146 C86 152 76 160 68 170 Z"></path></g>
+            <!-- beach umbrella + towel -->
+            <line x1="150" y1="290" x2="160" y2="250" stroke="#555" stroke-width="2.5"></line>
+            <path d="M134 256 Q160 226 186 248 Z" fill="#E2492F"></path>
+            <rect x="110" y="292" width="50" height="10" rx="2" fill="#3E8EDB" transform="rotate(-6 135 297)"></rect>
+            <text x="40" y="320" font-family="Figtree, sans-serif" font-weight="800" font-size="15" fill="#8A6A2E">Land</text>
+            <text x="440" y="320" font-family="Figtree, sans-serif" font-weight="800" font-size="15" fill="#E6FBFF">Meer</text>
+            <!-- wind streaks blowing from sea (right) to land (left) -->
+            <path class="streak" d="M520 120 C420 112 320 128 180 118"></path>
+            <path class="streak" d="M520 170 C430 160 330 176 200 166" style="animation-delay:.8s"></path>
+            <path class="streak" d="M520 210 C440 204 360 214 240 206" style="animation-delay:1.5s"></path>
+            <!-- kite surfer -->
+            <line x1="300" y1="112" x2="350" y2="236" stroke="#333" stroke-width="1.2"></line>
+            <g class="kite"><path d="M262 108 Q300 74 342 104 L330 116 Q300 96 272 118 Z" fill="#E2492F"></path></g>
+            <g stroke="#1B2A3A" stroke-width="4" stroke-linecap="round" fill="none">
+              <circle cx="350" cy="206" r="7" fill="#1B2A3A" stroke="none"></circle>
+              <line x1="350" y1="214" x2="352" y2="232"></line>
+              <line x1="351" y1="220" x2="340" y2="214"></line>
+              <line x1="352" y1="232" x2="344" y2="244"></line>
+              <line x1="352" y1="232" x2="362" y2="242"></line>
+            </g>
+            <rect x="330" y="244" width="44" height="6" rx="3" fill="#FFD43B"></rect>
+            <text x="250" y="150" font-family="Figtree, sans-serif" font-weight="800" font-size="15" fill="#fff" paint-order="stroke" stroke="#1E6E9A" stroke-width="4">← Seewind</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1 LUFTDRUCK -->
+    <section class="section" id="luftdruck">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Kapitel 1</span>
+          <h2>Luftdruck: Luft hat Gewicht</h2>
+          <p>Luft ist ein Gemisch aus Gasen. Diese Gase haben eine Masse und werden von der Schwerkraft der Erde angezogen. Dadurch drückt die Luft auf die Erdoberfläche: der <strong>Luftdruck</strong>. Auf einem Quadratmeter am Meer lasten etwa <strong>10 Tonnen Luft</strong> &ndash; so viel wie zwei Elefanten! Wir spüren das nicht, weil der Druck von allen Seiten gleich wirkt.</p>
+        </div>
+        <div class="two">
+          <div class="card">
+            <div class="press-grid">
+              <svg id="columnSvg" viewBox="0 0 240 380" class="scene" role="img" aria-label="Luftsäule: Mit der Höhe werden die Luftteilchen weniger"></svg>
+              <div class="press-read">
+                <div style="font-size:.82rem; color:var(--ink-faint);">Höhe</div>
+                <div class="mono" style="font-size:1.2rem; font-weight:700;" id="hOut">0 m</div>
+                <input type="range" id="hRange" min="0" max="10000" step="50" value="0" aria-label="Höhe in Metern">
+                <div class="preset-row" id="hPresets">
+                  <button type="button" data-h="0">🌊 Meer</button>
+                  <button type="button" data-h="1141">Brocken</button>
+                  <button type="button" data-h="2962">Zugspitze</button>
+                  <button type="button" data-h="4806">Mont Blanc</button>
+                  <button type="button" data-h="8849">Mount Everest</button>
+                  <button type="button" data-h="10000">✈️ Flugzeug</button>
+                </div>
+                <div style="font-size:.82rem; color:var(--ink-faint);">Luftdruck</div>
+                <div class="big"><span id="pOut">1013</span> <span style="font-size:1rem;">hPa</span></div>
+                <div class="meter" style="margin-top:8px;"><div class="track"><div class="fill" id="pBar"></div></div></div>
+                <p style="font-size:.86rem; margin:8px 0 0;" id="pText"></p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 style="font-size:1.2rem;">Das Wichtigste</h3>
+            <ul style="color:var(--ink-soft); padding-left:20px; margin-top:0;">
+              <li>Gemessen wird der Luftdruck mit dem <strong>Barometer</strong>, angegeben in <strong>Hektopascal (hPa)</strong>.</li>
+              <li>Der <strong>Normaldruck</strong> auf Meereshöhe beträgt <strong>1013 hPa</strong>.</li>
+              <li><strong>Mit zunehmender Höhe nimmt der Luftdruck ab</strong>: Über dir liegt immer weniger Luft, die drückt, und die Luftteilchen liegen weiter auseinander. Auf dem Mount Everest ist es nur noch ungefähr ein Drittel.</li>
+              <li>Ist der Luftdruck in einer Region höher als in der Umgebung, spricht man von einem <strong class="H">Hochdruckgebiet (H)</strong>, ist er niedriger, von einem <strong class="T">Tiefdruckgebiet (T)</strong>.</li>
+            </ul>
+            <div class="note-box">✏️ <strong>Tipp für die Skizze (Aufgabe 2B):</strong> Zeichne eine hohe Säule. Unten viele Punkte dicht beieinander (hoher Druck), nach oben immer weniger und weiter auseinander (niedriger Druck). Schreibe 1013 hPa an den Boden.</div>
+          </div>
+        </div>
+
+        <h3 class="sub-h">Wie entsteht Wind? Vom Hoch zum Tief</h3>
+        <p>Vereinfacht kann man sich vorstellen: Bei hohem Luftdruck liegen die Luftteilchen dichter beieinander als bei tiefem Luftdruck. Die Natur will diesen Unterschied ausgleichen: Luft strömt vom Hoch zum Tief. Diese Ausgleichsströmung spüren wir als <strong>Wind</strong>.</p>
+        <div class="card" style="padding:12px;">
+          <svg id="htSvg" viewBox="0 0 640 230" class="scene" role="img" aria-label="Luft strömt vom Hochdruckgebiet mit dicht liegenden Teilchen zum Tiefdruckgebiet mit wenigen Teilchen"></svg>
+        </div>
+        <div class="merk">🧠 Merksatz: Wind entsteht durch Luftdruckunterschiede. Die Luft bewegt sich immer vom <span class="H">Hoch</span> zum <span class="T">Tief</span>. Je größer der Unterschied, desto stärker der Wind.</div>
+      </div>
+    </section>
+
+    <!-- 2 WINDRICHTUNG -->
+    <section class="section alt" id="windrichtung">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Kapitel 2</span>
+          <h2>Windrichtung: Woher kommt der Wind?</h2>
+          <p>Beim Messen des Windes unterscheidet man <strong>Windrichtung</strong> (Windfahne) und <strong>Windstärke</strong> (Anemometer). Achtung, Denkfalle: Als Windrichtung wird immer die <strong>Herkunft</strong> angegeben. Ein <strong>Südwind kommt aus Süden</strong> und weht nach Norden.</p>
+        </div>
+        <div class="card compass-wrap">
+          <svg id="compassSvg" viewBox="0 0 260 260" role="img" aria-label="Kompass mit Windpfeil"></svg>
+          <div>
+            <h3 style="font-size:1.15rem;">Mini-Spiel: Wie heißt dieser Wind?</h3>
+            <p style="font-size:.9rem; margin-bottom:6px;">Der Pfeil zeigt, <em>wohin</em> der Wind weht. Das 🌬️ zeigt, woher er kommt.</p>
+            <div class="dir-btns" id="dirBtns"></div>
+            <div id="dirFeedback"></div>
+            <div class="tool-row"><button class="small-btn primary" type="button" id="dirNext">Nächster Wind →</button><span class="mono" id="dirScore" style="font-size:.85rem;"></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 BEAUFORT -->
+    <section class="section" id="beaufort">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Kapitel 3</span>
+          <h2>Windstärke: die Beaufort-Skala</h2>
+          <p>Die Windstärke wird meist nach der <strong>Beaufort-Skala</strong> (0 bis 12) angegeben. Man kann sie auch ohne Messgerät schätzen &ndash; an Rauch, Bäumen und Wellen. Schieb den Regler:</p>
+        </div>
+        <div class="card">
+          <div class="bft-head"><span class="bft-num" id="bftNum">0</span><span class="bft-name" id="bftName">still</span><span class="bft-speed" id="bftSpeed">&lt; 1 km/h</span></div>
+          <p id="bftEffect" style="margin:6px 0 0; color:var(--ink);"></p>
+          <input type="range" id="bftRange" min="0" max="12" value="0" step="1" aria-label="Windstärke nach Beaufort">
+          <div class="bft-scale"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+          <svg id="bftSvg" viewBox="0 0 640 270" class="scene" style="margin-top:14px;" role="img" aria-label="Landschaft mit Haus, Baum, Windsack und See, die sich je nach Windstärke bewegen"></svg>
+          <p class="fine">Daten nach Buch M3 (Beaufort-Skala). Der Wind kommt in der Szene von links (Westwind).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 LAND- UND SEEWIND -->
+    <section class="section alt" id="seewind">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Kapitel 4</span>
+          <h2>Land- und Seewind</h2>
+          <p>Zurück zu Marco am Strand: Morgens ist es windstill. Im Laufe des Vormittags erwärmt die Sonne das Land viel stärker als das Wasser. Daraus entsteht ein Kreislauf der Luft: der <strong>Seewind</strong>. Nachts dreht sich alles um: der <strong>Landwind</strong>. Schalte zwischen Tag und Nacht um:</p>
+        </div>
+        <div class="tool-row" style="margin:0 0 12px;">
+          <button class="small-btn active" type="button" data-mode="day" id="btnDay">☀️ Tag: Seewind</button>
+          <button class="small-btn" type="button" data-mode="night" id="btnNight">🌙 Nacht: Landwind</button>
+        </div>
+        <div class="two wide-left">
+          <div class="card" style="padding:10px;">
+            <svg id="seaSvg" viewBox="0 0 640 340" class="scene" role="img" aria-label="Querschnitt Land und Meer mit Luftkreislauf"></svg>
+            <p class="fine">Temperaturen sind Beispielwerte (tagsüber wie im Buch M2).</p>
+          </div>
+          <div class="card" id="seaText"></div>
+        </div>
+
+        <h3 class="sub-h">Aufgabe 3A: Bringe die Textstreifen in die richtige Reihenfolge</h3>
+        <p>Klicke die Streifen links in der Reihenfolge an, in der der Seewind entsteht. Sie wandern dann nach rechts. Ein Klick rechts schiebt einen Streifen zurück.</p>
+        <div class="order-wrap">
+          <div><div class="drop-label">Textstreifen</div><div class="strip-list" id="orderPool"></div></div>
+          <div><div class="drop-label">Deine Reihenfolge</div><div class="answer-box"><div class="strip-list" id="orderAnswer"></div></div></div>
+        </div>
+        <div class="tool-row" style="margin-top:12px;">
+          <button class="small-btn primary" type="button" id="orderCheck">Prüfen</button>
+          <button class="small-btn" type="button" id="orderReset">Zurücksetzen</button>
+          <button class="small-btn" type="button" id="orderSolve">Lösung zeigen</button>
+          <span id="orderResult"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 FLURWIND -->
+    <section class="section" id="flurwind">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Kapitel 5</span>
+          <h2>Der Flurwind (Land-Stadt-Wind)</h2>
+          <p>In großen Städten gibt es einen Wind, der nach dem gleichen Prinzip wie der Seewind funktioniert. Die „Wärmeinsel" ist hier aber nicht das Land, sondern die <strong>Stadt</strong>. Schau dir zuerst an, wie warm verschiedene Oberflächen an einem Hochsommertag werden (Buch M4):</p>
+        </div>
+        <div class="two wide-left">
+          <div class="card" style="padding:12px;">
+            <svg id="surfSvg" viewBox="0 0 600 300" class="scene" role="img" aria-label="Tagesgang der Temperatur über Asphalt, Beton, Gras und Wald"></svg>
+            <label for="surfHour" style="display:flex; justify-content:space-between; font-weight:700; font-size:.9rem; margin-top:6px;"><span>Uhrzeit</span><span class="mono" id="surfHourOut">14 Uhr</span></label>
+            <input type="range" id="surfHour" min="0" max="24" value="14" step="1" style="width:100%; accent-color:var(--rust);">
+            <p class="fine">Werte schematisch nach Buch M4 (abgelesen und gerundet).</p>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1.1rem;">Was fällt auf?</h3>
+            <div id="surfVals" style="font-size:.92rem;"></div>
+            <p style="font-size:.9rem; margin-top:10px;">Asphalt und Beton werden tagsüber am heißesten und <strong>bleiben auch abends und nachts wärmer</strong>, weil sie die Wärme speichern. Wiesen und Wälder bleiben kühler, denn Pflanzen verdunsten Wasser und spenden Schatten.</p>
+          </div>
+        </div>
+
+        <h3 class="sub-h">Aufgabe 4B: Trage H und T in die Skizze ein</h3>
+        <p>Tippe auf die Kreise, um zwischen <span class="HT H">H</span>, <span class="HT T">T</span> und ? zu wechseln. Denk an den Seewind: Wo steigt warme Luft auf?</p>
+        <div class="two wide-left">
+          <div class="card" style="padding:10px;">
+            <svg id="flurSvg" viewBox="0 0 640 300" class="scene" role="img" aria-label="Skizze des Flurwindes mit Stadt in der Mitte und Wald links und rechts"></svg>
+            <div class="tool-row">
+              <button class="small-btn primary" type="button" id="flurCheck">Prüfen</button>
+              <button class="small-btn" type="button" id="flurSolve">Lösung zeigen</button>
+              <span id="flurResult" style="font-weight:700;"></span>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1.1rem;">Aufgabe 4A: Wann und warum entsteht der Flurwind?</h3>
+            <p style="font-size:.9rem;"><strong>Wann?</strong> Bei ruhigem, sonnigem Hochdruckwetter ohne starken „großen" Wind, vor allem im Sommer. Besonders deutlich am Abend und in der Nacht, wenn das Umland schon abkühlt, die Stadt aber noch warm ist.</p>
+            <p style="font-size:.9rem;"><strong>Warum?</strong> Asphalt, Beton und Dächer heizen sich stark auf (M4). Über der Stadt steigt warme Luft auf &rarr; am Boden entsteht ein <span class="T"><b>Tief</b></span>. Über den kühleren Wäldern und Feldern im Umland sinkt Luft ab &rarr; <span class="H"><b>Hoch</b></span>. Am Boden strömt deshalb kühle, frische Luft vom Umland in die Stadt: der Flurwind. In der Höhe fließt die Luft zurück.</p>
+            <div class="note-box" style="margin-top:0;">🌳 <strong>Darum wichtig:</strong> Der Flurwind bringt frische, kühle Luft in die Stadt. Städte halten deshalb „Frischluftschneisen" (z. B. Parks, Grünzüge) frei.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 PASSAT -->
+    <section class="section alt" id="passat">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Kapitel 6</span>
+          <h2>Der Passatkreislauf: das riesige Windsystem der Tropen</h2>
+          <p>In den Tropen gibt es die höchsten Temperaturen der Erde. Trotzdem sind die Landschaften zwischen den Wendekreisen sehr unterschiedlich: Wüste, Savanne, Regenwald. Der Grund dafür ist der <strong>Passatkreislauf</strong>.</p>
+        </div>
+        <div class="two">
+          <div class="card">
+            <h3 style="font-size:1.2rem;">Was ist der Passat?</h3>
+            <p style="font-size:.94rem;">Als <strong>Passat</strong> bezeichnet man einen <strong>trockenen Wind</strong> in der tropischen Zone, der ungefähr zwischen dem nördlichen und dem südlichen Wendekreis über Ozeanen und Kontinenten weht. Er kommt <strong>immer aus der gleichen Richtung</strong> und weht <strong>das ganze Jahr</strong> über. Er weht von den Wendekreisen (Hochdruck) zum Äquator (Tiefdruck).</p>
+          </div>
+          <div class="note-box" style="margin-top:0;">⛵ <strong>Warum heißt er „Passat"? (Aufgabe 2B)</strong><br>Das Wort kommt vom italienischen <em>passata</em> = <strong>Überfahrt</strong>. Weil der Passat so beständig immer aus derselben Richtung weht, konnten Segelschiffe sich auf ihn verlassen: Mit dem Nordostpassat segelten sie früher von Europa über den Atlantik nach Amerika &ndash; der Passat war der Wind für die Überfahrt.</div>
+        </div>
+
+        <h3 class="sub-h">Der Passatkreislauf (M3) &ndash; Schritt für Schritt</h3>
+        <p>Wähle ein Datum und klicke dich durch die Schritte.</p>
+        <div class="tool-row" style="margin:0 0 10px;" id="psDates">
+          <button class="small-btn active" type="button" data-d="eq">20. März / 23. Sept.</button>
+          <button class="small-btn" type="button" data-d="jun">21. Juni</button>
+          <button class="small-btn" type="button" data-d="dec">21. Dezember</button>
+        </div>
+        <div class="card" style="padding:10px;">
+          <svg id="passatSvg" viewBox="0 0 700 390" class="scene" role="img" aria-label="Querschnitt des Passatkreislaufs zwischen 30 Grad Nord und 30 Grad Süd"></svg>
+          <p class="fine" id="psDateNote"></p>
+        </div>
+        <div class="step-nav">
+          <button class="small-btn" type="button" id="psPrev">← zurück</button>
+          <div class="step-dots" id="psDots"></div>
+          <button class="small-btn primary" type="button" id="psNext">weiter →</button>
+        </div>
+        <div class="card step-box" id="psBox"></div>
+
+        <h3 class="sub-h">Aufgabe 3A: Die Aussagen aus M4 in der richtigen Reihenfolge</h3>
+        <div class="merk" style="font-weight:500;">
+          <ol style="margin:0; padding-left:22px; display:grid; gap:6px;">
+            <li>Durch die hohe Sonneneinstrahlung steigen Luftmassen auf und kühlen sich mit zunehmender Höhe ab. Der Wasserdampf kondensiert und bildet Wolken.</li>
+            <li>Es bilden sich große Wolkentürme, aus denen kräftige Niederschläge, die <strong>Zenitalregen</strong>, fallen.</li>
+            <li>Über den Tiefdruckgebieten befinden sich in 10 bis 12 km Höhe Hochdruckgebiete. Sie treiben einen Wind an, der in der Höhe Richtung Wendekreise weht.</li>
+            <li>Die Luft sinkt auf dem Weg nach Norden bzw. Süden wieder ab. Weil sie sich dabei erwärmt, können keine Wolken entstehen.</li>
+            <li>Da sich der Zenitstand im Laufe des Jahres zwischen den Wendekreisen verlagert, verschiebt sich auch die Zone der Tiefdruckgebiete. Trockene Regionen bekommen dann für einige Monate Regen.</li>
+          </ol>
+          <p style="margin:10px 0 0; font-size:.86rem; max-width:none;">Der letzte Punkt beschreibt nicht den Kreislauf selbst, sondern wie er im Laufe des Jahres wandert. Deshalb steht er am Ende.</p>
+        </div>
+
+        <h3 class="sub-h">Nordostpassat und Südostpassat</h3>
+        <div class="two">
+          <div class="card" style="padding:10px;">
+            <svg id="corSvg" viewBox="0 0 600 320" class="scene" role="img" aria-label="Draufsicht: Ablenkung der Passate durch die Erddrehung"></svg>
+          </div>
+          <div>
+            <p>Würde die Erde sich nicht drehen, würden die Passate genau von Norden und von Süden zum Äquator wehen (gestrichelt). Durch die <strong>Erdrotation</strong> wird der Wind aber <strong>nach Westen abgelenkt</strong>:</p>
+            <ul style="color:var(--ink-soft); padding-left:20px;">
+              <li>Auf der Nordhalbkugel entsteht so ein Nordostwind: der <strong>Nordostpassat</strong>.</li>
+              <li>Auf der Südhalbkugel entsteht ein Südostwind: der <strong>Südostpassat</strong>.</li>
+            </ul>
+            <p>Die Zone, in der beide Passate zusammentreffen (lat. <em>convergere</em> = zusammenlaufen), heißt <strong>Innertropische Konvergenzzone (ITC)</strong>.</p>
+            <p class="fine">Genauer: Auf der Nordhalbkugel wird der Wind in Bewegungsrichtung nach rechts, auf der Südhalbkugel nach links abgelenkt. Für beide Passate heißt das: nach Westen.</p>
+          </div>
+        </div>
+
+        <h3 class="sub-h">Aufgabe 3B: „Die Sonne lässt den Passatkreislauf wandern"</h3>
+        <p>Der Zenitstand der Sonne wandert im Laufe des Jahres zwischen den Wendekreisen. Die Zone der Tiefdruckgebiete (ITC) mit ihrem Regen wandert mit, etwa einen Monat später. Orte, die sonst trocken sind und im Passatwind liegen, bekommen dann für einige Monate Regen: <strong>Regenzeit</strong>. Schieb den Monat oder drück auf Abspielen:</p>
+        <div class="card">
+          <div class="tool-row" style="margin:0 0 8px;">
+            <button class="small-btn primary" type="button" id="itcPlay">▶ Abspielen</button>
+            <span class="mono" id="itcMonthOut" style="font-weight:700;">Januar</span>
+          </div>
+          <input type="range" id="itcMonth" min="0" max="11" value="0" step="1" aria-label="Monat">
+          <svg id="itcSvg" viewBox="0 0 640 290" class="scene" style="margin-top:8px;" role="img" aria-label="Wanderung von Zenitstand und Regenzone zwischen den Wendekreisen"></svg>
+          <div class="itc-places" id="itcPlaces"></div>
+          <p class="fine">Vereinfachtes Modell. Direkt am Äquator regnet es fast das ganze Jahr, weil die ITC nie weit weg ist.</p>
+        </div>
+
+        <h3 class="sub-h">Die Gliederung der Tropen (M1)</h3>
+        <p>Vom nördlichen Wendekreis bis zum Äquator (rund 2600 km) wird es immer feuchter, weil die Regenzone (ITC) Orte nahe am Äquator länger erreicht. Tippe auf die Zonen A&ndash;E:</p>
+        <div class="card">
+          <div class="zone-strip" id="zoneStrip"></div>
+          <div class="hum-band"><span style="flex:1; background:#E8B25A;">trocken</span><span style="flex:3; background:linear-gradient(90deg,#E8B25A,#3E8EDB);">wechselfeucht (Regen- und Trockenzeit)</span><span style="flex:1; background:#2F6FD8;">immerfeucht</span></div>
+          <div class="hum-ends"><span>← Nördlicher Wendekreis</span><span>Äquator →</span></div>
+          <div id="zoneInfo" style="margin-top:14px;"></div>
+        </div>
+        <div class="merk">🧠 Arid oder humid? Das hängt davon ab, ob mehr Niederschlag fällt als verdunsten kann (humid) oder weniger (arid). Je mehr humide Monate, desto üppiger die Vegetation: Wüste → Savanne → Regenwald.</div>
+
+        <h3 class="sub-h">Aufgabe 4: Das „lebendige Klimadiagramm" von Timbuktu (M5)</h3>
+        <div class="two wide-left">
+          <div class="card" style="padding:12px;">
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:.86rem;"><div><strong style="font-family:'Fraunces',serif; font-size:1.1rem;">Timbuktu / Mali</strong> <span class="mono">263 m ü. M. · 16°44′ N / 3°3′ W</span></div><div class="mono">T = 28,6 °C | N = 208 mm</div></div>
+            <svg id="timbSvg" viewBox="0 0 640 330" class="scene" role="img" aria-label="Klimadiagramm Timbuktu"></svg>
+            <p class="fine">Werte aus dem Buchdiagramm M5 abgelesen und gerundet.</p>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1.05rem;">4A: Lage von Timbuktu</h3>
+            <p style="font-size:.9rem;">Timbuktu liegt in <strong>Mali</strong> (Westafrika) auf 16°44′ N und 3°3′ W, 263 m über dem Meer, am Fluss <strong>Niger</strong>. Es liegt am Südrand der <strong>Sahara</strong>, in der trockenen Savanne (Sahelzone), zwischen Äquator und nördlichem Wendekreis.</p>
+            <h3 style="font-size:1.05rem;">4C: Jahresverlauf erklärt</h3>
+            <p style="font-size:.9rem; margin-bottom:6px;"><strong>Niederschlag:</strong> Nur von Juni bis September regnet es (Maximum im August). Dann liegt Timbuktu im Bereich der ITC: <strong>Regenzeit</strong>. Den Rest des Jahres weht der trockene Nordostpassat: <strong>Trockenzeit</strong>.</p>
+            <p style="font-size:.9rem; margin:0;"><strong>Temperatur:</strong> Am heißesten im Mai/Juni, kurz bevor die Regenzeit beginnt: Die Sonne steht sehr hoch (Zenitstand), der Himmel ist wolkenlos. Im August kühlen Wolken und Regen etwas ab, danach steigt die Temperatur noch einmal leicht an. Am kühlsten ist es im Dezember/Januar, wenn die Sonne am tiefsten steht.</p>
+          </div>
+        </div>
+        <h3 style="font-size:1.1rem; margin:22px 0 6px;">4B: Ordne die Aussagen einem passenden Monat zu</h3>
+        <p style="font-size:.9rem;">Wähle für jede Aussage einen Monat und prüfe. Bei manchen Aussagen passen mehrere Monate.</p>
+        <div class="tim-list" id="timList"></div>
+        <div class="tool-row" style="margin-top:10px;"><button class="small-btn primary" type="button" id="timCheck">Prüfen</button><button class="small-btn" type="button" id="timSolve">Lösungsvorschlag zeigen</button><span id="timResult" style="font-weight:700;"></span></div>
+
+        <h3 class="sub-h">Gleiches Prinzip: Seewind und Passat im Vergleich</h3>
+        <div class="card" style="overflow-x:auto;">
+          <table class="cmp-table">
+            <thead><tr><th></th><th>Seewind</th><th>Flurwind</th><th>Passat</th></tr></thead>
+            <tbody>
+              <tr><td>Wo ist es wärmer?</td><td>über dem Land</td><td>über der Stadt</td><td>am Äquator (Zenitstand)</td></tr>
+              <tr><td>Aufsteigende Luft &rarr; Tief am Boden</td><td>Land</td><td>Stadt</td><td>äquatoriale Tiefdruckrinne (ITC)</td></tr>
+              <tr><td>Absinkende Luft &rarr; Hoch am Boden</td><td>Meer</td><td>Umland (Wald, Felder)</td><td>Hochdruckgebiete an den Wendekreisen</td></tr>
+              <tr><td>Wind am Boden</td><td>vom Meer zum Land</td><td>vom Umland in die Stadt</td><td>von den Wendekreisen zum Äquator</td></tr>
+              <tr><td>Größe &amp; Dauer</td><td>einige km, täglich</td><td>einige km, bei ruhigem Wetter</td><td>Tausende km, ganzjährig</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="sub-h">Fachwortschatz Passat: Karten umdrehen</h3>
+        <div class="tool-row"><button class="small-btn primary" type="button" id="flipAll">Alle umdrehen</button><button class="small-btn" type="button" id="flipNone">Alle zurück</button></div>
+        <div class="flip-grid" id="flipGrid"></div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="section" id="quiz">
+      <div class="wrap">
+        <div class="section-head" style="text-align:center; margin:0 auto 30px;">
+          <span class="eyebrow">Zum Schluss</span>
+          <h2>Teste dein Wissen</h2>
+          <p style="margin:0 auto;"><span id="quizTotal">17</span> Fragen zu Luftdruck, Wind und Passat.</p>
+        </div>
+        <div class="card quiz-card">
+          <div id="quizPlay">
+            <span class="quiz-count" id="quizCount">Frage 1</span>
+            <div class="quiz-progress"><div class="quiz-progress-bar" id="quizBar"></div></div>
+            <h3 id="quizQuestion"></h3>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-explain" id="quizExplain"></div>
+            <button class="quiz-next" id="quizNext">Nächste Frage →</button>
+          </div>
+          <div class="quiz-result" id="quizResult">
+            <div class="score" id="quizScore">0</div>
+            <p id="quizMsg" style="max-width:none;"></p>
+            <button class="quiz-restart" id="quizRestart">Nochmal versuchen</button>
+          </div>
+        </div>
+        <div class="back-page">
+          <div><strong style="font-size:1.1rem;">⛅ Teil 1: Wetter &amp; Klima</strong><p>Jahreszeiten, Einstrahlung, Wetterelemente, Klimadiagramme, Meer &amp; Land.</p></div>
+          <a href="wetter-klima.html">← Zurück zu Teil 1</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>Erstellt zum Erdkunde-Kapitel „Winde &ndash; vom Hoch zum Tief" und „Passatkreislauf" &middot; Klasse 7, Gymnasium Niedersachsen</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function $(id){ return document.getElementById(id); }
+  function shuffle(a){ for(var i = a.length-1; i > 0; i--){ var j = Math.floor(Math.random()*(i+1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  /* ---------- nav highlight ---------- */
+  var chips = document.querySelectorAll('#chipNav a[href^="#"]'), chipMap = {};
+  chips.forEach(function(c){ chipMap[c.getAttribute('href').slice(1)] = c; });
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ chips.forEach(function(c){ c.classList.remove('active'); }); if(chipMap[e.target.id]) chipMap[e.target.id].classList.add('active'); } });
+    }, { rootMargin:'-40% 0px -55% 0px' });
+    document.querySelectorAll('main section[id]').forEach(function(s){ io.observe(s); });
+  }
+
+  /* ---------- particles moving along paths ---------- */
+  var movers = [];
+  function addMover(svg, d, n, color, r, speed){
+    var path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', d); path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'none');
+    svg.appendChild(path);
+    var dots = [];
+    for(var i = 0; i < n; i++){
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('r', r); c.setAttribute('fill', color); c.setAttribute('pointer-events', 'none');
+      svg.appendChild(c); dots.push(c);
+    }
+    var m = { path:path, dots:dots, speed:speed, len:path.getTotalLength(), setD:function(nd){ path.setAttribute('d', nd); m.len = path.getTotalLength(); place(m, lastT); } };
+    movers.push(m); place(m, 0);
+    return m;
+  }
+  function place(m, t){
+    var n = m.dots.length;
+    m.dots.forEach(function(c, i){
+      var s = ((i/n)*m.len + (reduceMotion ? 0 : t*m.speed)) % m.len;
+      var p = m.path.getPointAtLength(s);
+      c.setAttribute('cx', p.x.toFixed(1)); c.setAttribute('cy', p.y.toFixed(1));
+    });
+  }
+  var lastT = 0;
+  function tick(ts){ lastT = ts/1000; movers.forEach(function(m){ place(m, lastT); }); requestAnimationFrame(tick); }
+  if(!reduceMotion) requestAnimationFrame(tick);
+  function arrowDefs(svg){
+    var d = document.createElementNS(NS, 'defs');
+    d.innerHTML = ['#C7512D','#2F6FD8','#5C6B73','#E2492F','#1E4FA8','#2E8B57'].map(function(col, i){
+      return '<marker id="'+svg.id+'A'+i+'" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="'+col+'"></path></marker>';
+    }).join('');
+    svg.appendChild(d);
+  }
+
+  /* ================= 1. LUFTDRUCK ================= */
+  function pressure(h){ return 1013.25 * Math.pow(1 - 2.25577e-5*h, 5.25588); }
+  var colSvg = $('columnSvg');
+  (function(){
+    var s = '<defs><linearGradient id="colSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16244A"></stop><stop offset="100%" stop-color="#8CC8F0"></stop></linearGradient></defs>';
+    s += '<rect x="0" y="0" width="240" height="380" fill="url(#colSky)" rx="6"></rect>';
+    s += '<path d="M120 360 L150 300 L165 318 L190 250 L215 305 L240 290 L240 360 Z" fill="#7B8A99"></path><path d="M190 250 L180 270 L196 266 L203 276 Z" fill="#fff"></path>';
+    s += '<rect x="0" y="360" width="240" height="20" fill="#2F7BD0"></rect>';
+    s += '<rect x="24" y="20" width="84" height="340" fill="#fff" opacity=".1" stroke="#fff" stroke-opacity=".5" stroke-dasharray="4 4"></rect>';
+    var r = rng(7);
+    for(var i = 0; i < 900; i++){
+      var y = 20 + r()*340, h = (360 - y)/34*1000;
+      if(r() < pressure(h)/1013 * 0.42){ s += '<circle cx="'+(28 + r()*76).toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.1" fill="#FFF7D6"></circle>'; }
+    }
+    for(var k = 0; k <= 10; k += 2){
+      var yy = 360 - k*34;
+      s += '<line x1="108" y1="'+yy+'" x2="116" y2="'+yy+'" stroke="#fff"></line><text x="120" y="'+(yy+4)+'" font-size="11" fill="#fff" font-family="IBM Plex Mono, monospace">'+k+' km</text>';
+    }
+    s += '<text x="66" y="14" text-anchor="middle" font-size="11" fill="#fff" font-family="Figtree, sans-serif" font-weight="700">Luftsäule</text>';
+    s += '<g id="hMarker"><line x1="16" x2="190" y1="360" y2="360" stroke="#FFD43B" stroke-width="2.5" stroke-dasharray="6 4"></line><circle cx="16" cy="360" r="6" fill="#FFD43B"></circle></g>';
+    colSvg.innerHTML = s;
+  })();
+  function renderPressure(){
+    var h = parseInt($('hRange').value, 10), p = pressure(h);
+    $('hOut').textContent = h.toLocaleString('de-DE') + ' m';
+    $('pOut').textContent = Math.round(p);
+    $('pBar').style.width = (p/1013.25*100) + '%';
+    var y = 360 - h/1000*34;
+    var mk = $('hMarker'); mk.querySelector('line').setAttribute('y1', y); mk.querySelector('line').setAttribute('y2', y); mk.querySelector('circle').setAttribute('cy', y);
+    var pct = Math.round(p/1013.25*100);
+    $('pText').innerHTML = h === 0 ? 'Normaldruck auf Meereshöhe. Über dir liegt die ganze Luftsäule.' :
+      'Nur noch etwa <b>'+pct+' %</b> des Luftdrucks am Meer. '+(h >= 8000 ? 'Bergsteiger brauchen hier oft Sauerstoffflaschen.' : h >= 4000 ? 'Man kommt beim Gehen schnell außer Atem.' : 'Beim Autofahren in die Berge knacken deshalb die Ohren.');
+  }
+  $('hRange').addEventListener('input', renderPressure);
+  $('hPresets').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b){ $('hRange').value = b.dataset.h; renderPressure(); } });
+  renderPressure();
+
+  var htSvg = $('htSvg');
+  (function(){
+    var s = '<rect x="10" y="20" width="270" height="160" rx="12" fill="#FBE4D9" stroke="#C7512D" stroke-width="2"></rect>';
+    s += '<rect x="360" y="20" width="270" height="160" rx="12" fill="#E3EEF8" stroke="#2F6FD8" stroke-width="2"></rect>';
+    var r = rng(3);
+    for(var i = 0; i < 95; i++) s += '<circle cx="'+(26 + r()*238).toFixed(1)+'" cy="'+(36 + r()*112).toFixed(1)+'" r="4" fill="#C7512D" opacity=".75"></circle>';
+    for(var j = 0; j < 22; j++) s += '<circle cx="'+(376 + r()*238).toFixed(1)+'" cy="'+(36 + r()*112).toFixed(1)+'" r="4" fill="#2F6FD8" opacity=".75"></circle>';
+    s += '<text x="145" y="112" text-anchor="middle" font-size="64" font-weight="800" fill="#C7512D" font-family="Fraunces, serif" opacity=".9">H</text>';
+    s += '<text x="495" y="112" text-anchor="middle" font-size="64" font-weight="800" fill="#2F6FD8" font-family="Fraunces, serif" opacity=".9">T</text>';
+    s += '<text x="145" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#7A2214" font-family="Figtree, sans-serif">Hochdruckgebiet · z. B. 1030 hPa</text>';
+    s += '<text x="495" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#16397A" font-family="Figtree, sans-serif">Tiefdruckgebiet · z. B. 990 hPa</text>';
+    s += '<line x1="200" y1="198" x2="440" y2="198" stroke="#5C6B73" stroke-width="3" marker-end="url(#htSvgA2)"></line>';
+    s += '<text x="320" y="225" text-anchor="middle" font-size="13" font-weight="800" fill="var(--ink)" font-family="Figtree, sans-serif">Wind: Ausgleichsströmung vom Hoch zum Tief</text>';
+    htSvg.innerHTML = s;
+    arrowDefs(htSvg);
+    addMover(htSvg, 'M230 100 C290 70 350 130 410 100', 7, '#7B5CC4', 4.5, 60);
+    addMover(htSvg, 'M230 60 C290 30 350 90 410 60', 5, '#7B5CC4', 4.5, 52);
+    addMover(htSvg, 'M230 140 C290 110 350 170 410 140', 5, '#7B5CC4', 4.5, 66);
+  })();
+
+  /* ================= 2. WINDRICHTUNG ================= */
+  var dirs = [
+    { n:'Nordwind', a:0, k:'Norden' }, { n:'Nordostwind', a:45, k:'Nordosten' }, { n:'Ostwind', a:90, k:'Osten' }, { n:'Südostwind', a:135, k:'Südosten' },
+    { n:'Südwind', a:180, k:'Süden' }, { n:'Südwestwind', a:225, k:'Südwesten' }, { n:'Westwind', a:270, k:'Westen' }, { n:'Nordwestwind', a:315, k:'Nordwesten' }
+  ];
+  var compass = $('compassSvg'), curDir = 0, dirRight = 0, dirTotal = 0, dirAnswered = false;
+  function pt(a, r){ var rad = a*Math.PI/180; return { x:130 + r*Math.sin(rad), y:130 - r*Math.cos(rad) }; }
+  function renderCompass(){
+    var d = dirs[curDir], s = '';
+    s += '<defs><marker id="cmpArr" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="#7B5CC4"></path></marker></defs>';
+    s += '<circle cx="130" cy="130" r="118" fill="var(--sky-tint)" stroke="var(--line-strong)" stroke-width="2"></circle>';
+    s += '<circle cx="130" cy="130" r="80" fill="none" stroke="var(--line)" stroke-dasharray="3 5"></circle>';
+    ['N','NO','O','SO','S','SW','W','NW'].forEach(function(l, i){
+      var p = pt(i*45, 100);
+      s += '<text x="'+p.x.toFixed(1)+'" y="'+(p.y+5).toFixed(1)+'" text-anchor="middle" font-size="'+(i%2 ? 12 : 16)+'" font-weight="800" fill="'+(i === 0 ? '#C7512D' : 'var(--ink)')+'" font-family="Figtree, sans-serif">'+l+'</text>';
+    });
+    var from = pt(d.a, 74), to = pt(d.a + 180, 66);
+    s += '<line x1="'+from.x.toFixed(1)+'" y1="'+from.y.toFixed(1)+'" x2="'+to.x.toFixed(1)+'" y2="'+to.y.toFixed(1)+'" stroke="#7B5CC4" stroke-width="7" stroke-linecap="round" marker-end="url(#cmpArr)"></line>';
+    var e = pt(d.a, 74);
+    s += '<text x="'+e.x.toFixed(1)+'" y="'+(e.y+9).toFixed(1)+'" text-anchor="middle" font-size="26">🌬️</text>';
+    compass.innerHTML = s;
+    $('dirBtns').innerHTML = dirs.map(function(x, i){ return '<button type="button" data-i="'+i+'">'+x.n+'</button>'; }).join('');
+    $('dirFeedback').innerHTML = '';
+    dirAnswered = false;
+  }
+  $('dirBtns').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b || dirAnswered) return;
+    dirAnswered = true; dirTotal++;
+    var i = parseInt(b.dataset.i, 10), d = dirs[curDir], to = dirs[(curDir + 4) % 8].k;
+    $('dirBtns').children[curDir].classList.add('right');
+    if(i === curDir){ dirRight++; $('dirFeedback').innerHTML = '✅ Richtig! Der <b>'+d.n+'</b> kommt aus '+d.k+' und weht nach '+to+'.'; }
+    else { b.classList.add('wrong'); $('dirFeedback').innerHTML = '❌ Nicht ganz. Der Wind kommt aus <b>'+d.k+'</b> (dort ist das 🌬️) und weht nach '+to+'. Also: <b>'+d.n+'</b>.'; }
+    $('dirScore').textContent = dirRight + ' von ' + dirTotal + ' richtig';
+  });
+  $('dirNext').addEventListener('click', function(){ var n; do { n = Math.floor(Math.random()*8); } while(n === curDir); curDir = n; renderCompass(); });
+  curDir = 4; renderCompass();
+
+  /* ================= 3. BEAUFORT ================= */
+  var bft = [
+    ['still','< 1 km/h','Windstille, Rauch steigt senkrecht empor.'],
+    ['leiser Zug','1–5 km/h','Windrichtung wird nur durch Zug des Rauches angezeigt, nicht durch Windfahne.'],
+    ['leichte Brise','6–11 km/h','Wind im Gesicht spürbar, Blätter säuseln, Windfahne bewegt sich.'],
+    ['schwache Brise','12–19 km/h','Dünne Zweige bewegen sich.'],
+    ['mäßige Brise','20–28 km/h','Wind hebt Staub und loses Papier, bewegt Zweige und dünnere Äste.'],
+    ['frische Brise','29–38 km/h','Kleine Laubbäume beginnen zu schwanken, Schaumkronen bilden sich auf Seen.'],
+    ['starker Wind','39–49 km/h','Starke Äste schwanken, Regenschirme sind nur schwer zu halten.'],
+    ['steifer Wind','50–61 km/h','Ganze Bäume in Bewegung, fühlbarer Widerstand beim Gehen gegen den Wind.'],
+    ['stürmischer Wind','62–74 km/h','Zweige brechen von Bäumen, das Gehen im Freien ist erheblich erschwert.'],
+    ['Sturm','75–88 km/h','Äste brechen von Bäumen; kleinere Schäden an Häusern.'],
+    ['schwerer Sturm','89–102 km/h','Wind bricht Bäume; bedeutende Schäden an Häusern.'],
+    ['orkanartiger Sturm','103–117 km/h','Wind entwurzelt Bäume; verbreitet Sturmschäden.'],
+    ['Orkan','ab 118 km/h','Schwerste Verwüstungen.']
+  ];
+  var bftSvg = $('bftSvg');
+  (function(){
+    var s = '<defs><linearGradient id="bSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7EC4EE"></stop><stop offset="100%" stop-color="#D9F0FB"></stop></linearGradient></defs>';
+    s += '<rect id="bSkyRect" width="640" height="270" fill="url(#bSky)"></rect>';
+    s += '<g id="bClouds"><g class="cloud-drift" style="--cdur:40s"><g fill="#fff" opacity=".9"><ellipse cx="0" cy="50" rx="40" ry="12"></ellipse><circle cx="-12" cy="42" r="14"></circle><circle cx="12" cy="38" r="17"></circle></g></g>'+
+         '<g class="cloud-drift" style="--cdur:40s; animation-delay:-20s"><g fill="#fff" opacity=".8"><ellipse cx="0" cy="84" rx="32" ry="10"></ellipse><circle cx="8" cy="76" r="13"></circle></g></g></g>';
+    s += '<rect x="0" y="232" width="640" height="38" fill="#7DB35A"></rect>';
+    // lake
+    s += '<rect x="440" y="236" width="200" height="34" fill="#2F86C6"></rect><g id="bWaves"></g>';
+    // house
+    s += '<rect x="40" y="170" width="90" height="62" fill="#E9D3B0" stroke="#9A7A4E"></rect><path d="M32 172 L85 132 L138 172 Z" fill="#B5523B"></path><rect x="104" y="128" width="14" height="30" fill="#7A3B2B"></rect><rect x="74" y="200" width="20" height="32" fill="#8A5A3A"></rect>';
+    s += '<g id="bSmoke" transform="translate(111 126)"><g id="bSmokeRot">'+[0,1,2,3,4].map(function(i){ return '<circle class="smoke-puff" cx="0" cy="0" r="7" fill="#9AA3AA" style="animation-delay:'+(i*0.6)+'s"></circle>'; }).join('')+'</g></g>';
+    // tree
+    s += '<g id="bTree" class="tree-sway"><rect x="292" y="150" width="16" height="84" fill="#7A5230"></rect><circle cx="300" cy="138" r="40" fill="#3E8E4A"></circle><circle cx="276" cy="152" r="26" fill="#4FA35A"></circle><circle cx="324" cy="150" r="27" fill="#3B8545"></circle></g>';
+    // windsock
+    s += '<rect x="396" y="130" width="5" height="104" fill="#555"></rect><g id="bSock" transform="translate(400 134) rotate(80)"><g id="bSockInner"><path d="M0 -10 L52 -5 L52 5 L0 10 Z" fill="#F26B3A"></path><path d="M17 -8.4 L28 -7.3 L28 7.3 L17 8.4 Z" fill="#fff"></path><path d="M39 -6.3 L52 -5 L52 5 L39 6.3 Z" fill="#fff"></path></g></g>';
+    s += '<g id="bLeaves"></g>';
+    s += '<text x="12" y="22" font-size="13" font-weight="800" fill="#1E4F7A" font-family="Figtree, sans-serif">Wind →</text>';
+    bftSvg.innerHTML = s;
+  })();
+  function renderBft(){
+    var b = parseInt($('bftRange').value, 10), d = bft[b];
+    $('bftNum').textContent = b; $('bftName').textContent = d[0]; $('bftSpeed').textContent = d[1]; $('bftEffect').textContent = d[2];
+    $('bSmokeRot').setAttribute('transform', 'rotate('+Math.min(82, b*12)+')');
+    var tree = $('bTree');
+    tree.style.setProperty('--amp', (b <= 1 ? 0 : Math.min(18, b*1.7)) + 'deg');
+    tree.style.setProperty('--dur', Math.max(0.35, 2.2 - b*0.16) + 's');
+    $('bSock').setAttribute('transform', 'translate(400 134) rotate('+Math.max(0, 80 - b*14)+')');
+    $('bClouds').querySelectorAll('.cloud-drift').forEach(function(c){ c.style.setProperty('--cdur', Math.max(3, 60 - b*5) + 's'); });
+    var amp = 1 + b*0.9, w = '';
+    for(var x = 440; x < 640; x += 20){ w += (x === 440 ? 'M' : ' Q') + (x === 440 ? x+' 244' : (x-10)+' '+(244 - amp)+' '+x+' 244'); }
+    var caps = '';
+    if(b >= 5){ for(var c = 0; c < Math.min(10, b-3); c++) caps += '<ellipse cx="'+(452 + c*19)+'" cy="'+(244 - amp)+'" rx="6" ry="2.4" fill="#fff"></ellipse>'; }
+    $('bWaves').innerHTML = '<path d="'+w+'" fill="none" stroke="#CFEFFF" stroke-width="2.5"></path>' + caps;
+    var lv = '';
+    if(b >= 4){ for(var i = 0; i < Math.min(9, b-2); i++) lv += '<ellipse cx="'+(200 + i*48)+'" cy="'+(170 + (i%3)*22)+'" rx="5" ry="2.5" fill="'+(b >= 8 ? '#6B4A2A' : '#5FA34F')+'" transform="rotate('+(i*37)+' '+(200 + i*48)+' '+(170 + (i%3)*22)+')"></ellipse>'; }
+    $('bLeaves').innerHTML = lv;
+    $('bSkyRect').setAttribute('opacity', b >= 9 ? .65 : 1);
+  }
+  $('bftRange').addEventListener('input', renderBft);
+  renderBft();
+
+  /* ================= 4. LAND- UND SEEWIND ================= */
+  var seaSvg = $('seaSvg');
+  var DAY_PATH = 'M150 262 C150 200 150 140 160 96 C200 80 420 80 470 96 C480 150 480 210 470 262 C420 276 200 276 150 262 Z';
+  var NIGHT_PATH = 'M470 262 C480 210 480 150 470 96 C420 80 200 80 160 96 C150 140 150 200 150 262 C200 276 420 276 470 262 Z';
+  (function(){
+    var s = '<defs><linearGradient id="sDay" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6EC1F2"></stop><stop offset="100%" stop-color="#D7F0FC"></stop></linearGradient>'+
+      '<linearGradient id="sNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0E1A3A"></stop><stop offset="100%" stop-color="#34507E"></stop></linearGradient></defs>';
+    s += '<rect id="sSky" width="640" height="340" fill="url(#sDay)"></rect>';
+    s += '<g id="sStars" opacity="0" fill="#fff"><circle cx="60" cy="30" r="1.5"></circle><circle cx="200" cy="50" r="1.2"></circle><circle cx="330" cy="24" r="1.5"></circle><circle cx="520" cy="40" r="1.2"></circle><circle cx="600" cy="70" r="1.4"></circle></g>';
+    s += '<g id="sSun"><circle cx="70" cy="46" r="24" fill="#FFD43B"></circle><circle cx="70" cy="46" r="34" fill="#FFD43B" opacity=".25"></circle></g>';
+    s += '<g id="sMoon" opacity="0"><circle cx="70" cy="46" r="20" fill="#F4F1DE"></circle><circle cx="80" cy="40" r="17" fill="#1A2A55"></circle></g>';
+    // land and sea
+    s += '<path d="M0 280 L300 280 C320 282 330 290 340 300 L340 340 L0 340 Z" fill="#E7C97F"></path><path d="M0 280 L250 280 L250 300 L0 300 Z" fill="#8CBF5E"></path>';
+    s += '<path d="M330 290 C360 286 400 286 640 286 L640 340 L340 340 Z" fill="#2F86C6"></path>';
+    s += '<text x="90" y="324" font-size="15" font-weight="800" fill="#5B4318" font-family="Figtree, sans-serif">Land</text><text x="520" y="324" font-size="15" font-weight="800" fill="#fff" font-family="Figtree, sans-serif">Meer</text>';
+    s += '<g font-family="Figtree, sans-serif" font-weight="800" font-size="14"><rect x="20" y="248" width="70" height="24" rx="12" fill="#fff" opacity=".9"></rect><text id="tLand" x="55" y="265" text-anchor="middle" fill="#C7512D">30 °C</text>'+
+         '<rect x="550" y="248" width="70" height="24" rx="12" fill="#fff" opacity=".9"></rect><text id="tSea" x="585" y="265" text-anchor="middle" fill="#2F6FD8">15 °C</text></g>';
+    // clouds
+    s += '<g id="cLand" fill="#fff"><ellipse cx="150" cy="112" rx="42" ry="14"></ellipse><circle cx="134" cy="102" r="16"></circle><circle cx="158" cy="94" r="21"></circle><circle cx="178" cy="106" r="13"></circle></g>';
+    s += '<g id="cSea" fill="#DDE6F5" opacity="0"><ellipse cx="470" cy="112" rx="42" ry="14"></ellipse><circle cx="454" cy="102" r="16"></circle><circle cx="478" cy="94" r="21"></circle><circle cx="498" cy="106" r="13"></circle></g>';
+    // loop path
+    s += '<path id="loopLine" d="'+DAY_PATH+'" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="8 8" opacity=".55"></path>';
+    // labels H/T
+    s += '<g font-family="Fraunces, serif" font-weight="800" font-size="30">'+
+      '<text id="lLandGround" x="150" y="248" text-anchor="middle">T</text><text id="lSeaGround" x="470" y="248" text-anchor="middle">H</text>'+
+      '<text id="lLandUp" x="150" y="76" text-anchor="middle">H</text><text id="lSeaUp" x="470" y="76" text-anchor="middle">T</text></g>';
+    s += '<g font-family="Figtree, sans-serif" font-weight="800" font-size="14"><text id="windLbl" x="310" y="300" text-anchor="middle" fill="#fff" paint-order="stroke" stroke="#1E4F7A" stroke-width="4">← Seewind</text>'+
+      '<text id="upLbl" x="310" y="70" text-anchor="middle" fill="#fff" paint-order="stroke" stroke="#1E4F7A" stroke-width="4">Ausgleichsströmung in der Höhe →</text>'+
+      '<text id="riseLbl" x="166" y="168" fill="#fff" paint-order="stroke" stroke="#7A2214" stroke-width="4">warme Luft steigt auf</text>'+
+      '<text id="sinkLbl" x="454" y="214" text-anchor="end" fill="#fff" paint-order="stroke" stroke="#16397A" stroke-width="4">kühle Luft sinkt ab</text></g>';
+    seaSvg.innerHTML = s;
+  })();
+  var seaMover = addMover(seaSvg, DAY_PATH, 16, '#FFF4C2', 5, 55);
+  var seaTexts = {
+    day:'<h3 style="font-size:1.2rem;">☀️ Tagsüber: Seewind</h3><ol style="color:var(--ink-soft); padding-left:20px; font-size:.92rem; margin:0;">'+
+      '<li>Die Sonne erwärmt das <b>Land schneller</b> und stärker als das Wasser.</li>'+
+      '<li>Die Luft über dem Land dehnt sich aus und <b>steigt auf</b>. Oft bilden sich Wolken.</li>'+
+      '<li>In der Höhe entsteht über dem Land ein <span class="H"><b>Höhenhoch</b></span>, über dem Meer ein <span class="T"><b>Höhentief</b></span>.</li>'+
+      '<li>In der Höhe strömt Luft vom Land zum Meer.</li>'+
+      '<li>Dadurch steigt der Luftdruck am Boden über dem Meer (<span class="H"><b>H</b></span>) und sinkt über dem Land (<span class="T"><b>T</b></span>).</li>'+
+      '<li>Am Boden weht der Wind vom Meer zum Land: <b>Seewind</b>. Marco kann surfen!</li></ol>',
+    night:'<h3 style="font-size:1.2rem;">🌙 Nachts: Landwind</h3><ol style="color:var(--ink-soft); padding-left:20px; font-size:.92rem; margin:0;">'+
+      '<li>Nachts <b>kühlt das Land schneller ab</b> als das Wasser. Das Meer gibt seine gespeicherte Wärme ab und ist jetzt wärmer.</li>'+
+      '<li>Über dem Meer steigt die wärmere Luft auf.</li>'+
+      '<li>In der Höhe strömt Luft vom Meer zum Land.</li>'+
+      '<li>Am Boden entsteht über dem Meer ein <span class="T"><b>Tief</b></span>, über dem Land ein <span class="H"><b>Hoch</b></span>.</li>'+
+      '<li>Am Boden weht der Wind vom Land aufs Meer: <b>Landwind</b>.</li></ol>'+
+      '<div class="note-box">Der Landwind ist meist schwächer als der Seewind, weil der Temperaturunterschied nachts kleiner ist.</div>'
+  };
+  function setSea(mode){
+    var day = mode === 'day';
+    $('btnDay').classList.toggle('active', day); $('btnNight').classList.toggle('active', !day);
+    $('sSky').setAttribute('fill', day ? 'url(#sDay)' : 'url(#sNight)');
+    $('sStars').setAttribute('opacity', day ? 0 : 1); $('sSun').setAttribute('opacity', day ? 1 : 0); $('sMoon').setAttribute('opacity', day ? 0 : 1);
+    $('cLand').setAttribute('opacity', day ? 1 : 0); $('cSea').setAttribute('opacity', day ? 0 : .9);
+    $('tLand').textContent = day ? '30 °C' : '12 °C'; $('tLand').setAttribute('fill', day ? '#C7512D' : '#2F6FD8');
+    $('tSea').textContent = day ? '15 °C' : '16 °C'; $('tSea').setAttribute('fill', day ? '#2F6FD8' : '#C7512D');
+    function lab(id, txt){ var el = $(id); el.textContent = txt; el.setAttribute('fill', txt === 'H' ? '#C7512D' : '#2F6FD8'); el.setAttribute('paint-order', 'stroke'); el.setAttribute('stroke', '#fff'); el.setAttribute('stroke-width', 4); }
+    lab('lLandGround', day ? 'T' : 'H'); lab('lSeaGround', day ? 'H' : 'T'); lab('lLandUp', day ? 'H' : 'T'); lab('lSeaUp', day ? 'T' : 'H');
+    $('windLbl').textContent = day ? '← Seewind' : 'Landwind →';
+    $('upLbl').textContent = day ? 'Ausgleichsströmung in der Höhe →' : '← Ausgleichsströmung in der Höhe';
+    $('riseLbl').textContent = day ? 'warme Luft steigt auf' : 'kühle Luft sinkt ab';
+    $('sinkLbl').textContent = day ? 'kühle Luft sinkt ab' : 'warme Luft steigt auf';
+    $('riseLbl').setAttribute('stroke', day ? '#7A2214' : '#16397A'); $('sinkLbl').setAttribute('stroke', day ? '#16397A' : '#7A2214');
+    $('loopLine').setAttribute('d', day ? DAY_PATH : NIGHT_PATH);
+    seaMover.setD(day ? DAY_PATH : NIGHT_PATH);
+    $('seaText').innerHTML = seaTexts[mode];
+  }
+  $('btnDay').addEventListener('click', function(){ setSea('day'); });
+  $('btnNight').addEventListener('click', function(){ setSea('night'); });
+  setSea('day');
+
+  /* ordering game (used for the Seewind strips and the Passat statements M4) */
+  function makeOrder(cfg){
+    var n = cfg.strips.length, pool = [], answer = [];
+    function idxs(){ var a = []; for(var i = 0; i < n; i++) a.push(i); return a; }
+    function render(marks){
+      $(cfg.pool).innerHTML = pool.map(function(i){ return '<button type="button" class="strip" data-i="'+i+'"><span class="pos">+</span><span>'+cfg.strips[i]+'</span></button>'; }).join('') || '<span class="fine">Alle eingeordnet.</span>';
+      $(cfg.answer).innerHTML = answer.map(function(i, k){ var cls = marks ? (i === k ? ' ok' : ' bad') : ''; return '<button type="button" class="strip'+cls+'" data-i="'+i+'"><span class="pos">'+(k+1)+'</span><span>'+cfg.strips[i]+'</span></button>'; }).join('');
+    }
+    function reset(){ pool = shuffle(idxs()); answer = []; render(); $(cfg.result).textContent = ''; }
+    $(cfg.pool).addEventListener('click', function(e){ var b = e.target.closest('.strip'); if(!b) return; var i = +b.dataset.i; pool.splice(pool.indexOf(i), 1); answer.push(i); render(); $(cfg.result).textContent = ''; });
+    $(cfg.answer).addEventListener('click', function(e){ var b = e.target.closest('.strip'); if(!b) return; var i = +b.dataset.i; answer.splice(answer.indexOf(i), 1); pool.push(i); render(); $(cfg.result).textContent = ''; });
+    $(cfg.check).addEventListener('click', function(){
+      if(answer.length < n){ $(cfg.result).textContent = 'Ordne zuerst alle '+n+' Streifen ein.'; return; }
+      render(true);
+      var ok = answer.filter(function(i, k){ return i === k; }).length;
+      $(cfg.result).textContent = ok === n ? cfg.done : ok + ' von '+n+' an der richtigen Stelle. Klicke falsche Streifen an, um sie zurückzulegen.';
+    });
+    $(cfg.reset).addEventListener('click', reset);
+    $(cfg.solve).addEventListener('click', function(){ pool = []; answer = idxs(); render(true); $(cfg.result).textContent = cfg.solved; });
+    reset();
+  }
+  makeOrder({ pool:'orderPool', answer:'orderAnswer', check:'orderCheck', reset:'orderReset', solve:'orderSolve', result:'orderResult',
+    strips:[
+      'unterschiedliche Erwärmung von Wasser und Land',
+      'Ausdehnung und Aufstieg der sich erwärmenden Luft über dem Land',
+      'Entstehung eines Höhenluftdruckunterschieds zwischen Land und Wasser',
+      'Ausgleichsströmung in der Höhe vom Land zum Wasser',
+      'Zunahme des Bodenluftdrucks über dem Wasser und Abnahme des Bodenluftdrucks über dem Land',
+      'Ausgleich des Luftdruckunterschieds am Boden durch den Seewind'
+    ], done:'🎉 Perfekt, alles richtig!', solved:'So ist es richtig.' });
+
+  /* ================= 5. FLURWIND ================= */
+  var hours = [0,2,4,6,8,10,12,14,16,18,20,22,24];
+  var surfaces = [
+    { n:'Asphalt', c:'#2B2B2B', v:[18,16,14,15,24,38,46,47,42,32,24,20,18] },
+    { n:'Beton', c:'#8A6D5A', v:[17,15,14,14,20,32,40,41,38,30,23,19,17] },
+    { n:'Gras', c:'#5FA34F', v:[14,12,11,12,20,30,35,35,31,24,18,15,13] },
+    { n:'Wald', c:'#2E6F8E', v:[12,10,9,9,14,22,27,28,26,20,15,12,11] }
+  ];
+  function interp(v, h){ var i = Math.min(11, Math.floor(h/2)), f = (h - i*2)/2; return v[i] + (v[i+1] - v[i])*f; }
+  var surfSvg = $('surfSvg');
+  function sx(h){ return 50 + h*22; } function sy(t){ return 260 - t*4.8; }
+  function renderSurf(){
+    var h = parseInt($('surfHour').value, 10), s = '';
+    for(var t = 0; t <= 50; t += 10){ s += '<line x1="50" x2="578" y1="'+sy(t)+'" y2="'+sy(t)+'" stroke="var(--line)"></line><text x="42" y="'+(sy(t)+4)+'" text-anchor="end" font-size="11" fill="var(--ink-faint)" font-family="IBM Plex Mono, monospace">'+t+'</text>'; }
+    for(var k = 0; k <= 24; k += 4){ s += '<text x="'+sx(k)+'" y="280" text-anchor="middle" font-size="11" fill="var(--ink-faint)" font-family="IBM Plex Mono, monospace">'+k+'</text>'; }
+    s += '<text x="12" y="20" font-size="11" fill="var(--ink-soft)" font-family="IBM Plex Mono, monospace">°C</text><text x="578" y="296" text-anchor="end" font-size="11" fill="var(--ink-soft)" font-family="IBM Plex Mono, monospace">Uhrzeit</text>';
+    s += '<rect x="'+sx(20)+'" y="20" width="'+(sx(24)-sx(20))+'" height="240" fill="#1A2A55" opacity=".08"></rect><rect x="'+sx(0)+'" y="20" width="'+(sx(6)-sx(0))+'" height="240" fill="#1A2A55" opacity=".08"></rect>';
+    surfaces.forEach(function(su){
+      var d = 'M' + hours.map(function(hh, i){ return sx(hh)+' '+sy(su.v[i]); }).join(' L');
+      s += '<path d="'+d+'" fill="none" stroke="'+su.c+'" stroke-width="3" stroke-linejoin="round"></path>';
+      s += '<circle cx="'+sx(h)+'" cy="'+sy(interp(su.v, h)).toFixed(1)+'" r="5" fill="'+su.c+'" stroke="#fff" stroke-width="2"></circle>';
+    });
+    s += '<line x1="'+sx(h)+'" x2="'+sx(h)+'" y1="20" y2="260" stroke="var(--rust)" stroke-width="1.5" stroke-dasharray="4 4"></line>';
+    surfSvg.innerHTML = s;
+    $('surfHourOut').textContent = h + ' Uhr';
+    $('surfVals').innerHTML = surfaces.map(function(su){ return '<div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding:4px 0;"><span><i style="display:inline-block; width:12px; height:12px; border-radius:3px; background:'+su.c+'; margin-right:6px;"></i>'+su.n+'</span><b class="mono">'+Math.round(interp(su.v, h))+' °C</b></div>'; }).join('');
+  }
+  $('surfHour').addEventListener('input', renderSurf);
+  renderSurf();
+
+  var flurSvg = $('flurSvg');
+  var slots = [
+    { id:'gl', x:150, y:204, a:'H' }, { id:'gc', x:320, y:204, a:'T' }, { id:'gr', x:490, y:204, a:'H' },
+    { id:'hl', x:150, y:30, a:'T' }, { id:'hc', x:320, y:30, a:'H' }, { id:'hr', x:490, y:30, a:'T' }
+  ];
+  var slotVals = {};
+  (function(){
+    var s = '<rect width="640" height="300" fill="#DDF0FA"></rect><rect x="0" y="238" width="640" height="62" fill="#9BCB74"></rect>';
+    function tree(x){ return '<path d="M'+x+' 238 L'+(x-14)+' 238 L'+x+' 196 L'+(x+14)+' 238 Z" fill="#2E7A3E"></path><path d="M'+x+' 222 L'+(x-11)+' 222 L'+x+' 186 L'+(x+11)+' 222 Z" fill="#3E9150"></path>'; }
+    [30,56,82,108,560,586,612,534].forEach(function(x){ s += tree(x); });
+    var bld = [[250,170,30],[284,140,34],[322,110,30],[356,150,30],[390,180,24]];
+    bld.forEach(function(b){ s += '<rect x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+(238-b[1])+'" fill="#8C96A3" stroke="#5E6874"></rect>'; for(var yy = b[1]+8; yy < 230; yy += 14){ s += '<rect x="'+(b[0]+6)+'" y="'+yy+'" width="'+(b[2]-12)+'" height="5" fill="#DDE3EA"></rect>'; } });
+    s += '<text x="320" y="292" text-anchor="middle" font-size="13" font-weight="800" fill="#2D4A1E" font-family="Figtree, sans-serif">Stadt (warm)</text><text x="80" y="292" text-anchor="middle" font-size="13" font-weight="800" fill="#2D4A1E" font-family="Figtree, sans-serif">Umland (kühl)</text><text x="572" y="292" text-anchor="middle" font-size="13" font-weight="800" fill="#2D4A1E" font-family="Figtree, sans-serif">Umland (kühl)</text>';
+    s += '<path d="M302 226 L302 60 L60 60 L60 226 Z" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="8 8" opacity=".8"></path><path d="M338 226 L338 60 L580 60 L580 226 Z" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="8 8" opacity=".8"></path>';
+    s += '<text x="200" y="250" font-size="12" font-weight="800" fill="#1E4F7A" font-family="Figtree, sans-serif" text-anchor="middle">Flurwind →</text><text x="440" y="250" font-size="12" font-weight="800" fill="#1E4F7A" font-family="Figtree, sans-serif" text-anchor="middle">← Flurwind</text>';
+    slots.forEach(function(sl){ s += '<g class="slot" data-id="'+sl.id+'" tabindex="0" role="button" aria-label="Feld für H oder T"><circle cx="'+sl.x+'" cy="'+sl.y+'" r="18" fill="#fff" stroke="#5C6B73" stroke-width="2.5"></circle><text x="'+sl.x+'" y="'+(sl.y+8)+'" text-anchor="middle" font-size="22" font-weight="800" font-family="Fraunces, serif" fill="#5C6B73" pointer-events="none">?</text></g>'; });
+    flurSvg.innerHTML = s;
+    addMover(flurSvg, 'M302 226 L302 60 L60 60 L60 226 Z', 12, '#FFF4C2', 4.5, 50);
+    addMover(flurSvg, 'M338 226 L338 60 L580 60 L580 226 Z', 12, '#FFF4C2', 4.5, 50);
+    // keep slots on top of moving dots
+    flurSvg.querySelectorAll('.slot').forEach(function(g){ flurSvg.appendChild(g); });
+  })();
+  function setSlot(g, v){
+    slotVals[g.dataset.id] = v;
+    var t = g.querySelector('text'), c = g.querySelector('circle');
+    t.textContent = v || '?';
+    t.setAttribute('fill', v === 'H' ? '#C7512D' : v === 'T' ? '#2F6FD8' : '#5C6B73');
+    c.setAttribute('stroke', '#5C6B73');
+  }
+  function cycleSlot(g){ var v = slotVals[g.dataset.id]; setSlot(g, v === 'H' ? 'T' : v === 'T' ? '' : 'H'); $('flurResult').textContent = ''; }
+  flurSvg.addEventListener('click', function(e){ var g = e.target.closest('.slot'); if(g) cycleSlot(g); });
+  flurSvg.addEventListener('keydown', function(e){ var g = e.target.closest('.slot'); if(g && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); cycleSlot(g); } });
+  $('flurCheck').addEventListener('click', function(){
+    var ok = 0;
+    slots.forEach(function(sl){ var g = flurSvg.querySelector('[data-id="'+sl.id+'"]'); var right = slotVals[sl.id] === sl.a; if(right) ok++; g.querySelector('circle').setAttribute('stroke', right ? '#2E8B57' : '#C7512D'); });
+    $('flurResult').textContent = ok === 6 ? '🎉 Alles richtig!' : ok + ' von 6 richtig. Tipp: Über der warmen Stadt steigt Luft auf.';
+  });
+  $('flurSolve').addEventListener('click', function(){
+    slots.forEach(function(sl){ var g = flurSvg.querySelector('[data-id="'+sl.id+'"]'); setSlot(g, sl.a); g.querySelector('circle').setAttribute('stroke', '#2E8B57'); });
+    $('flurResult').textContent = 'Am Boden: T über der Stadt, H im Umland. In der Höhe umgekehrt.';
+  });
+
+  /* ================= 6. PASSAT ================= */
+  var pSvg = $('passatSvg');
+  // x: 30°N = 90, 0° = 350, 30°S = 610 (north left, south right as in the book); ground y = 300
+  function lx(lat){ return 350 - lat*260/30; }
+  var psDates = {
+    eq:  { sun:0,     itc:0,   note:'Um den 20. März und 23. September steht die Sonne über dem Äquator im Zenit. Die ITC liegt etwa am Äquator.' },
+    jun: { sun:23.5,  itc:12,  note:'21. Juni: Die Sonne steht über dem nördlichen Wendekreis im Zenit. Der Kreislauf ist nach Norden gewandert: Die Savanne nördlich des Äquators hat jetzt Regenzeit. (Die ITC folgt der Sonne mit Verspätung und erreicht den Wendekreis nicht ganz.)' },
+    dec: { sun:-23.5, itc:-12, note:'21. Dezember (Aufgabe 3C): Die Sonne steht über dem südlichen Wendekreis im Zenit. Der Kreislauf ist nach Süden gewandert: Jetzt hat die Savanne südlich des Äquators Regenzeit, im Norden ist Trockenzeit.' }
+  };
+  var T_ = function(x, y, txt, size, fill, extra){ return '<text x="'+x+'" y="'+y+'" font-size="'+size+'" font-weight="800" fill="'+fill+'" font-family="Figtree, sans-serif" '+(extra || '')+'>'+txt+'</text>'; };
+  var HT = function(x, y, l, size){ return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="'+(size || 30)+'" font-weight="800" fill="'+(l === 'H' ? '#C7512D' : '#2F6FD8')+'" font-family="Fraunces, serif" paint-order="stroke" stroke="#fff" stroke-width="5">'+l+'</text>'; };
+  function loopL(c){ return 'M'+(c-10)+' 280 L'+(c-10)+' 72 C'+(c-50)+' 62 150 62 110 72 L110 280 Z'; }
+  function loopR(c){ return 'M'+(c+10)+' 280 L'+(c+10)+' 72 C'+(c+50)+' 62 550 62 590 72 L590 280 Z'; }
+  function buildPassat(c, sx){
+    var s = '<defs><linearGradient id="pSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D5DA8"></stop><stop offset="100%" stop-color="#BFE4F7"></stop></linearGradient>'+
+      '<linearGradient id="pGround" x1="0" x2="1"><stop offset="0%" stop-color="#E9C87E"></stop><stop offset="22%" stop-color="#E9C87E"></stop><stop offset="34%" stop-color="#B9C86A"></stop><stop offset="42%" stop-color="#3E8E4A"></stop><stop offset="58%" stop-color="#3E8E4A"></stop><stop offset="66%" stop-color="#B9C86A"></stop><stop offset="78%" stop-color="#E9C87E"></stop><stop offset="100%" stop-color="#E9C87E"></stop></linearGradient>'+
+      '<marker id="pArrR" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="#fff"></path></marker></defs>';
+    s += '<rect width="700" height="390" fill="url(#pSky)"></rect>';
+    s += '<text x="12" y="20" font-size="11" fill="#DDEBFF" font-family="IBM Plex Mono, monospace">Höhe ca. 10–12 km</text>';
+    // 1 sun + rays
+    s += '<g class="ps" data-s="1"><circle cx="'+sx+'" cy="20" r="15" fill="#FFD43B"></circle><circle cx="'+sx+'" cy="20" r="23" fill="#FFD43B" opacity=".25"></circle>'+
+      [-20,0,20].map(function(o, i){ return '<line class="ray" x1="'+(sx+o)+'" y1="44" x2="'+(sx+o)+'" y2="292" style="animation-delay:'+(i*0.3)+'s"></line>'; }).join('')+
+      T_(sx+24, 16, 'Sonne im Zenit', 12, '#FFF3B0')+'</g>';
+    // 2 rising air + cloud tower, 3 rain
+    s += '<g class="ps" data-s="2"><g fill="#fff"><ellipse cx="'+c+'" cy="122" rx="78" ry="26"></ellipse><circle cx="'+(c-38)+'" cy="104" r="28"></circle><circle cx="'+(c+2)+'" cy="88" r="36"></circle><circle cx="'+(c+42)+'" cy="104" r="28"></circle><rect x="'+(c-54)+'" y="120" width="108" height="60" rx="20" fill="#E3E9F1"></rect><ellipse cx="'+c+'" cy="66" rx="70" ry="12" fill="#F3F6FA"></ellipse></g>'+
+      T_(c, 152, 'Wolkenturm', 11.5, '#2D3B5C', 'text-anchor="middle"')+'</g>';
+    s += '<g class="ps" data-s="3">'+[-50,-32,-14,4,22,40].map(function(o, i){ var x = c+o; return '<line class="rain-line" x1="'+x+'" y1="190" x2="'+(x-4)+'" y2="206" style="animation-delay:'+(i*0.15)+'s"></line><line class="rain-line" x1="'+(x+8)+'" y1="220" x2="'+(x+4)+'" y2="236" style="animation-delay:'+(i*0.15+0.4)+'s"></line>'; }).join('')+
+      T_(c, 172, 'Zenitalregen', 12, '#16397A', 'text-anchor="middle"')+'</g>';
+    // 4 upper high + outflow
+    s += '<g class="ps" data-s="4"><path d="M'+(c-8)+' 70 C'+(c-50)+' 52 160 52 118 70" fill="none" stroke="#fff" stroke-width="4" marker-end="url(#pArrR)"></path><path d="M'+(c+8)+' 70 C'+(c+50)+' 52 540 52 582 70" fill="none" stroke="#fff" stroke-width="4" marker-end="url(#pArrR)"></path>'+
+      T_((c+118)/2, 46, 'Höhenwind', 12, '#fff', 'text-anchor="middle"')+T_((c+582)/2, 46, 'Höhenwind', 12, '#fff', 'text-anchor="middle"')+
+      HT(c, 64, 'H', 22)+HT(96, 96, 'T', 22)+HT(604, 96, 'T', 22)+'</g>';
+    // 5 sinking air
+    s += '<g class="ps" data-s="5"><path d="M100 84 L100 270" fill="none" stroke="#fff" stroke-width="4" marker-end="url(#pArrR)"></path><path d="M600 84 L600 270" fill="none" stroke="#fff" stroke-width="4" marker-end="url(#pArrR)"></path>'+
+      '<text x="108" y="196" font-size="11" fill="#fff" font-family="Figtree, sans-serif" font-weight="700">Luft sinkt ab,</text><text x="108" y="210" font-size="11" fill="#fff" font-family="Figtree, sans-serif">erwärmt sich: keine Wolken</text>'+
+      '<text x="592" y="196" text-anchor="end" font-size="11" fill="#fff" font-family="Figtree, sans-serif" font-weight="700">Luft sinkt ab,</text><text x="592" y="210" text-anchor="end" font-size="11" fill="#fff" font-family="Figtree, sans-serif">erwärmt sich: keine Wolken</text></g>';
+    // ground (fixed: landscape zones do not move)
+    s += '<rect x="0" y="300" width="700" height="90" fill="url(#pGround)"></rect>';
+    [270,290,310,390,410,430,330,370].forEach(function(x){ s += '<circle cx="'+x+'" cy="296" r="12" fill="#2E7A3E"></circle>'; });
+    s += '<g class="ps" data-s="6">'+T_(30, 344, 'Wüste (z. B. Sahara)', 12, '#7A5A1C')+T_(670, 344, 'Wüste (z. B. Kalahari)', 12, '#7A5A1C', 'text-anchor="end"')+'</g>';
+    s += T_(350, 344, 'tropischer Regenwald', 12, '#fff', 'text-anchor="middle"')+T_(228, 344, 'Savanne', 11, '#4E5A1C', 'text-anchor="middle"')+T_(472, 344, 'Savanne', 11, '#4E5A1C', 'text-anchor="middle"');
+    // 3 low at ground: ITC
+    s += '<g class="ps" data-s="3">'+HT(c, 290, 'T')+'<rect x="'+(c-88)+'" y="250" width="176" height="22" rx="11" fill="#fff" opacity=".9"></rect>'+T_(c, 265, 'Tiefdruckgebiete · ITC', 11.5, '#16397A', 'text-anchor="middle"')+'</g>';
+    // 5 highs at ground
+    s += '<g class="ps" data-s="5">'+HT(100, 292, 'H')+HT(600, 292, 'H')+
+      T_(100, 322, 'Hochdruck', 10.5, '#7A2214', 'text-anchor="middle"')+T_(600, 322, 'Hochdruck', 10.5, '#7A2214', 'text-anchor="middle"')+'</g>';
+    // 7 trade winds at ground
+    var nl = c - 30, sl = c + 30;
+    s += '<g class="ps" data-s="7"><path d="M124 284 L'+nl+' 284" stroke="#fff" stroke-width="4" marker-end="url(#pArrR)"></path><path d="M576 284 L'+sl+' 284" stroke="#fff" stroke-width="4" marker-end="url(#pArrR)"></path>'+
+      T_((124+nl)/2, 278, 'NO-Passat', 12.5, '#fff', 'text-anchor="middle" paint-order="stroke" stroke="#1E4F7A" stroke-width="4"')+
+      T_((576+sl)/2, 278, 'SO-Passat', 12.5, '#fff', 'text-anchor="middle" paint-order="stroke" stroke="#1E4F7A" stroke-width="4"')+'</g>';
+    // latitude axis
+    [[30,'30° N'],[23.5,'23,5° N'],[0,'0° Äquator'],[-23.5,'23,5° S'],[-30,'30° S']].forEach(function(l){
+      s += '<line x1="'+lx(l[0])+'" x2="'+lx(l[0])+'" y1="362" y2="370" stroke="#5B4318"></line><text x="'+lx(l[0])+'" y="384" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5B4318" font-family="IBM Plex Mono, monospace">'+l[1]+'</text>';
+    });
+    s += '<text x="'+lx(23.5)+'" y="358" text-anchor="middle" font-size="9" fill="#5B4318" font-family="Figtree, sans-serif">Wendekreis</text><text x="'+lx(-23.5)+'" y="358" text-anchor="middle" font-size="9" fill="#5B4318" font-family="Figtree, sans-serif">Wendekreis</text>';
+    return s;
+  }
+  pSvg.innerHTML = '<g id="psBase"></g>';
+  var psMovL = addMover(pSvg, loopL(350), 16, '#FFF4C2', 4.5, 70);
+  var psMovR = addMover(pSvg, loopR(350), 16, '#FFF4C2', 4.5, 70);
+  var psDate = 'eq';
+  function renderPsDate(d){
+    psDate = d;
+    var cfg = psDates[d], c = lx(cfg.itc);
+    $('psBase').innerHTML = buildPassat(c, lx(cfg.sun));
+    psMovL.setD(loopL(c)); psMovR.setD(loopR(c));
+    $('psDates').querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.dataset.d === d); });
+    $('psDateNote').textContent = cfg.note;
+    renderPs(psCur);
+  }
+  var psSteps = [
+    { t:'1. Die Sonne steht im Zenit', d:'In Äquatornähe (genauer: dort, wo die Sonne gerade im Zenit steht) ist der Einfallswinkel der Sonnenstrahlen am größten. Boden und Luft werden sehr stark erwärmt.' },
+    { t:'2. Luft steigt auf, Wolken entstehen', d:'Durch die hohe Sonneneinstrahlung steigen Luftmassen auf und kühlen sich mit zunehmender Höhe immer weiter ab. Ab einer bestimmten Temperatur kondensiert der Wasserdampf und bildet Wolken.' },
+    { t:'3. Zenitalregen und Tief am Boden', d:'Es bilden sich große Wolkentürme, aus denen kräftige Niederschläge fallen, die <b>Zenitalregen</b>. Weil die Luft aufsteigt, entstehen am Boden <b>Tiefdruckgebiete</b>. Hier treffen die Passate zusammen: die <b>ITC</b>.' },
+    { t:'4. Hoch in der Höhe, Wind zu den Wendekreisen', d:'Über den Tiefdruckgebieten befinden sich in 10 bis 12 km Höhe <b>Hochdruckgebiete</b>. Sie treiben einen Wind an, der in der Höhe Richtung Wendekreise weht.' },
+    { t:'5. Absinken an den Wendekreisen', d:'Die Luft sinkt auf dem Weg nach Norden bzw. Süden wieder ab. Weil sie sich dabei erwärmt, können keine Wolken entstehen. Im Bereich der Wendekreise entstehen am Boden <b>Hochdruckgebiete</b>.' },
+    { t:'6. Wendekreiswüsten', d:'Wo die Luft absinkt, regnet es kaum. Deshalb liegen an beiden Wendekreisen große Wüsten: die Sahara im Norden und die Kalahari im Süden Afrikas (<b>Wendekreiswüsten</b>, Aufgabe 5).' },
+    { t:'7. Der Passat weht zurück zum Äquator', d:'Um die Druckunterschiede auszugleichen, weht der <b>Passat</b> am Boden von den Wendekreisen (Hoch) zum Äquator (Tief). Durch die Erdrotation wird er nach Westen abgelenkt: <b>Nordostpassat</b> und <b>Südostpassat</b>. Der Kreislauf ist geschlossen.' }
+  ];
+  var psCur = 0; // 0 = alle
+  $('psDots').innerHTML = '<button type="button" class="all" data-s="0">Alle</button>' + psSteps.map(function(x, i){ return '<button type="button" data-s="'+(i+1)+'">'+(i+1)+'</button>'; }).join('');
+  function renderPs(n){
+    psCur = n;
+    $('psDots').querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', +b.dataset.s === n); });
+    pSvg.classList.toggle('dim', n !== 0);
+    pSvg.querySelectorAll('.ps').forEach(function(g){ g.classList.toggle('on', n !== 0 && +g.dataset.s <= n); });
+    $('psBox').innerHTML = n === 0 ?
+      '<h3>Der ganze Kreislauf auf einen Blick</h3><p style="margin:0;">Warme Luft steigt am Äquator auf, fließt in der Höhe zu den Wendekreisen, sinkt dort ab und weht am Boden als <b>Passat</b> zurück zum Äquator. Klicke auf <b>1</b> oder „weiter", um Schritt für Schritt vorzugehen.</p>' :
+      '<h3>'+psSteps[n-1].t+'</h3><p style="margin:0;">'+psSteps[n-1].d+'</p>';
+  }
+  $('psDots').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) renderPs(+b.dataset.s); });
+  $('psNext').addEventListener('click', function(){ renderPs(psCur >= 7 ? 0 : psCur + 1); });
+  $('psPrev').addEventListener('click', function(){ renderPs(psCur <= 0 ? 7 : psCur - 1); });
+  $('psDates').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) renderPsDate(b.dataset.d); });
+  renderPsDate('eq');
+
+  /* Coriolis top view */
+  var corSvg = $('corSvg');
+  (function(){
+    var s = '<defs><marker id="cA1" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="#7B5CC4"></path></marker><marker id="cA2" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="#9AA3AA"></path></marker></defs>';
+    s += '<rect width="600" height="320" fill="#CBE7F7"></rect><rect x="0" y="0" width="600" height="60" fill="#F3DFA9"></rect><rect x="0" y="260" width="600" height="60" fill="#F3DFA9"></rect>';
+    s += '<line x1="0" x2="600" y1="160" y2="160" stroke="#C7512D" stroke-width="2"></line><line x1="0" x2="600" y1="60" y2="60" stroke="#7FA9C6" stroke-dasharray="5 5"></line><line x1="0" x2="600" y1="260" y2="260" stroke="#7FA9C6" stroke-dasharray="5 5"></line>';
+    s += '<g font-family="IBM Plex Mono, monospace" font-size="11" fill="#4B5E6B"><text x="8" y="54">Nördlicher Wendekreis · Hochdruck</text><text x="8" y="154">0° Äquator · ITC</text><text x="8" y="278">Südlicher Wendekreis · Hochdruck</text></g>';
+    s += '<line x1="400" y1="64" x2="400" y2="150" stroke="#9AA3AA" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#cA2)"></line><line x1="400" y1="256" x2="400" y2="170" stroke="#9AA3AA" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#cA2)"></line>';
+    s += '<path d="M400 64 C396 105 360 140 290 150" fill="none" stroke="#7B5CC4" stroke-width="5" marker-end="url(#cA1)"></path><path d="M400 256 C396 215 360 180 290 170" fill="none" stroke="#7B5CC4" stroke-width="5" marker-end="url(#cA1)"></path>';
+    s += '<g font-family="Figtree, sans-serif" font-weight="800" font-size="13"><text x="228" y="112" fill="#4B2F96">Nordostpassat</text><text x="228" y="218" fill="#4B2F96">Südostpassat</text>'+
+      '<text x="410" y="100" font-size="11" font-weight="600" fill="#5C6B73">ohne Erddrehung</text><text x="410" y="226" font-size="11" font-weight="600" fill="#5C6B73">ohne Erddrehung</text></g>';
+    s += '<g transform="translate(540 160)" font-family="Figtree, sans-serif" font-weight="800" font-size="12" fill="#1F3C66"><circle r="34" fill="#fff" opacity=".85"></circle><line x1="0" y1="-26" x2="0" y2="26" stroke="#1F3C66"></line><line x1="-26" y1="0" x2="26" y2="0" stroke="#1F3C66"></line><text y="-38" text-anchor="middle">N</text><text y="50" text-anchor="middle">S</text><text x="-44" y="4" text-anchor="middle">W</text><text x="44" y="4" text-anchor="middle">O</text></g>';
+    s += '<text x="140" y="196" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1E4F7A" font-family="Figtree, sans-serif">Ablenkung nach Westen ←</text>';
+    corSvg.innerHTML = s;
+    addMover(corSvg, 'M400 64 C396 105 360 140 290 150', 4, '#4B2F96', 4, 30);
+    addMover(corSvg, 'M400 256 C396 215 360 180 290 170', 4, '#4B2F96', 4, 30);
+  })();
+
+  /* ITC migration */
+  var monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  function zenith(doy){ return 23.44 * Math.sin(2*Math.PI*(doy - 80)/365); }
+  function itcLat(m){ return 0.8 * zenith(15 + m*30.4 - 40); }
+  var places = [
+    { n:'Timbuktu (Mali), ≈ 17° N', ex:'Savanne am Rand der Sahara', lat:17 },
+    { n:'Am Äquator', ex:'z. B. Kongobecken, Regenwald', lat:0 },
+    { n:'≈ 15° S', ex:'z. B. Sambia, Savanne', lat:-15 }
+  ];
+  function underItc(p, m){ return Math.abs(itcLat(m) - p.lat) <= 10; }
+  function wet(p, m){ return underItc(p, m) || Math.abs(p.lat) <= 3; }
+  var itcSvg = $('itcSvg');
+  function iy(lat){ return 145 - lat*4; }
+  function renderItc(){
+    var m = parseInt($('itcMonth').value, 10), z = zenith(15 + m*30.4), it = itcLat(m), s = '';
+    $('itcMonthOut').textContent = monthNames[m];
+    s += '<rect width="640" height="290" fill="#F4E3B5"></rect>';
+    s += '<rect x="0" y="'+iy(it+10)+'" width="640" height="'+(iy(it-10)-iy(it+10))+'" fill="#7FB2E5" opacity=".55"></rect>';
+    for(var cx = 60; cx < 640; cx += 140){ s += '<g fill="#fff" opacity=".95"><ellipse cx="'+cx+'" cy="'+(iy(it)-4)+'" rx="30" ry="10"></ellipse><circle cx="'+(cx-10)+'" cy="'+(iy(it)-10)+'" r="11"></circle><circle cx="'+(cx+8)+'" cy="'+(iy(it)-13)+'" r="13"></circle></g>'; for(var r = -16; r <= 16; r += 8){ s += '<line class="rain-line" x1="'+(cx+r)+'" y1="'+(iy(it)+8)+'" x2="'+(cx+r-3)+'" y2="'+(iy(it)+18)+'"></line>'; } }
+    [[23.5,'Nördlicher Wendekreis'],[0,'Äquator'],[-23.5,'Südlicher Wendekreis']].forEach(function(l){ s += '<line x1="0" x2="640" y1="'+iy(l[0])+'" y2="'+iy(l[0])+'" stroke="#8A6B3F" stroke-dasharray="5 5"></line><text x="6" y="'+(iy(l[0])-4)+'" font-size="10.5" fill="#6B5230" font-family="IBM Plex Mono, monospace">'+l[1]+'</text>'; });
+    s += '<line x1="0" x2="640" y1="'+iy(z)+'" y2="'+iy(z)+'" stroke="#E59A00" stroke-width="3"></line>';
+    s += '<circle cx="600" cy="'+iy(z)+'" r="13" fill="#FFD43B" stroke="#E59A00" stroke-width="2"></circle>';
+    s += '<text x="584" y="'+(iy(z)-18)+'" text-anchor="end" font-size="11.5" font-weight="800" fill="#9A5C00" font-family="Figtree, sans-serif">Zenitstand der Sonne</text>';
+    s += '<text x="440" y="'+(iy(it)+30)+'" font-size="11.5" font-weight="800" fill="#1E4FA8" font-family="Figtree, sans-serif">Regenzone (ITC)</text>';
+    places.forEach(function(p, i){ var x = 130 + i*140, w = underItc(p, m); s += '<circle cx="'+x+'" cy="'+iy(p.lat)+'" r="9" fill="'+(w ? '#1E4FA8' : '#E59A00')+'" stroke="#fff" stroke-width="3"></circle><text x="'+(x+14)+'" y="'+(iy(p.lat)+4)+'" font-size="12" font-weight="800" fill="#2D2A20" font-family="Figtree, sans-serif">'+'ABC'[i]+'</text>'; });
+    itcSvg.innerHTML = s;
+    $('itcPlaces').innerHTML = places.map(function(p, i){
+      var u = underItc(p, m), w = wet(p, m);
+      var badge = u ? '<span class="badge rain">🌧️ Regenzeit</span>' : w ? '<span class="badge rain">🌦️ Regen, etwas weniger</span>' : '<span class="badge dry">☀️ Trockenzeit</span>';
+      return '<div class="place"><b>'+'ABC'[i]+': '+p.n+'</b><br><span style="font-size:.78rem;">'+p.ex+'</span><br>'+badge+
+        '<div class="months">'+monthNames.map(function(n, k){ return '<span class="'+(underItc(p, k) ? 'r' : wet(p, k) ? 'r2' : 'd')+(k === m ? ' now' : '')+'" title="'+n+'">'+n[0]+'</span>'; }).join('')+'</div></div>';
+    }).join('');
+  }
+  $('itcMonth').addEventListener('input', renderItc);
+  var itcTimer = null;
+  $('itcPlay').addEventListener('click', function(){
+    if(itcTimer){ clearInterval(itcTimer); itcTimer = null; this.textContent = '▶ Abspielen'; return; }
+    this.textContent = '⏸ Pause';
+    itcTimer = setInterval(function(){ var r = $('itcMonth'); r.value = (parseInt(r.value, 10) + 1) % 12; renderItc(); }, 900);
+  });
+  renderItc();
+
+  /* Gliederung der Tropen */
+  var tz = [
+    { z:'A', e:'🏜️', n:'Wüste', c:'#D9A441', hum:'0–2 humide Monate', f:'trocken (arid)', d:'Kaum Niederschlag, fast keine Pflanzen. Sand-, Kies- und Felswüste (Foto 3). Hier liegt fast das ganze Jahr das Hochdruckgebiet am Wendekreis, die ITC kommt nicht bis hierher.' },
+    { z:'B', e:'🌵', n:'Dornsavanne', c:'#C9A64A', hum:'2–4½ humide Monate', f:'wechselfeucht', d:'Sehr kurze Regenzeit. Niedrige Gräser und Dornsträucher.' },
+    { z:'C', e:'🌳', n:'Trockensavanne', c:'#A8B04C', hum:'4½–7 humide Monate', f:'wechselfeucht', d:'Regenzeit und Trockenzeit etwa gleich lang. Hohe Gräser und einzelne Schirmakazien (Foto 2). In der Trockenzeit wird alles braun.' },
+    { z:'D', e:'🌿', n:'Feuchtsavanne', c:'#6FA34A', hum:'7–9½ humide Monate', f:'wechselfeucht', d:'Lange Regenzeit, kurze Trockenzeit. Hohes Gras, Baumgruppen und Wälder entlang der Flüsse.' },
+    { z:'E', e:'🌴', n:'Tropischer Regenwald', c:'#2E7A3E', hum:'9½–12 humide Monate', f:'immerfeucht (humid)', d:'Fast täglich Zenitalregen, ganzjährig heiß und feucht. Dichter, artenreicher Wald in mehreren Stockwerken (Foto 1). Die ITC ist nie weit weg.' }
+  ];
+  $('zoneStrip').innerHTML = tz.map(function(x, i){ return '<button type="button" class="zone-btn" data-i="'+i+'" style="background:'+x.c+';"><span class="z">'+x.z+'</span><span class="e">'+x.e+'</span>'+x.n+'</button>'; }).join('');
+  function renderZone(i){
+    var x = tz[i];
+    $('zoneStrip').querySelectorAll('.zone-btn').forEach(function(b){ b.classList.toggle('active', +b.dataset.i === i); });
+    $('zoneInfo').innerHTML = '<h3 style="font-size:1.15rem; margin-bottom:4px;">'+x.z+': '+x.n+'</h3><div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;"><span class="badge rain">'+x.hum+'</span><span class="badge dry">'+x.f+'</span></div><p style="margin:0; font-size:.92rem;">'+x.d+'</p>';
+  }
+  $('zoneStrip').addEventListener('click', function(e){ var b = e.target.closest('.zone-btn'); if(b) renderZone(+b.dataset.i); });
+  renderZone(2);
+
+  /* Timbuktu climate diagram (values read from the book's M5) */
+  var timb = { t:[21,23.5,27.5,31,33.5,34,32,30,31,30.5,26,21.5], p:[0,0,1,1,4,22,63,78,34,4,0,0] };
+  (function(){
+    var svg = $('timbSvg'), x0 = 60, x1 = 580, top = 20, bottom = 280, px = (bottom - top)/40;
+    function y(t){ return bottom - t*px; }
+    var colW = (x1 - x0)/12, s = '';
+    for(var t = 0; t <= 40; t += 10){
+      s += '<line x1="'+x0+'" x2="'+x1+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="var(--line)"></line>';
+      s += '<text x="'+(x0-8)+'" y="'+(y(t)+4)+'" text-anchor="end" font-size="11" fill="var(--rust)" font-family="IBM Plex Mono, monospace">'+t+'</text>';
+      s += '<text x="'+(x1+8)+'" y="'+(y(t)+4)+'" font-size="11" fill="var(--sky)" font-family="IBM Plex Mono, monospace">'+(t*2)+'</text>';
+    }
+    s += '<text x="'+(x0-8)+'" y="12" text-anchor="end" font-size="11" fill="var(--rust)" font-family="IBM Plex Mono, monospace">°C</text><text x="'+(x1+8)+'" y="12" font-size="11" fill="var(--sky)" font-family="IBM Plex Mono, monospace">mm</text>';
+    timb.p.forEach(function(p, i){ var h = p/2*px; s += '<rect x="'+(x0 + i*colW + colW*0.22).toFixed(1)+'" y="'+(bottom - h).toFixed(1)+'" width="'+(colW*0.56).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" fill="var(--sky)" opacity=".8"><title>'+monthNames[i]+': '+p+' mm</title></rect>'; });
+    s += '<polyline points="'+timb.t.map(function(t, i){ return (x0 + i*colW + colW/2).toFixed(1)+','+y(t).toFixed(1); }).join(' ')+'" fill="none" stroke="var(--rust)" stroke-width="3" stroke-linejoin="round"></polyline>';
+    'JFMAMJJASOND'.split('').forEach(function(l, i){ s += '<text x="'+(x0 + i*colW + colW/2).toFixed(1)+'" y="'+(bottom+18)+'" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink-soft)" font-family="Figtree, sans-serif">'+l+'</text>'; });
+    s += '<rect x="'+(x0 + 5*colW)+'" y="'+(bottom+26)+'" width="'+(4*colW)+'" height="16" rx="4" fill="#3E8EDB"></rect><text x="'+(x0 + 7*colW)+'" y="'+(bottom+38)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" font-family="Figtree, sans-serif">Regenzeit</text>';
+    s += '<text x="'+(x0 + 2.5*colW)+'" y="'+(bottom+38)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#B07A1A" font-family="Figtree, sans-serif">Trockenzeit</text><text x="'+(x0 + 10.5*colW)+'" y="'+(bottom+38)+'" text-anchor="middle" font-size="11" font-weight="800" fill="#B07A1A" font-family="Figtree, sans-serif">Trockenzeit</text>';
+    svg.innerHTML = s;
+  })();
+
+  /* Timbuktu statements (4B) – suggested solution, several months can fit */
+  var timItems = [
+    { t:'(1) Die Wasservorräte sind wieder aufgefüllt.', ok:[8,9], why:'September/Oktober: am Ende der Regenzeit ist am meisten Wasser gesammelt.' },
+    { t:'(2) Der Nordostpassat weht nicht mehr so stark und wird immer geringer.', ok:[4,5], why:'Mai/Juni: Die ITC rückt nach Norden heran, bald beginnt die Regenzeit.' },
+    { t:'(3) Die kleinen Flüsse sind wieder ausgetrocknet. Nur auf dem Niger fahren noch Schiffe.', ok:[10,11,0,1,2], why:'November bis März: mitten in der Trockenzeit, einige Wochen nach dem letzten Regen.' },
+    { t:'(4) Jetzt ist Erntezeit.', ok:[9,10], why:'Oktober/November: Nach der Regenzeit ist das Getreide reif.' },
+    { t:'(5) Die Felder werden für die Aussaat vorbereitet.', ok:[4,5], why:'Mai/Juni: kurz vor Beginn der Regenzeit.' },
+    { t:'(6) Die Schifffahrt auf dem Niger ist für große Schiffe gefährlich.', ok:[3,4,5], why:'April bis Juni: Ende der Trockenzeit, der Niger führt sehr wenig Wasser.' },
+    { t:'(7) Die Preise für Nahrungsmittel steigen.', ok:[5,6,7], why:'Juni bis August: Die Vorräte der letzten Ernte gehen zu Ende, die neue Ernte ist noch nicht reif.' }
+  ];
+  $('timList').innerHTML = timItems.map(function(x, i){
+    return '<div class="tim-item" data-i="'+i+'"><span>'+x.t+'</span><select aria-label="Monat für Aussage '+(i+1)+'"><option value="">– Monat –</option>'+monthNames.map(function(n, k){ return '<option value="'+k+'">'+n+'</option>'; }).join('')+'</select><div class="why">💡 '+x.why+'</div></div>';
+  }).join('');
+  $('timCheck').addEventListener('click', function(){
+    var ok = 0;
+    $('timList').querySelectorAll('.tim-item').forEach(function(el){
+      var v = el.querySelector('select').value, good = v !== '' && timItems[+el.dataset.i].ok.indexOf(+v) >= 0;
+      if(good) ok++;
+      el.classList.toggle('ok', good); el.classList.toggle('bad', !good); el.classList.remove('show');
+    });
+    $('timResult').textContent = ok + ' von 7 passen.';
+  });
+  $('timSolve').addEventListener('click', function(){ $('timList').querySelectorAll('.tim-item').forEach(function(el){ el.classList.add('show'); }); });
+
+  /* flip cards */
+  var terms = [
+    { ico:'🌬️', t:'Passat', d:'Trockener, beständiger Wind, der das ganze Jahr aus der gleichen Richtung von den Wendekreisen (Hoch) zum Äquator (Tief) weht. Von ital. passata = Überfahrt.' },
+    { ico:'🌦️', t:'wechselfeucht / immerfeucht', d:'Wechselfeucht: Regenzeit und Trockenzeit wechseln sich ab (Savanne). Immerfeucht: fast das ganze Jahr humid (Regenwald).' },
+    { ico:'🌀', t:'ITC', d:'Innertropische Konvergenzzone: Zone am Boden, in der Nordost- und Südostpassat zusammentreffen (konvergieren). Tiefdruck, aufsteigende Luft, viel Regen.' },
+    { ico:'⛈️', t:'Zenitalregen', d:'Heftiger Regen (oft Gewitter am Nachmittag), der fällt, wenn die Sonne im Zenit steht und die Luft stark aufsteigt.' },
+    { ico:'🔻', t:'Äquatoriale Tiefdruckrinne', d:'Gürtel tiefen Luftdrucks am Boden in Äquatornähe. Entsteht durch aufsteigende warme Luft.' },
+    { ico:'🔺', t:'Subtropischer Hochdruckgürtel', d:'Gürtel hohen Luftdrucks bei etwa 20–30° Breite. Hier sinkt Luft ab, es ist trocken: Wüsten.' },
+    { ico:'🐴', t:'Rossbreiten', d:'Windarme Zone im subtropischen Hochdruckgürtel (≈ 30°). Segelschiffe kamen hier oft tagelang nicht voran.' },
+    { ico:'😶', t:'Kalmen', d:'Windstille Zone am Äquator (im Bereich der ITC), weil die Luft dort vor allem nach oben strömt.' },
+    { ico:'↪️', t:'Ablenkung durch die Erddrehung', d:'Winde werden auf der Nordhalbkugel nach rechts, auf der Südhalbkugel nach links abgelenkt. Daher: Nordost- und Südostpassat.' }
+  ];
+  $('flipGrid').innerHTML = terms.map(function(x){
+    return '<button type="button" class="flip" aria-label="'+x.t+' – Karte umdrehen"><div class="flip-inner"><div class="flip-face flip-front"><span class="ico">'+x.ico+'</span><span class="term">'+x.t+'</span><span class="tap">antippen zum Umdrehen</span></div><div class="flip-face flip-back"><b>'+x.t+'</b>'+x.d+'</div></div></button>';
+  }).join('');
+  $('flipGrid').addEventListener('click', function(e){ var f = e.target.closest('.flip'); if(f) f.classList.toggle('on'); });
+  $('flipAll').addEventListener('click', function(){ $('flipGrid').querySelectorAll('.flip').forEach(function(f){ f.classList.add('on'); }); });
+  $('flipNone').addEventListener('click', function(){ $('flipGrid').querySelectorAll('.flip').forEach(function(f){ f.classList.remove('on'); }); });
+
+  /* ================= QUIZ ================= */
+  var quizData = [
+    { q:'Wie hoch ist der normale Luftdruck auf Meereshöhe?', a:['100 hPa','1013 hPa','1500 hPa','10 hPa'], c:1, ex:'Der Normaldruck auf Meereshöhe beträgt 1013 hPa (Hektopascal). Gemessen wird er mit dem Barometer.' },
+    { q:'Wie verändert sich der Luftdruck mit zunehmender Höhe?', a:['Er nimmt zu','Er bleibt gleich','Er nimmt ab','Er schwankt zufällig'], c:2, ex:'Je höher, desto weniger Luft liegt darüber – der Luftdruck nimmt ab. Auf dem Mount Everest ist es nur noch etwa ein Drittel.' },
+    { q:'In welche Richtung strömt die Luft als Wind?', a:['Vom Tief zum Hoch','Vom Hoch zum Tief','Immer von Westen nach Osten','Immer vom Meer zum Land'], c:1, ex:'Wind ist eine Ausgleichsströmung: Luft strömt vom Hochdruckgebiet zum Tiefdruckgebiet.' },
+    { q:'Ein Südwind …', a:['weht nach Süden','kommt aus Süden und weht nach Norden','weht nur auf der Südhalbkugel','kommt aus Norden'], c:1, ex:'Die Windrichtung gibt immer die Herkunft an: Ein Südwind kommt aus Süden.' },
+    { q:'Was bedeutet Windstärke 12 auf der Beaufort-Skala?', a:['Windstille','Frische Brise','Orkan ab 118 km/h','Leichter Sturm mit 50 km/h'], c:2, ex:'Stärke 12 ist ein Orkan (ab 118 km/h) mit schwersten Verwüstungen.' },
+    { q:'Warum weht tagsüber an der Küste der Seewind?', a:['Weil das Meer wärmer ist als das Land','Weil sich das Land stärker erwärmt, dort Luft aufsteigt und am Boden ein Tief entsteht','Weil Schiffe Wind erzeugen','Weil nachts die Sonne nicht scheint'], c:1, ex:'Das Land wird schneller warm. Warme Luft steigt auf, am Boden entsteht über dem Land ein Tief, über dem Meer ein Hoch. Der Wind weht vom Meer zum Land.' },
+    { q:'Wann weht der Landwind?', a:['Tagsüber vom Meer zum Land','Nachts vom Land aufs Meer','Nur im Winter','Nur bei Sturm'], c:1, ex:'Nachts kühlt das Land schneller ab als das Wasser. Jetzt liegt das Hoch über dem Land und der Wind weht aufs Meer.' },
+    { q:'Wann entsteht der Flurwind besonders deutlich?', a:['Bei Sturm aus Westen','Bei ruhigem, sonnigem Hochdruckwetter, vor allem abends und nachts','Nur bei Regen','Nur im Winter bei Schnee'], c:1, ex:'Die Stadt (Asphalt, Beton) bleibt wärmer als das Umland. Über ihr steigt Luft auf, am Boden strömt kühle Luft vom Umland in die Stadt.' },
+    { q:'Wo steigt im Passatkreislauf die Luft auf?', a:['Bei den Wendekreisen','Am Äquator bzw. dort, wo die Sonne im Zenit steht','An den Polen','Über den Wüsten'], c:1, ex:'Wo die Sonne im Zenit steht, wird die Luft am stärksten erwärmt und steigt auf. Das bringt den Zenitalregen.' },
+    { q:'Warum liegen viele Wüsten im Bereich der Wendekreise?', a:['Weil dort die Sonne nie scheint','Weil dort Luft absinkt, sich erwärmt und Wolken sich auflösen','Weil dort der Passat Regen bringt','Weil dort das Meer fehlt'], c:1, ex:'Im subtropischen Hochdruckgürtel sinkt Luft ab. Absinkende Luft erwärmt sich und wird trockener – es regnet kaum.' },
+    { q:'Warum heißt der Passat auf der Nordhalbkugel „Nordostpassat"?', a:['Weil er nach Nordosten weht','Weil er durch die Erddrehung nach rechts abgelenkt wird und deshalb aus Nordosten kommt','Weil er nur im Nordosten Afrikas weht','Weil er im Herbst weht'], c:1, ex:'Ohne Erddrehung käme er aus Norden. Die Ablenkung nach rechts lässt ihn aus Nordosten wehen – und Winde werden nach ihrer Herkunft benannt.' },
+    { q:'Was ist die ITC?', a:['Ein Hochdruckgebiet über der Sahara','Die Zone, in der Nordost- und Südostpassat zusammentreffen','Ein Messgerät für Wind','Die Grenze zwischen Land und Meer'], c:1, ex:'Innertropische Konvergenzzone: Hier treffen die Passate aufeinander, die Luft steigt auf, es regnet viel. Sie wandert mit dem Zenitstand der Sonne.' },
+    { q:'„Passat" kommt vom italienischen „passata" (Überfahrt). Warum?', a:['Weil er nur über Flüsse weht','Weil Segelschiffe den beständigen Wind für die Überfahrt über den Atlantik nutzten','Weil er schnell vorbeizieht','Weil er nur einmal im Jahr weht'], c:1, ex:'Der Passat weht das ganze Jahr aus der gleichen Richtung – ideal für Segelschiffe auf der Überfahrt nach Amerika.' },
+    { q:'Welche Aussage steht am Anfang des Passatkreislaufs?', a:['Die Luft sinkt an den Wendekreisen ab','Durch die hohe Sonneneinstrahlung steigen Luftmassen auf und kühlen sich ab','In 10–12 km Höhe entstehen Hochdruckgebiete','Die Zone der Tiefdruckgebiete verschiebt sich'], c:1, ex:'Reihenfolge: Aufsteigen und Wolkenbildung → Zenitalregen → Hoch in der Höhe, Höhenwind → Absinken an den Wendekreisen → Wanderung im Laufe des Jahres.' },
+    { q:'Wo liegt die ITC ungefähr am 21. Juni?', a:['Am südlichen Wendekreis','Nördlich des Äquators','Genau am Südpol','Sie verschwindet im Sommer'], c:1, ex:'Die ITC wandert mit dem Zenitstand der Sonne. Am 21. Juni steht die Sonne über dem nördlichen Wendekreis, die ITC liegt deshalb nördlich des Äquators.' },
+    { q:'Wann ist in Timbuktu (17° N) Regenzeit?', a:['Dezember bis Februar','Juni bis September','Das ganze Jahr','Nie'], c:1, ex:'Nur im Nordsommer erreicht die ITC Timbuktu. Den Rest des Jahres weht der trockene Nordostpassat.' },
+    { q:'Was bedeutet „wechselfeucht"?', a:['Es regnet jeden Tag','Regenzeit und Trockenzeit wechseln sich ab','Es ist immer trocken','Tag und Nacht wechseln sich ab'], c:1, ex:'Wechselfeucht ist typisch für die Savanne. Je näher am Äquator, desto länger die Regenzeit.' }
+  ];
+
+  $('heroQuizCount').textContent = quizData.length; $('quizTotal').textContent = quizData.length;
+  var qi = 0, score = 0;
+  function loadQuestion(){
+    var item = quizData[qi];
+    $('quizCount').textContent = 'Frage '+(qi+1)+' von '+quizData.length;
+    $('quizBar').style.width = (qi/quizData.length*100)+'%';
+    $('quizQuestion').textContent = item.q;
+    $('quizExplain').style.display = 'none'; $('quizNext').style.display = 'none';
+    $('quizOptions').innerHTML = item.a.map(function(o, i){ return '<button class="quiz-opt" data-i="'+i+'">'+o+'</button>'; }).join('');
+  }
+  $('quizOptions').addEventListener('click', function(e){
+    var b = e.target.closest('.quiz-opt'); if(!b || b.disabled) return;
+    var item = quizData[qi], all = $('quizOptions').querySelectorAll('.quiz-opt');
+    all.forEach(function(x){ x.disabled = true; });
+    all[item.c].classList.add('correct');
+    if(+b.dataset.i !== item.c) b.classList.add('wrong'); else score++;
+    $('quizExplain').textContent = item.ex; $('quizExplain').style.display = 'block';
+    $('quizNext').style.display = 'inline-block';
+    $('quizNext').textContent = qi === quizData.length-1 ? 'Ergebnis anzeigen →' : 'Nächste Frage →';
+  });
+  $('quizNext').addEventListener('click', function(){
+    qi++;
+    if(qi >= quizData.length){
+      $('quizBar').style.width = '100%'; $('quizPlay').style.display = 'none'; $('quizResult').style.display = 'block';
+      $('quizScore').textContent = score+'/'+quizData.length;
+      $('quizMsg').textContent = score === quizData.length ? '🏆 Perfekt! Du bist bereit für die Arbeit.' : score >= quizData.length*0.7 ? '👍 Stark! Nur ein paar Kleinigkeiten fehlen noch.' : score >= quizData.length*0.4 ? '📚 Guter Start – schau dir die Kapitel oben nochmal an.' : '🔁 Kein Problem – lies die Abschnitte nochmal in Ruhe und versuch es erneut!';
+    } else loadQuestion();
+  });
+  $('quizRestart').addEventListener('click', function(){ qi = 0; score = 0; $('quizPlay').style.display = 'block'; $('quizResult').style.display = 'none'; loadQuestion(); });
+  loadQuestion();
+})();
+</script>
+</body>
+</html>
