@@ -1214,7 +1214,7 @@
       var cw = canvas.clientWidth || 600;
       g.dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(cw*g.dpr); canvas.height = Math.round(cw*aspect*g.dpr);
-      g.w = canvas.width; g.h = canvas.height; g.u = g.w/600; g.fu = Math.max(g.u, 0.85*g.dpr);
+      g.w = canvas.width; g.h = canvas.height; g.u = g.w/600; g.fu = g.u;
       g.R = Math.min(g.w, g.h)*0.42; g.cx = g.w/2; g.cy = g.h/2; g.dirty = true;
     };
     g.proj = function(lat, lon){
