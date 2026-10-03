@@ -1471,20 +1471,25 @@
     });
     ctx.restore();
     g.drawShade();
-    /* sun with parallel rays hitting the zenith line */
-    var sx = g.cx - g.R - 40*u, sy = 44*u;
-    var tgt = [-48, -32, -16].map(function(o){ return g.proj(z, L+o); });
-    ctx.strokeStyle = 'rgba(255,212,59,.75)'; ctx.lineWidth = 2*u; ctx.setLineDash([7*u, 5*u]);
-    tgt.forEach(function(t){ if(t.z < 0) return; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(t.x, t.y); ctx.stroke(); });
-    ctx.setLineDash([]);
+    /* sun at the height of the zenith latitude: its rays hit the globe there vertically */
+    var hit = g.proj(z, L-90), sy = hit.y, sx = Math.max(24*u, g.cx - g.R - 70*u);
+    ctx.strokeStyle = 'rgba(255,212,59,.85)'; ctx.lineWidth = 2.4*u; ctx.lineCap = 'round';
+    [-14, 0, 14].forEach(function(d){
+      var yy = sy + d*u, dy = yy - g.cy, ex = d === 0 ? hit.x : g.cx - Math.sqrt(Math.max(0, g.R*g.R - dy*dy));
+      ctx.beginPath(); ctx.moveTo(sx + 20*u, yy); ctx.lineTo(ex - 4*u, yy); ctx.stroke();
+      g.arrowHead(ex - 2*u, yy, 0, 10, 'rgba(255,212,59,.95)');
+    });
     var sg = ctx.createRadialGradient(sx, sy, 4*u, sx, sy, 34*u);
     sg.addColorStop(0, 'rgba(255,230,120,.9)'); sg.addColorStop(1, 'rgba(255,200,60,0)');
     ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(sx, sy, 34*u, 0, 2*Math.PI); ctx.fill();
     ctx.fillStyle = '#FFD43B'; ctx.beginPath(); ctx.arc(sx, sy, 15*u, 0, 2*Math.PI); ctx.fill();
-    var zl = g.proj(z, L+52);
-    if(zl.z > 0) g.text('Zenitstand der Sonne', zl.x + 8*u, zl.y - 12*u, 12.5, '#FFD43B', 'left');
-    var bl = g.proj(it, L+62);
-    if(bl.z > 0) g.text('Regenzone (ITC)', bl.x + 6*u, bl.y + 26*u, 12.5, '#BFD8FF', 'left');
+    ctx.beginPath(); ctx.arc(hit.x, hit.y, 5*u, 0, 2*Math.PI); ctx.fillStyle = '#FFD43B'; ctx.fill();
+    /* legend */
+    var lx = 12*u, ly = g.h - 18*u, sw = 22*u;
+    ctx.fillStyle = 'rgba(70,140,255,.75)'; ctx.fillRect(lx, ly - 7*u, sw, 14*u);
+    g.text('Regenzone (ITC)', lx + sw + 6*u, ly, 12, '#BFD8FF', 'left');
+    ctx.fillStyle = '#FFC23A'; ctx.fillRect(lx, ly - 28*u, sw, 4*u);
+    g.text('Zenitstand der Sonne', lx + sw + 6*u, ly - 26*u, 12, '#FFD43B', 'left');
     /* places */
     places.forEach(function(p, i){
       var q = g.proj(p.lat, p.lon); if(q.z < 0.05) return;
@@ -1494,9 +1499,8 @@
       ctx.lineWidth = 3*u; ctx.strokeStyle = '#fff'; ctx.stroke();
       g.text('ABC'[i]+' '+p.short, q.x + 13*u, q.y, 12.5, '#fff', 'left');
     });
-    var x0 = g.cx - g.R - 8*u;
     [[23.5, 'Nördl. Wendekreis', '#FFE2A0'], [0, 'Äquator', '#FF9C80'], [-23.5, 'Südl. Wendekreis', '#FFE2A0']].forEach(function(l){
-      var q = g.proj(l[0], L-90); ctx.font = g.font(11.5, 700); g.text(l[1], Math.max(Math.min(x0, q.x - 6*u), ctx.measureText(l[1]).width + 6*u), q.y, 11.5, l[2], 'right', 700);
+      var q = g.proj(l[0], L+90); g.text(l[1], Math.max(g.cx + g.R + 8*u, q.x + 6*u), q.y, 11.5, l[2], 'left', 700);
     });
     g.text(monthNames[m]+' · Sonne im Zenit über '+latTxt(z), g.w - 12*u, 18*u, 13, '#fff', 'right');
     g.dirty = false;
