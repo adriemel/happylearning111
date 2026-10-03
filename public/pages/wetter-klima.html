@@ -780,8 +780,8 @@
         <a href="#wetter-klima">⚖️ Wetter/Klima</a>
         <a href="#klimadiagramm">📊 Klimadiagramm</a>
         <a href="#meer-land">🌊 Meer &amp; Land</a>
-        <a href="#klimafaktoren">➕ Zusatzwissen</a>
         <a href="#quiz">❓ Quiz</a>
+        <a href="#regen">➕ Zusatzwissen</a>
         <a href="wind-passat.html">💨 Winde &amp; Passat →</a>
       </nav>
     </div>
@@ -1099,7 +1099,7 @@
         <div class="exp-wrap">
           <div>
             <h3 style="font-size:1.3rem;">Experiment: Taschenlampe &amp; Einfallswinkel</h3>
-            <p>Wie im Buch (M5): Halte eine Taschenlampe senkrecht, dann immer schräger über Kästchenpapier. Die Lampe gibt immer <strong>gleich viel Licht</strong> ab &ndash; aber es verteilt sich auf unterschiedlich viele Kästchen. Probiere es mit dem Regler aus:</p>
+            <p>Wie im Schulbuch: Halte eine Taschenlampe senkrecht, dann immer schräger über Kästchenpapier. Die Lampe gibt immer <strong>gleich viel Licht</strong> ab &ndash; aber es verteilt sich auf unterschiedlich viele Kästchen. Probiere es mit dem Regler aus:</p>
             <svg class="exp-svg" id="expSvg" viewBox="0 0 420 290" role="img" aria-label="Taschenlampe beleuchtet Kästchenpapier unter verschiedenen Winkeln"></svg>
           </div>
           <div class="card exp-controls">
@@ -1117,7 +1117,7 @@
             <p id="expText" style="font-size:.88rem; margin:10px 0 0;"></p>
           </div>
         </div>
-        <div class="note-box">💡 <strong>Zwei Gründe, warum flache Strahlen weniger wärmen</strong> (Buch M4): Sie <strong>verteilen sich auf eine größere Fläche</strong> und sie haben einen <strong>längeren Weg durch die Atmosphäre</strong>, auf dem mehr Strahlung reflektiert und absorbiert wird. Am Äquator treffen die Strahlen steil auf, am Polarkreis (66,5°) flach.</div>
+        <div class="note-box">💡 <strong>Zwei Gründe, warum flache Strahlen weniger wärmen</strong>: Sie <strong>verteilen sich auf eine größere Fläche</strong> und sie haben einen <strong>längeren Weg durch die Atmosphäre</strong>, auf dem mehr Strahlung reflektiert und absorbiert wird. Am Äquator treffen die Strahlen steil auf, am Polarkreis (66,5°) flach.</div>
 
         <!-- Fachwortschatz -->
         <div class="section-head" style="margin:48px 0 0;">
@@ -1158,86 +1158,6 @@
           </div>
         </div>
         <div class="instr-grid" id="instrGrid"><!-- filled by JS --></div>
-
-        <details class="zusatz">
-          <summary>➕ Zusatzwissen: Wie entsteht Regen? Der Weg eines Wassertröpfchens <span>nicht auf der Themenliste</span></summary>
-        <div class="section-head" style="margin-top:16px;">
-          <p>Niederschlag beginnt immer mit Verdunstung. Klicke die Nummern 1&ndash;7 der Reihe nach durch:</p>
-        </div>
-        <div class="card cycle-wrap">
-          <svg viewBox="0 0 320 380" style="width:100%; height:auto;" id="cycleSvg" role="img" aria-label="Wasserkreislauf und Wolkenbildung">
-            <!-- ground + lake -->
-            <rect x="0" y="330" width="320" height="50" fill="var(--moss-tint)"></rect>
-            <ellipse cx="150" cy="352" rx="128" ry="21" fill="var(--sky)"></ellipse>
-            <ellipse cx="150" cy="347" rx="128" ry="10" fill="#fff" opacity=".18"></ellipse>
-
-            <!-- sun with static rays -->
-            <g stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round">
-              <line x1="48" y1="10" x2="48" y2="20"></line>
-              <line x1="48" y1="66" x2="48" y2="76"></line>
-              <line x1="16" y1="43" x2="26" y2="43"></line>
-              <line x1="70" y1="43" x2="80" y2="43"></line>
-              <line x1="24" y1="19" x2="31" y2="26"></line>
-              <line x1="65" y1="60" x2="72" y2="67"></line>
-              <line x1="72" y1="19" x2="65" y2="26"></line>
-              <line x1="31" y1="60" x2="24" y2="67"></line>
-            </g>
-            <circle cx="48" cy="43" r="17" fill="var(--amber)"></circle>
-
-            <!-- rays hitting the lake -->
-            <g stroke="var(--amber)" stroke-width="2" opacity=".8">
-              <line x1="34" y1="58" x2="82" y2="330"></line>
-              <line x1="48" y1="62" x2="116" y2="332"></line>
-              <line x1="62" y1="58" x2="150" y2="328"></line>
-            </g>
-
-            <!-- rising evaporation arrows -->
-            <line x1="140" y1="328" x2="140" y2="178" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#arrow)"></line>
-            <line x1="176" y1="328" x2="176" y2="170" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#arrow)"></line>
-            <g fill="var(--sky)" opacity=".55">
-              <circle class="vapour" cx="130" cy="300" r="3"></circle>
-              <circle class="vapour" cx="150" cy="280" r="3" style="animation-delay:.25s"></circle>
-              <circle class="vapour" cx="185" cy="260" r="3" style="animation-delay:.5s"></circle>
-              <circle class="vapour" cx="132" cy="230" r="3" style="animation-delay:.75s"></circle>
-              <circle class="vapour" cx="168" cy="205" r="3" style="animation-delay:1s"></circle>
-            </g>
-
-            <!-- Kondensationsniveau -->
-            <line x1="0" y1="175" x2="320" y2="175" stroke="var(--sky)" stroke-width="1.5" stroke-dasharray="4 4"></line>
-            <text x="4" y="169" font-size="10" fill="var(--ink-faint)" font-family="IBM Plex Mono, monospace">Kondensationsniveau</text>
-
-            <!-- cloud -->
-            <g fill="var(--ink-faint)">
-              <rect x="82" y="118" width="150" height="36" rx="18" opacity=".6"></rect>
-              <circle cx="106" cy="110" r="26" opacity=".55"></circle>
-              <circle cx="145" cy="94" r="34" opacity=".62"></circle>
-              <circle cx="188" cy="100" r="30" opacity=".58"></circle>
-              <circle cx="220" cy="114" r="22" opacity=".55"></circle>
-            </g>
-
-            <!-- rain -->
-            <g stroke="var(--sky)" stroke-width="2.5" stroke-linecap="round" opacity=".75">
-              <line class="rainDrop" x1="195" y1="158" x2="186" y2="182"></line>
-              <line class="rainDrop" x1="214" y1="160" x2="204" y2="188"></line>
-              <line class="rainDrop" x1="233" y1="158" x2="224" y2="182"></line>
-              <line class="rainDrop" x1="204" y1="196" x2="196" y2="220"></line>
-              <line class="rainDrop" x1="223" y1="198" x2="215" y2="224"></line>
-            </g>
-            <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)" font-weight="700">
-              <text x="38" y="348">See</text>
-              <text x="204" y="80">Wolke</text>
-              <text x="214" y="237">Niederschlag</text>
-              <text x="84" y="246">Verdunstung</text>
-            </g>
-
-            <defs>
-              <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-faint)"></path></marker>
-            </defs>
-            <g id="hotDots"></g>
-          </svg>
-          <div class="cycle-info card" id="cycleInfo"><!-- filled by JS --></div>
-        </div>
-        </details>
       </div>
     </section>
 
@@ -1301,7 +1221,7 @@
           <div id="klimaTooltip">Fahre mit der Maus über einen Monat oder tippe ihn an.</div>
         </div>
         <p id="sourceNote" style="margin-top:10px; font-size:.78rem; color:var(--ink-faint);"></p>
-        <div class="warn-box" id="rioNote" style="display:none;">⚠️ <strong>Fehler in der Buch-Tabelle (M6):</strong> Rio de Janeiro liegt auf der <strong>Südhalbkugel</strong> (23° S). Dort ist von Dezember bis Februar <strong>Sommer</strong> und im Juli <strong>Winter</strong>. In der Buchtabelle liegen das Temperaturmaximum und der meiste Regen aber im Juli/August &ndash; die Werte sind um ein halbes Jahr verrutscht. Hier sind sie deshalb richtig herum angeordnet (Januar im Buch = Juli hier usw.). Echte Messungen bestätigen das: Rio ist im Februar am wärmsten und im Juli am kühlsten. <br><strong>Merke:</strong> Auf der Südhalbkugel sind die Jahreszeiten genau umgekehrt wie bei uns!</div>
+        <div class="warn-box" id="rioNote" style="display:none;">⚠️ <strong>Fehler in der Buch-Tabelle:</strong> Rio de Janeiro liegt auf der <strong>Südhalbkugel</strong> (23° S). Dort ist von Dezember bis Februar <strong>Sommer</strong> und im Juli <strong>Winter</strong>. In der Buchtabelle liegen das Temperaturmaximum und der meiste Regen aber im Juli/August &ndash; die Werte sind um ein halbes Jahr verrutscht. Hier sind sie deshalb richtig herum angeordnet (Januar im Buch = Juli hier usw.). Echte Messungen bestätigen das: Rio ist im Februar am wärmsten und im Juli am kühlsten. <br><strong>Merke:</strong> Auf der Südhalbkugel sind die Jahreszeiten genau umgekehrt wie bei uns!</div>
         <p id="nairobiNote" style="margin-top:10px; font-size:.88rem; display:none;">🤔 <strong>Auffällig bei Nairobi:</strong> Es gibt <strong>zwei Regenzeiten</strong> (März&ndash;Mai und Oktober&ndash;Dezember) und dazwischen trockene (aride) Monate. Das ist kein Fehler: Nairobi liegt nur rund 1° südlich des Äquators, wo die Sonne <strong>zweimal im Jahr</strong> im Zenit steht. Jedes Mal zieht danach die Regenzone (ITC) über die Stadt &ndash; mehr dazu auf der Seite <a href="wind-passat.html#passat">Winde &amp; Passat</a>. Die Temperatur bleibt wegen der hohen Lage (fast 1800 m) das ganze Jahr angenehm mild.</p>
         <p id="suedpolNote" style="margin-top:10px; font-size:.88rem; display:none;">🤔 <strong>Auffällig am Südpol:</strong> Die Säulen sind winzig (2 mm im ganzen Jahr!), liegen aber trotzdem über der Temperaturkurve, weil die Temperatur immer weit unter 0&nbsp;°C ist. Formal ist jeder Monat also „humid" &ndash; trotzdem ist der Südpol eine <strong>Kältewüste</strong>: kaum Niederschlag, Dauerfrost, keine Vegetationsperiode. Und: Der wärmste Monat ist der Dezember, denn dort ist dann Sommer.</p>
 
@@ -1387,7 +1307,7 @@
               <div class="gauge-lbl"><span>maritim</span><span>kontinental</span></div>
             </div>
           </div>
-          <p style="font-size:.74rem; color:var(--ink-faint); margin:12px 0 0;">Hannover: Werte aus dem Buch (M6). Andere Orte: gerundete Richtwerte langjähriger Mittel.</p>
+          <p style="font-size:.74rem; color:var(--ink-faint); margin:12px 0 0;">Hannover: Werte aus dem Schulbuch. Andere Orte: gerundete Richtwerte langjähriger Mittel.</p>
         </div>
 
         <!-- Meeresströmungen -->
@@ -1452,6 +1372,121 @@
       </div>
     </section>
 
+    <!-- ============ QUIZ ============ -->
+    <section class="section" id="quiz">
+      <div class="wrap">
+        <div class="section-head" style="text-align:center; margin:0 auto 30px;">
+          <span class="eyebrow">Zum Schluss</span>
+          <h2>Teste dein Wissen</h2>
+          <p style="margin:0 auto;"><span id="quizTotal">17</span> Fragen zu allem, was du oben gelesen hast.</p>
+        </div>
+        <div class="card quiz-card">
+          <div id="quizPlay">
+            <span class="quiz-count" id="quizCount">Frage 1 von 8</span>
+            <div class="quiz-progress"><div class="quiz-progress-bar" id="quizBar"></div></div>
+            <h3 id="quizQuestion"></h3>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-explain" id="quizExplain"></div>
+            <button class="quiz-next" id="quizNext">Nächste Frage →</button>
+          </div>
+          <div class="quiz-result" id="quizResult">
+            <div class="score" id="quizScore">0</div>
+            <p id="quizMsg" style="max-width:none;"></p>
+            <button class="quiz-restart" id="quizRestart">Nochmal versuchen</button>
+          </div>
+        </div>
+        <div class="next-page">
+          <div><strong style="font-size:1.1rem;">💨 Weiter mit Teil 2: Winde &amp; Passat</strong><p>Luftdruck, Land- und Seewind, Flurwind, Beaufort-Skala und der Passatkreislauf.</p></div>
+          <a href="wind-passat.html">Zu den Winden →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ZUSATZ: REGEN ============ -->
+    <section class="section alt" id="regen">
+      <div class="wrap">
+        <details class="zusatz">
+          <summary>➕ Zusatzwissen: Wie entsteht Regen? Der Weg eines Wassertröpfchens <span>nicht auf der Themenliste</span></summary>
+        <div class="section-head" style="margin-top:16px;">
+          <p>Niederschlag beginnt immer mit Verdunstung. Klicke die Nummern 1&ndash;7 der Reihe nach durch:</p>
+        </div>
+        <div class="card cycle-wrap">
+          <svg viewBox="0 0 320 380" style="width:100%; height:auto;" id="cycleSvg" role="img" aria-label="Wasserkreislauf und Wolkenbildung">
+            <!-- ground + lake -->
+            <rect x="0" y="330" width="320" height="50" fill="var(--moss-tint)"></rect>
+            <ellipse cx="150" cy="352" rx="128" ry="21" fill="var(--sky)"></ellipse>
+            <ellipse cx="150" cy="347" rx="128" ry="10" fill="#fff" opacity=".18"></ellipse>
+
+            <!-- sun with static rays -->
+            <g stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round">
+              <line x1="48" y1="10" x2="48" y2="20"></line>
+              <line x1="48" y1="66" x2="48" y2="76"></line>
+              <line x1="16" y1="43" x2="26" y2="43"></line>
+              <line x1="70" y1="43" x2="80" y2="43"></line>
+              <line x1="24" y1="19" x2="31" y2="26"></line>
+              <line x1="65" y1="60" x2="72" y2="67"></line>
+              <line x1="72" y1="19" x2="65" y2="26"></line>
+              <line x1="31" y1="60" x2="24" y2="67"></line>
+            </g>
+            <circle cx="48" cy="43" r="17" fill="var(--amber)"></circle>
+
+            <!-- rays hitting the lake -->
+            <g stroke="var(--amber)" stroke-width="2" opacity=".8">
+              <line x1="34" y1="58" x2="82" y2="330"></line>
+              <line x1="48" y1="62" x2="116" y2="332"></line>
+              <line x1="62" y1="58" x2="150" y2="328"></line>
+            </g>
+
+            <!-- rising evaporation arrows -->
+            <line x1="140" y1="328" x2="140" y2="178" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#arrow)"></line>
+            <line x1="176" y1="328" x2="176" y2="170" stroke="var(--ink-faint)" stroke-width="2" marker-end="url(#arrow)"></line>
+            <g fill="var(--sky)" opacity=".55">
+              <circle class="vapour" cx="130" cy="300" r="3"></circle>
+              <circle class="vapour" cx="150" cy="280" r="3" style="animation-delay:.25s"></circle>
+              <circle class="vapour" cx="185" cy="260" r="3" style="animation-delay:.5s"></circle>
+              <circle class="vapour" cx="132" cy="230" r="3" style="animation-delay:.75s"></circle>
+              <circle class="vapour" cx="168" cy="205" r="3" style="animation-delay:1s"></circle>
+            </g>
+
+            <!-- Kondensationsniveau -->
+            <line x1="0" y1="175" x2="320" y2="175" stroke="var(--sky)" stroke-width="1.5" stroke-dasharray="4 4"></line>
+            <text x="4" y="169" font-size="10" fill="var(--ink-faint)" font-family="IBM Plex Mono, monospace">Kondensationsniveau</text>
+
+            <!-- cloud -->
+            <g fill="var(--ink-faint)">
+              <rect x="82" y="118" width="150" height="36" rx="18" opacity=".6"></rect>
+              <circle cx="106" cy="110" r="26" opacity=".55"></circle>
+              <circle cx="145" cy="94" r="34" opacity=".62"></circle>
+              <circle cx="188" cy="100" r="30" opacity=".58"></circle>
+              <circle cx="220" cy="114" r="22" opacity=".55"></circle>
+            </g>
+
+            <!-- rain -->
+            <g stroke="var(--sky)" stroke-width="2.5" stroke-linecap="round" opacity=".75">
+              <line class="rainDrop" x1="195" y1="158" x2="186" y2="182"></line>
+              <line class="rainDrop" x1="214" y1="160" x2="204" y2="188"></line>
+              <line class="rainDrop" x1="233" y1="158" x2="224" y2="182"></line>
+              <line class="rainDrop" x1="204" y1="196" x2="196" y2="220"></line>
+              <line class="rainDrop" x1="223" y1="198" x2="215" y2="224"></line>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)" font-weight="700">
+              <text x="38" y="348">See</text>
+              <text x="204" y="80">Wolke</text>
+              <text x="214" y="237">Niederschlag</text>
+              <text x="84" y="246">Verdunstung</text>
+            </g>
+
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-faint)"></path></marker>
+            </defs>
+            <g id="hotDots"></g>
+          </svg>
+          <div class="cycle-info card" id="cycleInfo"><!-- filled by JS --></div>
+        </div>
+        </details>
+      </div>
+    </section>
+
     <!-- ============ ZUSATZ: KLIMAFAKTOREN ============ -->
     <section class="section" id="klimafaktoren">
       <div class="wrap">
@@ -1495,35 +1530,6 @@
       </div>
     </section>
 
-    <!-- ============ QUIZ ============ -->
-    <section class="section" id="quiz">
-      <div class="wrap">
-        <div class="section-head" style="text-align:center; margin:0 auto 30px;">
-          <span class="eyebrow">Zum Schluss</span>
-          <h2>Teste dein Wissen</h2>
-          <p style="margin:0 auto;"><span id="quizTotal">17</span> Fragen zu allem, was du oben gelesen hast.</p>
-        </div>
-        <div class="card quiz-card">
-          <div id="quizPlay">
-            <span class="quiz-count" id="quizCount">Frage 1 von 8</span>
-            <div class="quiz-progress"><div class="quiz-progress-bar" id="quizBar"></div></div>
-            <h3 id="quizQuestion"></h3>
-            <div class="quiz-options" id="quizOptions"></div>
-            <div class="quiz-explain" id="quizExplain"></div>
-            <button class="quiz-next" id="quizNext">Nächste Frage →</button>
-          </div>
-          <div class="quiz-result" id="quizResult">
-            <div class="score" id="quizScore">0</div>
-            <p id="quizMsg" style="max-width:none;"></p>
-            <button class="quiz-restart" id="quizRestart">Nochmal versuchen</button>
-          </div>
-        </div>
-        <div class="next-page">
-          <div><strong style="font-size:1.1rem;">💨 Weiter mit Teil 2: Winde &amp; Passat</strong><p>Luftdruck, Land- und Seewind, Flurwind, Beaufort-Skala und der Passatkreislauf.</p></div>
-          <a href="wind-passat.html">Zu den Winden →</a>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer>Erstellt zum Erdkunde-Kapitel „Wetter und Klima" &middot; Klasse 7, Gymnasium Niedersachsen</footer>
@@ -1908,19 +1914,19 @@
   var cities = {
     hannover: {
       name:'Hannover', state:'Deutschland', height:'53 m ü. M.', coord:'52° N / 9° O',
-      source:'Werte aus dem Buch (M6).',
+      source:'Werte aus dem Schulbuch.',
       months:M([0.1,0.5,3.6,8.1,12.6,15.8,17.4,17.0,13.8,9.1,5.1,1.8],[48,46,38,48,52,64,84,73,54,56,52,46]),
       core:'Gemäßigtes, ganzjährig feuchtes (humides) Klima: milde Winter um 0 °C, mäßig warme Sommer, Niederschlag über das ganze Jahr verteilt mit Maximum im Sommer. Die Vegetationsperiode dauert von April bis November &ndash; gute Bedingungen für die Landwirtschaft.'
     },
     rio: {
       name:'Rio de Janeiro', state:'Brasilien', height:'53 m ü. M.', coord:'23° S / 42° W',
-      source:'Werte aus dem Buch (M6), aber um ein halbes Jahr verschoben, damit der Sommer richtig im Dezember&ndash;Februar liegt (siehe Hinweis unten). Jahresmittel und Jahressumme bleiben gleich.',
+      source:'Werte aus dem Schulbuch, aber um ein halbes Jahr verschoben, damit der Sommer richtig im Dezember&ndash;Februar liegt (siehe Hinweis unten). Jahresmittel und Jahressumme bleiben gleich.',
       months:M([25.1,25.6,24.3,23.6,22.1,21.1,20.2,20.8,21.0,21.8,22.9,22.4],[157,125,134,102,63,56,51,40,63,80,92,130]),
       core:'Ganzjährig warmes Klima (immer über 20 °C) mit kleiner Jahrestemperaturamplitude. Am wärmsten und regenreichsten ist es im Südsommer (Dezember bis März), im Südwinter (Juli/August) ist es etwas kühler und trockener. Fast alle Monate sind humid. Typisch für die Randtropen am südlichen Wendekreis.'
     },
     suedpol: {
       name:'Südpol (Amundsen-Scott-Station)', state:'Antarktis', height:'2800 m ü. M.', coord:'90° S',
-      source:'Werte aus dem Buch (M6).',
+      source:'Werte aus dem Schulbuch.',
       months:M([-28.8,-40.1,-54.5,-58.5,-57.4,-56.5,-59.2,-58.9,-59.0,-51.3,-38.9,-28.1],[0,0,0,0,0,0,1,1,0,0,0,0]),
       core:'Eisiges Polarklima: Dauerfrost das ganze Jahr, im Winter fast −60 °C. Fast kein Niederschlag (2 mm im Jahr) &ndash; der Südpol ist eine Kältewüste. Keine Vegetationsperiode, kein Pflanzenwachstum. Der wärmste Monat ist der Dezember (Sommer auf der Südhalbkugel).'
     },

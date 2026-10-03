@@ -125,6 +125,7 @@
   .two{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:22px; align-items:start; }
   .two.wide-left{ grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); }
   .scene{ display:block; width:100%; height:auto; border-radius:8px; }
+  .globe{ display:block; width:100%; height:auto; border-radius:8px; cursor:grab; touch-action:pan-y; background:#0B1626; }
   .note-box{ margin-top:18px; padding:12px 14px; border-radius:8px; background:var(--amber-tint); border:1px solid color-mix(in srgb, var(--amber) 40%, transparent); font-size:.9rem; color:var(--ink-soft); }
   .note-box strong{ color:var(--ink); }
   .merk{ margin:20px 0 0; padding:14px 16px; border-radius:8px; background:var(--teal-tint); border-left:5px solid var(--teal); color:var(--ink); font-weight:600; }
@@ -419,7 +420,7 @@
               <li><strong>Mit zunehmender Höhe nimmt der Luftdruck ab</strong>: Über dir liegt immer weniger Luft, die drückt, und die Luftteilchen liegen weiter auseinander. Auf dem Mount Everest ist es nur noch ungefähr ein Drittel.</li>
               <li>Ist der Luftdruck in einer Region höher als in der Umgebung, spricht man von einem <strong class="H">Hochdruckgebiet (H)</strong>, ist er niedriger, von einem <strong class="T">Tiefdruckgebiet (T)</strong>.</li>
             </ul>
-            <div class="note-box">✏️ <strong>Tipp für die Skizze (Aufgabe 2B):</strong> Zeichne eine hohe Säule. Unten viele Punkte dicht beieinander (hoher Druck), nach oben immer weniger und weiter auseinander (niedriger Druck). Schreibe 1013 hPa an den Boden.</div>
+            <div class="note-box">✏️ <strong>Tipp für die Skizze:</strong> Zeichne eine hohe Säule. Unten viele Punkte dicht beieinander (hoher Druck), nach oben immer weniger und weiter auseinander (niedriger Druck). Schreibe 1013 hPa an den Boden.</div>
           </div>
         </div>
 
@@ -467,7 +468,7 @@
           <input type="range" id="bftRange" min="0" max="12" value="0" step="1" aria-label="Windstärke nach Beaufort">
           <div class="bft-scale"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
           <svg id="bftSvg" viewBox="0 0 640 270" class="scene" style="margin-top:14px;" role="img" aria-label="Landschaft mit Haus, Baum, Windsack und See, die sich je nach Windstärke bewegen"></svg>
-          <p class="fine">Daten nach Buch M3 (Beaufort-Skala). Der Wind kommt in der Szene von links (Westwind).</p>
+          <p class="fine">Daten nach dem Schulbuch (Beaufort-Skala). Der Wind kommt in der Szene von links (Westwind).</p>
         </div>
       </div>
     </section>
@@ -487,12 +488,12 @@
         <div class="two wide-left">
           <div class="card" style="padding:10px;">
             <svg id="seaSvg" viewBox="0 0 640 340" class="scene" role="img" aria-label="Querschnitt Land und Meer mit Luftkreislauf"></svg>
-            <p class="fine">Temperaturen sind Beispielwerte (tagsüber wie im Buch M2).</p>
+            <p class="fine">Temperaturen sind Beispielwerte (tagsüber wie im Schulbuch).</p>
           </div>
           <div class="card" id="seaText"></div>
         </div>
 
-        <h3 class="sub-h">Aufgabe 3A: Bringe die Textstreifen in die richtige Reihenfolge</h3>
+        <h3 class="sub-h">Bringe die Textstreifen in die richtige Reihenfolge</h3>
         <p>Klicke die Streifen links in der Reihenfolge an, in der der Seewind entsteht. Sie wandern dann nach rechts. Ein Klick rechts schiebt einen Streifen zurück.</p>
         <div class="order-wrap">
           <div><div class="drop-label">Textstreifen</div><div class="strip-list" id="orderPool"></div></div>
@@ -513,14 +514,14 @@
         <div class="section-head">
           <span class="eyebrow">Kapitel 5</span>
           <h2>Der Flurwind (Land-Stadt-Wind)</h2>
-          <p>In großen Städten gibt es einen Wind, der nach dem gleichen Prinzip wie der Seewind funktioniert. Die „Wärmeinsel" ist hier aber nicht das Land, sondern die <strong>Stadt</strong>. Schau dir zuerst an, wie warm verschiedene Oberflächen an einem Hochsommertag werden (Buch M4):</p>
+          <p>In großen Städten gibt es einen Wind, der nach dem gleichen Prinzip wie der Seewind funktioniert. Die „Wärmeinsel" ist hier aber nicht das Land, sondern die <strong>Stadt</strong>. Schau dir zuerst an, wie warm verschiedene Oberflächen an einem Hochsommertag werden:</p>
         </div>
         <div class="two wide-left">
           <div class="card" style="padding:12px;">
             <svg id="surfSvg" viewBox="0 0 600 300" class="scene" role="img" aria-label="Tagesgang der Temperatur über Asphalt, Beton, Gras und Wald"></svg>
             <label for="surfHour" style="display:flex; justify-content:space-between; font-weight:700; font-size:.9rem; margin-top:6px;"><span>Uhrzeit</span><span class="mono" id="surfHourOut">14 Uhr</span></label>
             <input type="range" id="surfHour" min="0" max="24" value="14" step="1" style="width:100%; accent-color:var(--rust);">
-            <p class="fine">Werte schematisch nach Buch M4 (abgelesen und gerundet).</p>
+            <p class="fine">Werte schematisch nach dem Schulbuch (abgelesen und gerundet).</p>
           </div>
           <div class="card">
             <h3 style="font-size:1.1rem;">Was fällt auf?</h3>
@@ -529,7 +530,7 @@
           </div>
         </div>
 
-        <h3 class="sub-h">Aufgabe 4B: Trage H und T in die Skizze ein</h3>
+        <h3 class="sub-h">Trage H und T in die Skizze ein</h3>
         <p>Tippe auf die Kreise, um zwischen <span class="HT H">H</span>, <span class="HT T">T</span> und ? zu wechseln. Denk an den Seewind: Wo steigt warme Luft auf?</p>
         <div class="two wide-left">
           <div class="card" style="padding:10px;">
@@ -541,9 +542,9 @@
             </div>
           </div>
           <div class="card">
-            <h3 style="font-size:1.1rem;">Aufgabe 4A: Wann und warum entsteht der Flurwind?</h3>
+            <h3 style="font-size:1.1rem;">Wann und warum entsteht der Flurwind?</h3>
             <p style="font-size:.9rem;"><strong>Wann?</strong> Bei ruhigem, sonnigem Hochdruckwetter ohne starken „großen" Wind, vor allem im Sommer. Besonders deutlich am Abend und in der Nacht, wenn das Umland schon abkühlt, die Stadt aber noch warm ist.</p>
-            <p style="font-size:.9rem;"><strong>Warum?</strong> Asphalt, Beton und Dächer heizen sich stark auf (M4). Über der Stadt steigt warme Luft auf &rarr; am Boden entsteht ein <span class="T"><b>Tief</b></span>. Über den kühleren Wäldern und Feldern im Umland sinkt Luft ab &rarr; <span class="H"><b>Hoch</b></span>. Am Boden strömt deshalb kühle, frische Luft vom Umland in die Stadt: der Flurwind. In der Höhe fließt die Luft zurück.</p>
+            <p style="font-size:.9rem;"><strong>Warum?</strong> Asphalt, Beton und Dächer heizen sich stark auf. Über der Stadt steigt warme Luft auf &rarr; am Boden entsteht ein <span class="T"><b>Tief</b></span>. Über den kühleren Wäldern und Feldern im Umland sinkt Luft ab &rarr; <span class="H"><b>Hoch</b></span>. Am Boden strömt deshalb kühle, frische Luft vom Umland in die Stadt: der Flurwind. In der Höhe fließt die Luft zurück.</p>
             <div class="note-box" style="margin-top:0;">🌳 <strong>Darum wichtig:</strong> Der Flurwind bringt frische, kühle Luft in die Stadt. Städte halten deshalb „Frischluftschneisen" (z. B. Parks, Grünzüge) frei.</div>
           </div>
         </div>
@@ -563,10 +564,10 @@
             <h3 style="font-size:1.2rem;">Was ist der Passat?</h3>
             <p style="font-size:.94rem;">Als <strong>Passat</strong> bezeichnet man einen <strong>trockenen Wind</strong> in der tropischen Zone, der ungefähr zwischen dem nördlichen und dem südlichen Wendekreis über Ozeanen und Kontinenten weht. Er kommt <strong>immer aus der gleichen Richtung</strong> und weht <strong>das ganze Jahr</strong> über. Er weht von den Wendekreisen (Hochdruck) zum Äquator (Tiefdruck).</p>
           </div>
-          <div class="note-box" style="margin-top:0;">⛵ <strong>Warum heißt er „Passat"? (Aufgabe 2B)</strong><br>Das Wort kommt vom italienischen <em>passata</em> = <strong>Überfahrt</strong>. Weil der Passat so beständig immer aus derselben Richtung weht, konnten Segelschiffe sich auf ihn verlassen: Mit dem Nordostpassat segelten sie früher von Europa über den Atlantik nach Amerika &ndash; der Passat war der Wind für die Überfahrt.</div>
+          <div class="note-box" style="margin-top:0;">⛵ <strong>Warum heißt er „Passat"?</strong><br>Das Wort kommt vom italienischen <em>passata</em> = <strong>Überfahrt</strong>. Weil der Passat so beständig immer aus derselben Richtung weht, konnten Segelschiffe sich auf ihn verlassen: Mit dem Nordostpassat segelten sie früher von Europa über den Atlantik nach Amerika &ndash; der Passat war der Wind für die Überfahrt.</div>
         </div>
 
-        <h3 class="sub-h">Der Passatkreislauf (M3) &ndash; Schritt für Schritt</h3>
+        <h3 class="sub-h">Der Passatkreislauf &ndash; Schritt für Schritt</h3>
         <p>Wähle ein Datum und klicke dich durch die Schritte.</p>
         <div class="tool-row" style="margin:0 0 10px;" id="psDates">
           <button class="small-btn active" type="button" data-d="eq">20. März / 23. Sept.</button>
@@ -584,7 +585,7 @@
         </div>
         <div class="card step-box" id="psBox"></div>
 
-        <h3 class="sub-h">Aufgabe 3A: Die Aussagen aus M4 in der richtigen Reihenfolge</h3>
+        <h3 class="sub-h">Die Aussagen in der richtigen Reihenfolge</h3>
         <div class="merk" style="font-weight:500;">
           <ol style="margin:0; padding-left:22px; display:grid; gap:6px;">
             <li>Durch die hohe Sonneneinstrahlung steigen Luftmassen auf und kühlen sich mit zunehmender Höhe ab. Der Wasserdampf kondensiert und bildet Wolken.</li>
@@ -597,35 +598,28 @@
         </div>
 
         <h3 class="sub-h">Nordostpassat und Südostpassat</h3>
-        <div class="two">
+        <div class="two wide-left">
           <div class="card" style="padding:10px;">
-            <svg id="corSvg" viewBox="0 0 600 320" class="scene" role="img" aria-label="Draufsicht: Ablenkung der Passate durch die Erddrehung"></svg>
+            <canvas id="corGlobe" class="globe" role="img" aria-label="Globus mit Atlantik und Afrika: Die Passate wehen von den Wendekreisen zum Äquator und werden durch die Erddrehung nach Westen abgelenkt"></canvas>
+            <div class="tool-row" style="margin-top:10px;">
+              <button class="small-btn" type="button" id="corSpin">⏸ Erddrehung stoppen</button>
+            </div>
+            <p class="fine">Tipp: Zieh am Globus, um ihn selbst zu drehen.</p>
           </div>
           <div>
-            <p>Würde die Erde sich nicht drehen, würden die Passate genau von Norden und von Süden zum Äquator wehen (gestrichelt). Durch die <strong>Erdrotation</strong> wird der Wind aber <strong>nach Westen abgelenkt</strong>:</p>
+            <p>Würde die Erde sich nicht drehen, würden die Passate genau von Norden und von Süden zum Äquator wehen. <strong>Probier es aus:</strong> Stoppe die Erddrehung und schau, wie die Linien gerade werden.</p>
+            <p>Weil die Erde sich aber nach Osten dreht, wird der Wind <strong>nach Westen abgelenkt</strong>:</p>
             <ul style="color:var(--ink-soft); padding-left:20px;">
               <li>Auf der Nordhalbkugel entsteht so ein Nordostwind: der <strong>Nordostpassat</strong>.</li>
               <li>Auf der Südhalbkugel entsteht ein Südostwind: der <strong>Südostpassat</strong>.</li>
             </ul>
+            <p><strong>Warum?</strong> Am Äquator ist der Weg um die Erde am längsten. Der Boden dort saust mit rund 1670 km/h nach Osten, an den Wendekreisen nur mit rund 1530 km/h. Die Luft von den Wendekreisen ist also „zu langsam“: Der Boden dreht sich unter ihr nach Osten weg. Vom Boden aus gesehen bleibt sie zurück und weht schräg nach Westen.</p>
             <p>Die Zone, in der beide Passate zusammentreffen (lat. <em>convergere</em> = zusammenlaufen), heißt <strong>Innertropische Konvergenzzone (ITC)</strong>.</p>
             <p class="fine">Genauer: Auf der Nordhalbkugel wird der Wind in Bewegungsrichtung nach rechts, auf der Südhalbkugel nach links abgelenkt. Für beide Passate heißt das: nach Westen.</p>
           </div>
         </div>
 
-        <h3 class="sub-h">Aufgabe 3B: „Die Sonne lässt den Passatkreislauf wandern"</h3>
-        <p>Der Zenitstand der Sonne wandert im Laufe des Jahres zwischen den Wendekreisen. Die Zone der Tiefdruckgebiete (ITC) mit ihrem Regen wandert mit, etwa einen Monat später. Orte, die sonst trocken sind und im Passatwind liegen, bekommen dann für einige Monate Regen: <strong>Regenzeit</strong>. Schieb den Monat oder drück auf Abspielen:</p>
-        <div class="card">
-          <div class="tool-row" style="margin:0 0 8px;">
-            <button class="small-btn primary" type="button" id="itcPlay">▶ Abspielen</button>
-            <span class="mono" id="itcMonthOut" style="font-weight:700;">Januar</span>
-          </div>
-          <input type="range" id="itcMonth" min="0" max="11" value="0" step="1" aria-label="Monat">
-          <svg id="itcSvg" viewBox="0 0 640 290" class="scene" style="margin-top:8px;" role="img" aria-label="Wanderung von Zenitstand und Regenzone zwischen den Wendekreisen"></svg>
-          <div class="itc-places" id="itcPlaces"></div>
-          <p class="fine">Vereinfachtes Modell. Direkt am Äquator regnet es fast das ganze Jahr, weil die ITC nie weit weg ist.</p>
-        </div>
-
-        <h3 class="sub-h">Die Gliederung der Tropen (M1)</h3>
+        <h3 class="sub-h">Die Gliederung der Tropen</h3>
         <p>Vom nördlichen Wendekreis bis zum Äquator (rund 2600 km) wird es immer feuchter, weil die Regenzone (ITC) Orte nahe am Äquator länger erreicht. Tippe auf die Zonen A&ndash;E:</p>
         <div class="card">
           <div class="zone-strip" id="zoneStrip"></div>
@@ -635,22 +629,36 @@
         </div>
         <div class="merk">🧠 Arid oder humid? Das hängt davon ab, ob mehr Niederschlag fällt als verdunsten kann (humid) oder weniger (arid). Je mehr humide Monate, desto üppiger die Vegetation: Wüste → Savanne → Regenwald.</div>
 
-        <h3 class="sub-h">Aufgabe 4: Das „lebendige Klimadiagramm" von Timbuktu (M5)</h3>
+        <h3 class="sub-h">„Die Sonne lässt den Passatkreislauf wandern“</h3>
+        <p>Der Zenitstand der Sonne wandert im Laufe des Jahres zwischen den Wendekreisen. Die Zone der Tiefdruckgebiete (ITC) mit ihrem Regen wandert mit, etwa einen Monat später. Orte, die sonst trocken sind und im Passatwind liegen, bekommen dann für einige Monate Regen: <strong>Regenzeit</strong>. Schieb den Monat oder drück auf Abspielen. Die Orte A, B und C liegen in Afrika:</p>
+        <div class="card">
+          <div class="tool-row" style="margin:0 0 8px;">
+            <button class="small-btn primary" type="button" id="itcPlay">▶ Abspielen</button>
+            <button class="small-btn" type="button" id="itcSpin">🌍 Erddrehung starten</button>
+            <span class="mono" id="itcMonthOut" style="font-weight:700;">Januar</span>
+          </div>
+          <input type="range" id="itcMonth" min="0" max="11" value="0" step="1" aria-label="Monat">
+          <canvas id="itcGlobe" class="globe" style="margin-top:8px;" role="img" aria-label="Globus mit Afrika: Zenitstand der Sonne und Regenzone wandern im Jahresverlauf zwischen den Wendekreisen"></canvas>
+          <div class="itc-places" id="itcPlaces"></div>
+          <p class="fine">Vereinfachtes Modell. Direkt am Äquator regnet es fast das ganze Jahr, weil die ITC nie weit weg ist. Zieh am Globus, um ihn zu drehen.</p>
+        </div>
+
+        <h3 class="sub-h">Das „lebendige Klimadiagramm" von Timbuktu</h3>
         <div class="two wide-left">
           <div class="card" style="padding:12px;">
             <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:.86rem;"><div><strong style="font-family:'Fraunces',serif; font-size:1.1rem;">Timbuktu / Mali</strong> <span class="mono">263 m ü. M. · 16°44′ N / 3°3′ W</span></div><div class="mono">T = 28,6 °C | N = 208 mm</div></div>
             <svg id="timbSvg" viewBox="0 0 640 330" class="scene" role="img" aria-label="Klimadiagramm Timbuktu"></svg>
-            <p class="fine">Werte aus dem Buchdiagramm M5 abgelesen und gerundet.</p>
+            <p class="fine">Werte aus dem Klimadiagramm im Schulbuch abgelesen und gerundet.</p>
           </div>
           <div class="card">
-            <h3 style="font-size:1.05rem;">4A: Lage von Timbuktu</h3>
+            <h3 style="font-size:1.05rem;">Lage von Timbuktu</h3>
             <p style="font-size:.9rem;">Timbuktu liegt in <strong>Mali</strong> (Westafrika) auf 16°44′ N und 3°3′ W, 263 m über dem Meer, am Fluss <strong>Niger</strong>. Es liegt am Südrand der <strong>Sahara</strong>, in der trockenen Savanne (Sahelzone), zwischen Äquator und nördlichem Wendekreis.</p>
-            <h3 style="font-size:1.05rem;">4C: Jahresverlauf erklärt</h3>
+            <h3 style="font-size:1.05rem;">Jahresverlauf erklärt</h3>
             <p style="font-size:.9rem; margin-bottom:6px;"><strong>Niederschlag:</strong> Nur von Juni bis September regnet es (Maximum im August). Dann liegt Timbuktu im Bereich der ITC: <strong>Regenzeit</strong>. Den Rest des Jahres weht der trockene Nordostpassat: <strong>Trockenzeit</strong>.</p>
             <p style="font-size:.9rem; margin:0;"><strong>Temperatur:</strong> Am heißesten im Mai/Juni, kurz bevor die Regenzeit beginnt: Die Sonne steht sehr hoch (Zenitstand), der Himmel ist wolkenlos. Im August kühlen Wolken und Regen etwas ab, danach steigt die Temperatur noch einmal leicht an. Am kühlsten ist es im Dezember/Januar, wenn die Sonne am tiefsten steht.</p>
           </div>
         </div>
-        <h3 style="font-size:1.1rem; margin:22px 0 6px;">4B: Ordne die Aussagen einem passenden Monat zu</h3>
+        <h3 style="font-size:1.1rem; margin:22px 0 6px;">Ordne die Aussagen einem passenden Monat zu</h3>
         <p style="font-size:.9rem;">Wähle für jede Aussage einen Monat und prüfe. Bei manchen Aussagen passen mehrere Monate.</p>
         <div class="tim-list" id="timList"></div>
         <div class="tool-row" style="margin-top:10px;"><button class="small-btn primary" type="button" id="timCheck">Prüfen</button><button class="small-btn" type="button" id="timSolve">Lösungsvorschlag zeigen</button><span id="timResult" style="font-weight:700;"></span></div>
@@ -1096,7 +1104,7 @@
   var psDates = {
     eq:  { sun:0,     itc:0,   note:'Um den 20. März und 23. September steht die Sonne über dem Äquator im Zenit. Die ITC liegt etwa am Äquator.' },
     jun: { sun:23.5,  itc:12,  note:'21. Juni: Die Sonne steht über dem nördlichen Wendekreis im Zenit. Der Kreislauf ist nach Norden gewandert: Die Savanne nördlich des Äquators hat jetzt Regenzeit. (Die ITC folgt der Sonne mit Verspätung und erreicht den Wendekreis nicht ganz.)' },
-    dec: { sun:-23.5, itc:-12, note:'21. Dezember (Aufgabe 3C): Die Sonne steht über dem südlichen Wendekreis im Zenit. Der Kreislauf ist nach Süden gewandert: Jetzt hat die Savanne südlich des Äquators Regenzeit, im Norden ist Trockenzeit.' }
+    dec: { sun:-23.5, itc:-12, note:'21. Dezember: Die Sonne steht über dem südlichen Wendekreis im Zenit. Der Kreislauf ist nach Süden gewandert: Jetzt hat die Savanne südlich des Äquators Regenzeit, im Norden ist Trockenzeit.' }
   };
   var T_ = function(x, y, txt, size, fill, extra){ return '<text x="'+x+'" y="'+y+'" font-size="'+size+'" font-weight="800" fill="'+fill+'" font-family="Figtree, sans-serif" '+(extra || '')+'>'+txt+'</text>'; };
   var HT = function(x, y, l, size){ return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="'+(size || 30)+'" font-weight="800" fill="'+(l === 'H' ? '#C7512D' : '#2F6FD8')+'" font-family="Fraunces, serif" paint-order="stroke" stroke="#fff" stroke-width="5">'+l+'</text>'; };
@@ -1166,7 +1174,7 @@
     { t:'3. Zenitalregen und Tief am Boden', d:'Es bilden sich große Wolkentürme, aus denen kräftige Niederschläge fallen, die <b>Zenitalregen</b>. Weil die Luft aufsteigt, entstehen am Boden <b>Tiefdruckgebiete</b>. Hier treffen die Passate zusammen: die <b>ITC</b>.' },
     { t:'4. Hoch in der Höhe, Wind zu den Wendekreisen', d:'Über den Tiefdruckgebieten befinden sich in 10 bis 12 km Höhe <b>Hochdruckgebiete</b>. Sie treiben einen Wind an, der in der Höhe Richtung Wendekreise weht.' },
     { t:'5. Absinken an den Wendekreisen', d:'Die Luft sinkt auf dem Weg nach Norden bzw. Süden wieder ab. Weil sie sich dabei erwärmt, können keine Wolken entstehen. Im Bereich der Wendekreise entstehen am Boden <b>Hochdruckgebiete</b>.' },
-    { t:'6. Wendekreiswüsten', d:'Wo die Luft absinkt, regnet es kaum. Deshalb liegen an beiden Wendekreisen große Wüsten: die Sahara im Norden und die Kalahari im Süden Afrikas (<b>Wendekreiswüsten</b>, Aufgabe 5).' },
+    { t:'6. Wendekreiswüsten', d:'Wo die Luft absinkt, regnet es kaum. Deshalb liegen an beiden Wendekreisen große Wüsten: die Sahara im Norden und die Kalahari im Süden Afrikas (<b>Wendekreiswüsten</b>).' },
     { t:'7. Der Passat weht zurück zum Äquator', d:'Um die Druckunterschiede auszugleichen, weht der <b>Passat</b> am Boden von den Wendekreisen (Hoch) zum Äquator (Tief). Durch die Erdrotation wird er nach Westen abgelenkt: <b>Nordostpassat</b> und <b>Südostpassat</b>. Der Kreislauf ist geschlossen.' }
   ];
   var psCur = 0; // 0 = alle
@@ -1186,50 +1194,317 @@
   $('psDates').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) renderPsDate(b.dataset.d); });
   renderPsDate('eq');
 
-  /* Coriolis top view */
-  var corSvg = $('corSvg');
+  /* ---------- 3D globe (orthographic projection on canvas) ---------- */
+  /* LAND: simplified Natural Earth 1:110m land outlines (public domain), [lon,lat,lon,lat,...] per ring */
+  var LAND = [[-59.6,-80,-60.2,-81,-66.3,-80.3],[-45.2,-78,-43.9,-78.5,-43.3,-80,-50.5,-81,-54.2,-80.6,-48.7,-78],[-68.5,-71,-68.8,-72.2,-71.1,-72.5,-74.2,-72.4,-75,-71.7,-72.1,-71.2,-71.7,-69.5,-70.3,-68.9],[-180,-84.7,-170,-83.9,-158.1,-85.4,-143.1,-85,-153.6,-83.7,-152.9,-82,-156.8,-81.1,-150.6,-81.3,-146.4,-80.3,-149.5,-79.4,-155.3,-79.1,-158.1,-78,-158.4,-76.9,-151.3,-77.4,-146.1,-76.5,-146.2,-75.4,-144.9,-75.2,-113.9,-73.7,-112.3,-74.7,-100.6,-75.3,-100.1,-74.9,-102.5,-74.1,-103.7,-72.6,-96.3,-73.6,-90.1,-73.3,-89.2,-72.6,-76.2,-74,-68.9,-73,-67.1,-72,-68.5,-69.7,-67.3,-66.9,-63,-64.6,-57.8,-63.3,-57.6,-63.9,-62,-64.8,-62.6,-65.5,-62.1,-66.2,-65.7,-68,-61.8,-70.7,-60.8,-73.7,-70.6,-76.6,-77.2,-76.7,-73.7,-77.9,-77.9,-78.4,-78,-79.2,-75.4,-80.3,-59.7,-82.4,-58.2,-83.2,-49.8,-81.7,-42.8,-82.1,-28.6,-80.3,-29.7,-79.3,-35.6,-79.5,-35.3,-78.1,-17.5,-75.1,-15.7,-74.5,-16.5,-73.9,-15.4,-73.1,-10.3,-71.3,-7.4,-71.7,-6.9,-70.9,-0.2,-71.6,7.7,-69.9,10.8,-70.8,13.4,-70,27.1,-70.5,32,-69.7,33.9,-68.5,38.6,-69.8,54.5,-65.8,61.4,-68,64.1,-67.4,68.9,-67.9,69.7,-69.2,67.8,-70.3,69.1,-70.7,67.9,-71.9,69.9,-72.3,73.9,-69.9,77.6,-69.5,82.8,-67.2,86.8,-67.1,88,-66.2,89.7,-67.1,95.8,-67.4,99.7,-67.2,102.8,-65.6,106.2,-66.9,113.6,-65.9,119.8,-67.3,123.2,-66.5,134.8,-66.2,135.1,-65.3,137.5,-67,145.5,-66.9,148.8,-68.4,154.3,-68.6,161.6,-70.6,171.2,-71.7,169.3,-73.7,166.1,-74.4,163.6,-76.2,164.7,-78.2,167,-78.8,161.8,-79.2,159.8,-80.9,169.4,-83.8,178.3,-84.5],[-67.8,-53.8,-65.1,-54.7,-69.2,-55.5,-74.7,-52.8,-71.1,-54.1,-69.3,-52.5],[145.4,-40.8,148.3,-40.9,147.9,-43.2,146,-43.5,144.7,-41.2],[173,-40.9,174.2,-41.3,172.7,-43.4,173.1,-43.9,171.5,-44.2,169.3,-46.6,166.7,-46.2,167,-45.1],[174.6,-36.2,176.8,-37.9,178.5,-37.7,178,-39.2,177.2,-39.1,175.2,-41.7,174.7,-41.3,174.9,-39.9,173.8,-39.5,174.7,-37.4,172.6,-34.5,174.3,-35.3],[-180,-16.6,178.7,-17,179.4,-16.4,-179.8,-16],[50.1,-13.6,50.4,-15.7,49.7,-15.7,47.1,-24.9,45.4,-25.6,44,-25,43.3,-22.1,44.4,-20.1,44.4,-16.2,47.7,-14.6,49.2,-12],[143.6,-13.8,145.4,-15,146.4,-19,148.8,-20.4,149.7,-22.3,150.7,-22.4,153.1,-26.1,153.1,-30.9,150,-37.4,146.3,-39,145,-37.9,143.6,-38.8,140.6,-38,139.6,-36.1,138.1,-35.6,138.2,-34.4,136.8,-35.3,137.8,-32.9,136,-34.9,134.3,-32.6,131.3,-31.5,126.1,-32.2,123.7,-33.9,119.9,-34,118,-35.1,115,-34.2,115.7,-31.6,113.3,-26.1,113.8,-26.5,113.4,-25.6,114.2,-26.3,113.4,-24.4,114.1,-21.8,114.2,-22.5,116.7,-20.7,120.9,-19.7,123,-16.4,123.9,-17.1,123.5,-16.6,125.7,-14.2,127.1,-13.8,129.6,-15,130.6,-12.5,132.6,-12.1,131.8,-11.3,132.4,-11.1,135.3,-12.2,136.5,-11.9,137,-12.4,135.5,-15,140.2,-17.7,141.7,-15,142.1,-11,142.8,-11.2],[108.6,-6.8,110.8,-6.5,115.7,-8.4,108.3,-7.8,105.4,-6.9,106.1,-5.9],[134.1,-1.2,134.4,-2.8,135.5,-3.4,138.3,-1.7,144.6,-3.9,147.6,-6.1,147.2,-7.4,150.7,-10.6,147.9,-10.1,144.7,-7.6,142.6,-9.3,139.1,-8.1,137.6,-8.4,138.7,-7.3,137.9,-5.4,133.7,-3.5,133,-4.1,132,-2.8,133.7,-2.2,132.2,-2.2,130.5,-0.9,132.4,-0.4],[125.2,1.4,123.7,0.2,120.2,0.2,120.9,-1.4,123.3,-0.6,121.5,-1.9,123.2,-5.3,122.2,-5.3,122.7,-4.5,121.5,-4.6,121,-2.6,120.3,-2.9,120.4,-5.5,119.4,-5.4,119.5,-3.5,118.8,-2.8,120,0.6,120.9,1.3],[105.8,-5.9,104.7,-5.9,102.6,-4.2,95.3,5.5,97.5,5.2,103.8,0.1,103.4,-0.7,106.1,-3.1],[117.9,1.8,119,0.9,117.8,0.8,116.1,-4,110.2,-2.9,109.1,-0.5,109.7,2,111.2,1.9,111.4,2.7,113,3.1,116.7,6.9,119.2,5.4,117.3,3.2],[126.4,8.4,126.5,7.2,126.2,6.3,125.8,7.3,125.4,6.8,125.4,5.6,124.2,6.2,123.6,7.8,121.9,7.2,123.5,8.7,123.8,8.2,125.5,9,125.4,9.8],[81.2,6.2,80.3,6,79.9,6.8,80.1,9.8,81.8,7.5],[121.3,18.5,122.2,18.5,122.5,17.1,121.7,15.9,121.7,14.3,124,13.8,124.1,12.5,122.9,13.6,120.6,13.9,121,14.5,120.1,15,119.9,16.4,120.3,16,120.7,18.5],[-72.6,19.9,-70,19.6,-68.3,18.6,-70.7,18.4,-71.4,17.6,-73.9,18,-74.4,18.7,-72.3,18.7,-73.4,19.6],[-79.7,22.8,-74.2,20.3,-77.8,19.9,-77.1,20.4,-78.7,21.6,-81.8,22.6,-85,21.9,-82.3,23.2],[141,37.1,140.3,35.1,137.2,34.6,135.8,33.5,135.1,34.6,131,33.9,132,33.1,131.3,31.5,130.2,31.4,130.4,32.3,129.4,33.3,132.6,35.4,135.7,35.5,136.7,37.3,137.4,36.8,139.4,38.2,140.3,41.2,141.4,41.4,141.9,40],[143.9,44.2,145.3,44.4,145.5,43.3,143.2,42,141.6,42.7,141.1,41.6,140,41.6,139.8,42.6,141.4,43.4,142,45.6],[-123.5,48.5,-125.7,48.8,-128.4,50.8,-125.8,50.3],[-56.1,50.7,-56.8,49.8,-53.5,49.2,-53.8,48.5,-53.1,48.7,-52.6,47.5,-53.1,46.7,-54.2,46.8,-54.2,47.8,-55.4,46.9,-56.3,47.6,-59.3,47.6,-57.4,50.7,-55.9,51.6],[143.6,50.7,144.7,49,143.2,49.3,142.6,47.9,143.5,46.1,142.7,46.7,142.1,46,141.7,53.3,142.7,54.4],[-6.8,52.3,-10,51.8,-9.2,52.9,-9.7,53.9,-6.7,55.2,-5.7,54.6],[-3,58.6,-4.1,57.6,-2,57.7,-3.1,56,-2.1,55.9,0.5,52.9,1.7,52.7,1.4,51.3,-5.2,50,-3.4,51.4,-5.3,52,-4.2,52.3,-4.6,53.5,-3.1,53.4,-2.9,54,-4.8,54.8,-5,55.8,-5.6,55.3,-6.2,56.8,-5,58.6],[-85.2,65.7,-80.1,63.7,-83.1,64.1,-85.5,63.1,-87.2,63.5,-85.9,65.7],[-14.5,66.5,-14.7,65.8,-13.6,65.1,-18.7,63.5,-22.8,64,-21.8,64.4,-24,64.9,-22.2,65.4,-24.3,65.6,-22.1,66.4,-20.6,65.7],[-180,69,-174.9,67.2,-174.3,66.3,-174.6,67.1,-171.9,66.9,-169.9,66,-172.5,65.4,-173,64.3,-178.4,65.4,-178.7,66.1,-179.9,65.9,-179.4,65.4,-180,65,180,65,177.4,64.6,179.4,63,179.2,62.3,173.7,61.7,170.3,59.9,168.9,60.6,163.5,59.9,162,58.2,163.2,57.6,163.1,56.2,161.7,55.3,162.1,54.9,160.4,54.3,160,53.2,158.5,53,156.8,51,155.4,55.4,155.9,56.8,163.7,61.1,164.5,62.6,160.1,60.5,159.3,61.8,156.7,61.4,154.2,59.8,155,59.1,151.3,58.8,151.3,59.5,149.8,59.7,142.2,59,135.1,54.7,138.2,53.8,139.9,54.2,141.4,52.2,140.1,48.4,138.2,46.3,134.9,43.4,133.5,42.8,132.3,43.3,127.5,39.8,129.5,36.8,129.1,35.1,126.5,34.4,126.1,36.7,126.9,36.9,124.7,38.1,125.3,39.6,124.3,39.9,121.1,38.9,122.2,40.4,121.6,40.9,118,39.2,117.5,38.7,118.9,37.4,122.4,37.5,122.5,36.9,119.2,34.9,121.9,31.7,121.3,30.7,122.1,29.8,121.7,28.2,118.7,24.5,115.9,22.8,110.8,21.4,110.4,20.3,109.9,20.3,109.9,21.4,108.5,21.7,105.9,19.8,105.7,19.1,108.9,15.3,109.3,13.4,109.2,11.7,105.2,8.6,105.1,9.9,103.5,10.6,102.6,12.2,100.8,12.6,101,13.4,100.1,13.4,99.2,9.2,103,5.5,104.2,1.3,101.4,2.8,100.1,6.5,98.5,8.4,98.3,7.8,98.8,11.4,97.2,16.9,95.4,15.7,94.2,16,94.3,18.2,91.4,22.8,90.5,22.8,90.3,21.8,87,21.5,86.5,20.2,82.2,16.6,80.3,15.9,79.9,10.4,77.5,8,73.5,16,72.6,21.4,70.5,20.9,66.4,25.4,61.5,25.1,57.4,25.7,56.5,27.1,54.7,26.5,51.5,27.9,50.1,30.1,48,30,50.8,24.8,51,26,51.6,25.8,51.8,24,54,24.1,56.4,26.4,56.8,24.2,59.8,22.3,57.8,20.2,57.7,18.9,55.3,17.2,52.4,16.4,52.2,15.6,48.7,14,43.5,12.6,42.7,16.8,39.1,21.3,38.5,23.7,34.6,28.1,34.9,29.5,33.9,27.6,32.4,29.9,35.5,23.1,36.9,22,37.5,18.6,39.3,15.9,43.3,12.4,42.7,11.7,44.6,10.4,51.1,12,51,10.6,47.7,4.2,40.3,-2.6,39.2,-4.7,38.8,-6.5,40.5,-10.8,40.8,-14.7,39.5,-16.7,34.8,-19.8,35.5,-24.1,32.6,-25.7,32.2,-28.8,28.2,-32.8,25.8,-33.9,22.6,-33.9,19.6,-34.8,18.2,-33.9,18.2,-31.7,15.2,-27.1,14.3,-22.1,11.8,-18.1,11.8,-15.8,13.7,-10.7,11.9,-5,8.8,-1.1,9.4,3.7,8.5,4.8,5.9,4.3,4.3,6.3,-2,4.7,-9,4.8,-12.4,7.3,-14.8,10.9,-16.6,12.2,-17.6,14.7,-16.1,18.1,-17,21.9,-14.4,26.3,-9.6,29.9,-9.3,32.6,-6.9,34.1,-5.9,35.8,-2.2,35.2,1.5,36.6,9.5,37.4,11.1,36.9,10.3,33.8,19.1,30.3,20.1,31,20.1,32.2,21.5,32.8,28.9,30.9,31,31.6,33.8,31,36,34.6,36.2,36.7,32.5,36.1,27.6,36.7,26.2,39.5,29.2,41.2,33.5,42,38.3,40.9,40.4,41,41.7,42,36.7,45.2,39.1,47.3,35,46.3,36.3,45.1,33.9,44.4,32.5,45.3,33.3,46.1,30.7,46.6,28.8,44.9,27.7,42.6,28.8,41.1,26.4,40.2,24.9,40.9,23.7,40.7,24.4,40.1,23.9,40,22.6,40.3,24,37.7,23.1,37.9,23.2,36.4,22.5,36.4,19.4,40.3,19.5,41.7,13.1,45.7,12.3,45.4,12.6,44.1,18.5,40.2,16.9,40.4,17.1,38.9,16.1,38,15.4,40,8.9,44.4,6.5,43.1,3.1,43.1,3,41.9,0.8,41,-0.3,39.3,0.1,38.7,-2.1,36.7,-5.4,35.9,-6.5,36.9,-8.9,36.9,-9.4,43,-8,43.7,-1.9,43.4,-1.4,44,-1.2,46,-4.5,48,-4.6,48.7,-1.6,48.6,-1.9,49.8,-1,49.3,1.3,50.1,1.6,50.9,3.8,51.6,4.7,53.1,8.1,53.5,8.8,54,8.1,55.5,8.5,57.1,10.6,57.7,10.3,56.9,10.9,56.5,9.6,55.5,10.9,54,12.5,54.5,14.1,53.8,17.6,54.9,19.7,54.4,21.3,55.2,21.6,57.4,24.1,57,24.4,58.4,23.3,59.2,29.1,60,28.1,60.5,22.9,59.8,21.3,60.7,21.5,63.2,25.4,65.1,23.9,66,22.2,65.7,21.4,64.4,17.8,62.7,17.1,61.3,18.8,60.1,16.8,58.7,15.9,56.1,12.9,55.4,10.4,59.5,8.4,58.3,5.7,58.6,5,62,5.9,62.6,10.5,64.5,14.8,67.8,19.2,69.8,24.5,71,28.2,71.2,31.3,70.5,30,70.2,31.1,69.6,32.1,69.9,40.3,67.9,41.1,66.8,40,66.3,33.2,66.6,34.8,65.9,34.9,64.4,37,63.9,36.5,64.8,37.2,65.1,39.6,64.5,40.4,64.8,39.8,65.5,42.1,66.5,44,66.1,44.5,66.8,43.5,68.6,46.3,68.2,46.8,67.7,45.6,67,46.3,66.7,53.7,68.9,54.5,68.8,53.5,68.2,58.8,68.9,59.9,68.3,61.1,68.9,60,69.5,60.6,69.9,68.5,68.1,69.2,68.6,66.9,69.5,66.7,71,69.2,72.8,72.6,72.8,71.8,71.4,72.8,70.4,72.6,69,73.7,68.4,71.3,66.3,72.4,66.2,75.1,67.8,74.5,68.3,74.9,69,73.6,69.6,74.4,70.6,73.1,71.4,74.9,72.1,74.7,72.8,75.7,72.3,75.3,71.3,76.4,71.2,75.9,71.9,77.6,72.3,81.5,71.7,80.5,73.6,86.8,73.9,86,74.5,87.2,75.1,100.8,76.4,104.4,77.7,107.2,76.5,111.1,76.7,114.1,75.8,109.4,74.2,123.2,73,123.3,73.7,127,73.6,128.6,73,129.1,72.4,128.5,72,131.3,70.8,132.3,71.8,139.9,71.5,139.1,72.4,140.5,72.8,149.5,72.2,153,70.8,159,70.9,160.9,69.4,167.8,69.6,169.6,68.7,170.8,69,170,69.7,170.5,70.1,178.6,69.4],[-90.5,69.5,-90.5,68.5,-89.2,69.3,-87.3,67.2,-85.6,68.8,-85.5,69.9,-82.6,69.7,-81.3,69.2,-82,68.1,-81.3,67.6,-83.3,66.4,-85.8,66.6,-87.3,64.8,-93.2,62,-94.7,58.9,-93.2,58.8,-92.3,57.1,-82.3,55.1,-82.1,53.3,-79.9,51.2,-78.6,52.6,-79.8,54.7,-76.5,56.5,-78.5,58.8,-77.3,59.9,-78.1,62.3,-73.8,62.4,-69.6,61.1,-69.3,59,-67.7,58.2,-64.6,60.3,-61.4,57,-61.8,56.3,-57.3,54.6,-55.8,53.3,-55.7,52.1,-60,50.2,-66.4,50.2,-71.1,46.8,-65.1,49.2,-64.2,48.7,-65.1,48.1,-64.5,46.2,-61.5,45.9,-60.5,47,-59.8,45.9,-65.4,43.5,-66.1,43.6,-66.2,44.5,-64.4,45.3,-67.1,45.1,-70.7,43,-70,41.6,-73.7,40.9,-71.9,40.9,-74,40.8,-74.9,38.9,-75.5,39.5,-75.1,38.4,-75.9,37.2,-76.4,39.1,-76.3,38.1,-77,38.2,-75.7,35.6,-81.3,31.4,-80.1,26.9,-80.4,25.2,-81.7,25.9,-82.9,29.1,-84.1,30.1,-89.2,30.3,-89.2,29.3,-90.2,29.1,-93.8,29.7,-96.6,28.3,-97.4,27.4,-97.9,22.4,-96.3,19.3,-94.4,18.1,-92,18.7,-90.8,19.3,-90.3,21,-87.1,21.5,-88.9,15.9,-85,16,-83.4,15.3,-83.8,11.1,-81.4,8.8,-79.6,9.6,-76.8,8.6,-74.9,11.1,-71.8,12.4,-71.1,12.1,-71.9,11.4,-71.7,9.1,-71,9.9,-71.4,11,-69.9,12.2,-68.2,10.6,-64.9,10.1,-61.9,10.7,-62.7,10.4,-62.4,9.9,-57.1,6,-54,5.8,-51.3,4.2,-50,1.7,-50.4,-0.1,-48.6,-0.2,-48.6,-1.2,-47.8,-0.6,-44.9,-1.6,-44.6,-2.7,-40,-2.9,-35.6,-5.1,-34.7,-7.3,-35.1,-9,-38.7,-13.1,-39.3,-17.9,-40.9,-21.9,-42,-23,-47.6,-24.9,-48.9,-28.7,-53.8,-34.4,-56.2,-34.9,-58.4,-33.9,-56.8,-36.9,-59.2,-38.7,-62.3,-38.8,-62.1,-40.7,-62.7,-41,-65.1,-41.1,-65,-42.1,-63.5,-42.6,-65.2,-43.5,-65.6,-45,-67.3,-45.6,-67.6,-46.3,-65.6,-47.2,-66,-48.1,-69.1,-50.7,-68.2,-52.4,-70.8,-52.9,-71,-53.8,-74.9,-52.3,-75.6,-48.7,-74.1,-46.9,-75.6,-46.6,-74.4,-44.1,-73.2,-44.5,-72.7,-42.4,-73.4,-42.1,-73.7,-43.4,-74.3,-43.2,-73.2,-39.3,-73.6,-37.2,-71.4,-32.4,-70.2,-19.8,-71.5,-17.4,-76,-14.6,-79.8,-7.2,-81.3,-6.1,-81.4,-4.7,-79.8,-2.7,-81,-2.2,-80.9,-1.1,-77.1,3.8,-78.2,8.3,-79.6,8.9,-80.9,7.2,-85.7,9.9,-85.7,11.1,-87.5,13.3,-91.2,13.9,-94.7,16.2,-96.6,15.7,-103.5,18.3,-105.5,19.9,-106,22.8,-109.3,25.6,-109.3,26.4,-112.2,29,-113.9,31.6,-114.8,31.8,-114.7,30.2,-109.4,23.4,-110,22.8,-112.2,24.7,-112.3,26,-115.1,27.7,-114.2,28.6,-115.5,29.6,-117.3,33,-120.6,34.6,-124.4,40.3,-123.9,45.5,-124.7,48.2,-123.1,48,-122.6,47.1,-122.8,49,-127.4,50.8,-127.8,52.3,-129.1,52.8,-134.1,58.1,-147.1,60.9,-148.2,60.7,-148,60,-151.7,59.2,-150.6,61.3,-154,59.4,-153.3,58.9,-154.2,58.1,-158.4,56,-164.8,54.4,-157.7,57.6,-157,58.9,-162,58.7,-161.9,59.6,-163.8,59.8,-166.1,61.5,-164.6,63.1,-160.8,63.8,-161.5,64.4,-160.8,64.8,-165,64.4,-168.1,65.7,-164.5,66.6,-161.7,66.1,-166.8,68.4,-161.9,70.3,-156.6,71.4,-136.5,68.9,-129.1,69.8,-128.1,70.5,-125.8,69.5,-124.4,70.2,-124.3,69.4,-121.5,69.8,-115.2,68.9,-113.9,68.4,-115.3,67.9,-109.9,68,-108.9,67.4,-107.8,67.9,-108.8,68.3,-108.2,68.7,-106.1,68.8,-101.5,67.6,-98.4,67.8,-98.6,68.4,-97.7,68.6,-96.1,68.2,-96.1,67.3,-94.2,69.1,-96.5,70.1,-96.4,71.2,-95.2,71.9,-92.9,71.3,-91.5,70.2,-92.4,69.7],[-114.2,73.1,-114.7,72.7,-111.1,72.5,-109.9,73,-108.2,71.7,-107.7,72.1,-108.4,73.1,-106.5,73.1,-105.4,72.7,-104.5,71,-101,70,-102.7,69.5,-102.4,68.8,-113.3,68.5,-116.1,69.2,-117.3,70,-112.4,70.4,-117.9,70.5,-118.4,70.9,-116.1,71.3,-119.4,71.6,-117.9,72.7],[-86.6,73.2,-85.8,72.5,-82.3,73.8,-80.6,72.7,-80.8,72.1,-77.8,72.8,-74.1,71.3,-72.2,71.6,-67.9,70.1,-67,69.2,-68.8,68.7,-61.9,66.9,-63.9,65,-66.7,66.4,-68,66.3,-68.1,65.7,-64.7,63.4,-65,62.7,-68.8,63.7,-66.2,61.9,-71,62.9,-74.8,64.7,-77.7,64.2,-78.6,64.6,-77.9,65.3,-74,65.5,-72.9,67.7,-79,70.2,-88.7,70.4,-89.5,70.8,-88.5,71.2,-89.9,71.2,-90.2,72.2,-88.4,73.5,-85.8,73.8],[-100.4,73.8,-97.4,73.8,-98.1,73,-96.5,72.6,-96.7,71.7,-99.3,71.4,-102.5,72.5,-100.4,72.7,-101.5,73.4],[-93.2,72.8,-95.4,72.1,-96,73.4,-94.5,74.1,-90.5,73.9],[-120.5,71.4,-123.1,70.9,-125.9,71.9,-123.9,73.7,-124.9,74.3,-117.6,74.2,-115.5,73.5,-119.2,72.5],[145.1,75.6,144.3,74.8,139,74.6,137,75.3,138.8,76.1],[-98.5,76.7,-97.7,76.3,-98.2,75,-102.5,75.6,-102.6,76.3],[-108.2,76.2,-105.9,76,-106.3,75,-113.7,74.4,-111.8,75.2,-117.7,75.2,-115.4,76.5,-109.1,75.5,-110.5,76.4],[57.5,70.7,51.6,71.5,52.4,72.8,54.4,73.6,53.5,73.8,55.9,74.6,55.6,75.1,66.2,76.8,68.9,76.5,58.5,74.3,55.4,72.4,55.6,71.5],[-94.7,77.1,-89.2,75.6,-81.1,75.7,-79.8,74.9,-92.4,74.8,-93.9,76.3,-97.1,76.8],[-116.2,77.6,-117.1,76.5,-122.9,76.1,-119.1,77.5],[105.1,78.3,99.4,77.9,102.1,79.3],[18.3,79.7,21.5,79,19,78.6,17.1,76.8,15.9,76.8,10.4,79.7],[25.4,80.4,27.4,80.1,23,79.4,17.4,80.3],[99.9,78.9,95,79,91.2,80.3,95.9,81.3,100.2,79.8],[-87,79.7,-85.8,79.3,-90.8,78.2,-92.9,78.3,-94,78.8,-93.1,79.4,-96.7,80.2,-94.7,81.2,-92.4,81.3],[-68.5,83.1,-61.9,82.4,-67.7,81.5,-65.5,81.5,-71.2,79.8,-76.9,79.3,-75.5,79.2,-76.2,79,-75.4,78.5,-79.8,77.2,-77.9,76.8,-80.6,76.2,-89.5,76.5,-87.8,77.2,-88.3,77.9,-85,77.5,-88,78.4,-85.1,79.3,-86.9,80.3,-81.8,80.5,-87.6,80.5,-91.6,81.9,-79.3,83.1],[-27.1,83.5,-20.8,82.7,-31.4,82,-22.9,82.1,-22.1,81.7,-23.2,81.2,-15.8,81.9,-12.2,81.3,-20,80.2,-17.7,80.1,-19.7,78.8,-19.7,77.6,-18.5,77,-21.7,76.6,-19.8,76.1,-19.6,75.2,-20.7,75.2,-19.4,74.3,-23.6,73.3,-22.3,72.2,-24.8,72.3,-22.1,71.5,-21.8,70.7,-23.5,70.5,-25.5,71.4,-25.2,70.8,-26.4,70.2,-22.3,70.1,-39.8,65.5,-41.2,63.5,-42.8,62.7,-42.4,61.9,-43.4,60.1,-48.3,60.9,-51.6,63.6,-54,67.2,-50.9,69.9,-54.7,69.6,-54.4,70.8,-51.4,70.6,-55.8,71.7,-54.7,72.6,-58.6,75.5,-68.5,76.1,-71.4,77,-66.8,77.4,-73.3,78,-65.7,79.4,-68,80.1,-62.2,81.3,-62.6,81.8,-50.4,82.4,-44.5,81.7,-46.8,82.6,-43.4,83.2]];
+  var D2R = Math.PI/180;
+  var LAND_D = LAND.map(function(r){
+    var out = [];
+    for(var i = 0; i < r.length; i += 2){
+      var j = (i+2) % r.length, lo = r[i], la = r[i+1], la2 = r[j+1], dl = r[j] - lo;
+      if(dl > 180) dl -= 360; else if(dl < -180) dl += 360;
+      var lo2 = lo + dl, n = Math.max(1, Math.ceil(Math.max(Math.abs(lo2-lo), Math.abs(la2-la))/2));
+      for(var k = 0; k < n; k++) out.push([la+(la2-la)*k/n, lo+(lo2-lo)*k/n]);
+    }
+    return out;
+  });
+  function makeGlobe(canvas, aspect){
+    var g = { lon0:0, lat0:0, ctx:canvas.getContext('2d'), canvas:canvas, visible:true, dirty:true };
+    g.resize = function(){
+      var cw = canvas.clientWidth || 600;
+      g.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(cw*g.dpr); canvas.height = Math.round(cw*aspect*g.dpr);
+      g.w = canvas.width; g.h = canvas.height; g.u = g.w/600; g.fu = Math.max(g.u, 0.85*g.dpr);
+      g.R = Math.min(g.w, g.h)*0.42; g.cx = g.w/2; g.cy = g.h/2; g.dirty = true;
+    };
+    g.proj = function(lat, lon){
+      var p = lat*D2R, l = (lon-g.lon0)*D2R, p0 = g.lat0*D2R, cp = Math.cos(p);
+      var x = cp*Math.sin(l), y = Math.cos(p0)*Math.sin(p) - Math.sin(p0)*cp*Math.cos(l);
+      return { x:g.cx+g.R*x, y:g.cy-g.R*y, z:Math.sin(p0)*Math.sin(p) + Math.cos(p0)*cp*Math.cos(l), ux:x, uy:y };
+    };
+    /* closed shape: points behind the globe are pushed onto the rim */
+    g.shape = function(pts){
+      var ctx = g.ctx, prevA = null;
+      ctx.beginPath();
+      pts.forEach(function(pt, i){
+        var q = g.proj(pt[0], pt[1]);
+        if(q.z >= 0){ if(i === 0) ctx.moveTo(q.x, q.y); else ctx.lineTo(q.x, q.y); prevA = null; return; }
+        var a = Math.atan2(q.uy, q.ux);
+        if(prevA !== null){
+          var d = a - prevA; while(d > Math.PI) d -= 2*Math.PI; while(d < -Math.PI) d += 2*Math.PI;
+          var n = Math.ceil(Math.abs(d)/0.08);
+          for(var k = 1; k < n; k++){ var b = prevA + d*k/n; ctx.lineTo(g.cx+g.R*Math.cos(b), g.cy-g.R*Math.sin(b)); }
+        }
+        var x = g.cx+g.R*Math.cos(a), y = g.cy-g.R*Math.sin(a);
+        if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        prevA = a;
+      });
+      ctx.closePath();
+    };
+    /* open line: only the visible part is drawn */
+    g.line = function(pts){
+      var ctx = g.ctx, pen = false;
+      ctx.beginPath();
+      pts.forEach(function(pt){
+        var q = g.proj(pt[0], pt[1]);
+        if(q.z < 0){ pen = false; return; }
+        if(pen) ctx.lineTo(q.x, q.y); else ctx.moveTo(q.x, q.y);
+        pen = true;
+      });
+    };
+    g.parallelPts = function(lat, from, to){ var pts = []; for(var l = from; l <= to; l += 2) pts.push([lat, l]); return pts; };
+    g.band = function(lat1, lat2, fill){
+      var a = g.parallelPts(lat1, g.lon0-180, g.lon0+180), b = g.parallelPts(lat2, g.lon0-180, g.lon0+180).reverse();
+      g.ctx.save(); g.clip(); g.shape(a.concat(b)); g.ctx.fillStyle = fill; g.ctx.fill(); g.ctx.restore();
+    };
+    g.clip = function(){ g.ctx.beginPath(); g.ctx.arc(g.cx, g.cy, g.R, 0, 2*Math.PI); g.ctx.clip(); };
+    g.parallel = function(lat, color, width, dash){
+      var ctx = g.ctx;
+      g.line(g.parallelPts(lat, g.lon0-180, g.lon0+180));
+      ctx.strokeStyle = color; ctx.lineWidth = width*g.u; ctx.setLineDash(dash ? dash.map(function(v){ return v*g.u; }) : []);
+      ctx.stroke(); ctx.setLineDash([]);
+    };
+    g.font = function(size, weight){ return (weight || 800)+' '+(size*g.fu)+'px Figtree, sans-serif'; };
+    g.text = function(t, x, y, size, color, align, weight){
+      var ctx = g.ctx;
+      ctx.font = g.font(size, weight); ctx.textAlign = align || 'left'; ctx.textBaseline = 'middle';
+      if(align === 'left' || !align){ var tw = ctx.measureText(t).width; x = Math.max(4*g.u, Math.min(x, g.w - tw - 6*g.u)); }
+      ctx.lineJoin = 'round'; ctx.lineWidth = 4*g.u; ctx.strokeStyle = 'rgba(6,18,34,.85)';
+      ctx.strokeText(t, x, y); ctx.fillStyle = color; ctx.fillText(t, x, y);
+    };
+    g.arrowHead = function(x, y, ang, size, color){
+      var ctx = g.ctx, s = size*g.u;
+      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.lineTo(x - s*Math.cos(ang-0.45), y - s*Math.sin(ang-0.45));
+      ctx.lineTo(x - s*Math.cos(ang+0.45), y - s*Math.sin(ang+0.45));
+      ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+    };
+    /* arrow along the surface from (lat1,lon1) to (lat2,lon2) */
+    g.surfArrow = function(lat1, lon1, lat2, lon2, color, width){
+      var pts = [], n = 16;
+      for(var k = 0; k <= n; k++) pts.push([lat1+(lat2-lat1)*k/n, lon1+(lon2-lon1)*k/n]);
+      var e = g.proj(lat2, lon2), p = g.proj(pts[n-2][0], pts[n-2][1]);
+      if(e.z < 0.05) return;
+      g.line(pts.slice(0, n-1)); g.ctx.strokeStyle = color; g.ctx.lineWidth = width*g.u; g.ctx.lineCap = 'round'; g.ctx.stroke();
+      g.arrowHead(e.x, e.y, Math.atan2(e.y-p.y, e.x-p.x), 6+width*2.2, color);
+    };
+    g.drawBase = function(){
+      var ctx = g.ctx, R = g.R, cx = g.cx, cy = g.cy;
+      var bg = ctx.createRadialGradient(cx, cy, R*0.8, cx, cy, Math.max(g.w, g.h));
+      bg.addColorStop(0, '#16304F'); bg.addColorStop(1, '#070F1C');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, g.w, g.h);
+      var halo = ctx.createRadialGradient(cx, cy, R*0.96, cx, cy, R*1.12);
+      halo.addColorStop(0, 'rgba(120,190,255,.45)'); halo.addColorStop(1, 'rgba(120,190,255,0)');
+      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, R*1.12, 0, 2*Math.PI); ctx.fill();
+      var oc = ctx.createRadialGradient(cx-R*0.35, cy-R*0.4, R*0.1, cx, cy, R);
+      oc.addColorStop(0, '#4E9AD6'); oc.addColorStop(0.6, '#24679F'); oc.addColorStop(1, '#123E6A');
+      ctx.fillStyle = oc; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.fill();
+      ctx.save(); g.clip();
+      ctx.fillStyle = '#B9BE78';
+      LAND_D.forEach(function(r){ g.shape(r); ctx.fill(); });
+      ctx.strokeStyle = 'rgba(255,255,255,.13)'; ctx.lineWidth = 1*g.u;
+      [-60,-30,30,60].forEach(function(lat){ g.line(g.parallelPts(lat, g.lon0-180, g.lon0+180)); ctx.stroke(); });
+      for(var lon = -180; lon < 180; lon += 30){ var pts = []; for(var la = -88; la <= 88; la += 4) pts.push([la, lon]); g.line(pts); ctx.stroke(); }
+      ctx.restore();
+    };
+    g.drawShade = function(){
+      var ctx = g.ctx, R = g.R, cx = g.cx, cy = g.cy;
+      var sh = ctx.createRadialGradient(cx-R*0.3, cy-R*0.35, R*0.2, cx, cy, R*1.02);
+      sh.addColorStop(0, 'rgba(255,255,255,.10)'); sh.addColorStop(0.55, 'rgba(0,0,0,0)'); sh.addColorStop(1, 'rgba(2,10,28,.55)');
+      ctx.fillStyle = sh; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.fill();
+    };
+    /* drag to turn the globe (horizontal drag only on touch, so the page still scrolls) */
+    var drag = null;
+    canvas.addEventListener('pointerdown', function(e){ drag = { x:e.clientX, y:e.clientY, lon:g.lon0, lat:g.lat0 }; try{ canvas.setPointerCapture(e.pointerId); }catch(err){} canvas.style.cursor = 'grabbing'; });
+    canvas.addEventListener('pointermove', function(e){
+      if(!drag) return;
+      var k = 57.3*g.dpr/g.R;
+      g.lon0 = drag.lon - (e.clientX-drag.x)*k;
+      if(e.pointerType === 'mouse') g.lat0 = Math.max(-40, Math.min(50, drag.lat + (e.clientY-drag.y)*k));
+      g.dirty = true;
+    });
+    function endDrag(){ drag = null; canvas.style.cursor = ''; }
+    canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
+    if('IntersectionObserver' in window) new IntersectionObserver(function(es){ g.visible = es[0].isIntersecting; }).observe(canvas);
+    g.resize();
+    window.addEventListener('resize', g.resize);
+    return g;
+  }
+  var globes = [];
+  var gLast = null;
+  function globeLoop(ts){
+    var dt = gLast === null ? 0 : Math.min(0.05, (ts-gLast)/1000); gLast = ts;
+    globes.forEach(function(o){ if(o.g.visible) o.frame(dt); });
+    requestAnimationFrame(globeLoop);
+  }
+  requestAnimationFrame(globeLoop);
+
+  /* Nordost- und Südostpassat on a spinning globe */
   (function(){
-    var s = '<defs><marker id="cA1" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="#7B5CC4"></path></marker><marker id="cA2" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="9" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="#9AA3AA"></path></marker></defs>';
-    s += '<rect width="600" height="320" fill="#CBE7F7"></rect><rect x="0" y="0" width="600" height="60" fill="#F3DFA9"></rect><rect x="0" y="260" width="600" height="60" fill="#F3DFA9"></rect>';
-    s += '<line x1="0" x2="600" y1="160" y2="160" stroke="#C7512D" stroke-width="2"></line><line x1="0" x2="600" y1="60" y2="60" stroke="#7FA9C6" stroke-dasharray="5 5"></line><line x1="0" x2="600" y1="260" y2="260" stroke="#7FA9C6" stroke-dasharray="5 5"></line>';
-    s += '<g font-family="IBM Plex Mono, monospace" font-size="11" fill="#4B5E6B"><text x="8" y="54">Nördlicher Wendekreis · Hochdruck</text><text x="8" y="154">0° Äquator · ITC</text><text x="8" y="278">Südlicher Wendekreis · Hochdruck</text></g>';
-    s += '<line x1="400" y1="64" x2="400" y2="150" stroke="#9AA3AA" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#cA2)"></line><line x1="400" y1="256" x2="400" y2="170" stroke="#9AA3AA" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#cA2)"></line>';
-    s += '<path d="M400 64 C396 105 360 140 290 150" fill="none" stroke="#7B5CC4" stroke-width="5" marker-end="url(#cA1)"></path><path d="M400 256 C396 215 360 180 290 170" fill="none" stroke="#7B5CC4" stroke-width="5" marker-end="url(#cA1)"></path>';
-    s += '<g font-family="Figtree, sans-serif" font-weight="800" font-size="13"><text x="228" y="112" fill="#4B2F96">Nordostpassat</text><text x="228" y="218" fill="#4B2F96">Südostpassat</text>'+
-      '<text x="410" y="100" font-size="11" font-weight="600" fill="#5C6B73">ohne Erddrehung</text><text x="410" y="226" font-size="11" font-weight="600" fill="#5C6B73">ohne Erddrehung</text></g>';
-    s += '<g transform="translate(540 160)" font-family="Figtree, sans-serif" font-weight="800" font-size="12" fill="#1F3C66"><circle r="34" fill="#fff" opacity=".85"></circle><line x1="0" y1="-26" x2="0" y2="26" stroke="#1F3C66"></line><line x1="-26" y1="0" x2="26" y2="0" stroke="#1F3C66"></line><text y="-38" text-anchor="middle">N</text><text y="50" text-anchor="middle">S</text><text x="-44" y="4" text-anchor="middle">W</text><text x="44" y="4" text-anchor="middle">O</text></g>';
-    s += '<text x="140" y="196" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1E4F7A" font-family="Figtree, sans-serif">Ablenkung nach Westen ←</text>';
-    corSvg.innerHTML = s;
-    addMover(corSvg, 'M400 64 C396 105 360 140 290 150', 4, '#4B2F96', 4, 30);
-    addMover(corSvg, 'M400 256 C396 215 360 180 290 170', 4, '#4B2F96', 4, 30);
+    var g = makeGlobe($('corGlobe'), 0.74);
+    g.lat0 = 10; g.lon0 = -25;
+    var spin = !reduceMotion, defl = spin ? 1 : 0, parts = [], acc = 0;
+    function spawn(p, warm){
+      p.lat = (p.n ? 1 : -1)*(25+Math.random()*6);
+      p.lon = g.lon0 - 75 + Math.random()*130;
+      p.trail = []; p.t = 0;
+      if(warm){ var s = Math.random()*3; for(var i = 0; i < s/0.1; i++) move(p, 0.1, true); }
+    }
+    function move(p, dt, rec){
+      var a = Math.abs(p.lat), v = 6;
+      p.lat += (p.n ? -1 : 1)*v*dt;
+      p.lon -= v*defl*(0.25 + 1.5*(1 - Math.min(a, 30)/30))*dt;
+      p.t += dt;
+      if(rec || p.t >= 0.1){ p.t = 0; p.trail.push([p.lat, p.lon]); if(p.trail.length > 16) p.trail.shift(); }
+    }
+    for(var i = 0; i < 44; i++){ var p = { n:i % 2 === 0 }; spawn(p, true); parts.push(p); }
+    function setSpin(on){
+      spin = on;
+      $('corSpin').textContent = on ? '⏸ Erddrehung stoppen' : '▶ Erddrehung starten';
+      $('corSpin').classList.toggle('primary', !on);
+    }
+    $('corSpin').addEventListener('click', function(){ setSpin(!spin); });
+    setSpin(spin);
+    function frame(dt){
+      if(spin) g.lon0 -= 7*dt;
+      defl += ((spin ? 1 : 0) - defl)*Math.min(1, dt*2.2);
+      parts.forEach(function(p){
+        move(p, dt, false);
+        var rel = p.lon - g.lon0;
+        if(Math.abs(p.lat) < 2.5 || rel > 88 || rel < -88) spawn(p, false);
+      });
+      draw();
+    }
+    function draw(){
+      var ctx = g.ctx, u = g.u, L = g.lon0;
+      g.drawBase();
+      ctx.save(); g.clip();
+      g.band(-4, 4, 'rgba(255,255,255,.28)');
+      g.parallel(23.5, 'rgba(255,226,160,.85)', 1.6, [6,5]);
+      g.parallel(-23.5, 'rgba(255,226,160,.85)', 1.6, [6,5]);
+      g.parallel(0, '#FF7A5C', 2.4);
+      /* wind trails, relative to the ground */
+      ctx.lineCap = 'round';
+      parts.forEach(function(p){
+        var tr = p.trail.concat([[p.lat, p.lon]]);
+        for(var k = 1; k < tr.length; k++){
+          var a = g.proj(tr[k-1][0], tr[k-1][1]), b = g.proj(tr[k][0], tr[k][1]);
+          if(a.z < 0 || b.z < 0) continue;
+          ctx.strokeStyle = 'rgba(255,255,255,'+(0.08 + 0.85*k/tr.length)+')';
+          ctx.lineWidth = (1.2 + 1.8*k/tr.length)*u;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+        var h = g.proj(p.lat, p.lon), q = g.proj(tr[Math.max(0, tr.length-4)][0], tr[Math.max(0, tr.length-4)][1]);
+        if(h.z > 0.05 && (Math.abs(h.x-q.x) + Math.abs(h.y-q.y)) > 1) g.arrowHead(h.x, h.y, Math.atan2(h.y-q.y, h.x-q.x), 9, '#fff');
+      });
+      ctx.restore();
+      g.drawShade();
+      /* rotation arrow near the north pole */
+      if(defl > 0.05){
+        ctx.save(); ctx.globalAlpha = Math.min(1, defl*1.2);
+        g.surfArrow(58, L-40, 58, L+40, '#FFD43B', 3.2);
+        var r = g.proj(64, L+8); g.text('Erddrehung nach Osten', r.x, r.y - 12*u, 12.5, '#FFD43B', 'center');
+        ctx.restore();
+      }
+      /* pressure labels */
+      [[28, 'H'], [-28, 'H'], [0, 'T']].forEach(function(m){
+        var q = g.proj(m[0], L+42); if(q.z < 0) return;
+        ctx.beginPath(); ctx.arc(q.x, q.y, 12*u, 0, 2*Math.PI);
+        ctx.fillStyle = m[1] === 'H' ? '#C7512D' : '#2F6FD8'; ctx.fill();
+        ctx.lineWidth = 2*u; ctx.strokeStyle = '#fff'; ctx.stroke();
+        ctx.font = g.font(14); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff'; ctx.fillText(m[1], q.x, q.y + 1*u);
+      });
+      var it = g.proj(0, L+42); if(it.z > 0) g.text('ITC', it.x + 18*u, it.y, 12, '#CFE3FF');
+      /* wind names */
+      var nn = defl > 0.5 ? ['Nordostpassat', 'Südostpassat'] : ['Nordwind', 'Südwind'];
+      var a1 = g.proj(13, L-22), a2 = g.proj(-13, L-22);
+      g.text(nn[0], a1.x, a1.y, 15, '#FFFFFF', 'center'); g.text(nn[1], a2.x, a2.y, 15, '#FFFFFF', 'center');
+      /* side labels */
+      var x0 = g.cx - g.R - 8*u;
+      [[23.5, 'Nördl. Wendekreis', '#FFE2A0'], [0, 'Äquator', '#FF9C80'], [-23.5, 'Südl. Wendekreis', '#FFE2A0']].forEach(function(l){
+        var q = g.proj(l[0], L-90); ctx.font = g.font(11.5, 700); g.text(l[1], Math.max(Math.min(x0, q.x - 6*u), ctx.measureText(l[1]).width + 6*u), q.y, 11.5, l[2], 'right', 700);
+      });
+      g.text(spin ? '🌍 Die Erde dreht sich' : '⏸ Die Erde steht still', 12*u, 18*u, 13, '#fff', 'left');
+      g.text('Linien = Weg der Luft über dem Boden', 12*u, g.h - 16*u, 11.5, 'rgba(255,255,255,.8)', 'left', 600);
+    }
+    globes.push({ g:g, frame:frame });
   })();
 
-  /* ITC migration */
+  /* ITC migration on the globe */
   var monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   function zenith(doy){ return 23.44 * Math.sin(2*Math.PI*(doy - 80)/365); }
   function itcLat(m){ return 0.8 * zenith(15 + m*30.4 - 40); }
   var places = [
-    { n:'Timbuktu (Mali), ≈ 17° N', ex:'Savanne am Rand der Sahara', lat:17 },
-    { n:'Am Äquator', ex:'z. B. Kongobecken, Regenwald', lat:0 },
-    { n:'≈ 15° S', ex:'z. B. Sambia, Savanne', lat:-15 }
+    { n:'Timbuktu (Mali), ≈ 17° N', short:'Timbuktu', ex:'Savanne am Rand der Sahara', lat:17, lon:-3 },
+    { n:'Am Äquator', short:'Kongobecken', ex:'z. B. Kongobecken, Regenwald', lat:0, lon:22 },
+    { n:'≈ 15° S', short:'Sambia', ex:'z. B. Sambia, Savanne', lat:-15, lon:28 }
   ];
   function underItc(p, m){ return Math.abs(itcLat(m) - p.lat) <= 10; }
   function wet(p, m){ return underItc(p, m) || Math.abs(p.lat) <= 3; }
-  var itcSvg = $('itcSvg');
-  function iy(lat){ return 145 - lat*4; }
+  var itcG = makeGlobe($('itcGlobe'), 0.74);
+  itcG.lat0 = 6; itcG.lon0 = 12;
+  var itcSpin = false;
+  function latTxt(v){ var r = Math.round(Math.abs(v)); return r === 0 ? '0°' : r+'° '+(v > 0 ? 'N' : 'S'); }
+  function drawItcGlobe(){
+    var g = itcG, ctx = g.ctx, u = g.u, L = g.lon0;
+    var m = parseInt($('itcMonth').value, 10), z = zenith(15 + m*30.4), it = itcLat(m);
+    g.drawBase();
+    ctx.save(); g.clip();
+    g.band(it-10, it+10, 'rgba(70,140,255,.42)');
+    g.parallel(23.5, 'rgba(255,226,160,.9)', 1.6, [6,5]);
+    g.parallel(-23.5, 'rgba(255,226,160,.9)', 1.6, [6,5]);
+    g.parallel(0, '#FF7A5C', 2.2);
+    g.parallel(z, '#FFC23A', 4);
+    /* Passat blowing into the rain zone from both sides */
+    [-50, -20, 10, 40].forEach(function(o){
+      g.surfArrow(it+24, L+o+10, it+12, L+o-4, 'rgba(255,255,255,.85)', 2.4);
+      g.surfArrow(it-24, L+o+10, it-12, L+o-4, 'rgba(255,255,255,.85)', 2.4);
+    });
+    /* clouds and rain along the ITC */
+    [-55, -25, 5, 35, 65].forEach(function(o){
+      var q = g.proj(it, L+o); if(q.z < 0.15) return;
+      var s = u*(0.6 + 0.4*q.z);
+      ctx.strokeStyle = 'rgba(200,225,255,.95)'; ctx.lineWidth = 2*s;
+      for(var r = -12; r <= 12; r += 8){ ctx.beginPath(); ctx.moveTo(q.x + r*s, q.y + 6*s); ctx.lineTo(q.x + (r-3)*s, q.y + 16*s); ctx.stroke(); }
+      ctx.fillStyle = '#fff';
+      [[-11,-2,10],[0,-8,13],[12,-3,10],[0,0,12]].forEach(function(c){ ctx.beginPath(); ctx.arc(q.x + c[0]*s, q.y + c[1]*s, c[2]*s, 0, 2*Math.PI); ctx.fill(); });
+    });
+    ctx.restore();
+    g.drawShade();
+    /* sun with parallel rays hitting the zenith line */
+    var sx = g.cx - g.R - 40*u, sy = 44*u;
+    var tgt = [-48, -32, -16].map(function(o){ return g.proj(z, L+o); });
+    ctx.strokeStyle = 'rgba(255,212,59,.75)'; ctx.lineWidth = 2*u; ctx.setLineDash([7*u, 5*u]);
+    tgt.forEach(function(t){ if(t.z < 0) return; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(t.x, t.y); ctx.stroke(); });
+    ctx.setLineDash([]);
+    var sg = ctx.createRadialGradient(sx, sy, 4*u, sx, sy, 34*u);
+    sg.addColorStop(0, 'rgba(255,230,120,.9)'); sg.addColorStop(1, 'rgba(255,200,60,0)');
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(sx, sy, 34*u, 0, 2*Math.PI); ctx.fill();
+    ctx.fillStyle = '#FFD43B'; ctx.beginPath(); ctx.arc(sx, sy, 15*u, 0, 2*Math.PI); ctx.fill();
+    var zl = g.proj(z, L+52);
+    if(zl.z > 0) g.text('Zenitstand der Sonne', zl.x + 8*u, zl.y - 12*u, 12.5, '#FFD43B', 'left');
+    var bl = g.proj(it, L+62);
+    if(bl.z > 0) g.text('Regenzone (ITC)', bl.x + 6*u, bl.y + 26*u, 12.5, '#BFD8FF', 'left');
+    /* places */
+    places.forEach(function(p, i){
+      var q = g.proj(p.lat, p.lon); if(q.z < 0.05) return;
+      var w = underItc(p, m);
+      ctx.beginPath(); ctx.arc(q.x, q.y, 8.5*u, 0, 2*Math.PI);
+      ctx.fillStyle = w ? '#1E4FA8' : '#E59A00'; ctx.fill();
+      ctx.lineWidth = 3*u; ctx.strokeStyle = '#fff'; ctx.stroke();
+      g.text('ABC'[i]+' '+p.short, q.x + 13*u, q.y, 12.5, '#fff', 'left');
+    });
+    var x0 = g.cx - g.R - 8*u;
+    [[23.5, 'Nördl. Wendekreis', '#FFE2A0'], [0, 'Äquator', '#FF9C80'], [-23.5, 'Südl. Wendekreis', '#FFE2A0']].forEach(function(l){
+      var q = g.proj(l[0], L-90); ctx.font = g.font(11.5, 700); g.text(l[1], Math.max(Math.min(x0, q.x - 6*u), ctx.measureText(l[1]).width + 6*u), q.y, 11.5, l[2], 'right', 700);
+    });
+    g.text(monthNames[m]+' · Sonne im Zenit über '+latTxt(z), g.w - 12*u, 18*u, 13, '#fff', 'right');
+    g.dirty = false;
+  }
   function renderItc(){
-    var m = parseInt($('itcMonth').value, 10), z = zenith(15 + m*30.4), it = itcLat(m), s = '';
+    var m = parseInt($('itcMonth').value, 10);
     $('itcMonthOut').textContent = monthNames[m];
-    s += '<rect width="640" height="290" fill="#F4E3B5"></rect>';
-    s += '<rect x="0" y="'+iy(it+10)+'" width="640" height="'+(iy(it-10)-iy(it+10))+'" fill="#7FB2E5" opacity=".55"></rect>';
-    for(var cx = 60; cx < 640; cx += 140){ s += '<g fill="#fff" opacity=".95"><ellipse cx="'+cx+'" cy="'+(iy(it)-4)+'" rx="30" ry="10"></ellipse><circle cx="'+(cx-10)+'" cy="'+(iy(it)-10)+'" r="11"></circle><circle cx="'+(cx+8)+'" cy="'+(iy(it)-13)+'" r="13"></circle></g>'; for(var r = -16; r <= 16; r += 8){ s += '<line class="rain-line" x1="'+(cx+r)+'" y1="'+(iy(it)+8)+'" x2="'+(cx+r-3)+'" y2="'+(iy(it)+18)+'"></line>'; } }
-    [[23.5,'Nördlicher Wendekreis'],[0,'Äquator'],[-23.5,'Südlicher Wendekreis']].forEach(function(l){ s += '<line x1="0" x2="640" y1="'+iy(l[0])+'" y2="'+iy(l[0])+'" stroke="#8A6B3F" stroke-dasharray="5 5"></line><text x="6" y="'+(iy(l[0])-4)+'" font-size="10.5" fill="#6B5230" font-family="IBM Plex Mono, monospace">'+l[1]+'</text>'; });
-    s += '<line x1="0" x2="640" y1="'+iy(z)+'" y2="'+iy(z)+'" stroke="#E59A00" stroke-width="3"></line>';
-    s += '<circle cx="600" cy="'+iy(z)+'" r="13" fill="#FFD43B" stroke="#E59A00" stroke-width="2"></circle>';
-    s += '<text x="584" y="'+(iy(z)-18)+'" text-anchor="end" font-size="11.5" font-weight="800" fill="#9A5C00" font-family="Figtree, sans-serif">Zenitstand der Sonne</text>';
-    s += '<text x="440" y="'+(iy(it)+30)+'" font-size="11.5" font-weight="800" fill="#1E4FA8" font-family="Figtree, sans-serif">Regenzone (ITC)</text>';
-    places.forEach(function(p, i){ var x = 130 + i*140, w = underItc(p, m); s += '<circle cx="'+x+'" cy="'+iy(p.lat)+'" r="9" fill="'+(w ? '#1E4FA8' : '#E59A00')+'" stroke="#fff" stroke-width="3"></circle><text x="'+(x+14)+'" y="'+(iy(p.lat)+4)+'" font-size="12" font-weight="800" fill="#2D2A20" font-family="Figtree, sans-serif">'+'ABC'[i]+'</text>'; });
-    itcSvg.innerHTML = s;
+    itcG.dirty = true;
     $('itcPlaces').innerHTML = places.map(function(p, i){
       var u = underItc(p, m), w = wet(p, m);
       var badge = u ? '<span class="badge rain">🌧️ Regenzeit</span>' : w ? '<span class="badge rain">🌦️ Regen, etwas weniger</span>' : '<span class="badge dry">☀️ Trockenzeit</span>';
@@ -1237,6 +1512,7 @@
         '<div class="months">'+monthNames.map(function(n, k){ return '<span class="'+(underItc(p, k) ? 'r' : wet(p, k) ? 'r2' : 'd')+(k === m ? ' now' : '')+'" title="'+n+'">'+n[0]+'</span>'; }).join('')+'</div></div>';
     }).join('');
   }
+  globes.push({ g:itcG, frame:function(dt){ if(itcSpin){ itcG.lon0 -= 7*dt; itcG.dirty = true; } if(itcG.dirty) drawItcGlobe(); } });
   $('itcMonth').addEventListener('input', renderItc);
   var itcTimer = null;
   $('itcPlay').addEventListener('click', function(){
@@ -1244,15 +1520,19 @@
     this.textContent = '⏸ Pause';
     itcTimer = setInterval(function(){ var r = $('itcMonth'); r.value = (parseInt(r.value, 10) + 1) % 12; renderItc(); }, 900);
   });
+  $('itcSpin').addEventListener('click', function(){
+    itcSpin = !itcSpin;
+    this.textContent = itcSpin ? '⏸ Erddrehung stoppen' : '🌍 Erddrehung starten';
+  });
   renderItc();
 
   /* Gliederung der Tropen */
   var tz = [
-    { z:'A', e:'🏜️', n:'Wüste', c:'#D9A441', hum:'0–2 humide Monate', f:'trocken (arid)', d:'Kaum Niederschlag, fast keine Pflanzen. Sand-, Kies- und Felswüste (Foto 3). Hier liegt fast das ganze Jahr das Hochdruckgebiet am Wendekreis, die ITC kommt nicht bis hierher.' },
+    { z:'A', e:'🏜️', n:'Wüste', c:'#D9A441', hum:'0–2 humide Monate', f:'trocken (arid)', d:'Kaum Niederschlag, fast keine Pflanzen. Sand-, Kies- und Felswüste. Hier liegt fast das ganze Jahr das Hochdruckgebiet am Wendekreis, die ITC kommt nicht bis hierher.' },
     { z:'B', e:'🌵', n:'Dornsavanne', c:'#C9A64A', hum:'2–4½ humide Monate', f:'wechselfeucht', d:'Sehr kurze Regenzeit. Niedrige Gräser und Dornsträucher.' },
-    { z:'C', e:'🌳', n:'Trockensavanne', c:'#A8B04C', hum:'4½–7 humide Monate', f:'wechselfeucht', d:'Regenzeit und Trockenzeit etwa gleich lang. Hohe Gräser und einzelne Schirmakazien (Foto 2). In der Trockenzeit wird alles braun.' },
+    { z:'C', e:'🌳', n:'Trockensavanne', c:'#A8B04C', hum:'4½–7 humide Monate', f:'wechselfeucht', d:'Regenzeit und Trockenzeit etwa gleich lang. Hohe Gräser und einzelne Schirmakazien. In der Trockenzeit wird alles braun.' },
     { z:'D', e:'🌿', n:'Feuchtsavanne', c:'#6FA34A', hum:'7–9½ humide Monate', f:'wechselfeucht', d:'Lange Regenzeit, kurze Trockenzeit. Hohes Gras, Baumgruppen und Wälder entlang der Flüsse.' },
-    { z:'E', e:'🌴', n:'Tropischer Regenwald', c:'#2E7A3E', hum:'9½–12 humide Monate', f:'immerfeucht (humid)', d:'Fast täglich Zenitalregen, ganzjährig heiß und feucht. Dichter, artenreicher Wald in mehreren Stockwerken (Foto 1). Die ITC ist nie weit weg.' }
+    { z:'E', e:'🌴', n:'Tropischer Regenwald', c:'#2E7A3E', hum:'9½–12 humide Monate', f:'immerfeucht (humid)', d:'Fast täglich Zenitalregen, ganzjährig heiß und feucht. Dichter, artenreicher Wald in mehreren Stockwerken. Die ITC ist nie weit weg.' }
   ];
   $('zoneStrip').innerHTML = tz.map(function(x, i){ return '<button type="button" class="zone-btn" data-i="'+i+'" style="background:'+x.c+';"><span class="z">'+x.z+'</span><span class="e">'+x.e+'</span>'+x.n+'</button>'; }).join('');
   function renderZone(i){
