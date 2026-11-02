@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammar Gym Year 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f3ef; --surface:#ffffff; --ink:#14161b; --ink2:#2b2e36; --muted:#686c75;
+  --line:#e2dfd7; --line2:#cdc9be; --soft:#f7f6f2;
+  --ok:#157347; --okbg:#e5f3ea; --bad:#b42318; --badbg:#fcebe9;
+  --lime:#c5f03c; --sw:#fff6c4; --sw-edge:#e8d36a;
+  --accent:#14161b; --accent-soft:#efeee9;
+  --hdr:100px;
+  --sans:"IBM Plex Sans",system-ui,sans-serif; --display:var(--sans); --mono:var(--sans);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);font-size:17px;line-height:1.6;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;letter-spacing:-.015em}
+button{font:inherit;cursor:pointer;color:inherit}
+.mono{font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;font-weight:500}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:30;background:var(--ink);color:#f2f1ec}
+.hdr-top{display:flex;align-items:center;gap:14px;padding-top:12px;padding-bottom:4px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.15rem;text-decoration:none;color:inherit;letter-spacing:-.01em}
+.brand .mark{width:12px;height:12px;background:var(--lime);border-radius:2px;transform:rotate(45deg)}
+.hdr-top .sp{flex:1}
+.overall{display:flex;align-items:center;gap:10px;color:#a8abb3}
+.overall .bar{width:110px;height:4px;background:#30333b;border-radius:4px;overflow:hidden}
+.overall .bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .4s}
+.overall b{color:#fff;font-family:var(--mono);font-size:.8rem;font-weight:500}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:0 8px}
+nav.tabs::-webkit-scrollbar{display:none}
+.tabs a{white-space:nowrap;padding:10px 10px 11px;color:#a8abb3;text-decoration:none;font-weight:500;font-size:.92rem;border-bottom:3px solid transparent}
+.tabs a .n{font-family:var(--mono);font-size:.7rem;color:#6d717a;margin-right:6px}
+.tabs a:hover{color:#fff}
+.tabs a.on{color:#fff;border-color:var(--lime)}
+.tabs a.on .n{color:var(--lime)}
+
+main{padding-bottom:80px}
+
+/* ---------- home ---------- */
+.hero{background:var(--ink);color:#f2f1ec;padding:44px 0 60px}
+.hero-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:40px;align-items:end}
+.hero .mono{color:var(--lime)}
+.hero h1{font-size:clamp(2.4rem,7vw,4.2rem);font-weight:800;margin:12px 0 14px;letter-spacing:-.03em}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,rgba(197,240,60,.45) 62%)}
+.hero p{color:#b9bcc3;max-width:560px;margin:0;font-size:1.05rem}
+.stats{display:grid;grid-template-columns:1fr 1fr;border:1px solid #30333b;border-radius:12px;overflow:hidden}
+.stat{padding:16px 18px;border-right:1px solid #30333b}
+.stat:last-child{border-right:none}
+.stat .v{font-family:var(--display);font-size:2rem;font-weight:700;color:#fff}
+.stat .mono{color:#8d9098}
+.steps{grid-column:1/-1;display:flex;gap:28px;flex-wrap:wrap;color:#b9bcc3;font-size:.95rem;border-top:1px solid #30333b;padding-top:18px}
+.steps span b{font-family:var(--mono);color:var(--lime);font-weight:500;margin-right:6px}
+.block-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:40px 0 14px}
+.block-title h2{font-size:1.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.tcard{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,transform .15s}
+.tcard:hover,.tcard:focus-visible{border-color:var(--c);transform:translateY(-2px)}
+.tcard:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.tcard .num{font-family:var(--display);font-size:2.4rem;font-weight:800;color:var(--c);line-height:1}
+.tcard h3{font-size:1.25rem;margin-top:6px}
+.tcard p{margin:0;color:var(--muted);font-size:.95rem;flex:1}
+.tcard .prog{display:flex;align-items:center;gap:10px;margin-top:10px}
+.tcard .prog .bar{flex:1;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.tcard .prog .bar i{display:block;height:100%;background:var(--c)}
+.tcard .prog .mono{color:var(--muted)}
+
+/* ---------- topic page ---------- */
+.page-head{padding:34px 0 10px}
+.page-head .mono{color:var(--accent)}
+.page-head h1{font-size:clamp(2rem,6vw,3rem);font-weight:800;margin:8px 0 10px;letter-spacing:-.025em}
+.page-head p{margin:0;color:var(--ink2);max-width:680px;font-size:1.05rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{border:1px solid var(--line2);border-radius:99px;padding:2px 11px;font-size:.82rem;color:var(--ink2);background:var(--surface)}
+.subnav{position:sticky;top:var(--hdr);z-index:10;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:22px;padding:12px 0 10px;margin:18px 0 6px}
+.subnav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:.92rem}
+.subnav a:hover{color:var(--accent)}
+.sec{display:flex;align-items:baseline;gap:14px;margin:34px 0 14px;scroll-margin-top:calc(var(--hdr) + 56px)}
+.sec .mono{color:var(--accent)}
+.sec h2{font-size:1.55rem}
+.legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.88rem;color:var(--muted);margin:0 0 14px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:14px}
+.rule{border-left:3px solid var(--accent)}
+.rule h3{font-size:1.18rem;margin-bottom:10px}
+.rule p{margin:8px 0}
+.rule ul{margin:8px 0;padding-left:20px}
+.rule li{margin:4px 0}
+.form{display:inline-block;font-family:var(--mono);font-size:.86rem;background:var(--accent-soft);border-radius:6px;padding:4px 10px;color:var(--ink);margin:2px 0}
+.vf{font-weight:700;border-bottom:2px solid var(--accent);padding-bottom:1px}
+.sw{background:var(--sw);box-shadow:inset 0 -2px 0 var(--sw-edge);border-radius:3px;padding:0 4px;font-weight:600;white-space:nowrap;font-style:normal}
+.tip,.warn{border-radius:8px;padding:11px 14px;margin:12px 0;font-size:.96rem}
+.tip{background:var(--soft);border:1px solid var(--line)}
+.warn{background:var(--badbg);border:1px solid #f1c6c1}
+.tip b.lbl,.warn b.lbl{font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;font-weight:500;display:block;margin-bottom:2px;color:var(--muted)}
+.warn b.lbl{color:var(--bad)}
+.signals{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tablewrap{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500;color:var(--muted);border-bottom:1px solid var(--line2)}
+td .eg{display:block;margin-top:5px;font-size:.88rem;color:var(--ink2);font-style:italic}
+td .eg::before{content:"e.g. ";font-style:normal;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+table.overview td:first-child{font-weight:700;white-space:nowrap}
+table.overview td.f{font-family:var(--mono);font-size:.82rem}
+table.overview td .signals{margin:0}
+
+/* timeline */
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);position:relative;margin:18px 0 10px;text-align:center;font-size:.95rem}
+.timeline::before{content:"";position:absolute;left:0;right:8px;top:10px;height:2px;background:var(--line2)}
+.timeline::after{content:"";position:absolute;right:0;top:5px;border:6px solid transparent;border-left:9px solid var(--line2)}
+.tl-ev{position:relative;padding:0 4px}
+.tl-dot{display:block;width:22px;height:22px;border-radius:50%;margin:0 auto 6px;background:var(--accent);border:4px solid var(--surface);box-shadow:0 0 0 2px var(--accent);position:relative;z-index:1}
+.tl-dot.b{background:var(--surface)}
+.tl-dot.c{background:var(--line2);box-shadow:0 0 0 2px var(--line2)}
+.tl-ev .mono{display:block;color:var(--muted);margin-top:2px}
+
+/* examples */
+.examples{padding:4px 22px}
+.ex-row{display:flex;gap:14px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.ex-row:last-child{border-bottom:none}
+.ex-row .txt{flex:1}
+.ex-row .note{display:block;color:var(--muted);margin-top:3px}
+.say{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line2);background:var(--surface);display:grid;place-items:center;color:var(--ink2)}
+.say:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.say svg{width:16px;height:16px}
+
+/* exercises */
+.ex-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.ex-head .mono{color:var(--accent)}
+.ex-best{margin-left:auto;color:var(--ok) !important}
+.exercise h3{font-size:1.22rem}
+.instr{color:var(--muted);margin:4px 0 16px}
+.gaptext{line-height:2.6;margin:0}
+ol.lines{padding-left:26px;margin:0;line-height:2.6}
+ol.lines li::marker{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.hint{color:var(--muted);font-style:italic;font-size:.92em}
+.reveal{display:inline-flex;align-items:center;justify-content:center;min-width:5.5em;min-height:2em;padding:2px 12px;margin:0 2px;border:1px solid var(--line2);border-radius:8px;background:#ecebe6;color:#8a8d94;font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;vertical-align:middle;line-height:1.2;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.reveal:hover{background:#e3e2dc;color:var(--ink2)}
+.reveal.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-family:var(--sans);font-size:1rem;letter-spacing:0;text-transform:none;font-weight:700}
+.counter{color:var(--muted);margin-left:auto;align-self:center}
+.ex-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.btn{border:1px solid var(--ink);border-radius:8px;padding:9px 18px;font-weight:600;background:var(--ink);color:#fff}
+.btn:hover{background:var(--ink2)}
+.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--line2)}
+.btn.ghost:hover{border-color:var(--ink)}
+.result{margin-top:14px;font-weight:600;min-height:1.2em}
+.result.good{color:var(--ok)} .result.mid{color:#9a5b00} .result.low{color:var(--bad)}
+
+.mc-item,.ord-item{padding:14px 0;border-bottom:1px solid var(--line)}
+.mc-item:last-child,.ord-item:last-child{border-bottom:none}
+.q{display:flex;gap:12px;font-weight:600}
+.qn{flex:none;font-family:var(--mono);font-size:.78rem;color:var(--muted);width:22px;padding-top:3px}
+.blank{display:inline-block;min-width:3.5em;border-bottom:2px solid var(--accent);color:transparent}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0 34px}
+.opt{border:1px solid var(--line2);background:var(--surface);border-radius:8px;padding:7px 14px;font-weight:500}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+.opt.right{border-color:var(--ok);background:var(--okbg);color:var(--ok);font-weight:600}
+.opt.wrong{border-color:var(--bad);background:var(--badbg);color:var(--bad);text-decoration:line-through}
+.opt:disabled{cursor:default}
+.why{margin:8px 0 0 34px;font-size:.93rem;color:var(--ink2)}
+.why:empty{display:none}
+.good{color:var(--ok)} .badtxt{color:var(--bad)}
+.built{min-height:50px;border:1.5px dashed var(--line2);border-radius:10px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 8px 34px;align-items:center;background:var(--soft)}
+.built.ok{border-color:var(--ok);background:var(--okbg);border-style:solid}
+.built.bad{border-color:var(--bad);background:var(--badbg);border-style:solid}
+.built:empty::before{content:"Tap the words in the right order";color:#9a9da4;font-size:.9rem;padding-left:6px}
+.pool{display:flex;flex-wrap:wrap;gap:6px;margin-left:34px}
+.word{border:1px solid var(--line2);border-radius:8px;padding:6px 12px;font-weight:600;background:var(--surface);box-shadow:0 1px 0 rgba(20,22,27,.08)}
+.word:hover{border-color:var(--ink)}
+.ord-sol{margin:6px 0 0 34px;font-weight:600;color:var(--ok);font-size:.93rem}
+.ord-sol:empty{display:none}
+.nextprev{display:flex;justify-content:space-between;gap:12px;margin-top:34px;flex-wrap:wrap}
+
+/* word bank */
+.reminders{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-bottom:22px}
+.rem{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--soft)}
+.rem h4{margin:0;font-family:var(--display);font-size:1.02rem}
+.rem .form{font-size:.76rem;margin:4px 0 6px}
+.rem p{margin:0;font-size:.93rem}
+.verb-table td{vertical-align:middle}
+.verb-table .reveal{min-width:7.5em}
+.filter{font:inherit;width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line2);margin:12px 0 4px;background:var(--surface)}
+details.card summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:1.1rem}
+.flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.flip{border:1px solid var(--line);background:var(--surface);border-radius:10px;min-height:112px;padding:14px;text-align:left;position:relative}
+.flip:hover{border-color:var(--ink)}
+.flip .front{font-family:var(--display);font-size:1.12rem;font-weight:700}
+.flip .back{display:none;font-size:.93rem;margin-top:4px}
+.flip .turn{position:absolute;right:12px;bottom:10px;color:var(--muted)}
+.flip.on{background:var(--soft)}
+.flip.on .front{font-size:.9rem;color:var(--accent)}
+.flip.on .back{display:block}
+.flip.on .turn{display:none}
+
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .hero-grid{grid-template-columns:1fr;gap:24px}
+  .overall .lbl,.overall .bar{display:none}
+  .opts,.why,.built,.pool,.ord-sol{margin-left:0}
+  table.overview,table.overview tbody,table.overview tr,table.overview td{display:block;width:100%}
+  table.overview thead{display:none}
+  table.overview tr{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+  table.overview td{border:none;padding:4px 0}
+  table.overview td::before{content:attr(data-l);display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  table.overview td:first-child::before{display:none}
+  table.overview td:first-child{font-family:var(--display);font-size:1.1rem}
+}
+@media (prefers-reduced-motion:reduce){.tcard{transition:none}}
+
+/* ---------- calm typography: one family, few sizes, no uppercase ---------- */
+h1,h2,h3,h4{font-weight:600;letter-spacing:0}
+.mono{font-size:.85rem;letter-spacing:0;text-transform:none;font-weight:500}
+b,strong{font-weight:600}
+.brand{font-weight:600;font-size:1.05rem}
+.tabs a{font-size:.9rem}
+.tabs a .n{font-size:.9rem}
+.hero{padding:36px 0 44px}
+.hero h1{font-size:clamp(2rem,5vw,2.6rem);font-weight:600;letter-spacing:-.01em;margin:8px 0 12px}
+.hero p,.page-head p{font-size:1rem}
+.stat .v{font-size:1.5rem;font-weight:600}
+.page-head{padding:28px 0 4px}
+.page-head h1{font-size:clamp(1.7rem,4.5vw,2.1rem);font-weight:600;letter-spacing:-.01em;margin:6px 0 8px}
+.tags{display:none}
+.block-title h2,.sec h2{font-size:1.3rem}
+.sec{margin:30px 0 12px}
+.sec .mono{display:none}
+.tcard .num{font-size:1rem;font-weight:600}
+.tcard h3{font-size:1.1rem;margin-top:2px}
+.rule h3,.exercise h3{font-size:1.1rem}
+.form{font-size:.92rem;font-weight:500}
+.vf{font-weight:600;border-bottom:1.5px solid var(--ink2)}
+.sw{font-weight:500;box-shadow:none;border-bottom:1.5px solid var(--sw-edge);border-radius:2px}
+th{font-size:.85rem;letter-spacing:0;text-transform:none;font-weight:600;color:var(--muted)}
+td .eg{font-size:.92rem}
+td .eg::before{font-size:.92rem;font-family:var(--sans)}
+table.overview td.f{font-size:.92rem}
+.tip b.lbl,.warn b.lbl{font-size:.85rem;letter-spacing:0;text-transform:none;font-weight:600}
+.ex-row .note{font-size:.85rem}
+.ex-head .mono{color:var(--muted)}
+.qn{font-size:.85rem}
+.reveal{font-size:.85rem;letter-spacing:0;text-transform:none;font-family:var(--sans);font-weight:500}
+.reveal.on{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:600;font-size:1rem}
+.btn,.opt,.word{font-weight:500}
+.score-big{font-size:1.8rem;font-weight:600;letter-spacing:0}
+.flip .front{font-size:1.02rem;font-weight:600}
+.rem h4{font-size:1rem}
+.rem .form{font-size:.85rem}
+details.card summary{font-size:1.05rem;font-weight:600}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <div class="wrap hdr-top">
+    <a class="brand" href="#home"><span class="mark"></span>Grammar Gym</a>
+    <span class="sp"></span>
+    <div class="overall" title="Your overall progress"><span class="mono lbl">Progress</span><span class="bar"><i id="overallBar"></i></span><b id="overallPct">0%</b></div>
+  </div>
+  <div class="wrap" style="padding:0"><nav class="tabs" id="tabs" aria-label="Topics"></nav></div>
+</header>
+<main id="app"></main>
+
+<script>
+"use strict";
+/* ============================================================
+   CONTENT
+   Gap syntax:  [[hint::answer1;answer2::distractor1;distractor2]]
+   Text markup: *verb form*   {signal word}
+   No contractions are used in the content (the checker accepts them anyway).
+   ============================================================ */
+const mc = (q, o, a, why) => ({ q, o, a, why });
+
+const TENSES_OVERVIEW = [
+  { name: "Simple past", form: "verb + -ed / 2nd form", use: "finished action at a definite time in the past",
+    signals: ["yesterday", "last week", "… ago", "in 2023", "When …?"], ex: "We *visited* the Tower of London {last year}." },
+  { name: "Present perfect", form: "have / has + 3rd form", use: "past action with a link to now: result, experience, still true",
+    signals: ["ever", "never", "already", "just", "yet", "so far", "since", "for"], ex: "*Have* you {ever} *been* to Scotland?" },
+  { name: "Past progressive", form: "was / were + -ing", use: "action in progress at a moment in the past",
+    signals: ["while", "at 8 pm yesterday", "when (+ short action)"], ex: "{At 8 pm yesterday} I *was doing* my homework." },
+  { name: "Past perfect", form: "had + 3rd form", use: "the past before the past",
+    signals: ["already", "by the time", "after", "before", "never … before"], ex: "{By the time} we arrived, the film *had* {already} *started*." },
+  { name: "will-future", form: "will + infinitive", use: "prediction, opinion, spontaneous decision, promise",
+    signals: ["I think", "probably", "maybe", "I am sure", "tomorrow"], ex: "{I think} it *will rain* {tomorrow}." },
+  { name: "going to-future", form: "am / is / are going to + infinitive", use: "plan already made, or a prediction with evidence",
+    signals: ["next week", "tonight", "Look!"], ex: "We *are going to visit* Grandma {next weekend}." }
+];
+
+const TOPICS = [
+/* ---------------------------------------------------------- 1 */
+{
+  id: "tenses", color: "#a35a00", soft: "#fbf2e4", legend: true,
+  title: "Tenses Review",
+  short: "Simple past, present perfect, past progressive, will and going to.",
+  intro: "Which tense do I need? Look for the signal words and ask: Is it finished? Is it connected to now? Was it in progress? Is it a plan?",
+  chips: ["simple past", "present perfect", "past progressive", "will", "going to", "since / for"],
+  rules: [
+    { h: "All tenses at a glance", body: "%OVERVIEW%" },
+    { h: "Simple past: finished, at a definite time", body: `
+      <p><span class="form">verb + -ed | irregular: 2nd form</span></p>
+      <p>play → played · stop → stopped · study → studied · go → <b>went</b> · see → <b>saw</b></p>
+      <p>Questions and negatives with <b>did</b> + infinitive: <i>*Did* you *see* the match {yesterday}? – No, I *did not*.</i></p>
+      <div class="tip"><b class="lbl">Signal words</b><span class="signals">{yesterday} {last week} {last year} {… ago} {in 2023} {When …?}</span></div>` },
+    { h: "Present perfect: the past with a link to now", body: `
+      <p><span class="form">have / has + past participle (3rd form)</span></p>
+      <ul>
+        <li><b>Result now:</b> <i>I *have lost* my key. (I cannot get in now.)</i></li>
+        <li><b>Experience:</b> <i>*Have* you {ever} *been* to London?</i></li>
+        <li><b>Started in the past and still true:</b> <i>We *have lived* here {since} 2019.</i></li>
+      </ul>
+      <div class="tip"><b class="lbl">Signal words</b><span class="signals">{ever} {never} {already} {just} {yet} {so far} {recently} {since} {for} {How long …?}</span></div>
+      <div class="warn"><b class="lbl">Watch out</b>Never use the present perfect with a definite past time:<br>✗ <i>I have seen him yesterday.</i> &nbsp; ✓ <i>I *saw* him {yesterday}.</i></div>
+      <p><b>since</b> + point in time: <i>since Monday, since 2020, since I was six</i><br>
+         <b>for</b> + period of time: <i>for two hours, for three years, for ages</i></p>` },
+    { h: "Past progressive: in progress in the past", body: `
+      <p><span class="form">was / were + verb-ing</span></p>
+      <ul>
+        <li><b>At a certain moment:</b> <i>{At 8 pm yesterday} I *was doing* my homework.</i></li>
+        <li><b>Long action interrupted by a short one:</b> <i>I *was having* a shower {when} the phone rang.</i><br>
+          long action → past progressive, short action → simple past</li>
+        <li><b>Two actions at the same time:</b> <i>{While} Mum *was cooking*, Dad *was reading*.</i></li>
+      </ul>
+      <div class="tip"><b class="lbl">Signal words</b><span class="signals">{while} {at 7 o'clock yesterday} {all evening} {when (+ short action)}</span></div>` },
+    { h: "Future: will or going to?", body: `
+      <div class="tablewrap"><table>
+        <tr><th>will + infinitive</th><th>be going to + infinitive</th></tr>
+        <tr><td><b>Predictions and opinions:</b><span class="eg">{I think} it *will be* sunny tomorrow.</span></td>
+            <td><b>Plans</b> you have already made:<span class="eg">We *are going to visit* Grandma {at the weekend}.</span></td></tr>
+        <tr><td><b>Spontaneous decisions:</b><span class="eg">The phone is ringing. – I *will get* it!</span></td>
+            <td><b>Predictions with evidence</b> you can see now:<span class="eg">{Look} at those clouds! It *is going to rain*.</span></td></tr>
+        <tr><td><b>Promises and offers:</b><span class="eg">I *will help* you with your bag.</span></td><td></td></tr>
+      </table></div>
+      <div class="tip"><b class="lbl">Signal words</b><span class="signals">will: {I think} {probably} {maybe} {I am sure} · going to: {Look!} {next week} {tonight}</span></div>` }
+  ],
+  examples: [
+    { t: "We *visited* the Tower of London {last year}.", n: "simple past" },
+    { t: "*Have* you {ever} *eaten* haggis? – No, {never}.", n: "present perfect · experience" },
+    { t: "I *have lived* in this town {since} 2019.", n: "present perfect · still true" },
+    { t: "I *was walking* home {when} I *saw* a fox.", n: "past progressive + simple past" },
+    { t: "I *am going to join* the football club {next term}.", n: "going to · plan" },
+    { t: "Do not worry, {I am sure} you *will pass* the test!", n: "will · prediction" }
+  ],
+  exercises: [
+    { type: "gap", title: "A rainy day in Edinburgh",
+      instr: "Put the verbs into the correct tense: simple past, past progressive, present perfect or going to-future. Say the answer in your head, then tap “show” to check.",
+      text: `Last summer my family [[go::went::was going]] to Edinburgh for a week. On the first day we [[visit::visited::have visited]] the castle. While we [[walk::were walking::walked]] down the Royal Mile, it suddenly [[start::started::was starting]] to rain. We [[not have::did not have::have not had]] umbrellas, so Dad [[buy::bought::has bought]] some in a little shop. At five o'clock we were all wet, and my little sister [[cry::was crying::cries]] because her new shoes were dirty. I [[be::have been::was]] to Scotland three times now, but I [[never see::have never seen::had never seen]] the Loch Ness Monster. Next summer we [[visit::are going to visit;are visiting::were visiting]] the Highlands. My parents [[already book::have already booked::had already booked]] the hotel!` },
+    { type: "gap", title: "since or for?",
+      instr: "Put since or for into the gaps. Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "We have lived in Hanover [[::since::for]] 2018.",
+        "I have known my best friend [[::for::since]] six years.",
+        "She has not eaten anything [[::since::for]] breakfast.",
+        "They have been at the museum [[::for::since]] two hours.",
+        "My dad has worked at the hospital [[::since::for]] he was 25.",
+        "It has not rained [[::for::since]] three weeks.",
+        "Have you had your bike [[::for::since]] a long time?",
+        "Nobody has seen Max [[::since::for]] Friday."
+      ] },
+    { type: "gap", title: "Simple past or present perfect?",
+      instr: "Look for the signal words, then choose the simple past or the present perfect. Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "I [[lose::have lost::lost]] my key. Now I cannot open the door.",
+        "I [[lose::lost::have lost]] my key yesterday, but I found it again.",
+        "[[you / ever / be::Have you ever been::Did you ever be]] to London?",
+        "Shakespeare [[write::wrote::has written]] “Romeo and Juliet”.",
+        "We [[just / finish::have just finished::has just finished]] our project.",
+        "Two years ago my cousin [[move::moved::has moved]] to Canada.",
+        "Look! Somebody [[open::has opened::was opening]] the window.",
+        "[[you / do::Have you done::Did you do]] your homework yet?",
+        "When [[you / arrive::did you arrive::have you arrived]] in Bristol?"
+      ] },
+    { type: "mc", title: "Choose the right form",
+      instr: "Click the correct answer. You get an explanation straight away.",
+      items: [
+        mc("Look at that boy on the wall! He ___ fall.", ["is going to", "will"], 0, "You can <b>see</b> it now (evidence) → <b>going to</b>."),
+        mc("I am thirsty. – Wait, I ___ get you a glass of water.", ["will", "am going to"], 0, "Spontaneous offer, decided right now → <b>will</b>."),
+        mc("We have bought the tickets. We ___ see a musical in London.", ["are going to", "will"], 0, "A plan that is already made → <b>going to</b>."),
+        mc("I think Germany ___ win the next World Cup.", ["will", "is going to"], 0, "Opinion with <b>I think</b> → <b>will</b>."),
+        mc("I ___ TV when my friend called.", ["was watching", "watched"], 0, "Long action (watching) interrupted by a short one (called) → past progressive."),
+        mc("While I ___ my bike, it started to snow.", ["was riding", "rode"], 0, "<b>while</b> + action in progress → past progressive."),
+        mc("Yesterday I ___ my grandma and then went to the cinema.", ["visited", "was visiting"], 0, "One finished action after another → simple past."),
+        mc("___ you ever ___ a horse?", ["Have … ridden", "Did … ride"], 0, "<b>ever</b> = experience up to now → present perfect."),
+        mc("My brother ___ his arm last week.", ["broke", "has broken"], 0, "<b>last week</b> = definite past time → simple past."),
+        mc("What ___ at 7 o'clock last night? – I was in the shower.", ["were you doing", "did you do"], 0, "At a certain moment in the past → past progressive.")
+      ] },
+    { type: "order", title: "Build the sentence",
+      instr: "Tap the words in the correct order. Tap a word again to take it back.",
+      items: [
+        { a: "While I was reading, the lights went out.", alt: ["The lights went out while I was reading."] },
+        { a: "I have never seen a kangaroo." },
+        { a: "We are going to have a party." },
+        { a: "Did you see the fireworks last night?" }
+      ] }
+  ]
+},
+/* ---------------------------------------------------------- 2 */
+{
+  id: "pastperfect", color: "#5b3fd1", soft: "#f1eefd", legend: true,
+  title: "Past Perfect",
+  short: "The past before the past: had + past participle.",
+  intro: "When you tell a story in the past and want to say that something happened even earlier, you need the past perfect.",
+  chips: ["had + 3rd form", "already", "by the time", "after", "because"],
+  rules: [
+    { h: "Form: had + past participle", body: `
+      <p><span class="form">had + past participle (3rd form), the same for all persons</span></p>
+      <div class="tablewrap"><table>
+        <tr><th>positive</th><th>negative</th><th>question and short answer</th></tr>
+        <tr><td>I / you / she / we / they *had finished*</td><td>I *had not finished*</td><td>*Had* you *finished*? – Yes, I had. / No, I had not.</td></tr>
+      </table></div>` },
+    { h: "Use: the past before the past", body: `
+      <p>Two actions in the past: the one that happened <b>first</b> gets the past perfect.</p>
+      <div class="timeline" aria-label="Timeline: first the film had started, then we got there, then now">
+        <div class="tl-ev"><span class="tl-dot"></span>1 · the film <i>had started</i><span class="mono">past perfect</span></div>
+        <div class="tl-ev"><span class="tl-dot b"></span>2 · we <i>got</i> there<span class="mono">simple past</span></div>
+        <div class="tl-ev"><span class="tl-dot c"></span>now<span class="mono">&nbsp;</span></div>
+      </div>
+      <p><i>When we *got* to the cinema, the film *had* {already} *started*.</i> (We missed the beginning.)</p>
+      <div class="tip"><b class="lbl">Compare</b>
+      <i>When we arrived, the film <b>started</b>.</i> → first we arrived, then the film started.<br>
+      <i>When we arrived, the film <b>had started</b>.</i> → the film started first, we were late.</div>` },
+    { h: "Signal words and typical patterns", body: `
+      <ul>
+        <li><i>I *had* {never} *seen* the sea {before} I went to Cornwall.</i></li>
+        <li><i>{By the time} the police arrived, the thief *had run* away.</i></li>
+        <li><i>{After} she *had finished* her homework, she went out.</i></li>
+        <li><i>He was hungry {because} he *had not eaten* all day.</i> (reason in the earlier past)</li>
+      </ul>
+      <div class="tip"><b class="lbl">Signal words</b><span class="signals">{already} {just} {never … before} {by the time} {after} {before} {because}</span></div>` }
+  ],
+  examples: [
+    { t: "{By the time} the police arrived, the thief *had run* away.", n: "by the time" },
+    { t: "Emma was sad {because} she *had lost* her phone.", n: "because · reason" },
+    { t: "I *had* {never} *been* on a plane {before} our trip to Dublin.", n: "never … before" },
+    { t: "*Had* you *met* him {before} the party? – No, I *had not*.", n: "question and short answer" },
+    { t: "{After} we *had bought* the tickets, we went into the museum.", n: "after" }
+  ],
+  exercises: [
+    { type: "gap", title: "The worst morning ever",
+      instr: "Simple past or past perfect? Think: what happened first? Say the answer in your head, then tap “show” to check.",
+      text: `Yesterday was a terrible day. When I [[wake up::woke up::had woken up]], I saw that my alarm clock [[stop::had stopped::has stopped]] in the night. I ran into the kitchen, but my brother [[already / eat::had already eaten::has already eaten]] the last bowl of cornflakes. When I [[get::got::had got]] to the bus stop, the bus [[just / leave::had just left::has just left]]. So I walked to school. When I finally [[arrive::arrived::had arrived]], the test [[already / start::had already started::has already started]]. My teacher asked me, “Why are you late?” I [[not know::did not know::had not known]] what to say. And then I noticed that I [[forget::had forgotten::have forgotten]] my pencil case, too!` },
+    { type: "mc", title: "What happened first?",
+      instr: "Read the sentence carefully. Which action happened first?", fixed: true,
+      items: [
+        mc("When Tom got home, his mum <b>had cooked</b> dinner.", ["His mum cooked dinner.", "Tom got home."], 0, "<b>had cooked</b> = past perfect → this happened first. Dinner was ready."),
+        mc("When Tom got home, his mum <b>cooked</b> dinner.", ["His mum cooked dinner.", "Tom got home."], 1, "Both are simple past → same order as in the sentence: Tom came home, then she started cooking."),
+        mc("The film <b>had started</b> when we sat down.", ["The film started.", "We sat down."], 0, "Past perfect = first action."),
+        mc("After Lisa <b>had read</b> the letter, she started to cry.", ["Lisa read the letter.", "Lisa started to cry."], 0, "Past perfect = first action.")
+      ] },
+    { type: "mc", title: "Choose the right form",
+      instr: "Click the correct answer.",
+      items: [
+        mc("I could not pay because I ___ my wallet at home.", ["had left", "have left", "leave"], 0, "Leaving the wallet happened before not being able to pay → past perfect."),
+        mc("She ___ never ___ snow before she moved to Norway.", ["had … seen", "has … seen", "did … see"], 0, "<b>never … before</b> + an earlier past → past perfect."),
+        mc("___ they ___ dinner when you called?", ["Had … finished", "Have … finished", "Did … finished"], 0, "Question in the past perfect: <b>Had</b> + subject + 3rd form."),
+        mc("By the time we arrived, the others ___ all the pizza.", ["had eaten", "have eaten", "eat"], 0, "<b>by the time</b> → past perfect."),
+        mc("After he ___ his room, he went out to play.", ["had tidied", "has tidied", "tidies"], 0, "<b>after</b> + the earlier action → past perfect.")
+      ] },
+    { type: "gap", title: "Join the sentences",
+      instr: "Two things happened. Join them and use the past perfect for the first action. Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "First Sam did his homework. Then he played football.<br>→ After Sam [[do::had done::did]] his homework, he [[play::played::had played]] football.",
+        "First the guests left. Then we arrived.<br>→ When we [[arrive::arrived::had arrived]], the guests [[leave::had left;had already left::have left]].",
+        "Mia did not study. So she failed the test.<br>→ Mia failed the test because she [[not study::had not studied::has not studied]].",
+        "First I saw the film. Then I read the book.<br>→ I [[read::read::had read]] the book after I [[see::had seen::have seen]] the film.",
+        "The shop closed at 6 pm. We got there at 6.15 pm.<br>→ When we got there, the shop [[close::had closed;had already closed;was closed::has closed]]."
+      ] },
+    { type: "order", title: "Build the sentence",
+      instr: "Tap the words in the correct order.",
+      items: [
+        { a: "The train had already left when we arrived.", alt: ["When we arrived, the train had already left."] },
+        { a: "She was tired because she had not slept well.", alt: ["Because she had not slept well, she was tired."] },
+        { a: "Had you ever been to Wales before?" }
+      ] }
+  ]
+},
+/* ---------------------------------------------------------- 3 */
+{
+  id: "ifclauses", color: "#0e7490", soft: "#e6f4f7",
+  title: "If-Clauses",
+  short: "Type 1 (real) and type 2 (unreal). Bonus: a first look at type 3.",
+  intro: "If-clauses say what happens under a certain condition. Type 1: it can really happen. Type 2: it is imagined or unlikely.",
+  chips: ["type 1", "type 2", "If I were you", "no will after if", "bonus: type 3"],
+  rules: [
+    { h: "Type 1: real and possible", body: `
+      <p><span class="form">If + simple present, → will / can / must / imperative + infinitive</span></p>
+      <p><i>If it *rains*, we *will stay* at home.</i><br>
+         <i>If you *are* hungry, *eat* an apple.</i><br>
+         <i>If you *finish* early, you *can go*.</i></p>
+      <div class="warn"><b class="lbl">Watch out</b>No <b>will</b> in the if-clause! &nbsp;✗ <i>If it will rain …</i> &nbsp;✓ <i>If it rains …</i></div>` },
+    { h: "Type 2: unreal, imagined or unlikely", body: `
+      <p><span class="form">If + simple past, → would / could / might + infinitive</span></p>
+      <p><i>If I *had* a million euros, I *would buy* an island.</i> (I do not have it.)<br>
+         <i>If I *were* you, I *would say* sorry.</i> (advice)<br>
+         <i>If we *lived* by the sea, we *could go* surfing every day.</i></p>
+      <div class="tip"><b class="lbl">Tip</b><b>If I / he / she were …</b> sounds best in tests. (In everyday English people also say <i>was</i>.)</div>
+      <div class="warn"><b class="lbl">Watch out</b>No <b>would</b> in the if-clause! &nbsp;✗ <i>If I would have …</i> &nbsp;✓ <i>If I had …</i></div>` },
+    { h: "Word order and comma", body: `
+      <div class="tablewrap"><table>
+        <tr><th>position</th><th>rule</th></tr>
+        <tr><td><b>if-clause first</b></td><td>use a <b>comma</b><span class="eg">If it is hot<b>,</b> we will go swimming.</span></td></tr>
+        <tr><td><b>main clause first</b></td><td><b>no comma</b><span class="eg">We will go swimming if it is hot.</span></td></tr>
+      </table></div>
+      <div class="tablewrap"><table>
+        <tr><th></th><th>if-clause</th><th>main clause</th><th>meaning</th></tr>
+        <tr><td><b>Type 1</b></td>
+            <td>simple present<span class="eg">If it *rains*, …</span></td>
+            <td>will + infinitive<span class="eg">… we *will stay* at home.</span></td>
+            <td>real, possible<span class="eg">Rain is really possible today.</span></td></tr>
+        <tr><td><b>Type 2</b></td>
+            <td>simple past<span class="eg">If I *had* wings, …</span></td>
+            <td>would + infinitive<span class="eg">… I *would fly* to school.</span></td>
+            <td>unreal, imagined<span class="eg">I do not have wings. It is only a dream.</span></td></tr>
+        <tr><td><b>Bonus: Type 3</b></td>
+            <td>past perfect<span class="eg">If I *had studied*, …</span></td>
+            <td>would have + 3rd form<span class="eg">… I *would have passed*.</span></td>
+            <td>past, too late to change<span class="eg">I did not study, and I failed.</span></td></tr>
+      </table></div>` },
+    { h: "Bonus: type 3 (only if your class has done it)", body: `
+      <p>Some Year 7 books already show type 3. Ask your teacher if it will be in the test.</p>
+      <p><span class="form">If + past perfect, → would have + past participle</span></p>
+      <p><i>If I *had studied*, I *would have passed* the test.</i> (But I did not study. Too late now.)</p>` }
+  ],
+  examples: [
+    { t: "If you *hurry*, you *will catch* the bus.", n: "type 1" },
+    { t: "If we *do not leave* now, we *will be* late.", n: "type 1 · negative" },
+    { t: "If I *could* fly, I *would visit* every country in the world.", n: "type 2 · dream" },
+    { t: "What *would* you *do* if you *found* 100 euros?", n: "type 2 · question" },
+    { t: "If I *were* you, I *would ask* the teacher.", n: "type 2 · advice" },
+    { t: "You *can come* with us if you *want*.", n: "type 1 · main clause first, no comma" }
+  ],
+  exercises: [
+    { type: "gap", title: "Type 1: what will happen?",
+      instr: "Complete the if-clauses type 1. Remember: no will after if! Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "If it [[be::is::will be]] sunny tomorrow, we [[go::will go::would go]] to the beach.",
+        "If you [[not wear::do not wear::will not wear]] a jacket, you [[catch::will catch::would catch]] a cold.",
+        "We [[miss::will miss::would miss]] the bus if we [[not hurry::do not hurry::will not hurry]].",
+        "If Tom [[pass::passes::will pass]] the test, his parents [[be::will be::would be]] proud.",
+        "If the weather [[get::gets::will get]] worse, the match [[be::will be::would be]] cancelled.",
+        "What [[you / do::will you do::would you do]] if the shop [[be::is::will be]] closed?"
+      ] },
+    { type: "gap", title: "Type 2: just imagine …",
+      instr: "Complete the if-clauses type 2. Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "If I [[have::had::would have]] a dog, I [[take::would take::will take]] it for a walk every day.",
+        "If my best friend [[live::lived::would live]] closer, we [[see::would see;could see::will see]] each other more often.",
+        "If I [[be::were;was::would be]] you, I [[not tell::would not tell::will not tell]] anybody.",
+        "We [[travel::would travel::will travel]] around the world if we [[not have to::did not have to::would not have to]] go to school.",
+        "What [[you / do::would you do::will you do]] if you [[meet::met::would meet]] a famous footballer?",
+        "If I [[can::could::can]] speak Chinese, I [[get::would get;could get::will get]] a job in Beijing."
+      ] },
+    { type: "mc", title: "Type 1 or type 2?",
+      instr: "Click the correct form. The last two are bonus questions (type 3).",
+      items: [
+        mc("If I ___ time this afternoon, I will help you.", ["have", "had", "will have"], 0, "Main clause with <b>will</b> → type 1 → simple present in the if-clause."),
+        mc("If I won the lottery, I ___ a big house.", ["would buy", "will buy", "bought"], 0, "<b>won</b> (simple past) → type 2 → would + infinitive."),
+        mc("If she ___ harder, she would get better marks.", ["worked", "works", "would work"], 0, "Main clause with <b>would</b> → type 2 → simple past in the if-clause."),
+        mc("If it ___ tomorrow, we will stay inside.", ["rains", "will rain", "rained"], 0, "Type 1, and no <b>will</b> after if."),
+        mc("What would you do if you ___ invisible?", ["were", "are", "would be"], 0, "Type 2 with <b>be</b> → <b>were</b>."),
+        mc("I ___ you if I knew the answer.", ["would tell", "will tell", "told"], 0, "<b>knew</b> → type 2 → would + infinitive."),
+        mc("If we do not leave now, we ___ the train.", ["will miss", "would miss", "miss"], 0, "<b>do not leave</b> (simple present) → type 1 → will."),
+        mc("If I were a bird, I ___ over the ocean.", ["could fly", "can fly", "flew"], 0, "Type 2 → could / would + infinitive."),
+        mc("Bonus: If I had studied more, I ___ the test.", ["would have passed", "would pass", "will pass"], 0, "<b>had studied</b> (past perfect) → type 3 → would have + 3rd form."),
+        mc("Bonus: If you ___ me, I would have helped you.", ["had asked", "asked", "would ask"], 0, "<b>would have helped</b> → type 3 → past perfect in the if-clause.")
+      ] },
+    { type: "order", title: "Build the sentence",
+      instr: "Tap the words in the correct order.",
+      items: [
+        { a: "If I were rich, I would buy a horse.", alt: ["I would buy a horse if I were rich."] },
+        { a: "We will go to the zoo if the weather is nice.", alt: ["If the weather is nice, we will go to the zoo."] },
+        { a: "What would you do if you were the head teacher?", alt: ["If you were the head teacher, what would you do?"] }
+      ] }
+  ]
+},
+/* ---------------------------------------------------------- 4 */
+{
+  id: "relative", color: "#4a5a70", soft: "#eef1f5",
+  title: "Relative Clauses",
+  short: "who, which, that, whose, and contact clauses.",
+  intro: "A defining relative clause tells us exactly which person or thing we mean. Without it, the sentence would be unclear.",
+  chips: ["who", "which", "that", "whose", "where", "contact clauses"],
+  rules: [
+    { h: "The relative pronouns", body: `
+      <div class="tablewrap"><table>
+        <tr><th>pronoun</th><th>for</th><th>example</th></tr>
+        <tr><td><b>who</b></td><td>people</td><td>The girl *who* sits next to me is from Ireland.</td></tr>
+        <tr><td><b>which</b></td><td>things and animals</td><td>The bike *which* I got for my birthday is red.</td></tr>
+        <tr><td><b>that</b></td><td>people and things</td><td>The man *that* lives next door is a pilot.</td></tr>
+        <tr><td><b>whose</b></td><td>possession (his / her / their)</td><td>That is the boy *whose* bike was stolen.</td></tr>
+        <tr><td><b>where</b></td><td>places</td><td>This is the café *where* we met.</td></tr>
+      </table></div>
+      <div class="tip"><b class="lbl">Tip</b>Defining relative clauses have <b>no commas</b>.</div>` },
+    { h: "Contact clauses: leaving out the pronoun", body: `
+      <p>You can leave out <b>who / which / that</b> when it is the <b>object</b> of the relative clause:</p>
+      <p><i>The book (*that*) I am reading is exciting.</i> → <i>The book I am reading is exciting.</i></p>
+      <p>You <b>cannot</b> leave it out when it is the <b>subject</b>:</p>
+      <p><i>The man *who* lives next door is a pilot.</i> &nbsp;✗ <i>The man lives next door is a pilot.</i></p>
+      <div class="tip"><b class="lbl">Trick</b>Look at the word right after the pronoun.<br>
+        A noun or pronoun follows (I, you, my sister, Tom …) → you <b>can</b> leave it out.<br>
+        A verb follows → the pronoun <b>must stay</b>.</div>` }
+  ],
+  examples: [
+    { t: "A vet is a person *who* helps sick animals.", n: "who · people" },
+    { t: "Where is the cake *which* was on the table?", n: "which · things" },
+    { t: "That is the girl *whose* brother plays in the band.", n: "whose · possession" },
+    { t: "The film we watched last night was really scary.", n: "contact clause (that is left out)" },
+    { t: "Do you know anyone *that* can speak Italian?", n: "that · people" },
+    { t: "Is this the town *where* Shakespeare was born?", n: "where · place" }
+  ],
+  exercises: [
+    { type: "gap", title: "who, which, whose or where?",
+      instr: "Put in the right relative pronoun. (That is also correct for people and things.) Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "A teacher is a person [[::who;that::which]] works at a school.",
+        "I have lost the key [[::which;that::who]] opens the garden door.",
+        "That is the boy [[::whose::who]] dog bit my sister.",
+        "The dog [[::which;that::whose]] lives next door barks all night.",
+        "Do you know the woman [[::who;that::which]] is talking to our teacher?",
+        "We stayed at a hotel [[::which;that::where]] had a swimming pool on the roof.",
+        "Ben is the boy [[::whose::which]] parents own the pizza shop.",
+        "Is this the town [[::where::which]] Shakespeare was born?"
+      ] },
+    { type: "mc", title: "Can you leave out the relative pronoun?",
+      instr: "Use the trick: what comes right after the pronoun?", fixed: true,
+      items: [
+        mc("The jacket <b>that</b> I bought yesterday is too small.", ["Yes", "No"], 0, "After <b>that</b> comes <b>I</b> (a subject) → object → you can leave it out."),
+        mc("The girl <b>who</b> won the race is my cousin.", ["Yes", "No"], 1, "After <b>who</b> comes a verb (<b>won</b>) → it must stay."),
+        mc("The film <b>which</b> we saw was boring.", ["Yes", "No"], 0, "After <b>which</b> comes <b>we</b> → you can leave it out."),
+        mc("People <b>who</b> eat a lot of sugar often have bad teeth.", ["Yes", "No"], 1, "After <b>who</b> comes a verb (<b>eat</b>) → it must stay."),
+        mc("Is that the man <b>that</b> you met at the station?", ["Yes", "No"], 0, "After <b>that</b> comes <b>you</b> → you can leave it out."),
+        mc("I have a friend <b>who</b> can play the drums.", ["Yes", "No"], 1, "After <b>who</b> comes a verb (<b>can play</b>) → it must stay."),
+        mc("The present <b>which</b> Tim gave me is great.", ["Yes", "No"], 0, "After <b>which</b> comes <b>Tim</b> → you can leave it out."),
+        mc("The bus <b>which</b> goes to the city centre is late.", ["Yes", "No"], 1, "After <b>which</b> comes a verb (<b>goes</b>) → it must stay.")
+      ] },
+    { type: "gap", title: "What is the word?",
+      instr: "Complete the definitions with a relative pronoun. Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "A kangaroo is an animal [[::which;that::who]] lives in Australia and can jump very far.",
+        "A goalkeeper is a player [[::who;that::which]] tries to stop the ball.",
+        "An orphan is a child [[::whose::who]] parents are dead.",
+        "A library is a place [[::where::which]] you can borrow books.",
+        "A dictionary is a book [[::which;that::whose]] explains the meaning of words.",
+        "A neighbour is someone [[::who;that::where]] lives next to you."
+      ] },
+    { type: "order", title: "Build the sentence",
+      instr: "Tap the words in the correct order.",
+      items: [
+        { a: "The woman who lives next door is a doctor." },
+        { a: "The phone I wanted was too expensive." },
+        { a: "That is the singer whose song is number one." },
+        { a: "Is this the book which you were looking for?" }
+      ] }
+  ]
+},
+/* ---------------------------------------------------------- 5 */
+{
+  id: "adjectives", color: "#1d5fbf", soft: "#e9f0fb",
+  title: "Adjectives, Adverbs & Comparison",
+  short: "careful or carefully? bigger, more interesting, the best.",
+  intro: "Adjectives describe people and things. Adverbs describe how somebody does something. And both can be compared.",
+  chips: ["-ly", "good → well", "-er / -est", "more / most", "as … as", "than"],
+  rules: [
+    { h: "Adjective or adverb?", body: `
+      <p><b>Adjectives</b> describe a noun: <i>Lucy is a *careful* driver.</i><br>
+         <b>Adverbs of manner</b> describe a verb (how?): <i>Lucy drives *carefully*.</i></p>
+      <div class="warn"><b class="lbl">Watch out</b>After <b>be, look, feel, sound, taste, smell, seem, become</b> you need an <b>adjective</b>:<br>
+        <i>The soup smells *good*.</i> · <i>You look *tired*.</i> · <i>The music sounds *great*.</i></div>` },
+    { h: "Forming adverbs", body: `
+      <div class="tablewrap"><table>
+        <tr><th>rule</th><th>examples</th></tr>
+        <tr><td>adjective + <b>-ly</b></td><td>quick → quickly, careful → carefully, loud → loudly</td></tr>
+        <tr><td>-y → <b>-ily</b></td><td>happy → happily, easy → easily, angry → angrily</td></tr>
+        <tr><td>-le → <b>-ly</b></td><td>terrible → terribly, gentle → gently</td></tr>
+        <tr><td>-ic → <b>-ically</b></td><td>fantastic → fantastically</td></tr>
+        <tr><td><b>irregular</b></td><td>good → <b>well</b>, fast → <b>fast</b>, hard → <b>hard</b>, early → <b>early</b>, late → <b>late</b></td></tr>
+      </table></div>
+      <div class="tip"><b class="lbl">Tip</b><b>hardly</b> means “almost not”: <i>I can hardly see.</i> It is NOT the adverb of hard!<br>
+      Adjectives ending in -ly (friendly, lovely, silly) have no adverb: <i>He smiled <b>in a friendly way</b>.</i></div>` },
+    { h: "Comparison of adjectives", body: `
+      <div class="tablewrap"><table>
+        <tr><th>type</th><th>adjective</th><th>comparative</th><th>superlative</th></tr>
+        <tr><td>one syllable</td><td>old<br>big<br>nice</td><td>old<b>er</b><br>big<b>ger</b><br>nic<b>er</b></td><td>the old<b>est</b><br>the big<b>gest</b><br>the nic<b>est</b></td></tr>
+        <tr><td>two syllables, ending in -y</td><td>happy<br>easy</td><td>happ<b>ier</b><br>eas<b>ier</b></td><td>the happ<b>iest</b><br>the eas<b>iest</b></td></tr>
+        <tr><td>long adjectives</td><td>interesting<br>careful</td><td><b>more</b> interesting<br><b>more</b> careful</td><td>the <b>most</b> interesting<br>the <b>most</b> careful</td></tr>
+        <tr><td>irregular</td><td>good<br>bad<br>much / many<br>little<br>far</td><td><b>better</b><br><b>worse</b><br><b>more</b><br><b>less</b><br><b>further / farther</b></td><td>the <b>best</b><br>the <b>worst</b><br>the <b>most</b><br>the <b>least</b><br>the <b>furthest / farthest</b></td></tr>
+      </table></div>` },
+    { h: "Comparing things", body: `
+      <ul>
+        <li><b>-er / more … than:</b> <i>Tom is *taller than* Ben.</i></li>
+        <li><b>as … as</b> (the same): <i>Ben is *as tall as* his dad.</i></li>
+        <li><b>not as … as</b> (less): <i>Maths is *not as difficult as* physics.</i></li>
+        <li><b>the + superlative:</b> <i>Ben Nevis is *the highest* mountain in the UK.</i></li>
+      </ul>` },
+    { h: "Comparison of adverbs", body: `
+      <p>-ly adverbs take <b>more / most</b>: <i>Please drive *more carefully*.</i><br>
+         Short and irregular adverbs: well → <b>better</b> → <b>best</b>, badly → <b>worse</b> → <b>worst</b>, fast → <b>faster</b>, hard → <b>harder</b>, early → <b>earlier</b></p>` }
+  ],
+  examples: [
+    { t: "Our dog is *friendly*, but he barks *loudly*.", n: "adjective · adverb" },
+    { t: "You did really *well* in the test!", n: "good → well" },
+    { t: "The Shard is *the tallest* building in London.", n: "superlative" },
+    { t: "My brother is two years *older than* me.", n: "comparative + than" },
+    { t: "Can you speak *more slowly*, please?", n: "comparison of adverbs" },
+    { t: "The film is *not as good as* the book.", n: "not as … as" }
+  ],
+  exercises: [
+    { type: "gap", title: "Adjective or adverb?",
+      instr: "Use the word in brackets as an adjective or as an adverb. Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "Tim is a [[quick::quick::quickly]] runner. He runs very [[quick::quickly::quick]].",
+        "The test was [[easy::easy::easily]]. I answered all the questions [[easy::easily::easy]].",
+        "My sister sings [[beautiful::beautifully::beautiful]].",
+        "Lena plays football very [[good::well::good]].",
+        "We worked [[hard::hard::hardly]] all day.",
+        "This pizza tastes [[great::great::greatly]]!",
+        "The man shouted [[angry::angrily::angry]] at the dog.",
+        "He drove [[careful::carefully::careful]] because the roads were icy.",
+        "You look [[sad::sad::sadly]]. What is wrong?"
+      ] },
+    { type: "gap", title: "Compare!",
+      instr: "Use the comparative or superlative form (or the normal adjective with as … as). Say the answer in your head, then tap “show” to check.",
+      lines: [
+        "Hanover is [[big::bigger::more big]] than Göttingen.",
+        "The Nile is the [[long::longest::longer]] river in Africa.",
+        "My test was [[bad::worse::worst]] than yours.",
+        "I think history is [[interesting::more interesting::interestinger]] than geography.",
+        "This is the [[good::best::better]] day of my life!",
+        "Today is [[hot::hotter::hoter]] than yesterday.",
+        "Ben Nevis is the [[high::highest::most high]] mountain in the UK.",
+        "My little sister is not as [[tall::tall::taller]] as me.",
+        "Who is the [[funny::funniest::most funny]] person in your class?",
+        "Please write [[careful::more carefully::carefuller]] next time."
+      ] },
+    { type: "mc", title: "Choose the right form",
+      instr: "Click the correct answer.",
+      items: [
+        mc("She speaks English ___.", ["perfectly", "perfect"], 0, "How does she speak? → adverb."),
+        mc("This cake smells ___!", ["delicious", "deliciously"], 0, "After <b>smell</b> → adjective."),
+        mc("He was so tired he could ___ keep his eyes open.", ["hardly", "hard"], 0, "<b>hardly</b> = almost not."),
+        mc("Paul is ___ than his brother.", ["taller", "more tall", "tallest"], 0, "Short adjective → <b>-er</b> + than."),
+        mc("This is the ___ book I have ever read.", ["most exciting", "excitingest", "more exciting"], 0, "Long adjective + <b>the</b> → <b>the most</b> …"),
+        mc("My handwriting is bad, but yours is even ___.", ["worse", "badder", "worst"], 0, "bad → <b>worse</b> → worst (irregular)."),
+        mc("London is not as ___ as Tokyo.", ["big", "bigger", "biggest"], 0, "<b>as … as</b> always takes the normal adjective."),
+        mc("Our new teacher is very ___.", ["friendly", "friendlily"], 0, "<b>friendly</b> is an adjective, and there is no word “friendlily”."),
+        mc("Our team played ___ than last week.", ["better", "gooder", "more well"], 0, "well → <b>better</b> → best.")
+      ] },
+    { type: "order", title: "Build the sentence",
+      instr: "Tap the words in the correct order.",
+      items: [
+        { a: "My dad drives more carefully than my mum." },
+        { a: "This is the most beautiful beach in Cornwall." },
+        { a: "Spanish is not as difficult as French.", keepFirst: true, alt: ["French is not as difficult as Spanish."] }
+      ] }
+  ]
+}
+];
+
+/* ---------- word bank data ---------- */
+const VERBS = [
+  ["be","was / were","been"],["become","became","become"],["begin","began","begun"],["break","broke","broken"],
+  ["bring","brought","brought"],["build","built","built"],["buy","bought","bought"],["catch","caught","caught"],
+  ["choose","chose","chosen"],["come","came","come"],["do","did","done"],["drink","drank","drunk"],
+  ["drive","drove","driven"],["eat","ate","eaten"],["fall","fell","fallen"],["feel","felt","felt"],
+  ["find","found","found"],["fly","flew","flown"],["forget","forgot","forgotten"],["get","got","got"],
+  ["give","gave","given"],["go","went","gone"],["have","had","had"],["hear","heard","heard"],
+  ["keep","kept","kept"],["know","knew","known"],["learn","learnt / learned","learnt / learned"],["leave","left","left"],
+  ["lose","lost","lost"],["make","made","made"],["meet","met","met"],["pay","paid","paid"],
+  ["put","put","put"],["read","read","read"],["ride","rode","ridden"],["ring","rang","rung"],
+  ["run","ran","run"],["say","said","said"],["see","saw","seen"],["sell","sold","sold"],
+  ["send","sent","sent"],["sing","sang","sung"],["sit","sat","sat"],["sleep","slept","slept"],
+  ["speak","spoke","spoken"],["spend","spent","spent"],["stand","stood","stood"],["steal","stole","stolen"],
+  ["swim","swam","swum"],["take","took","taken"],["teach","taught","taught"],["tell","told","told"],
+  ["think","thought","thought"],["throw","threw","thrown"],["understand","understood","understood"],["wake","woke","woken"],
+  ["wear","wore","worn"],["win","won","won"],["write","wrote","written"]
+];
+
+const SIGNAL_OPTS = ["Simple past", "Present perfect", "Past progressive", "Past perfect", "will-future", "going to-future"];
+const SIGNALS = [
+  ["yesterday", 0, "A definite time in the past."],
+  ["… ago", 0, "A definite time in the past."],
+  ["last weekend", 0, "A definite time in the past."],
+  ["in 2015", 0, "A definite time in the past."],
+  ["ever", 1, "Experience up to now."],
+  ["yet", 1, "Has it happened up to now?"],
+  ["so far", 1, "Up to now."],
+  ["since Monday", 1, "Started in the past, still true now."],
+  ["just", [1, 3], "Present perfect, or past perfect in a story in the past."],
+  ["already", [1, 3], "Present perfect, or past perfect in a story in the past."],
+  ["while", 2, "Action in progress at the same time as something else."],
+  ["at 9 pm last night", 2, "In progress at a certain moment in the past."],
+  ["by the time", 3, "Something had happened before another past action."],
+  ["I think … / probably", 4, "Prediction or opinion → will."],
+  ["I am sure", 4, "Prediction or opinion → will."],
+  ["Look at those clouds!", 5, "Evidence you can see now → going to."],
+  ["tomorrow", [4, 5], "Future: will or going to, it depends on the meaning."]
+];
+
+const GLOSSARY = [
+  ["infinitive", "The basic form of a verb: (to) go, (to) play, (to) be."],
+  ["past participle", "The 3rd form of a verb: gone, played, written. You need it for the present perfect and the past perfect."],
+  ["progressive form", "The -ing form with be: I am reading, she was sleeping."],
+  ["signal word", "A word that tells you which tense to use: yesterday, since, already, while …"],
+  ["subject", "Who or what does the action: <i><b>Tom</b> plays football.</i>"],
+  ["object", "Who or what the action is done to: <i>Tom plays <b>football</b>.</i>"],
+  ["auxiliary (verb)", "A helping verb: be, have, do, will, would."],
+  ["condition", "What must happen first: <i><b>If it rains</b>, we will stay inside.</i>"],
+  ["main clause", "The part of a sentence that can stand alone: <i>If it rains, <b>we will stay inside</b>.</i>"],
+  ["relative pronoun", "who, which, that, whose: they connect a relative clause to a noun."],
+  ["contact clause", "A relative clause without a relative pronoun: <i>The film (that) I saw.</i>"],
+  ["comparative", "The “-er / more” form: bigger, more exciting."],
+  ["superlative", "The “-est / most” form: the biggest, the most exciting."],
+  ["adverb of manner", "Says how somebody does something: slowly, carefully, well."]
+];
+
+/* ============================================================
+   STATE (progress is saved per browser; page works without it)
+   ============================================================ */
+const LS_KEY = "grammar-gym-y7";
+let progress = { ex: {}, test: null };
+try {
+  const raw = JSON.parse(localStorage.getItem(LS_KEY));
+  if (raw && typeof raw === "object") progress = { ex: raw.ex || {}, test: raw.test ?? null };
+} catch (e) { /* storage unavailable: continue without saving */ }
+function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(progress)); } catch (e) {} }
+function setBest(id, pct) { if (!(progress.ex[id] >= pct)) { progress.ex[id] = pct; save(); } updateOverall(); }
+function topicPct(t) {
+  const ids = t.exercises.map((_, i) => `${t.id}-${i}`);
+  return Math.round(ids.reduce((s, id) => s + (progress.ex[id] || 0), 0) / ids.length);
+}
+function updateOverall() {
+  const pct = Math.round(TOPICS.reduce((s, t) => s + topicPct(t), 0) / TOPICS.length);
+  document.getElementById("overallBar").style.width = pct + "%";
+  document.getElementById("overallPct").textContent = pct + "%";
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const app = document.getElementById("app");
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const pad = n => String(n).padStart(2, "0");
+/* *verb form* and {signal word} markup */
+function fmt(s) { return s.replace(/\*(.+?)\*/g, '<span class="vf">$1</span>').replace(/\{(.+?)\}/g, '<span class="sw">$1</span>'); }
+function plain(s) { return s.replace(/[*{}]/g, "").replace(/<[^>]+>/g, ""); }
+
+function norm(s) {
+  return String(s).toLowerCase()
+    .replace(/[’‘`´]/g, "'")
+    .replace(/[.,!?;:"“”()]/g, " ")
+    .replace(/\s*\/\s*/g, "/")
+    .replace(/\bwon't\b/g, "will not").replace(/\bcan't\b/g, "cannot").replace(/\bshan't\b/g, "shall not")
+    .replace(/n't\b/g, " not").replace(/'ll\b/g, " will").replace(/'ve\b/g, " have").replace(/'re\b/g, " are")
+    .replace(/\bi'm\b/g, "i am").replace(/\bcan not\b/g, "cannot")
+    .replace(/\s+/g, " ").trim();
+}
+function variants(s) {
+  const n = norm(s), out = new Set([n]);
+  if (/'d\b/.test(n)) { out.add(norm(n.replace(/'d\b/g, " would"))); out.add(norm(n.replace(/'d\b/g, " had"))); }
+  if (/'s\b/.test(n)) { out.add(norm(n.replace(/'s\b/g, " is"))); out.add(norm(n.replace(/'s\b/g, " has"))); }
+  return out;
+}
+function matches(user, answers) {
+  if (!String(user).trim()) return false;
+  const uv = variants(user);
+  return answers.some(a => [...variants(a)].some(v => uv.has(v)));
+}
+
+/* speech (British English voice if available) */
+const canSpeak = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+const SPEAKER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
+function speak(text) {
+  if (!canSpeak) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-GB"; u.rate = 0.92;
+    const vs = speechSynthesis.getVoices();
+    const v = vs.find(v => v.lang && v.lang.replace("_", "-").startsWith("en-GB")) || vs.find(v => v.lang && v.lang.startsWith("en"));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+function sayBtn(text) {
+  const b = el("button", "say", SPEAKER); b.type = "button";
+  b.title = "Listen"; b.setAttribute("aria-label", "Listen: " + text);
+  b.onclick = () => speak(text);
+  return b;
+}
+
+function resultMsg(box, correct, total) {
+  const pct = Math.round(correct / total * 100);
+  box.className = "result " + (pct >= 80 ? "good" : pct >= 50 ? "mid" : "low");
+  box.textContent = `${correct} / ${total} correct (${pct} %). ` +
+    (pct === 100 ? "Perfect!" : pct >= 80 ? "Great job." : pct >= 50 ? "Good start. Look at the red ones and try again." : "Keep training: read the rules again and retry.");
+  return pct;
+}
+
+/* ============================================================
+   GAPS: grey "show" buttons. Think of the answer, then tap to check.
+   (Distractors after the second :: in the data are not used.)
+   ============================================================ */
+function parseGaps(str, gaps) {
+  return str.replace(/\[\[(.*?)::(.*?)(?:::(.*?))?\]\]/g, (m, hint, ans) => {
+    const i = gaps.length, answer = ans.split(";")[0];
+    gaps.push(answer);
+    return (hint ? `<span class="hint">(${hint})</span> ` : "") +
+      `<button type="button" class="reveal" data-a="${answer.replace(/"/g, "&quot;")}" aria-label="Show answer ${i + 1}">show</button>`;
+  });
+}
+function toggleReveal(b, on) {
+  on = on ?? !b.classList.contains("on");
+  b.classList.toggle("on", on);
+  b.textContent = on ? b.dataset.a : "show";
+}
+
+/* ============================================================
+   EXERCISE RENDERERS
+   ============================================================ */
+function exerciseCard(num, ex, id) {
+  const labels = { gap: "think and check", mc: "multiple choice", order: "word order" };
+  const c = el("section", "card exercise");
+  c.innerHTML = `<div class="ex-head"><span class="mono">Exercise ${num}, ${labels[ex.type]}</span><span class="mono ex-best"></span></div>
+    <h3>${ex.title}</h3><p class="instr">${ex.instr}</p><div class="ex-body"></div><div class="ex-actions"></div><div class="result" aria-live="polite"></div>`;
+  const best = c.querySelector(".ex-best");
+  c._showBest = () => { const b = progress.ex[id]; best.textContent = b != null ? `Best ${b} %` : ""; };
+  c._showBest();
+  return c;
+}
+
+function renderGapEx(card, ex, id) {
+  const body = card.querySelector(".ex-body"), actions = card.querySelector(".ex-actions");
+  const gaps = [];
+  body.innerHTML = ex.lines ? `<ol class="lines">${ex.lines.map(l => `<li>${parseGaps(l, gaps)}</li>`).join("")}</ol>` : `<p class="gaptext">${parseGaps(ex.text, gaps)}</p>`;
+  const btns = () => [...body.querySelectorAll(".reveal")];
+  const counter = el("span", "mono counter");
+  const update = () => {
+    const n = btns().filter(b => b.classList.contains("on")).length;
+    counter.textContent = `${n} / ${gaps.length} checked`;
+    if (n === gaps.length) { setBest(id, 100); card._showBest(); }
+  };
+  body.addEventListener("click", e => { const b = e.target.closest(".reveal"); if (b) { toggleReveal(b); update(); } });
+  const bAll = el("button", "btn ghost", "Show all"), bHide = el("button", "btn ghost", "Hide all");
+  bAll.onclick = () => { btns().forEach(b => toggleReveal(b, true)); update(); };
+  bHide.onclick = () => { btns().forEach(b => toggleReveal(b, false)); update(); };
+  actions.append(bAll, bHide, counter);
+  update();
+}
+
+function mcItem(item, num, opts) {
+  const w = el("div", "mc-item");
+  w.innerHTML = `<div class="q"><span class="qn">${pad(num)}</span><span>${item.q.replace(/___/g, '<span class="blank">___</span>')}</span></div><div class="opts"></div><div class="why"></div>`;
+  const box = w.querySelector(".opts"), why = w.querySelector(".why");
+  const correct = new Set([].concat(item.a));
+  const order = opts.fixed ? item.o.map((_, i) => i) : shuffle(item.o.map((_, i) => i));
+  order.forEach(oi => { const b = el("button", "opt", item.o[oi]); b.type = "button"; b.dataset.oi = oi; box.append(b); });
+  let chosen = null, locked = false;
+  const reveal = () => {
+    locked = true;
+    box.querySelectorAll(".opt").forEach(b => {
+      const oi = +b.dataset.oi; b.disabled = true; b.classList.remove("sel");
+      if (correct.has(oi)) b.classList.add("right"); else if (oi === chosen) b.classList.add("wrong");
+    });
+    const ok = correct.has(chosen);
+    why.innerHTML = (ok ? '<b class="good">Correct.</b> ' : '<b class="badtxt">Not quite.</b> ') + (item.why || "");
+    return ok;
+  };
+  box.addEventListener("click", e => {
+    const b = e.target.closest(".opt"); if (!b || locked) return;
+    chosen = +b.dataset.oi;
+    if (opts.test) { box.querySelectorAll(".opt").forEach(x => x.classList.toggle("sel", x === b)); return; }
+    opts.onAnswer(reveal());
+  });
+  w.grade = reveal;
+  return w;
+}
+function renderMCEx(card, ex, id) {
+  const body = card.querySelector(".ex-body"), actions = card.querySelector(".ex-actions"), res = card.querySelector(".result");
+  const build = () => {
+    body.innerHTML = ""; res.textContent = ""; res.className = "result";
+    let answered = 0, right = 0;
+    ex.items.forEach((it, k) => body.append(mcItem(it, k + 1, {
+      fixed: ex.fixed,
+      onAnswer: ok => { answered++; if (ok) right++; if (answered === ex.items.length) { setBest(id, resultMsg(res, right, ex.items.length)); card._showBest(); } }
+    })));
+  };
+  const bReset = el("button", "btn ghost", "Try again"); bReset.onclick = build;
+  actions.append(bReset);
+  build();
+}
+
+function orderItem(item, num) {
+  const w = el("div", "ord-item");
+  const tokens = item.a.replace(/[.,!?]/g, "").split(/\s+/);
+  if (!item.keepFirst && tokens[0] !== "I") tokens[0] = tokens[0].charAt(0).toLowerCase() + tokens[0].slice(1);
+  let mixed = shuffle(tokens.map((t, i) => ({ t, i })));
+  if (mixed.every((x, k) => x.i === k)) mixed = mixed.reverse();
+  w.innerHTML = `<div class="q"><span class="qn">${pad(num)}</span><span>Put the words in order.</span></div><div class="built"></div><div class="pool"></div><div class="ord-sol"></div>`;
+  const built = w.querySelector(".built"), pool = w.querySelector(".pool"), sol = w.querySelector(".ord-sol");
+  mixed.forEach(x => { const b = el("button", "word", x.t); b.type = "button"; pool.append(b); });
+  w.addEventListener("click", e => {
+    const b = e.target.closest(".word"); if (!b) return;
+    built.classList.remove("ok", "bad"); sol.textContent = "";
+    (b.parentElement === pool ? built : pool).append(b);
+  });
+  w.grade = () => {
+    const said = [...built.querySelectorAll(".word")].map(b => b.textContent).join(" ");
+    const ok = pool.children.length === 0 && matches(said, [item.a, ...(item.alt || [])]);
+    built.classList.toggle("ok", ok); built.classList.toggle("bad", !ok);
+    sol.textContent = ok ? "" : "→ " + item.a;
+    return ok;
+  };
+  return w;
+}
+function renderOrderEx(card, ex, id) {
+  const body = card.querySelector(".ex-body"), actions = card.querySelector(".ex-actions"), res = card.querySelector(".result");
+  let items = [];
+  const build = () => { body.innerHTML = ""; res.textContent = ""; res.className = "result"; items = ex.items.map((it, k) => { const w = orderItem(it, k + 1); body.append(w); return w; }); };
+  const bCheck = el("button", "btn", "Check"), bReset = el("button", "btn ghost", "Try again");
+  bCheck.onclick = () => { const ok = items.filter(w => w.grade()).length; setBest(id, resultMsg(res, ok, items.length)); card._showBest(); };
+  bReset.onclick = build;
+  actions.append(bCheck, bReset);
+  build();
+}
+
+/* ============================================================
+   VIEWS
+   ============================================================ */
+function setAccent(color, soft) {
+  document.documentElement.style.setProperty("--accent", color || "#14161b");
+  document.documentElement.style.setProperty("--accent-soft", soft || "#efeee9");
+}
+function legendHtml() { return `<div class="legend"><span>Colour code:</span><span class="vf">verb form</span><span class="sw">signal word</span></div>`; }
+function overviewHtml() {
+  return `<div class="tablewrap"><table class="overview">
+    <thead><tr><th>tense</th><th>form</th><th>use</th><th>signal words</th><th>example</th></tr></thead><tbody>
+    ${TENSES_OVERVIEW.map(t => `<tr><td>${t.name}</td><td class="f" data-l="form">${t.form}</td><td data-l="use">${t.use}</td>
+      <td data-l="signal words"><span class="signals">${t.signals.map(s => `<span class="sw">${s}</span>`).join(" ")}</span></td>
+      <td data-l="example"><i>${fmt(t.ex)}</i></td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+function viewHome() {
+  setAccent();
+  const done = TOPICS.filter(t => topicPct(t) === 100).length;
+  app.innerHTML = `
+    <section class="hero"><div class="wrap hero-grid">
+      <div>
+        <span class="mono">English, Year 7, Gymnasium</span>
+        <h1>Get <em>test-ready.</em></h1>
+        <p>Five grammar topics with short rules, examples you can listen to, and exercises you can check yourself. Finish with the word bank.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="v">${done}/${TOPICS.length}</div><div class="mono">topics completed</div></div>
+        <div class="stat"><div class="v">${Math.round(TOPICS.reduce((s, t) => s + topicPct(t), 0) / TOPICS.length)} %</div><div class="mono">overall progress</div></div>
+      </div>
+      <div class="steps"><span><b>1</b>Read the rules</span><span><b>2</b>Listen to the examples</span><span><b>3</b>Do the exercises</span><span><b>4</b>Train irregular verbs</span></div>
+    </div></section>
+    <div class="wrap">
+      <div class="block-title"><h2>Grammar topics</h2><span class="mono" style="color:var(--muted)">Progress is saved in this browser</span></div>
+      <div class="grid" id="tiles"></div>
+      <div class="block-title"><h2>Extra training</h2></div>
+      <div class="grid" id="extra"></div>
+    </div>`;
+  const tiles = app.querySelector("#tiles");
+  TOPICS.forEach((t, i) => {
+    const pct = topicPct(t);
+    const b = el("button", "tcard"); b.style.setProperty("--c", t.color);
+    b.innerHTML = `<span class="num">Topic ${i + 1}</span><h3>${t.title}</h3><p>${t.short}</p>
+      <span class="prog"><span class="bar"><i style="width:${pct}%"></i></span><span class="mono">${pct} %</span></span>`;
+    b.onclick = () => go(t.id); tiles.append(b);
+  });
+  const extra = app.querySelector("#extra");
+  [["words", "Extra", "#2f7d32", "Word Bank", "Irregular verbs trainer, signal words game and grammar words."]]
+    .forEach(([id, n, c, h, p]) => {
+      const b = el("button", "tcard"); b.style.setProperty("--c", c);
+      b.innerHTML = `<span class="num">${n}</span><h3>${h}</h3><p>${p}</p>`;
+      b.onclick = () => go(id); extra.append(b);
+    });
+}
+
+function viewTopic(t) {
+  setAccent(t.color, t.soft);
+  const idx = TOPICS.indexOf(t);
+  app.innerHTML = "";
+  const w = el("div", "wrap"); app.append(w);
+  w.append(el("div", "page-head", `<span class="mono">Topic ${idx + 1} of ${TOPICS.length}</span><h1>${t.title}</h1><p>${t.intro}</p>
+    <div class="tags">${t.chips.map(c => `<span class="tag">${c}</span>`).join("")}</div>`));
+  const sub = el("nav", "subnav", `<a href="#" data-to="rules">Rules</a><a href="#" data-to="examples">Examples</a><a href="#" data-to="practice">Practice</a>`);
+  sub.addEventListener("click", e => { const a = e.target.closest("a"); if (!a) return; e.preventDefault(); document.getElementById(a.dataset.to).scrollIntoView({ behavior: "smooth" }); });
+  w.append(sub);
+
+  const sec = (id, n, title) => { const h = el("div", "sec", `<span class="mono">${n}</span><h2>${title}</h2>`); h.id = id; w.append(h); };
+  sec("rules", "A", "Rules");
+  if (t.legend) w.append(el("div", null, legendHtml()));
+  t.rules.forEach(r => w.append(el("div", "card rule", `<h3>${r.h}</h3>${r.body === "%OVERVIEW%" ? overviewHtml() : fmt(r.body)}`)));
+
+  sec("examples", "B", "Examples");
+  const box = el("div", "card examples");
+  t.examples.forEach(x => {
+    const row = el("div", "ex-row", `<span class="txt">${fmt(x.t)}<span class="mono note">${x.n}</span></span>`);
+    if (canSpeak) row.append(sayBtn(plain(x.t)));
+    box.append(row);
+  });
+  w.append(box);
+
+  sec("practice", "C", "Practice");
+  t.exercises.forEach((ex, i) => {
+    const id = `${t.id}-${i}`, card = exerciseCard(i + 1, ex, id);
+    w.append(card);
+    if (ex.type === "gap") renderGapEx(card, ex, id);
+    else if (ex.type === "mc") renderMCEx(card, ex, id);
+    else if (ex.type === "order") renderOrderEx(card, ex, id);
+  });
+
+  const np = el("div", "nextprev");
+  if (idx > 0) { const b = el("button", "btn ghost", `← ${TOPICS[idx - 1].title}`); b.onclick = () => go(TOPICS[idx - 1].id); np.append(b); } else np.append(el("span"));
+  const nx = idx < TOPICS.length - 1 ? TOPICS[idx + 1] : null;
+  const b = el("button", "btn", nx ? `Next: ${nx.title} →` : "Word Bank →"); b.onclick = () => go(nx ? nx.id : "words"); np.append(b);
+  w.append(np);
+}
+
+function viewWords() {
+  setAccent("#2f7d32", "#eaf4ea");
+  app.innerHTML = "";
+  const w = el("div", "wrap"); app.append(w);
+  w.append(el("div", "page-head", `<span class="mono">Extra training</span><h1>Word Bank</h1><p>Irregular verbs, signal words and the most important grammar words.</p>`));
+  const sec = (n, title) => w.append(el("div", "sec", `<span class="mono">${n}</span><h2>${title}</h2>`));
+
+  /* irregular verbs trainer: think, then tap to check */
+  sec("A", "Irregular verbs trainer");
+  const card = el("section", "card exercise");
+  card.innerHTML = `<p class="instr">You need the 2nd form for the simple past and the 3rd form for the present perfect and past perfect. Say both forms in your head, then tap “show” to check.</p>
+    <div class="tablewrap"><table class="verb-table"><thead><tr><th>infinitive</th><th>simple past (2nd)</th><th>past participle (3rd)</th></tr></thead><tbody></tbody></table></div>
+    <div class="ex-actions"></div>`;
+  w.append(card);
+  const tbody = card.querySelector("tbody");
+  const rv = f => `<button type="button" class="reveal" data-a="${f}">show</button>`;
+  const vBuild = () => { tbody.innerHTML = shuffle(VERBS).slice(0, 8).map(v => `<tr><td><b>${v[0]}</b></td><td>${rv(v[1])}</td><td>${rv(v[2])}</td></tr>`).join(""); };
+  tbody.addEventListener("click", e => { const b = e.target.closest(".reveal"); if (b) toggleReveal(b); });
+  const bA = el("button", "btn ghost", "Show all"), bN = el("button", "btn", "New verbs");
+  bA.onclick = () => tbody.querySelectorAll(".reveal").forEach(b => toggleReveal(b, true));
+  bN.onclick = vBuild;
+  card.querySelector(".ex-actions").append(bN, bA);
+  vBuild();
+
+  const det = el("details", "card");
+  det.innerHTML = `<summary>Full list of irregular verbs (${VERBS.length})</summary><input class="filter" placeholder="Search a verb" aria-label="Search a verb">
+    <div class="tablewrap"><table class="verb-table"><thead><tr><th>infinitive</th><th>simple past</th><th>past participle</th><th></th></tr></thead><tbody></tbody></table></div>`;
+  w.append(det);
+  const tb = det.querySelector("tbody");
+  VERBS.forEach(v => {
+    const tr = el("tr", null, `<td><b>${v[0]}</b></td><td>${v[1]}</td><td>${v[2]}</td><td></td>`);
+    if (canSpeak) tr.lastChild.append(sayBtn(`${v[0]}, ${v[1].replace(" / ", " or ")}, ${v[2].replace(" / ", " or ")}`));
+    tr.dataset.s = v.join(" ");
+    tb.append(tr);
+  });
+  det.querySelector(".filter").addEventListener("input", e => {
+    const q = e.target.value.trim().toLowerCase();
+    tb.querySelectorAll("tr").forEach(tr => { tr.style.display = !q || tr.dataset.s.includes(q) ? "" : "none"; });
+  });
+
+  /* signal words */
+  sec("B", "Signal words game");
+  const sc = el("section", "card exercise");
+  sc.innerHTML = `<h3>First, a quick reminder</h3><p class="instr">This is what each tense looks like.</p>${legendHtml()}
+    <div class="reminders">${TENSES_OVERVIEW.map(t => `<div class="rem"><h4>${t.name}</h4><span class="form">${t.form}</span><p><i>${fmt(t.ex)}</i></p></div>`).join("")}</div>
+    <h3>Now you: which tense goes with the signal word?</h3><p class="instr">Some signal words fit more than one tense. Then both answers are right.</p>
+    <div class="ex-body"></div><div class="ex-actions"></div><div class="result" aria-live="polite"></div>`;
+  w.append(sc);
+  const sBody = sc.querySelector(".ex-body"), sRes = sc.querySelector(".result");
+  const sBuild = () => {
+    sBody.innerHTML = ""; sRes.textContent = ""; sRes.className = "result";
+    const items = shuffle(SIGNALS);
+    let answered = 0, right = 0;
+    items.forEach((s, k) => sBody.append(mcItem({ q: `<span class="sw">${s[0]}</span>`, o: SIGNAL_OPTS, a: s[1], why: s[2] }, k + 1, {
+      fixed: true, onAnswer: ok => { answered++; if (ok) right++; if (answered === items.length) resultMsg(sRes, right, items.length); }
+    })));
+  };
+  const sR = el("button", "btn ghost", "Try again"); sR.onclick = sBuild; sc.querySelector(".ex-actions").append(sR);
+  sBuild();
+
+  /* glossary */
+  sec("C", "Grammar words");
+  w.append(el("p", "instr", "Tap a card to see what the word means."));
+  const flips = el("div", "flips");
+  GLOSSARY.forEach(([term, def]) => {
+    const b = el("button", "flip", `<div class="front">${term}</div><div class="back">${def}</div><span class="mono turn">tap</span>`);
+    b.type = "button"; b.onclick = () => b.classList.toggle("on"); flips.append(b);
+  });
+  w.append(flips);
+}
+
+/* ============================================================
+   ROUTER + HEADER
+   ============================================================ */
+const tabs = document.getElementById("tabs");
+tabs.innerHTML = `<a href="#home" data-id="home">Home</a>` +
+  TOPICS.map((t, i) => `<a href="#${t.id}" data-id="${t.id}">${t.title}</a>`).join("") +
+  `<a href="#words" data-id="words">Word Bank</a>`;
+const hdr = document.getElementById("hdr");
+const setHdr = () => document.documentElement.style.setProperty("--hdr", hdr.offsetHeight + "px");
+window.addEventListener("resize", setHdr);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHdr);
+
+function go(id) { location.hash = id; }
+function route() {
+  const id = location.hash.slice(1) || "home";
+  const t = TOPICS.find(x => x.id === id);
+  if (t) viewTopic(t); else if (id === "words") viewWords(); else viewHome();
+  const active = (t || id === "words") ? id : "home";
+  tabs.querySelectorAll("a").forEach(a => {
+    const on = a.dataset.id === active;
+    a.classList.toggle("on", on);
+    if (on) tabs.scrollLeft = Math.max(0, a.offsetLeft - 40);
+  });
+  updateOverall(); setHdr();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+if (canSpeak) { try { speechSynthesis.getVoices(); } catch (e) {} }
+route();
+</script>
+</body>
+</html>

@@ -17,7 +17,7 @@ Two steps only:
 ```js
 {
   id: "short-unique-id",          // lowercase, no spaces, used as React key
-  subject: "Physik",              // one of: Mathematik | Physik | Chemie | Biologie | Erdkunde | Deutsch | Musik | Allgemein | AI für Kinder | Games
+  subject: "Physik",              // one of: Mathematik | Physik | Chemie | Biologie | Erdkunde | Deutsch | Englisch | Musik | Allgemein | AI für Kinder | Games
   file: "filename.html",          // must match the file in /public/pages/ exactly
   href: "/pages/filename.html",   // same as file, prefixed with /pages/
   lang: "DE",                     // language of the target page: "DE" or "EN"
@@ -79,7 +79,7 @@ HappyLearning/
 ## Design System
 - **Fonts:** Instrument Serif (title/card titles) · Syne (UI/body) · DM Mono (tags/labels/mono)
 - **Key colors:** `#0b0c0f` bg · `#e4ddd4` text · `#b5f23d` lime accent
-- **Subject tag colors:** Mathematik `#ffb02e` · Physik `#8e9dff` · Chemie `#5ddc95` · Biologie `#c9954a` · Erdkunde `#2fb0c9` · Deutsch `#de7bcc` · Musik `#ff6b9d` · Allgemein `#b398ff`
+- **Subject tag colors:** Mathematik `#ffb02e` · Physik `#8e9dff` · Chemie `#5ddc95` · Biologie `#c9954a` · Erdkunde `#2fb0c9` · Deutsch `#de7bcc` · Englisch `#f5d547` · Musik `#ff6b9d` · Allgemein `#b398ff`
 - **CSS variables** defined in `:root` in `globals.css` — change there to retheme
 - Dark theme throughout; cards lift on hover with lime border glow
 - `data-density` on `<html>` drives grid columns + card padding (set by `LernhubApp` via `useEffect`)
@@ -92,7 +92,7 @@ Persists `{ density: "cozy", descriptions: "show", lang: "de" }`. Toggled from t
 - **Spacious** — 3 cols with more gap/padding
 
 ## HTML Files
-All 24 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets.
+All 25 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets.
 
 | File | DE Title | Subject | Lang | API |
 |------|----------|---------|------|-----|
@@ -120,6 +120,7 @@ All 24 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts
 | musik-orchester2.html | Musik-Training: Orchester, Chor & Ukulele | Musik | DE | |
 | valorant-shooter.html | Taktik-Shooter | Games | EN | |
 | basic-shooter.html | Klassischer Shooter | Games | EN | |
+| english-grammar-gym-7.html | Grammar Gym: Englisch Klasse 7 | Englisch | EN | |
 
 ## Notes
 - `npm run dev` to run locally at `localhost:3000`

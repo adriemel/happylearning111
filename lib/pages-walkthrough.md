@@ -5,6 +5,8 @@ type: reference
 ---
 
 ## What Changed
+**2026-11-02** — Added the "english-grammar-gym-7" entry (Grammar Gym, Year 7 English grammar) and the new subject "Englisch" to SUBJECT_COLORS.
+
 **2026-05-04** — Added 6 new entries to PANELS: four "AI für Kinder" courses (ChatGPT and Claude versions in DE + EN) and two "Games" entries (Valorant-style shooter and classic shooter). Added "AI für Kinder" and "Games" to SUBJECT_COLORS.
 
 ---

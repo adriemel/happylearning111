@@ -5,6 +5,8 @@ type: reference
 ---
 
 ## What Changed
+**2026-11-02** — Added "Englisch" to SUBJECT_ORDER (after "Deutsch") and SUBJECT_META.
+
 **2026-05-04** — Added "AI für Kinder" and "Games" to SUBJECT_ORDER and SUBJECT_META. Both new subjects appear after "Allgemein" in the navigation.
 
 ---
