@@ -185,7 +185,9 @@ ol.lines li::marker{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
 .rem{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--soft)}
 .rem h4{margin:0;font-family:var(--display);font-size:1.02rem}
 .rem .form{font-size:.76rem;margin:4px 0 6px}
-.rem p{margin:0;font-size:.93rem}
+.rem p{margin:4px 0 0;font-size:.93rem}
+.rem-sw{margin-top:10px;gap:5px}
+.rem-sw .sw{font-size:.85rem}
 .verb-table td{vertical-align:middle}
 .verb-table .reveal{min-width:7.5em}
 .filter{font:inherit;width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line2);margin:12px 0 4px;background:var(--surface)}
@@ -281,17 +283,17 @@ const mc = (q, o, a, why) => ({ q, o, a, why });
 
 const TENSES_OVERVIEW = [
   { name: "Simple past", form: "verb + -ed / 2nd form", use: "finished action at a definite time in the past",
-    signals: ["yesterday", "last week", "… ago", "in 2023", "When …?"], ex: "We *visited* the Tower of London {last year}." },
+    signals: ["yesterday", "last week", "… ago", "in 2023", "When …?"], more: ["last month", "the other day", "when I was little"], ex: "We *visited* the Tower of London {last year}." },
   { name: "Present perfect", form: "have / has + 3rd form", use: "past action with a link to now: result, experience, still true",
-    signals: ["ever", "never", "already", "just", "yet", "so far", "since", "for"], ex: "*Have* you {ever} *been* to Scotland?" },
+    signals: ["ever", "never", "already", "just", "yet", "so far", "since", "for"], more: ["recently", "up to now", "How long …?", "this week"], ex: "*Have* you {ever} *been* to Scotland?" },
   { name: "Past progressive", form: "was / were + -ing", use: "action in progress at a moment in the past",
-    signals: ["while", "at 8 pm yesterday", "when (+ short action)"], ex: "{At 8 pm yesterday} I *was doing* my homework." },
+    signals: ["while", "at 8 pm yesterday", "when (+ short action)"], more: ["all evening", "at that moment", "as"], ex: "{At 8 pm yesterday} I *was doing* my homework." },
   { name: "Past perfect", form: "had + 3rd form", use: "the past before the past",
-    signals: ["already", "by the time", "after", "before", "never … before"], ex: "{By the time} we arrived, the film *had* {already} *started*." },
+    signals: ["already", "by the time", "after", "before", "never … before"], more: ["just", "because", "until"], ex: "{By the time} we arrived, the film *had* {already} *started*." },
   { name: "will-future", form: "will + infinitive", use: "prediction, opinion, spontaneous decision, promise",
-    signals: ["I think", "probably", "maybe", "I am sure", "tomorrow"], ex: "{I think} it *will rain* {tomorrow}." },
+    signals: ["I think", "probably", "maybe", "I am sure", "tomorrow"], more: ["perhaps", "I hope", "I expect", "next year", "in the future"], ex: "{I think} it *will rain* {tomorrow}." },
   { name: "going to-future", form: "am / is / are going to + infinitive", use: "plan already made, or a prediction with evidence",
-    signals: ["next week", "tonight", "Look!"], ex: "We *are going to visit* Grandma {next weekend}." }
+    signals: ["next week", "tonight", "Look!"], more: ["this weekend", "next month", "We have decided …"], ex: "We *are going to visit* Grandma {next weekend}." }
 ];
 
 const TOPICS = [
@@ -783,24 +785,25 @@ const VERBS = [
 ];
 
 const SIGNAL_OPTS = ["Simple past", "Present perfect", "Past progressive", "Past perfect", "will-future", "going to-future"];
-const SIGNALS = [
-  ["yesterday", 0, "A definite time in the past."],
-  ["… ago", 0, "A definite time in the past."],
-  ["last weekend", 0, "A definite time in the past."],
-  ["in 2015", 0, "A definite time in the past."],
-  ["ever", 1, "Experience up to now."],
-  ["yet", 1, "Has it happened up to now?"],
-  ["so far", 1, "Up to now."],
-  ["since Monday", 1, "Started in the past, still true now."],
-  ["just", [1, 3], "Present perfect, or past perfect in a story in the past."],
-  ["already", [1, 3], "Present perfect, or past perfect in a story in the past."],
-  ["while", 2, "Action in progress at the same time as something else."],
-  ["at 9 pm last night", 2, "In progress at a certain moment in the past."],
-  ["by the time", 3, "Something had happened before another past action."],
-  ["I think … / probably", 4, "Prediction or opinion → will."],
-  ["I am sure", 4, "Prediction or opinion → will."],
-  ["Look at those clouds!", 5, "Evidence you can see now → going to."],
-  ["tomorrow", [4, 5], "Future: will or going to, it depends on the meaning."]
+const TENSE_SENTENCES = [
+  ["We *watched* a great film at the cinema last night.", 0, "<b>last night</b> = a definite time in the past → simple past."],
+  ["Shakespeare *died* in 1616.", 0, "<b>in 1616</b> = a definite time in the past → simple past."],
+  ["Two years ago my family *moved* to Hanover.", 0, "<b>two years ago</b> → simple past."],
+  ["I *have* never *eaten* sushi.", 1, "<b>never</b> = experience up to now → present perfect (have + 3rd form)."],
+  ["*Have* you *finished* your homework yet?", 1, "<b>yet</b> → present perfect."],
+  ["My grandparents *have lived* in this house since 1985.", 1, "<b>since</b>, and they still live there → present perfect."],
+  ["At 9 o'clock last night I *was reading* a comic in bed.", 2, "In progress at a certain moment in the past → past progressive (was / were + -ing)."],
+  ["While Mum *was cooking*, Dad *was watching* the news.", 2, "<b>while</b>, two actions in progress at the same time → past progressive."],
+  ["I *was walking* home when I saw a fox.", 2, "The long action that was interrupted → past progressive."],
+  ["By the time we arrived, the concert *had* already *started*.", 3, "<b>by the time</b>: it happened before another past action → past perfect (had + 3rd form)."],
+  ["She *had* never *seen* the sea before her trip to Cornwall.", 3, "<b>never … before</b> in a past story → past perfect."],
+  ["When I got home, my brother *had eaten* all the biscuits.", 3, "The eating happened first, before I got home → past perfect."],
+  ["I think it *will snow* tomorrow.", 4, "<b>I think</b> = opinion / prediction → will-future."],
+  ["Do not worry, I *will help* you with your project.", 4, "A promise or offer → will-future."],
+  ["In the future, robots *will do* most of the housework.", 4, "A prediction about the future → will-future."],
+  ["Look at those dark clouds! It *is going to rain*.", 5, "<b>Look!</b> = evidence you can see now → going to-future."],
+  ["We have booked a hotel. We *are going to spend* a week in Wales.", 5, "A plan that is already made → going to-future."],
+  ["My sister *is going to start* guitar lessons next month.", 5, "A plan / intention → going to-future."]
 ];
 
 const GLOSSARY = [
@@ -1171,17 +1174,17 @@ function viewWords() {
   /* signal words */
   sec("B", "Signal words game");
   const sc = el("section", "card exercise");
-  sc.innerHTML = `<h3>First, a quick reminder</h3><p class="instr">This is what each tense looks like.</p>${legendHtml()}
-    <div class="reminders">${TENSES_OVERVIEW.map(t => `<div class="rem"><h4>${t.name}</h4><span class="form">${t.form}</span><p><i>${fmt(t.ex)}</i></p></div>`).join("")}</div>
-    <h3>Now you: which tense goes with the signal word?</h3><p class="instr">Some signal words fit more than one tense. Then both answers are right.</p>
+  sc.innerHTML = `<h3>First, a quick reminder</h3><p class="instr">An example for each tense, and its signal words.</p>${legendHtml()}
+    <div class="reminders">${TENSES_OVERVIEW.map(t => `<div class="rem"><h4>${t.name}</h4><p><i>${fmt(t.ex)}</i></p><div class="signals rem-sw">${[...t.signals, ...(t.more || [])].map(x => `<span class="sw">${x}</span>`).join(" ")}</div></div>`).join("")}</div>
+    <h3>Now you: which tense is it?</h3><p class="instr">Read the sentence and look at the underlined verb. Which tense is it? Tip: look for signal words.</p>
     <div class="ex-body"></div><div class="ex-actions"></div><div class="result" aria-live="polite"></div>`;
   w.append(sc);
   const sBody = sc.querySelector(".ex-body"), sRes = sc.querySelector(".result");
   const sBuild = () => {
     sBody.innerHTML = ""; sRes.textContent = ""; sRes.className = "result";
-    const items = shuffle(SIGNALS);
+    const items = shuffle(TENSE_SENTENCES);
     let answered = 0, right = 0;
-    items.forEach((s, k) => sBody.append(mcItem({ q: `<span class="sw">${s[0]}</span>`, o: SIGNAL_OPTS, a: s[1], why: s[2] }, k + 1, {
+    items.forEach((s, k) => sBody.append(mcItem({ q: fmt(s[0]), o: SIGNAL_OPTS, a: s[1], why: s[2] }, k + 1, {
       fixed: true, onAnswer: ok => { answered++; if (ok) right++; if (answered === items.length) resultMsg(sRes, right, items.length); }
     })));
   };
