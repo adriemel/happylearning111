@@ -260,6 +260,60 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
   100%{transform:translateY(var(--auf,-150px));opacity:0}
 }
 @keyframes strahl{0%,100%{opacity:.35}50%{opacity:1}}
+
+/* ---------- Laubblatt ---------- */
+.definition{max-width:66ch;margin:0 0 24px}
+.blatt-quer-buehne{background:linear-gradient(180deg,#fffdf4,#eef3dd);border:2px solid var(--tinte);border-radius:4px;padding:14px;box-shadow:9px 9px 0 var(--schatten);margin-bottom:26px}
+.blatt-quer-buehne svg{width:100%;height:auto;display:block}
+.blatt-scroll{overflow-x:auto}
+@media(max-width:640px){.blatt-scroll svg{min-width:600px}}
+.blatt-werkzeuge{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.blatt-werkzeuge .knopf{padding:9px 16px;font-size:.92rem}
+.bteil,.bq-label{cursor:pointer;transition:opacity .18s}
+.bteil:hover,.bq-label:hover{opacity:.75}
+.bteil.aktiv{filter:drop-shadow(0 0 6px rgba(229,160,23,.95))}
+.gas-legende[hidden]{display:none}
+.gas-legende{display:flex;flex-direction:column;gap:6px;font-size:.9rem;margin:10px 0 0}
+.gas-legende i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:-1px;border:1.5px solid var(--tinte)}
+.blatt-layout{display:grid;grid-template-columns:1fr 1.05fr;gap:30px;align-items:start;margin-bottom:34px}
+@media(max-width:860px){.blatt-layout{grid-template-columns:1fr}}
+.basiskonzept{border:2px solid var(--tinte);background:#fffaef;padding:22px;box-shadow:6px 6px 0 var(--schatten);margin-bottom:34px;
+  background-image:repeating-linear-gradient(135deg,rgba(79,155,62,.9) 0 5px,transparent 5px 10px);background-size:100% 12px;background-repeat:no-repeat;padding-top:30px}
+.bk-kopf{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--blatt);margin:0 0 2px}
+.basiskonzept h3{font-family:'Fraunces',serif;font-size:1.45rem;margin:0 0 8px}
+.basiskonzept > p{max-width:70ch;margin:0 0 16px}
+.bk-paare{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.bk-paare div{border:1.5px solid var(--tinte);background:rgba(143,196,92,.14);padding:12px;font-size:.92rem;display:flex;flex-direction:column;gap:4px}
+.bk-paare span::before{content:"Struktur: ";font-weight:700}
+.bk-paare em{font-style:normal}
+.bk-paare em::before{content:"→ Funktion: ";font-weight:700;color:var(--blatt)}
+.tabelle-scroll{overflow-x:auto}
+.zuordnung-tabelle{width:100%;border-collapse:collapse;font-size:.93rem;min-width:620px}
+.zuordnung-tabelle th,.zuordnung-tabelle td{border:1.5px solid var(--tinte);padding:8px;text-align:left;vertical-align:top}
+.zuordnung-tabelle thead th{background:var(--tinte);color:var(--papier)}
+.zuordnung-tabelle tbody th{background:#fffaef;width:22%}
+.zuordnung-tabelle select{width:100%;font-family:'Karla',sans-serif;font-size:.9rem;padding:7px;border:1.5px solid var(--tinte);border-radius:3px;background:#fff;white-space:normal}
+.zuordnung-tabelle select.richtig{background:var(--blatt-hell)}
+.zuordnung-tabelle select.falsch{background:#f3b8b2;border-color:var(--membran)}
+
+/* ---------- Vergleich Pflanzen-/Tierzelle ---------- */
+.unterkopf{font-family:'Fraunces',serif;font-weight:600;font-size:1.45rem;margin:0 0 6px}
+.vergleich{margin-top:46px;padding-top:30px;border-top:2px dashed var(--tinte-hell)}
+.vergleich-buehne{background:linear-gradient(160deg,#fffaef,#efe4c8);border:2px solid var(--tinte);border-radius:4px;padding:14px;box-shadow:9px 9px 0 var(--schatten);margin-bottom:26px}
+.vergleich-buehne svg{width:100%;height:auto;display:block}
+.vergleich-unten{display:grid;grid-template-columns:1.1fr 1fr;gap:26px;align-items:start}
+@media(max-width:860px){.vergleich-unten{grid-template-columns:1fr}}
+.vgl-tabelle{width:100%;border-collapse:collapse;background:#fffaef;border:2px solid var(--tinte);box-shadow:6px 6px 0 var(--schatten);font-size:.94rem}
+.vgl-tabelle caption{text-align:left;font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;padding:0 0 8px}
+.vgl-tabelle th,.vgl-tabelle td{padding:7px 10px;border-bottom:1px solid rgba(24,58,38,.18);text-align:left}
+.vgl-tabelle thead th{background:var(--tinte);color:var(--papier);font-weight:700}
+.vgl-tabelle td{text-align:center;font-weight:700}
+.vgl-tabelle td.ja{color:var(--blatt)}
+.vgl-tabelle td.nein{color:var(--membran)}
+.vgl-tabelle td small{display:block;font-weight:400;color:var(--tinte-hell);font-size:.78rem}
+.vgl-tabelle tr.nur-pflanze th{background:rgba(143,196,92,.35)}
+.vgl-text p{margin:0 0 14px}
+@media(max-width:560px){.vgl-tabelle{font-size:.8rem}.vgl-tabelle th,.vgl-tabelle td{padding:6px 4px}.vgl-tabelle thead th{font-size:.74rem}}
 </style>
 </head>
 <body>
@@ -268,7 +322,7 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
 <header class="hero">
   <p class="kicker">Biologie · Klasse 7 · Gymnasium Niedersachsen</p>
   <h1>Die <span class="gruen">Pflanzenzelle</span><br>und die <span class="sonnig">Fotosynthese</span></h1>
-  <p>Pflanzen bauen sich ihre Nahrung selbst. Dafür brauchen sie nur Licht, Wasser und ein Gas aus der Luft. Auf dieser Seite schaust du dir zuerst an, wie eine Pflanzenzelle aufgebaut ist. Danach findest du heraus, was in ihr passiert, wenn die Sonne scheint.</p>
+  <p>Pflanzen bauen sich ihre Nahrung selbst. Dafür brauchen sie nur Licht, Wasser und ein Gas aus der Luft. Auf dieser Seite schaust du dir zuerst an, wie eine Pflanzenzelle aufgebaut ist. Danach findest du heraus, was in ihr passiert, wenn die Sonne scheint, und wie ein ganzes Laubblatt aus verschiedenen Geweben gebaut ist.</p>
 </header>
 
 <!-- ============ 1. MIKROSKOP ============ -->
@@ -313,7 +367,7 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
 <!-- ============ 2. ZELLE ============ -->
 <section id="zelle" style="animation-delay:.1s">
   <div class="sec-kopf"><span class="nr">02</span><h2>Die Pflanzenzelle erkunden</h2></div>
-  <p class="sec-intro">Klicke in der Zeichnung auf ein Zellbestandteil oder wähle einen Begriff aus der Liste. Rechts erscheint, was dieses Teil kann. Schaffst du alle zehn?</p>
+  <p class="sec-intro">Klicke in der Zeichnung auf ein Zellbestandteil oder wähle einen Begriff aus der Liste. Rechts erscheint, was dieses Teil kann. Schaffst du alle zwölf?</p>
 
   <div class="zell-layout">
     <div class="buehne">
@@ -328,6 +382,7 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
         </g>
         <!-- Zellmembran -->
         <g class="teil" data-teil="zellmembran">
+          <rect x="29" y="29" width="362" height="562" rx="34" fill="none" stroke="rgba(0,0,0,0)" stroke-width="10"/>
           <rect x="29" y="29" width="362" height="562" rx="34" fill="none" stroke="#c0392b" stroke-width="3.5"/>
         </g>
 
@@ -351,6 +406,7 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
           </g>
         </g>
         <g class="teil" data-teil="kernmembran">
+          <circle cx="76" cy="404" r="42" fill="none" stroke="rgba(0,0,0,0)" stroke-width="10"/>
           <circle cx="76" cy="404" r="42" fill="none" stroke="#c0392b" stroke-width="3.5"/>
         </g>
 
@@ -394,6 +450,19 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
           </g>
         </g>
 
+        <!-- Endoplasmatisches Retikulum -->
+        <g class="teil" data-teil="er">
+          <rect x="34" y="444" width="82" height="92" fill="transparent"/>
+          <g fill="none" stroke="#8e44ad" stroke-width="8" stroke-linecap="round"><path d="M48,440 C62,460 94,460 110,440"/><path d="M38,474 C54,486 70,478 84,486 C98,494 108,484 116,476"/><path d="M40,498 C58,506 74,496 92,504 C104,510 112,502 116,498"/><path d="M46,522 C62,530 84,520 108,528"/></g><g fill="none" stroke="#ead7f3" stroke-width="4" stroke-linecap="round"><path d="M48,440 C62,460 94,460 110,440"/><path d="M38,474 C54,486 70,478 84,486 C98,494 108,484 116,476"/><path d="M40,498 C58,506 74,496 92,504 C104,510 112,502 116,498"/><path d="M46,522 C62,530 84,520 108,528"/></g>
+        </g>
+
+        <!-- Golgi-Apparat -->
+        <g class="teil" data-teil="golgi">
+          <rect x="44" y="284" width="92" height="64" fill="transparent"/>
+          <g fill="none" stroke="#c0661c" stroke-width="8" stroke-linecap="round"><path d="M58,300 Q88,288 118,300"/><path d="M56,313 Q88,301 120,313"/><path d="M58,326 Q88,314 118,326"/><path d="M64,339 Q88,328 112,339"/></g><g fill="none" stroke="#f8dcc0" stroke-width="3.5" stroke-linecap="round"><path d="M58,300 Q88,288 118,300"/><path d="M56,313 Q88,301 120,313"/><path d="M58,326 Q88,314 118,326"/><path d="M64,339 Q88,328 112,339"/></g>
+          <g fill="#f8dcc0" stroke="#c0661c" stroke-width="2"><circle cx="127" cy="296" r="4.5"/><circle cx="130" cy="322" r="4"/><circle cx="47" cy="334" r="4"/></g>
+        </g>
+
         <!-- Ribosomen -->
         <g class="teil" data-teil="ribosomen" fill="#1a1a1a">
           <circle cx="52" cy="70" r="4"/><circle cx="92" cy="58" r="4"/><circle cx="140" cy="52" r="4"/>
@@ -401,16 +470,16 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
           <circle cx="376" cy="130" r="4"/><circle cx="380" cy="210" r="4"/><circle cx="374" cy="300" r="4"/>
           <circle cx="378" cy="336" r="4"/><circle cx="366" cy="446" r="4"/><circle cx="374" cy="490" r="4"/>
           <circle cx="352" cy="530" r="4"/><circle cx="316" cy="560" r="4"/><circle cx="214" cy="586" r="4"/>
-          <circle cx="120" cy="584" r="4"/><circle cx="56" cy="520" r="4"/><circle cx="48" cy="470" r="4"/>
-          <circle cx="52" cy="330" r="4"/><circle cx="44" cy="286" r="4"/><circle cx="60" cy="240" r="4"/>
-          <circle cx="46" cy="180" r="4"/><circle cx="98" cy="472" r="4"/><circle cx="126" cy="140" r="4"/>
-          <circle cx="160" cy="96" r="4"/><circle cx="300" cy="118" r="4"/><circle cx="290" cy="590" r="4"/>
+          <circle cx="120" cy="584" r="4"/>
+          
+          <circle cx="46" cy="180" r="4"/>
+          <circle cx="290" cy="590" r="4"/>
         </g>
       </svg>
     </div>
 
     <div>
-      <p class="fortschritt"><span id="zaehler">0</span> von 10 Bestandteilen entdeckt</p>
+      <p class="fortschritt"><span id="zaehler">0</span> von 12 Bestandteilen entdeckt</p>
       <div class="balken"><i id="balken"></i></div>
       <ul class="legende" id="legende"></ul>
       <div class="info" id="info">
@@ -421,10 +490,118 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
     </div>
   </div>
 
-  <details class="profi">
-    <summary>Für Profis: Was hat die Pflanzenzelle, was die Tierzelle nicht hat?</summary>
-    <p>Drei Dinge findest du nur in der Pflanzenzelle: die feste <b>Zellwand</b> aus Cellulose, die grünen <b>Chloroplasten</b> und die riesige <b>Vakuole</b>. Alles andere, also Zellkern, Zellmembran, Zellplasma, Mitochondrien und Ribosomen, besitzt die Tierzelle auch. Deshalb sieht eine Tierzelle rundlich aus, während Pflanzenzellen eckig wirken und ihre Form behalten.</p>
-  </details>
+  <div class="vergleich" id="vergleich">
+    <h3 class="unterkopf">Pflanzenzelle und Tierzelle im Vergleich</h3>
+    <p class="sec-intro">Pflanzen und Tiere bestehen beide aus Zellen mit Zellkern. Die meisten Bestandteile haben beide Zelltypen gemeinsam (Mitte). Drei Dinge besitzt nur die Pflanzenzelle (grün markiert, links).</p>
+    <div class="vergleich-buehne">
+      <svg viewBox="0 0 900 480" role="img" aria-labelledby="vgl-titel vgl-desc">
+        <title id="vgl-titel">Pflanzenzelle und Tierzelle nebeneinander</title>
+        <desc id="vgl-desc">Links eine eckige Pflanzenzelle mit Zellwand, Chloroplasten und großer Vakuole. Rechts eine rundliche Tierzelle ohne diese drei Bestandteile. In der Mitte die gemeinsamen Bestandteile Zellmembran, Zellkern, ER, Golgi-Apparat, Zellplasma, Mitochondrium und Ribosomen.</desc>
+
+        <!-- ===== Pflanzenzelle ===== -->
+        <rect x="120" y="30" width="280" height="400" rx="28" fill="#cfcabd" stroke="#5f5f57" stroke-width="12"/>
+        <rect x="128" y="38" width="264" height="384" rx="22" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+        <path d="M250,58 C306,58 318,96 318,160 L318,330 C318,388 300,402 250,402 C200,402 180,388 180,330 L180,160 C180,96 194,58 250,58Z" fill="#5bc0eb" stroke="#c0392b" stroke-width="2.5"/>
+        <text x="250" y="236" font-family="Karla,sans-serif" font-size="17" fill="#fff" text-anchor="middle">Vakuole</text>
+        <g fill="#b7dd9f" stroke="#2f7a3a" stroke-width="2">
+          <ellipse cx="154" cy="90" rx="11" ry="20"/><ellipse cx="154" cy="180" rx="11" ry="20"/>
+          <ellipse cx="154" cy="270" rx="11" ry="20"/><ellipse cx="154" cy="360" rx="11" ry="20"/>
+        </g>
+        <g stroke="#1f6f52" stroke-width="3" stroke-linecap="round">
+          <path d="M150,82v6M158,92v6M150,100v4"/><path d="M150,172v6M158,182v6M150,190v4"/>
+          <path d="M150,262v6M158,272v6M150,280v4"/><path d="M150,352v6M158,362v6M150,370v4"/>
+        </g>
+        <circle cx="356" cy="110" r="24" fill="#26262a" stroke="#c0392b" stroke-width="2.5"/>
+        <g fill="none" stroke-linecap="round">
+          <g stroke="#8e44ad" stroke-width="7"><path d="M332,150 C346,158 368,152 384,160"/><path d="M330,166 C348,174 366,166 384,176"/><path d="M334,182 C350,190 368,182 382,192"/></g>
+          <g stroke="#ead7f3" stroke-width="3"><path d="M332,150 C346,158 368,152 384,160"/><path d="M330,166 C348,174 366,166 384,176"/><path d="M334,182 C350,190 368,182 382,192"/></g>
+          <g stroke="#c0661c" stroke-width="7"><path d="M334,232 Q356,222 378,232"/><path d="M334,243 Q356,233 378,243"/><path d="M336,254 Q356,245 376,254"/></g>
+          <g stroke="#f8dcc0" stroke-width="3"><path d="M334,232 Q356,222 378,232"/><path d="M334,243 Q356,233 378,243"/><path d="M336,254 Q356,245 376,254"/></g>
+        </g>
+        <g transform="translate(356,305)">
+          <ellipse rx="24" ry="12" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/>
+          <path d="M-14,-6 q5,6 0,12 M-5,-7 q5,7 0,14 M4,-7 q5,7 0,14 M13,-6 q4,6 0,12" fill="none" stroke="#4a7fa5" stroke-width="1.6"/>
+        </g>
+        <g fill="#1a1a1a"><circle cx="334" cy="345" r="3"/><circle cx="352" cy="360" r="3"/><circle cx="374" cy="348" r="3"/><circle cx="340" cy="382" r="3"/><circle cx="366" cy="392" r="3"/><circle cx="382" cy="372" r="3"/></g>
+        <text x="260" y="466" font-family="Fraunces,serif" font-size="22" font-weight="600" fill="#183a26" text-anchor="middle">Pflanzenzelle</text>
+
+        <!-- ===== Tierzelle ===== -->
+        <path d="M740,52 C820,50 878,110 872,200 C866,290 860,360 790,400 C730,432 650,410 618,350 C590,296 598,240 606,180 C616,100 664,54 740,52Z" fill="#cfcabd" stroke="#c0392b" stroke-width="3"/>
+        <circle cx="746" cy="215" r="34" fill="#26262a" stroke="#c0392b" stroke-width="2.5"/>
+        <g fill="none" stroke-linecap="round">
+          <g stroke="#8e44ad" stroke-width="7"><path d="M694,180 C680,200 680,232 694,252"/><path d="M678,170 C662,196 662,236 678,262"/><path d="M662,162 C644,194 646,240 662,272"/></g>
+          <g stroke="#ead7f3" stroke-width="3"><path d="M694,180 C680,200 680,232 694,252"/><path d="M678,170 C662,196 662,236 678,262"/><path d="M662,162 C644,194 646,240 662,272"/></g>
+          <g stroke="#c0661c" stroke-width="7"><path d="M680,300 Q704,290 728,300"/><path d="M680,311 Q704,301 728,311"/><path d="M682,322 Q704,313 726,322"/></g>
+          <g stroke="#f8dcc0" stroke-width="3"><path d="M680,300 Q704,290 728,300"/><path d="M680,311 Q704,301 728,311"/><path d="M682,322 Q704,313 726,322"/></g>
+        </g>
+        <g fill="#f8dcc0" stroke="#c0661c" stroke-width="1.8"><circle cx="736" cy="296" r="4"/><circle cx="740" cy="320" r="3.5"/></g>
+        <g transform="translate(694,108) rotate(-20)"><ellipse rx="22" ry="11" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/><path d="M-13,-5 q5,5 0,10 M-4,-6 q5,6 0,12 M5,-6 q5,6 0,12 M13,-5 q4,5 0,10" fill="none" stroke="#4a7fa5" stroke-width="1.5"/></g>
+        <g transform="translate(818,150) rotate(70)"><ellipse rx="22" ry="11" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/><path d="M-13,-5 q5,5 0,10 M-4,-6 q5,6 0,12 M5,-6 q5,6 0,12 M13,-5 q4,5 0,10" fill="none" stroke="#4a7fa5" stroke-width="1.5"/></g>
+        <g transform="translate(650,345) rotate(20)"><ellipse rx="22" ry="11" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/><path d="M-13,-5 q5,5 0,10 M-4,-6 q5,6 0,12 M5,-6 q5,6 0,12 M13,-5 q4,5 0,10" fill="none" stroke="#4a7fa5" stroke-width="1.5"/></g>
+        <g transform="translate(800,322) rotate(30)"><ellipse rx="22" ry="11" fill="#dfeefb" stroke="#4a7fa5" stroke-width="2"/><path d="M-13,-5 q5,5 0,10 M-4,-6 q5,6 0,12 M5,-6 q5,6 0,12 M13,-5 q4,5 0,10" fill="none" stroke="#4a7fa5" stroke-width="1.5"/></g>
+        <g fill="#1a1a1a"><circle cx="650" cy="130" r="3"/><circle cx="724" cy="88" r="3"/><circle cx="782" cy="96" r="3"/><circle cx="830" cy="250" r="3"/><circle cx="846" cy="206" r="3"/><circle cx="760" cy="380" r="3"/><circle cx="700" cy="372" r="3"/><circle cx="684" cy="392" r="3"/></g>
+        <text x="740" y="466" font-family="Fraunces,serif" font-size="22" font-weight="600" fill="#183a26" text-anchor="middle">Tierzelle</text>
+
+        <!-- ===== gemeinsame Beschriftung (Mitte) ===== -->
+        <g stroke="#183a26" stroke-width="1.4" fill="none">
+          <path d="M428,66 L392,70 M552,66 L652,84"/>
+          <path d="M428,118 L380,112 M552,118 L746,182"/>
+          <path d="M428,170 L384,170 M552,170 L663,200"/>
+          <path d="M428,232 L378,240 M552,232 L682,300"/>
+          <path d="M428,280 L330,280 M552,280 L628,282"/>
+          <path d="M428,322 L380,306 M552,322 L634,340"/>
+          <path d="M428,366 L374,350 M552,366 L698,372"/>
+        </g>
+        <g fill="#183a26"><circle cx="392" cy="70" r="3"/><circle cx="652" cy="84" r="3"/><circle cx="380" cy="112" r="3"/><circle cx="746" cy="182" r="3"/><circle cx="384" cy="170" r="3"/><circle cx="663" cy="200" r="3"/><circle cx="378" cy="240" r="3"/><circle cx="682" cy="300" r="3"/><circle cx="330" cy="280" r="3"/><circle cx="628" cy="282" r="3"/><circle cx="380" cy="306" r="3"/><circle cx="634" cy="340" r="3"/><circle cx="374" cy="350" r="3"/><circle cx="698" cy="372" r="3"/></g>
+        <g font-family="Karla,sans-serif" font-size="15" font-weight="700" fill="#183a26" text-anchor="middle">
+          <rect x="430" y="52" width="120" height="24" rx="4" fill="#fffaef" stroke="#183a26" stroke-width="1.2"/><text x="490" y="69">Zellmembran</text>
+          <rect x="430" y="104" width="120" height="24" rx="4" fill="#fffaef" stroke="#183a26" stroke-width="1.2"/><text x="490" y="121">Zellkern</text>
+          <rect x="430" y="156" width="120" height="24" rx="4" fill="#fffaef" stroke="#183a26" stroke-width="1.2"/><text x="490" y="173">ER</text>
+          <rect x="430" y="218" width="120" height="24" rx="4" fill="#fffaef" stroke="#183a26" stroke-width="1.2"/><text x="490" y="235">Golgi-Apparat</text>
+          <rect x="430" y="266" width="120" height="24" rx="4" fill="#fffaef" stroke="#183a26" stroke-width="1.2"/><text x="490" y="283">Zellplasma</text>
+          <rect x="430" y="308" width="120" height="24" rx="4" fill="#fffaef" stroke="#183a26" stroke-width="1.2"/><text x="490" y="325">Mitochondrium</text>
+          <rect x="430" y="352" width="120" height="24" rx="4" fill="#fffaef" stroke="#183a26" stroke-width="1.2"/><text x="490" y="369">Ribosomen</text>
+        </g>
+        <text x="490" y="404" font-family="Karla,sans-serif" font-size="13" fill="#3d6b4f" text-anchor="middle">in beiden Zellen</text>
+
+        <!-- ===== nur Pflanzenzelle (links) ===== -->
+        <g stroke="#2f7a3a" stroke-width="1.6" fill="none">
+          <path d="M100,62 L118,66"/><path d="M100,182 L143,180"/><path d="M100,302 L200,300"/>
+        </g>
+        <g fill="#2f7a3a"><circle cx="118" cy="66" r="3"/><circle cx="143" cy="180" r="3"/><circle cx="200" cy="300" r="3"/></g>
+        <g font-family="Karla,sans-serif" font-size="14" font-weight="700" fill="#183a26" text-anchor="middle">
+          <rect x="4" y="50" width="96" height="24" rx="4" fill="#8fc45c" stroke="#2f7a3a" stroke-width="1.5"/><text x="52" y="67">Zellwand</text>
+          <rect x="4" y="170" width="96" height="24" rx="4" fill="#8fc45c" stroke="#2f7a3a" stroke-width="1.5"/><text x="52" y="187">Chloroplast</text>
+          <rect x="4" y="290" width="96" height="24" rx="4" fill="#8fc45c" stroke="#2f7a3a" stroke-width="1.5"/><text x="52" y="307">Vakuole</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="vergleich-unten">
+      <table class="vgl-tabelle">
+        <caption>Welche Bestandteile hat welche Zelle?</caption>
+        <thead><tr><th scope="col">Bestandteil</th><th scope="col">Pflanzenzelle</th><th scope="col">Tierzelle</th></tr></thead>
+        <tbody>
+          <tr class="nur-pflanze"><th scope="row">Zellwand aus Cellulose</th><td class="ja">✓</td><td class="nein">✗</td></tr>
+          <tr class="nur-pflanze"><th scope="row">Chloroplasten</th><td class="ja">✓</td><td class="nein">✗</td></tr>
+          <tr class="nur-pflanze"><th scope="row">große Vakuole mit Zellsaft</th><td class="ja">✓</td><td class="nein">✗ <small>höchstens kleine Bläschen</small></td></tr>
+          <tr><th scope="row">Zellmembran</th><td class="ja">✓</td><td class="ja">✓</td></tr>
+          <tr><th scope="row">Zellplasma</th><td class="ja">✓</td><td class="ja">✓</td></tr>
+          <tr><th scope="row">Zellkern mit Kernmembran</th><td class="ja">✓</td><td class="ja">✓</td></tr>
+          <tr><th scope="row">Mitochondrien</th><td class="ja">✓</td><td class="ja">✓</td></tr>
+          <tr><th scope="row">Endoplasmatisches Retikulum (ER)</th><td class="ja">✓</td><td class="ja">✓</td></tr>
+          <tr><th scope="row">Golgi-Apparat</th><td class="ja">✓</td><td class="ja">✓</td></tr>
+          <tr><th scope="row">Ribosomen</th><td class="ja">✓</td><td class="ja">✓</td></tr>
+          <tr><th scope="row">Form</th><td>eckig, fest</td><td>rundlich, veränderlich</td></tr>
+        </tbody>
+      </table>
+      <div class="vgl-text">
+        <p><b>Warum sieht die Pflanzenzelle eckig aus?</b> Die feste Zellwand gibt ihr eine stabile Form. Von innen drückt die prall gefüllte Vakuole gegen die Wand. Eine Tierzelle hat nur die dünne, bewegliche Zellmembran als Grenze. Deshalb ist sie meist rundlich und kann ihre Form ändern.</p>
+        <p><b>Warum hat die Tierzelle keine Chloroplasten?</b> Tiere betreiben keine Fotosynthese. Sie müssen energiereiche Stoffe mit der Nahrung aufnehmen. In ihren Mitochondrien wird diese Nahrung genauso wie bei Pflanzen durch Zellatmung verwertet.</p>
+        <p class="merk"><b>Merke:</b> Zellwand, Chloroplasten und große Vakuole gibt es nur in der Pflanzenzelle. Alle anderen Bestandteile besitzen Pflanzen- und Tierzellen gemeinsam.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ============ 3. FOTOSYNTHESE ============ -->
@@ -478,7 +655,7 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
 
       <!-- Kohlenstoffdioxid von oben -->
       <line x1="470" y1="56" x2="470" y2="188" stroke="#183a26" stroke-width="3" marker-end="url(#sp)"/>
-      <text x="470" y="42" font-family="Karla,sans-serif" font-size="16" fill="#183a26" text-anchor="middle">Kohlenstoffdioxid aus der Luft</text>
+      <text x="470" y="42" font-family="Karla,sans-serif" font-size="16" fill="#183a26" text-anchor="middle">Kohlenstoffdioxid aus der Luft (durch die Spaltöffnungen)</text>
 
       <!-- Gleichung -->
       <text x="265" y="222" font-family="Karla,sans-serif" font-size="21" font-weight="700" fill="#183a26">Wasser + Kohlenstoffdioxid</text>
@@ -530,13 +707,144 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
     <summary>Für Profis: Die Gleichung mit chemischen Formeln</summary>
     <p>In der Oberstufe schreibt man dieselbe Reaktion mit Formeln und passenden Zahlen davor:</p>
     <div class="formel">6 H<sub>2</sub>O + 6 CO<sub>2</sub> &#10230; C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6 O<sub>2</sub></div>
-    <p>Sechs Wassermoleküle und sechs Kohlenstoffdioxidmoleküle ergeben ein Molekül Glukose und sechs Moleküle Sauerstoff. Der Sauerstoff, den du gerade einatmest, stammt übrigens aus dem <b>Wasser</b>, nicht aus dem Kohlenstoffdioxid. Das Licht spaltet die Wassermoleküle auf.</p>
+    <p>Sechs Wassermoleküle und sechs Kohlenstoffdioxidmoleküle ergeben ein Molekül Glukose und sechs Moleküle Sauerstoff. Der Sauerstoff, den du gerade einatmest, stammt übrigens aus dem <b>Wasser</b>, nicht aus dem Kohlenstoffdioxid. Mit Hilfe der Lichtenergie werden Wassermoleküle gespalten.</p>
+    <p>Wer nachzählt, merkt: 6 Wassermoleküle enthalten nur 6 Sauerstoffatome, für 6 O<sub>2</sub> braucht man aber 12. Tatsächlich werden 12 Wassermoleküle gespalten und dabei entstehen 6 neue. In der kurzen Gleichung oben ist das schon verrechnet:</p>
+    <div class="formel">12 H<sub>2</sub>O + 6 CO<sub>2</sub> &#10230; C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6 O<sub>2</sub> + 6 H<sub>2</sub>O</div>
   </details>
 </section>
 
-<!-- ============ 4. LICHT-LABOR ============ -->
+<!-- ============ 4. LAUBBLATT ============ -->
+<section id="laubblatt" style="animation-delay:.18s">
+  <div class="sec-kopf"><span class="nr">04</span><h2>Das Laubblatt: Gewebe mit Aufgaben</h2></div>
+  <p class="sec-intro">Schneidet man ein Laubblatt quer durch und schaut es unter dem Mikroskop an, erkennt man mehrere Schichten. Jede Schicht ist ein <b>Gewebe</b>. Klicke in der Zeichnung auf eine Schicht oder wähle einen Begriff aus der Liste. Rechts erfährst du, wie das Gewebe gebaut ist und welche Aufgabe es hat.</p>
+  <p class="merk definition"><b>Gewebe:</b> ein Verband aus vielen gleichartig gebauten Zellen, die gemeinsam dieselbe Aufgabe erfüllen.</p>
+
+  <div class="blatt-quer-buehne">
+    <div class="blatt-werkzeuge">
+      <button type="button" class="knopf" id="gasKnopf" aria-pressed="false">Gasaustausch zeigen</button>
+      <button type="button" class="knopf zweit" id="beschriftungKnopf" aria-pressed="true">Beschriftung ausblenden</button>
+    </div>
+    <div class="blatt-scroll"><svg id="blattQuer" viewBox="0 -60 860 640" role="img" aria-labelledby="bq-titel bq-desc">
+      <title id="bq-titel">Querschnitt durch ein Laubblatt</title>
+      <desc id="bq-desc">Von oben nach unten: Kutikula, obere Epidermis, Palisadengewebe, Schwammgewebe mit Hohlräumen und einer Blattader, untere Epidermis mit einer Spaltöffnung, Kutikula.</desc>
+      <defs>
+        <marker id="bqPfeilGelb" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L14,6 L0,12 z" fill="#e5a017"/></marker>
+        <marker id="bqPfeilGrau" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M0,0 L12,5 L0,10 z" fill="#4b4b4b"/></marker>
+        <marker id="bqPfeilBlau" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M0,0 L12,5 L0,10 z" fill="#2b83a6"/></marker>
+        <marker id="bqPfeilHell" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M0,0 L12,5 L0,10 z" fill="#5bb5d6"/></marker>
+      </defs>
+
+      <!-- Hohlräume (Luft) liegen unter allem anderen im Blattinneren -->
+      <g class="bteil" data-teil="hohlraum"><rect x="20" y="236" width="580" height="188" fill="#f8f3e3"/></g>
+      <g class="bteil" data-teil="schwamm" id="bqSchwamm"></g>
+      <g class="bteil" data-teil="blattader" id="bqAder"></g>
+      <g class="bteil" data-teil="palisade" id="bqPalisade"></g>
+      <g class="bteil" data-teil="epiOben" id="bqEpiOben"></g>
+      <g class="bteil" data-teil="epiUnten" id="bqEpiUnten"></g>
+      <g class="bteil" data-teil="spalt" id="bqSpalt"></g>
+      <g class="bteil" data-teil="kutikula">
+        <rect x="20" y="30" width="580" height="20" fill="transparent"/>
+        <rect x="20" y="36" width="580" height="8" rx="2" fill="#e9c46a" stroke="#b08a2a" stroke-width="1"/>
+        <rect x="20" y="458" width="136" height="14" fill="transparent"/><rect x="160" y="458" width="440" height="14" fill="transparent"/>
+        <rect x="20" y="462" width="134" height="5" rx="1.5" fill="#e9c46a" stroke="#b08a2a" stroke-width="1"/>
+        <rect x="162" y="462" width="438" height="5" rx="1.5" fill="#e9c46a" stroke="#b08a2a" stroke-width="1"/>
+      </g>
+
+      <!-- Beschriftung -->
+      <g id="bqLabels" font-family="Karla,sans-serif" font-size="16" fill="#183a26">
+        <text x="640" y="-30" font-family="Fraunces,serif" font-size="19" font-weight="600">Blattoberseite</text>
+        <text x="640" y="548" font-family="Fraunces,serif" font-size="19" font-weight="600">Blattunterseite</text>
+        <g stroke="#183a26" stroke-width="1.3" fill="none">
+          <path d="M596,40 L636,40"/><path d="M596,68 L636,70"/><path d="M590,165 L636,165"/>
+          <path d="M486,300 L636,262"/><path d="M586,336 L636,340"/><path d="M530,318 L636,288"/>
+          <path d="M590,442 L636,442"/><path d="M186,404 L230,490"/><path d="M134,470 L104,494"/>
+        </g>
+        <g class="bq-label" data-teil="kutikula"><text x="642" y="45">Kutikula</text></g>
+        <g class="bq-label" data-teil="epiOben"><text x="642" y="75">obere Epidermis</text></g>
+        <g class="bq-label" data-teil="palisade"><text x="642" y="170">Palisadengewebe</text></g>
+        <g class="bq-label" data-teil="blattader"><text x="642" y="267">Blattader</text></g>
+        <g class="bq-label" data-teil="hohlraum"><text x="642" y="293">Hohlraum</text></g>
+        <g class="bq-label" data-teil="schwamm"><text x="642" y="345">Schwammgewebe</text></g>
+        <g class="bq-label" data-teil="epiUnten"><text x="642" y="447">untere Epidermis</text></g>
+        <g class="bq-label" data-teil="hohlraum"><text x="232" y="507">Atemhöhle</text></g>
+        <g class="bq-label" data-teil="spalt"><text x="100" y="507" text-anchor="end">Spaltöffnung</text></g>
+      </g>
+
+      <!-- Gasaustausch und Licht (per Knopf eingeblendet) -->
+      <g id="bqGas" style="display:none" pointer-events="none">
+        <g stroke="#e5a017" stroke-width="4" stroke-linecap="round" marker-end="url(#bqPfeilGelb)">
+          <line x1="70" y1="-46" x2="70" y2="24"/><line x1="190" y1="-46" x2="190" y2="24"/>
+          <line x1="310" y1="-46" x2="310" y2="24"/><line x1="430" y1="-46" x2="430" y2="24"/>
+          <line x1="550" y1="-46" x2="550" y2="24"/>
+        </g>
+        <text x="20" y="-34" font-family="Karla,sans-serif" font-size="15" font-weight="700" fill="#a06d00">Licht</text>
+        <path id="bqWegCO2" d="M156,566 L156,446 C156,420 162,400 166,380 L168,300 C168,280 160,260 158,228" fill="none" stroke="#4b4b4b" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#bqPfeilGrau)"/>
+        <path id="bqWegO2" d="M180,228 C180,262 177,282 177,300 L177,380 C177,402 164,420 161,446 L161,566" fill="none" stroke="#2b83a6" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#bqPfeilBlau)"/>
+        <path id="bqWegH2O" d="M116,376 C132,386 148,398 154,414 C158,428 158,436 158,446 L166,566" fill="none" stroke="#5bb5d6" stroke-width="2.5" stroke-dasharray="3 5" marker-end="url(#bqPfeilHell)"/>
+        <g id="bqTeilchen"></g>
+        <g font-family="Karla,sans-serif" font-size="15" font-weight="700">
+          <text x="146" y="576" text-anchor="end" fill="#4b4b4b">CO₂ hinein</text>
+          <text x="176" y="576" fill="#2b83a6">O₂ und Wasserdampf hinaus</text>
+        </g>
+      </g>
+    </svg></div>
+    <p class="gas-legende" id="gasLegende" hidden>
+      <span><i style="background:#4b4b4b"></i>Kohlenstoffdioxid strömt durch die Spaltöffnung und die Hohlräume bis zu den Palisadenzellen.</span>
+      <span><i style="background:#2b83a6"></i>Sauerstoff aus der Fotosynthese strömt hinaus.</span>
+      <span><i style="background:#5bb5d6"></i>Wasserdampf entweicht ebenfalls durch die Spaltöffnung.</span>
+      <span><i style="background:#e5a017"></i>Licht fällt von oben durch die durchsichtige Epidermis.</span>
+    </p>
+  </div>
+
+  <div class="blatt-layout">
+    <div>
+      <p class="fortschritt"><span id="bzaehler">0</span> von 8 Teilen entdeckt</p>
+      <div class="balken"><i id="bbalken"></i></div>
+      <ul class="legende" id="blegende"></ul>
+    </div>
+    <div class="info" id="binfo">
+      <h3>Wähle eine Schicht</h3>
+      <p class="rolle">Noch nichts ausgewählt</p>
+      <p>Tippe in der Zeichnung auf eine Schicht oder auf einen Begriff in der Liste. Hier steht dann, wie sie gebaut ist und welche Aufgabe sie hat.</p>
+    </div>
+  </div>
+
+  <!-- Basiskonzept -->
+  <div class="basiskonzept">
+    <p class="bk-kopf">Basiskonzept</p>
+    <h3>Struktur und Funktion</h3>
+    <p>Die Gewebe eines Laubblattes sind sehr unterschiedlich gebaut. Das ist kein Zufall: Der Bau (die <b>Struktur</b>) passt jeweils zur Aufgabe (der <b>Funktion</b>). Diesen Zusammenhang findest du in der ganzen Biologie wieder.</p>
+    <div class="bk-paare">
+      <div><b>Palisadengewebe</b><span>dicht gepackt, viele Chloroplasten</span><em>fängt möglichst viel Licht für die Fotosynthese ein</em></div>
+      <div><b>Schwammgewebe</b><span>große Zellzwischenräume</span><em>verteilt die Luft für einen guten Gasaustausch</em></div>
+      <div><b>Schwammgewebe</b><span>wenige Chloroplasten</span><em>unten kommt wenig Licht an, mehr Chloroplasten wären verschwendetes Baumaterial</em></div>
+      <div><b>Epidermis</b><span>lückenlos, mit Kutikula</span><em>schützt vor Austrocknung und Verletzung</em></div>
+      <div><b>Spaltöffnungen</b><span>verschließbarer Spalt</span><em>Gasaustausch nur dann, wenn die Pflanze es braucht</em></div>
+    </div>
+  </div>
+
+  <!-- Zuordnungsübung -->
+  <div class="puzzle zuordnung">
+    <h3 style="font-family:Fraunces,serif;font-size:1.4rem;margin:0 0 6px;text-align:center">Struktur und Funktion zuordnen</h3>
+    <p style="text-align:center;margin:0 0 20px">Wähle für jede Gewebeschicht den passenden Aufbau und die passende Aufgabe aus. Dann klicke auf Prüfen.</p>
+    <div class="tabelle-scroll">
+      <table class="zuordnung-tabelle" id="zuordnung">
+        <thead><tr><th scope="col">Gewebeschicht</th><th scope="col">Struktur (Aufbau)</th><th scope="col">Funktion (Aufgabe)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="knopfreihe" style="margin-top:18px">
+      <button class="knopf" id="zPruefen">Prüfen</button>
+      <button class="knopf zweit" id="zLoesung">Lösung zeigen</button>
+      <button class="knopf zweit" id="zReset">Nochmal</button>
+    </div>
+    <p class="rueckmeldung" id="zRueck" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- ============ 5. LICHT-LABOR ============ -->
 <section id="labor" style="animation-delay:.2s">
-  <div class="sec-kopf"><span class="nr">04</span><h2>Licht-Labor: Versuch am Bildschirm</h2></div>
+  <div class="sec-kopf"><span class="nr">05</span><h2>Licht-Labor: Versuch am Bildschirm</h2></div>
   <p class="sec-intro">Eine Wasserpflanze steht im Glas. Ziehe den Regler und beobachte, wie viele Sauerstoffbläschen aufsteigen. So haben Forscherinnen und Forscher die Fotosynthese wirklich gemessen: durch Zählen der Bläschen.</p>
 
   <div class="labor">
@@ -546,7 +854,7 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
       <input type="range" id="licht" min="0" max="100" value="50" aria-label="Lichtstärke einstellen">
       <div class="messwert"><span>Fotosynthese stellt her</span><b id="mFoto">–</b></div>
       <div class="messwert"><span>Zellatmung verbraucht</span><b id="mAtm">–</b></div>
-      <div class="messwert"><span>Bleibt übrig, steigt als Bläschen auf</span><b id="mNetto">–</b></div>
+      <div class="messwert"><span>Bilanz (+ abgegeben, − aufgenommen)</span><b id="mNetto">–</b></div>
       <p style="font-size:.8rem;margin:8px 0 0;color:var(--tinte-hell)">Alle Werte in Sauerstoffteilchen pro Minute. Es sind Beispielzahlen für diesen Versuch, keine echten Messwerte.</p>
       <p style="font-size:.85rem;margin:12px 0 0;display:flex;flex-direction:column;gap:6px">
         <span><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#fff;border:1.5px solid var(--tinte);vertical-align:-1px;margin-right:7px"></span>weiße Bläschen: Sauerstoff, den die Pflanze abgibt</span>
@@ -584,20 +892,20 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
 
   <details class="profi">
     <summary>Für Profis: Warum produziert die Pflanze bei Dunkelheit keinen Sauerstoff?</summary>
-    <p>Die Zellatmung läuft rund um die Uhr, auch tagsüber. Sie verbraucht Sauerstoff und Zucker und liefert der Zelle Energie. Bei Dunkelheit läuft nur sie, deshalb gibt die Pflanze dann Kohlenstoffdioxid ab statt Sauerstoff. Ab einer bestimmten Lichtstärke halten sich Fotosynthese und Zellatmung genau die Waage. Diesen Punkt nennt man <b>Lichtkompensationspunkt</b>. Im Regler liegt er ungefähr bei 12 Prozent. Bei sehr viel Licht steigt die Fotosynthese nicht weiter an, weil Kohlenstoffdioxid und Enzyme zum Begrenzer werden.</p>
+    <p>Die Zellatmung läuft rund um die Uhr, auch tagsüber. Sie verbraucht Sauerstoff und Zucker und liefert der Zelle Energie. Bei Dunkelheit läuft nur sie, deshalb gibt die Pflanze dann Kohlenstoffdioxid ab statt Sauerstoff. Ab einer bestimmten Lichtstärke halten sich Fotosynthese und Zellatmung genau die Waage. Diesen Punkt nennt man <b>Lichtkompensationspunkt</b>. Im Regler liegt er ungefähr bei 10 Prozent. Bei sehr viel Licht steigt die Fotosynthese nicht weiter an, weil Kohlenstoffdioxid und Enzyme zum Begrenzer werden.</p>
   </details>
 </section>
 
-<!-- ============ 5. QUIZ ============ -->
+<!-- ============ 6. QUIZ ============ -->
 <section id="quiz" style="animation-delay:.25s">
-  <div class="sec-kopf"><span class="nr">05</span><h2>Teste dich selbst</h2></div>
-  <p class="sec-intro">Acht Fragen zu allem, was oben steht. Nach jedem Klick siehst du sofort, ob es gestimmt hat.</p>
+  <div class="sec-kopf"><span class="nr">06</span><h2>Teste dich selbst</h2></div>
+  <p class="sec-intro">Dreizehn Fragen zu allem, was oben steht. Nach jedem Klick siehst du sofort, ob es gestimmt hat.</p>
   <div id="quizbox"></div>
-  <p class="punkte" id="punkte">0 von 8 richtig</p>
+  <p class="punkte" id="punkte">0 von 13 richtig</p>
 </section>
 
 <footer>
-  <p>Lernseite Biologie, Jahrgang 7. Inhalte nach dem Kerncurriculum Niedersachsen: Zellaufbau der Pflanzenzelle und Fotosynthese als Wortgleichung. Die Zeichnungen orientieren sich am Schulbuchschema.</p>
+  <p>Lernseite Biologie, Jahrgang 7. Inhalte nach dem Kerncurriculum Niedersachsen: Zellaufbau der Pflanzenzelle, Vergleich mit der Tierzelle, Fotosynthese als Wortgleichung und Aufbau des Laubblattes (Basiskonzept Struktur und Funktion). Die Zeichnungen orientieren sich am Schulbuchschema.</p>
 </footer>
 
 </div>
@@ -614,10 +922,10 @@ const mikroskopTeile = {
     text:"Der Tubus ist die Röhre, die das Okular oben trägt. Er verbindet das Okular mit dem Objektivrevolver und hält den genauen Abstand ein, der für ein scharfes Bild nötig ist.",
     merk:"Ohne den richtigen Abstand im Tubus wird das Bild nicht scharf, egal wie gut die Linsen sind."},
   revolver:{name:"Objektivrevolver", rolle:"Wechselvorrichtung", punkt:[660,495], pfeil:[[832,428],[697,487]],
-    text:"Am Objektivrevolver sind mehrere Objektive mit unterschiedlicher Vergrößerung befestigt. Durch Drehen bringst du das gewünschte Objektiv über das Objekt, ohne das Mikroskop neu einstellen zu müssen.",
+    text:"Am Objektivrevolver sind mehrere Objektive mit unterschiedlicher Vergrößerung befestigt. Durch Drehen bringst du das gewünschte Objektiv über das Objekt, ohne das Präparat verschieben zu müssen. Meist reicht danach ein kleines Nachstellen mit dem Feintrieb.",
     merk:"Man beginnt immer mit der kleinsten Vergrößerung und dreht erst danach weiter."},
   objektiv:{name:"Objektiv", rolle:"Vergrößerung am Objekt", punkt:[600,655], pfeil:[[453,562],[579,634]],
-    text:"Das Objektiv sitzt direkt über dem Objekt und erzeugt die erste, stärkere Vergrößerung. Seine Vergrößerungszahl ist meistens seitlich am Gehäuse eingraviert.",
+    text:"Das Objektiv sitzt direkt über dem Objekt und erzeugt die erste Vergrößerung. Seine Vergrößerungszahl ist meistens seitlich am Gehäuse eingraviert.",
     merk:"Je stärker die Vergrößerung, desto näher steht das Objektiv am Objekt."},
   objekttisch:{name:"Objekttisch", rolle:"Auflagefläche", punkt:[760,800], pfeil:[[912,728],[791,787]],
     text:"Auf dem Objekttisch liegt der Objektträger mit dem Präparat. In der Mitte hat er eine Öffnung, durch die das Licht von unten nach oben scheinen kann.",
@@ -627,7 +935,7 @@ const mikroskopTeile = {
     merk:"Die richtige Blendeneinstellung ist oft wichtiger für ein gutes Bild als die reine Lampenhelligkeit."},
   triebrad:{name:"Triebrad", rolle:"Scharfstellung", punkt:[230,950], pfeil:[[68,866],[193,928]],
     text:"Mit dem Triebrad veränderst du den Abstand zwischen Objekttisch und Objektiv und stellst so das Bild scharf. Meistens gibt es ein Rad für die grobe und eins für die feine Einstellung.",
-    merk:"Erst grob, dann fein einstellen, sonst verkantet leicht das Präparat."},
+    merk:"Erst mit dem groben, dann mit dem feinen Rad scharf stellen. Beim Annähern von der Seite hinschauen, damit das Objektiv das Präparat nicht berührt."},
   leuchte:{name:"Mikroskopleuchte", rolle:"Lichtquelle", punkt:[620,1110], pfeil:[[793,1188],[657,1133]],
     text:"Die Mikroskopleuchte durchleuchtet das Objekt von unten. Ohne diese Lichtquelle käme kein Bild durch die Linsen ins Auge, denn ein Lichtmikroskop braucht durchscheinendes Licht.",
     merk:"Präparate müssen deshalb dünn genug sein, damit Licht hindurchkommt."},
@@ -737,7 +1045,7 @@ const teile = {
     text:"Der Zellkern enthält die Erbinformation in den Chromosomen. Von hier aus wird gesteuert, was die Zelle baut und wann sie sich teilt.",
     merk:"Ohne Zellkern weiß die Zelle nicht, was sie tun soll."},
   kernmembran:{name:"Kernmembran", rolle:"Schutzhülle", farbe:"#c0392b",
-    text:"Die Kernmembran umgibt den Zellkern und trennt die Erbinformation vom übrigen Zellplasma. Kleine Poren darin lassen Botenstoffe durch.",
+    text:"Die Kernmembran umgibt den Zellkern und trennt die Erbinformation vom übrigen Zellplasma. Genau genommen ist sie eine doppelte Membran, die Kernhülle. Kleine Poren darin lassen Stoffe zwischen Kern und Zellplasma hindurch.",
     merk:"Sie ist eine eigene Membran, nicht dasselbe wie die Zellmembran."},
   chloroplast:{name:"Chloroplast", rolle:"Zuckerfabrik", farbe:"#1f6f52",
     text:"Chloroplasten sind grün, weil in ihnen der Farbstoff Chlorophyll steckt. Er fängt Sonnenlicht ein. Genau hier läuft die Fotosynthese ab und es entsteht Glukose.",
@@ -751,6 +1059,12 @@ const teile = {
   tonoplast:{name:"Tonoplast", rolle:"Tankwand", farbe:"#c0392b",
     text:"Der Tonoplast ist die Membran, die die Vakuole umschließt. Er regelt, welche Stoffe im Zellsaft eingelagert oder wieder abgegeben werden.",
     merk:"Merkwort: Tonoplast gehört zur Vakuole, Kernmembran zum Zellkern."},
+  er:{name:"Endoplasmatisches Retikulum (ER)", rolle:"Kanalnetz", farbe:"#8e44ad",
+    text:"Das ER ist ein Netz aus Kanälen und flachen Säckchen, die von einer Membran umgeben sind. Es durchzieht das Zellplasma und hängt mit der Kernhülle zusammen. Am und im ER werden Stoffe wie Eiweiße und Fette hergestellt, verändert und durch die Zelle weitertransportiert.",
+    merk:"Das ER ist das Straßen- und Kanalnetz der Zelle. Viele Stoffe aus dem ER reisen weiter zum Golgi-Apparat."},
+  golgi:{name:"Golgi-Apparat", rolle:"Packstation", farbe:"#c0661c",
+    text:"Der Golgi-Apparat ist ein Stapel flacher, gebogener Membransäckchen. Er übernimmt Stoffe aus dem ER, verändert und sortiert sie und verpackt sie in kleine Bläschen. Die Bläschen bringen die Stoffe an ihren Zielort in der Zelle oder zur Zellmembran, wo sie nach außen abgegeben werden. In Pflanzenzellen liefert er außerdem Baustoffe für die Zellwand.",
+    merk:"Benannt nach dem italienischen Forscher Camillo Golgi, der ihn 1898 beschrieben hat."},
   ribosomen:{name:"Ribosomen", rolle:"Baumeister", farbe:"#1a1a1a",
     text:"Ribosomen sind winzige Körnchen im Zellplasma. In ihnen werden Eiweiße hergestellt, aus denen die Zelle ihre Bauteile und Werkzeuge zusammensetzt.",
     merk:"Ribosomen sind so klein, dass man sie nur im Elektronenmikroskop sieht."}
@@ -769,7 +1083,7 @@ Object.keys(teile).forEach(key=>{
   legende.appendChild(li);
 });
 
-document.querySelectorAll('.teil').forEach(g=>{
+document.querySelectorAll('#zelle .teil').forEach(g=>{
   g.addEventListener('click', e=>{ e.stopPropagation(); zeigeTeil(g.dataset.teil); });
 });
 
@@ -777,8 +1091,8 @@ function zeigeTeil(key){
   const t = teile[key];
   gefunden.add(key);
 
-  document.querySelectorAll('.teil').forEach(g=>g.classList.toggle('aktiv', g.dataset.teil===key));
-  document.querySelectorAll('.legende li').forEach(li=>{
+  document.querySelectorAll('#zelle .teil').forEach(g=>g.classList.toggle('aktiv', g.dataset.teil===key));
+  document.querySelectorAll('#legende li').forEach(li=>{
     if(gefunden.has(li.dataset.teil)) li.classList.add('gefunden');
   });
 
@@ -791,12 +1105,13 @@ function zeigeTeil(key){
   void infoBox.offsetWidth;
   infoBox.style.animation='auf .35s ease-out both';
 
-  document.getElementById('balken').style.width = (gefunden.size/10*100)+'%';
+  const anzahlTeile = Object.keys(teile).length;
+  document.getElementById('balken').style.width = (gefunden.size/anzahlTeile*100)+'%';
 
   const z = document.getElementById('zaehler');
   if(z){
-    if(gefunden.size===10){
-      z.parentElement.textContent = 'Alle 10 Bestandteile entdeckt. Weiter geht es mit der Fotosynthese.';
+    if(gefunden.size===anzahlTeile){
+      z.parentElement.textContent = 'Alle '+anzahlTeile+' Bestandteile entdeckt. Schau dir jetzt den Vergleich mit der Tierzelle an.';
     } else {
       z.textContent = gefunden.size;
     }
@@ -865,7 +1180,13 @@ document.getElementById('pruefen').addEventListener('click',()=>{
     r.textContent='Richtig. Wasser und Kohlenstoffdioxid gehen hinein, Sauerstoff und Glukose kommen heraus.';
     r.style.color='var(--blatt)';
   } else {
-    r.textContent='Noch nicht ganz. Denk daran: Stickstoff und Wärme spielen in dieser Gleichung keine Rolle.';
+    const fremd = slots.some(w=>!links.includes(w) && !rechts.includes(w));
+    const vertauscht = !fremd && slots.slice(0,2).every(w=>rechts.includes(w));
+    r.textContent = fremd
+      ? 'Noch nicht ganz. Stickstoff und Wärme kommen in dieser Gleichung nicht vor.'
+      : vertauscht
+        ? 'Fast. Du hast Ausgangsstoffe und Produkte vertauscht: Was geht hinein, was kommt heraus?'
+        : 'Noch nicht ganz. Links stehen die Ausgangsstoffe, rechts die Produkte.';
     r.style.color='var(--membran)';
   }
 });
@@ -877,7 +1198,252 @@ document.getElementById('reset').addEventListener('click',()=>{
 zeichneSlots();
 
 /* =========================================================
-   TEIL 4: Licht-Labor
+   TEIL 4: Laubblatt
+   ========================================================= */
+(()=>{
+const NS='http://www.w3.org/2000/svg';
+function el(tag, attrs, parent){
+  const e=document.createElementNS(NS,tag);
+  for(const k in attrs) e.setAttribute(k,attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+
+// ---- Zeichnung erzeugen ----
+// obere Epidermis: eine Lage flacher, durchsichtiger Zellen ohne Chloroplasten
+const epiO=document.getElementById('bqEpiOben');
+for(let i=0;i<10;i++){
+  const x=20+i*58;
+  el('rect',{x:x,y:44,width:58,height:48,rx:5,fill:'#eaf4f7',stroke:'#5b7f8c','stroke-width':2},epiO);
+  el('ellipse',{cx:x+40,cy:72,rx:5,ry:4,fill:'#6a5d7b'},epiO);
+}
+// Palisadengewebe: lange, dicht stehende Zellen mit vielen Chloroplasten
+const pal=document.getElementById('bqPalisade');
+for(let i=0;i<16;i++){
+  const x=21+i*36.25;
+  el('rect',{x:x,y:95,width:34,height:139,rx:15,fill:'#d8edc4',stroke:'#3f7a32','stroke-width':2},pal);
+  for(let y=110;y<=220;y+=15.5){
+    el('ellipse',{cx:x+7,cy:y,rx:3.6,ry:6,fill:'#3c9a45'},pal);
+    el('ellipse',{cx:x+27,cy:y+7,rx:3.6,ry:6,fill:'#3c9a45'},pal);
+  }
+}
+// Schwammgewebe: rundliche, locker liegende Zellen mit wenigen Chloroplasten
+const schwammZellen=[
+  [48,262,26,20,10],[112,266,30,19,-15],[252,268,30,20,-8],[322,262,26,18,15],[522,262,26,18,-10],[574,268,22,20,5],
+  [70,316,24,20,30],[126,322,27,18,-20],[212,318,26,20,10],[290,322,28,18,25],[580,330,18,22,0],
+  [42,372,20,22,0],[96,370,22,18,-30],[234,372,26,18,-10],[310,374,28,20,20],[374,398,22,15,0],[502,380,26,18,15],[566,384,26,18,-15],
+  [282,407,20,11,0],[442,404,24,13,0]
+];
+const sch=document.getElementById('bqSchwamm');
+schwammZellen.forEach(([cx,cy,rx,ry,rot],i)=>{
+  const g=el('g',{transform:'translate('+cx+','+cy+') rotate('+rot+')'},sch);
+  el('ellipse',{rx:rx,ry:ry,fill:'#e3f0d3',stroke:'#4f8a3e','stroke-width':2},g);
+  el('ellipse',{cx:-rx*0.45,cy:-ry*0.35,rx:3.6,ry:5.4,fill:'#3c9a45',transform:'rotate(70)'},g);
+  if(i%2===0) el('ellipse',{cx:rx*0.4,cy:ry*0.4,rx:3.6,ry:5.4,fill:'#3c9a45'},g);
+});
+// Blattader (Leitbündel): oben weite Gefäße für Wasser, unten Siebröhren für Zucker
+const ader=document.getElementById('bqAder');
+el('circle',{cx:430,cy:318,r:60,fill:'#f3ead0'},ader);
+for(let k=0;k<18;k++){
+  const w=k/18*Math.PI*2;
+  el('circle',{cx:430+56*Math.cos(w),cy:318+56*Math.sin(w),r:10,fill:'#e7e1b8',stroke:'#8f8442','stroke-width':1.5},ader);
+}
+[[408,294,10],[432,288,11],[456,296,10],[418,316,8],[444,314,8]].forEach(([x,y,r])=>
+  el('circle',{cx:x,cy:y,r:r,fill:'#9cc7ec',stroke:'#2b5d8a','stroke-width':2},ader));
+[[412,342,5],[424,348,5],[436,346,5],[448,340,5],[430,334,4],[420,358,4],[442,358,4],[454,352,4],[406,354,4]].forEach(([x,y,r])=>
+  el('circle',{cx:x,cy:y,r:r,fill:'#f2d675',stroke:'#a5862a','stroke-width':1.5},ader));
+// untere Epidermis
+const epiU=document.getElementById('bqEpiUnten');
+[[20,54],[74,54],[188,58],[246,58],[304,58],[362,58],[420,58],[478,58],[536,64]].forEach(([x,w])=>{
+  el('rect',{x:x,y:422,width:w,height:40,rx:5,fill:'#eaf4f7',stroke:'#5b7f8c','stroke-width':2},epiU);
+  el('ellipse',{cx:x+w*0.65,cy:444,rx:5,ry:4,fill:'#6a5d7b'},epiU);
+});
+// Spaltöffnung: zwei Schließzellen mit Chloroplasten, dazwischen der Spalt
+const spalt=document.getElementById('bqSpalt');
+el('rect',{x:128,y:418,width:60,height:50,fill:'transparent'},spalt);
+el('rect',{x:156,y:424,width:6,height:44,fill:'#f8f3e3'},spalt);
+[[143,'M156,424 C138,422 130,432 130,442 C130,452 138,462 156,460 C150,452 150,432 156,424 Z'],
+ [175,'M162,424 C180,422 188,432 188,442 C188,452 180,462 162,460 C168,452 168,432 162,424 Z']].forEach(([cx,d])=>{
+  el('path',{d:d,fill:'#cde8b2',stroke:'#3f7a32','stroke-width':2},spalt);
+  el('ellipse',{cx:cx,cy:436,rx:3,ry:4.5,fill:'#3c9a45'},spalt);
+  el('ellipse',{cx:cx,cy:449,rx:3,ry:4.5,fill:'#3c9a45'},spalt);
+});
+
+// ---- Inhalte ----
+const bteile={
+  kutikula:{name:"Kutikula", rolle:"Wachsschicht", farbe:"#e9c46a",
+    struktur:"Eine dünne, wachsartige Schicht ohne Zellen. Sie liegt außen auf der oberen und, meist dünner, auf der unteren Epidermis.",
+    funktion:"Wachs lässt kaum Wasser durch. Die Kutikula vermindert deshalb den Wasserverlust über die Blattoberfläche.",
+    merk:"Pflanzen an trockenen, sonnigen Standorten haben oft eine besonders dicke Kutikula."},
+  epiOben:{name:"Obere Epidermis", rolle:"Schutzschicht", farbe:"#eaf4f7",
+    struktur:"Eine einzige, lückenlose Schicht aus flachen Zellen mit verdickten Zellwänden. Die Zellen haben keine Chloroplasten und sind durchsichtig.",
+    funktion:"Sie schützt das Blattinnere vor Austrocknung, Verletzungen und Krankheitserregern. Weil sie durchsichtig ist, gelangt das Licht ungehindert zu den Zellen darunter.",
+    merk:"Lückenlos und mit Kutikula: guter Schutz. Durchsichtig: Licht kommt durch."},
+  palisade:{name:"Palisadengewebe", rolle:"Hauptort der Fotosynthese", farbe:"#3c9a45",
+    struktur:"Lange, schmale Zellen stehen senkrecht und dicht an dicht nebeneinander, wie die Pfähle einer Palisade. Sie enthalten sehr viele Chloroplasten. Zellzwischenräume gibt es kaum.",
+    funktion:"Hier kommt das meiste Licht an. Die vielen Chloroplasten fangen es ein und nutzen es für die Fotosynthese.",
+    merk:"Keine Lücken: So geht kaum Licht ungenutzt zwischen den Zellen hindurch."},
+  schwamm:{name:"Schwammgewebe", rolle:"locker gebautes Gewebe", farbe:"#e3f0d3",
+    struktur:"Rundlich-ovale, locker angeordnete Zellen mit wenigen Chloroplasten. Zwischen ihnen liegen große, luftgefüllte Zellzwischenräume. Wegen dieses lockeren Aufbaus heißt es Schwammgewebe.",
+    funktion:"Die Zellen betreiben ebenfalls Fotosynthese, aber weniger, denn hier unten kommt nur noch wenig Licht an. Durch die Lücken kann sich Luft im ganzen Blatt verteilen.",
+    merk:"Wenig Licht, wenige Chloroplasten: Die Pflanze verschwendet kein Baumaterial."},
+  hohlraum:{name:"Hohlräume (Zellzwischenräume)", rolle:"Luftverteilungssystem", farbe:"#f8f3e3",
+    struktur:"Luftgefüllte Räume zwischen den Zellen des Schwammgewebes. Sie sind alle miteinander verbunden. Direkt über jeder Spaltöffnung liegt ein besonders großer Hohlraum, die Atemhöhle.",
+    funktion:"Sie bilden ein Luftverteilungssystem, das mit den Spaltöffnungen verbunden ist. So gelangt Kohlenstoffdioxid zu allen Zellen, und Sauerstoff und Wasserdampf gelangen nach draußen.",
+    merk:"Ohne die Hohlräume käme das Kohlenstoffdioxid nicht bis zum Palisadengewebe."},
+  blattader:{name:"Blattader (Leitbündel)", rolle:"Transportweg", farbe:"#9cc7ec",
+    struktur:"Ein Bündel aus langen, röhrenförmigen Zellen, umgeben von einem Ring aus Zellen. Oben liegen weite Röhren für Wasser (blau), unten engere Siebröhren (gelb).",
+    funktion:"Durch die weiten Röhren kommen Wasser und Mineralsalze aus der Wurzel ins Blatt. Durch die Siebröhren wird der Zucker aus der Fotosynthese in andere Teile der Pflanze gebracht.",
+    merk:"Blattadern sind das Leitungsnetz des Blattes. Außerdem stützen sie das Blatt wie ein Gerippe."},
+  epiUnten:{name:"Untere Epidermis", rolle:"Schutzschicht mit Öffnungen", farbe:"#cfe3ea",
+    struktur:"Eine lückenlose Zellschicht ohne Chloroplasten mit einer dünnen Kutikula. Sie ist regelmäßig von Spaltöffnungen unterbrochen.",
+    funktion:"Wie die obere Epidermis schützt sie das Blatt vor Austrocknung. Über die Spaltöffnungen macht sie aber den Gasaustausch mit der Luft möglich.",
+    merk:"Bei den meisten Laubblättern liegen die Spaltöffnungen fast nur auf der Unterseite. Dort trifft keine direkte Sonne auf, und es verdunstet weniger Wasser."},
+  spalt:{name:"Spaltöffnung", rolle:"Tor für Gase", farbe:"#cde8b2",
+    struktur:"Zwei bohnenförmige Schließzellen umgeben einen schmalen Spalt. Anders als die übrigen Zellen der Epidermis besitzen sie Chloroplasten.",
+    funktion:"Durch den Spalt gelangt Kohlenstoffdioxid ins Blatt, Sauerstoff und Wasserdampf gelangen hinaus. Die Schließzellen können den Spalt weiter öffnen oder schließen, zum Beispiel bei Trockenheit.",
+    merk:"Spaltöffnungen regeln den Gasaustausch und die Wasserabgabe des Blattes."}
+};
+
+const bGefunden=new Set();
+const bLegende=document.getElementById('blegende');
+const bInfo=document.getElementById('binfo');
+const bAnzahl=Object.keys(bteile).length;
+Object.keys(bteile).forEach(key=>{
+  const t=bteile[key];
+  const li=document.createElement('li');
+  li.dataset.teil=key;
+  li.innerHTML='<span class="punkt" style="background:'+t.farbe+'"></span>'+t.name;
+  li.addEventListener('click',()=>zeigeBlattTeil(key));
+  bLegende.appendChild(li);
+});
+document.querySelectorAll('#blattQuer .bteil, #blattQuer .bq-label').forEach(g=>{
+  g.addEventListener('click',e=>{e.stopPropagation(); zeigeBlattTeil(g.dataset.teil);});
+});
+
+function zeigeBlattTeil(key){
+  const t=bteile[key];
+  bGefunden.add(key);
+  document.querySelectorAll('#blattQuer .bteil').forEach(g=>g.classList.toggle('aktiv',g.dataset.teil===key));
+  document.querySelectorAll('#blegende li').forEach(li=>{
+    if(bGefunden.has(li.dataset.teil)) li.classList.add('gefunden');
+  });
+  bInfo.innerHTML=
+    '<h3>'+t.name+'</h3>'+
+    '<p class="rolle">'+t.rolle+'</p>'+
+    '<p><b>Struktur:</b> '+t.struktur+'</p>'+
+    '<p><b>Funktion:</b> '+t.funktion+'</p>'+
+    '<p class="merk"><b>Merke:</b> '+t.merk+'</p>';
+  bInfo.style.animation='none';
+  void bInfo.offsetWidth;
+  bInfo.style.animation='auf .35s ease-out both';
+  document.getElementById('bbalken').style.width=(bGefunden.size/bAnzahl*100)+'%';
+  const z=document.getElementById('bzaehler');
+  if(z){
+    if(bGefunden.size===bAnzahl) z.parentElement.textContent='Alle '+bAnzahl+' Teile entdeckt. Probiere jetzt die Zuordnungsübung unten.';
+    else z.textContent=bGefunden.size;
+  }
+}
+
+// ---- Gasaustausch ----
+const gasKnopf=document.getElementById('gasKnopf');
+const gasG=document.getElementById('bqGas');
+const teilchenG=document.getElementById('bqTeilchen');
+const ruhig=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!ruhig){
+  [['bqWegCO2','#4b4b4b',5],['bqWegO2','#2b83a6',5],['bqWegH2O','#5bb5d6',4]].forEach(([id,farbe,r])=>{
+    const d=document.getElementById(id).getAttribute('d');
+    for(let k=0;k<4;k++){
+      const c=el('circle',{r:r,fill:farbe,stroke:'#fff','stroke-width':1.5},teilchenG);
+      el('animateMotion',{dur:'5s',repeatCount:'indefinite',begin:(-k*1.25)+'s',path:d},c);
+    }
+  });
+}
+gasKnopf.addEventListener('click',()=>{
+  const an=gasKnopf.getAttribute('aria-pressed')!=='true';
+  gasKnopf.setAttribute('aria-pressed',String(an));
+  gasKnopf.textContent=an?'Gasaustausch ausblenden':'Gasaustausch zeigen';
+  gasG.style.display=an?'':'none';
+  document.getElementById('gasLegende').hidden=!an;
+});
+
+// ---- Beschriftung als Selbsttest ----
+const beschKnopf=document.getElementById('beschriftungKnopf');
+beschKnopf.addEventListener('click',()=>{
+  const an=beschKnopf.getAttribute('aria-pressed')!=='true';
+  beschKnopf.setAttribute('aria-pressed',String(an));
+  beschKnopf.textContent=an?'Beschriftung ausblenden':'Beschriftung einblenden';
+  document.getElementById('bqLabels').style.display=an?'':'none';
+});
+
+// ---- Zuordnungsübung ----
+const zeilen=[
+  {schicht:"Obere Epidermis mit Kutikula",
+   s:"lückenlose Schicht aus durchsichtigen Zellen ohne Chloroplasten, außen eine Wachsschicht",
+   f:"Schutz vor Austrocknung und Verletzung, lässt Licht hindurch"},
+  {schicht:"Palisadengewebe",
+   s:"lange, senkrecht und dicht stehende Zellen mit sehr vielen Chloroplasten",
+   f:"Hauptort der Fotosynthese"},
+  {schicht:"Schwammgewebe",
+   s:"locker liegende, rundliche Zellen mit wenigen Chloroplasten und großen Hohlräumen",
+   f:"verteilt die Luft im Blatt, dazu etwas Fotosynthese"},
+  {schicht:"Untere Epidermis mit Kutikula und Spaltöffnungen",
+   s:"lückenlose Zellschicht, unterbrochen von Spalten zwischen je zwei Schließzellen",
+   f:"Gasaustausch mit der Luft, sonst Schutz vor Verdunstung"},
+  {schicht:"Blattader (Leitbündel)",
+   s:"Bündel aus langen, röhrenförmigen Zellen",
+   f:"bringt Wasser und Mineralsalze ins Blatt, transportiert Zucker ab"}
+];
+function mische(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const zBody=document.querySelector('#zuordnung tbody');
+function baueZuordnung(){
+  zBody.innerHTML='';
+  const sOpt=mische(zeilen.map(z=>z.s)), fOpt=mische(zeilen.map(z=>z.f));
+  zeilen.forEach((z,i)=>{
+    const tr=document.createElement('tr');
+    const th=document.createElement('th'); th.scope='row'; th.textContent=z.schicht; tr.appendChild(th);
+    [['s',sOpt,'Struktur'],['f',fOpt,'Funktion']].forEach(([art,opts,wort])=>{
+      const td=document.createElement('td');
+      const sel=document.createElement('select');
+      sel.dataset.zeile=i; sel.dataset.art=art;
+      sel.setAttribute('aria-label',wort+' für '+z.schicht);
+      sel.innerHTML='<option value="">bitte wählen …</option>'+opts.map(o=>'<option>'+o+'</option>').join('');
+      sel.addEventListener('change',()=>{sel.classList.remove('richtig','falsch');document.getElementById('zRueck').textContent='';});
+      td.appendChild(sel); tr.appendChild(td);
+    });
+    zBody.appendChild(tr);
+  });
+  document.getElementById('zRueck').textContent='';
+}
+baueZuordnung();
+document.getElementById('zPruefen').addEventListener('click',()=>{
+  let richtig=0, leer=0;
+  zBody.querySelectorAll('select').forEach(sel=>{
+    const soll=zeilen[+sel.dataset.zeile][sel.dataset.art];
+    sel.classList.remove('richtig','falsch');
+    if(!sel.value){leer++;return;}
+    const ok=sel.value===soll;
+    sel.classList.add(ok?'richtig':'falsch');
+    if(ok) richtig++;
+  });
+  const r=document.getElementById('zRueck');
+  const gesamt=zeilen.length*2;
+  if(richtig===gesamt){r.textContent='Alles richtig. Du hast Struktur und Funktion jeder Schicht erkannt.';r.style.color='var(--blatt)';}
+  else{r.textContent=richtig+' von '+gesamt+' richtig'+(leer?', '+leer+' Feld'+(leer>1?'er':'')+' noch leer':'')+'. Tipp: Klicke oben in der Zeichnung auf die Schicht, wenn du unsicher bist.';r.style.color='var(--membran)';}
+});
+document.getElementById('zLoesung').addEventListener('click',()=>{
+  zBody.querySelectorAll('select').forEach(sel=>{
+    sel.value=zeilen[+sel.dataset.zeile][sel.dataset.art];
+    sel.classList.remove('falsch'); sel.classList.add('richtig');
+  });
+  const r=document.getElementById('zRueck');
+  r.textContent='So sieht die Lösung aus. Klicke auf Nochmal, um es selbst zu versuchen.'; r.style.color='var(--tinte-hell)';
+});
+document.getElementById('zReset').addEventListener('click',baueZuordnung);
+})();
+
+/* =========================================================
+   TEIL 5: Licht-Labor
    ========================================================= */
 const regler = document.getElementById('licht');
 const blasenG = document.getElementById('blasen');
@@ -892,12 +1458,12 @@ function laborUpdate(){
   document.getElementById('lichtwert').textContent = l+' %';
   document.getElementById('mFoto').textContent  = foto+' Teilchen';
   document.getElementById('mAtm').textContent   = atmung+' Teilchen';
-  document.getElementById('mNetto').textContent = (netto>0?'+':'')+netto+' Teilchen';
+  document.getElementById('mNetto').textContent = (netto>0?'+':netto<0?'−':'')+Math.abs(netto)+' Teilchen';
 
   // Himmel und Sonne
   const hell = Math.round(l*0.01*255);
   document.getElementById('himmel').setAttribute('fill',
-    l<10 ? '#16243a' : 'rgb('+(180+hell*0.28)+','+(215+hell*0.14)+',245)');
+    l<10 ? '#16243a' : 'rgb('+Math.round(180+hell*0.28)+','+Math.round(215+hell*0.14)+',245)');
   document.getElementById('sonnekreis').setAttribute('opacity', Math.max(0.08, l/100));
   document.getElementById('sonnenstrahlen').setAttribute('opacity', Math.max(0, (l-15)/85));
 
@@ -945,14 +1511,14 @@ function laborUpdate(){
   } else if(l<75){
     s.innerHTML='<b>Guter Lichttag.</b> Die Pflanze stellt deutlich mehr Sauerstoff her, als sie selbst braucht. Der Überschuss steigt als weiße Bläschen auf.';
   } else {
-    s.innerHTML='<b>Volle Sonne.</b> Mehr Licht bringt kaum noch mehr Zucker. Jetzt begrenzen Kohlenstoffdioxid und Wärme die Fotosynthese, nicht mehr das Licht.';
+    s.innerHTML='<b>Volle Sonne.</b> Mehr Licht bringt kaum noch mehr Zucker. Jetzt begrenzen der Kohlenstoffdioxidgehalt und die Temperatur die Fotosynthese, nicht mehr das Licht.';
   }
 }
 regler.addEventListener('input', laborUpdate);
 laborUpdate();
 
 /* =========================================================
-   TEIL 5: Quiz
+   TEIL 6: Quiz
    ========================================================= */
 const fragen = [
   {f:"Wo genau in der Zelle läuft die Fotosynthese ab?",
@@ -966,7 +1532,7 @@ const fragen = [
    e:"Glukose bleibt in der Pflanze, überschüssiger Sauerstoff geht in die Luft."},
   {f:"Als was speichert die Pflanze den Zucker?",
    a:["Als Fett","Als Stärke","Als Eiweiß","Als Zellsaft"], r:1,
-   e:"Stärke ist die Speicherform. Deshalb weist man sie in Blättern mit Jodlösung nach."},
+   e:"Stärke ist die Speicherform. Deshalb weist man sie in Blättern mit Iod-Kaliumiodid-Lösung nach: Stärke färbt sich blauschwarz."},
   {f:"Welche drei Teile hat nur die Pflanzenzelle, nicht die Tierzelle?",
    a:["Zellkern, Ribosomen, Membran","Zellwand, Chloroplasten, Vakuole","Mitochondrien, Zellplasma, Zellkern","Tonoplast, Zellkern, Ribosomen"], r:1,
    e:"Zellwand, Chloroplasten und die große Vakuole sind typisch pflanzlich."},
@@ -978,7 +1544,22 @@ const fragen = [
    e:"Zellatmung baut Zucker mit Sauerstoff ab und liefert Energie. Sie läuft auch nachts."},
   {f:"Woher kommt das Wort Fotosynthese?",
    a:["Licht und Aufbau","Blatt und Grün","Wasser und Luft","Sonne und Zucker"], r:0,
-   e:"Griechisch phos heißt Licht, synthesis heißt Aufbau."}
+   e:"Griechisch phos heißt Licht, synthesis heißt Aufbau."},
+  {f:"Welcher Zellbestandteil verpackt Stoffe in kleine Bläschen und schickt sie an ihren Zielort?",
+   a:["Das Endoplasmatische Retikulum","Der Golgi-Apparat","Das Ribosom","Der Tonoplast"], r:1,
+   e:"Der Golgi-Apparat übernimmt Stoffe aus dem ER, verändert und sortiert sie und verpackt sie in Bläschen."},
+  {f:"Wo liegen bei den meisten Laubblättern die Spaltöffnungen?",
+   a:["In der oberen Epidermis","Im Palisadengewebe","In der unteren Epidermis","In der Blattader"], r:2,
+   e:"Auf der Blattunterseite trifft keine direkte Sonne auf. So verdunstet weniger Wasser."},
+  {f:"Warum hat das Palisadengewebe kaum Zellzwischenräume?",
+   a:["Damit möglichst wenig Licht ungenutzt hindurchgeht","Damit Wasser schneller verdunstet","Damit das Blatt leichter wird","Damit Luft besser hindurchströmt"], r:0,
+   e:"Dicht gepackte Zellen mit vielen Chloroplasten fangen das meiste Licht ein: Struktur passt zur Funktion."},
+  {f:"Welche Aufgabe haben die Hohlräume im Schwammgewebe?",
+   a:["Sie speichern Stärke","Sie verteilen Luft im Blatt und sind mit den Spaltöffnungen verbunden","Sie leiten Wasser aus der Wurzel","Sie schützen vor Verdunstung"], r:1,
+   e:"Über die Hohlräume gelangt Kohlenstoffdioxid zu allen Zellen, Sauerstoff und Wasserdampf gelangen hinaus."},
+  {f:"Was ist die Kutikula?",
+   a:["Eine Schicht aus Zellen mit vielen Chloroplasten","Die Öffnung zwischen zwei Schließzellen","Eine wachsartige Schicht auf der Epidermis","Ein Teil der Blattader"], r:2,
+   e:"Die Wachsschicht vermindert den Wasserverlust über die Blattoberfläche."}
 ];
 
 let score=0, beantwortet=0;
