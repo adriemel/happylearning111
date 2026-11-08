@@ -246,9 +246,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .particle-title-canvas {
   /* Viewport-sized so dots can fly in from far outside the word; stays below the sticky top bar. */
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0;
+  left: 0; /* width/height are set in px by ParticleTitle.jsx (not 100vh: iOS Safari) */
   z-index: 10;
   pointer-events: none;
   opacity: 1;

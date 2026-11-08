@@ -191,6 +191,11 @@ export default function ParticleTitle({ children }) {
       // Viewport-sized fixed canvas so dots can come from far outside the word.
       canvas.width = Math.ceil(vw * dpr);
       canvas.height = Math.ceil(vh * dpr);
+      // Display size in px from the same values as the buffer. CSS 100vh is the
+      // toolbar-hidden height on iOS/iPadOS Safari (> innerHeight), which
+      // stretched the drawing vertically and put the dots too low.
+      canvas.style.width = `${vw}px`;
+      canvas.style.height = `${vh}px`;
       const ctx = canvas.getContext("2d");
       if (!ctx) {
         finishNow();
