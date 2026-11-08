@@ -9,16 +9,15 @@ let introPlayed = false;
 const FONT_TIMEOUT_MS = 1500; // skip the intro if web fonts take longer than this
 const FADE_MS = 300;
 
-// Motion styles. "vortex" (default): dots circle the word on a flattened disc and
-// spiral in. "converge": dots stream in radially from all sides, left to right.
-// Preview override: ?intro=converge or ?intro=vortex
-const MODES = {
-  vortex: { travel: 2.6, maxDelay: 1.1, spin: 1.1 },
-  converge: { travel: 2.4, maxDelay: 1.4 },
-};
+// Vortex: dots circle the word on a flattened disc and spiral in (~3.7 s).
+const TRAVEL_S = 2.6; // per-dot travel time
+const MAX_DELAY_S = 1.1; // latest start (outer ring starts last)
+const SPIN_TURNS = 1; // extra turns on the way in; must be an integer or the word lands rotated
+// The rotation finishes at this fraction of the travel; afterwards dots move
+// straight inward, so the word assembles upright instead of rotated.
+const SPIN_END = 0.7;
 
 const easeInOutCubic = (u) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
-const easeOutCubic = (u) => 1 - (1 - u) ** 3;
 
 /**
  * One-time particle intro for a piece of hero text.
@@ -95,10 +94,6 @@ export default function ParticleTitle({ children }) {
     };
 
     const run = (cs, font, text) => {
-      const param = new URLSearchParams(window.location.search).get("intro");
-      const mode = param in MODES ? param : "vortex";
-      const cfg = MODES[mode];
-
       const rect = target.getBoundingClientRect();
       const fontSize = parseFloat(cs.fontSize);
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -154,12 +149,11 @@ export default function ParticleTitle({ children }) {
       const cx = rect.width / 2;
       const cy = rect.height / 2;
       const squash = 0.38; // vertical flattening of the vortex disc
-      // Start radius: well outside the word, scaled to the viewport.
-      const rMin = Math.max(rect.width * 0.9, 120);
-      const rMax = Math.max(rMin * 1.4, Math.min(vw, 1400) * 0.55);
+      // Start radius: outside the word, moderately scaled to the viewport.
+      const rMin = Math.max(rect.width * 0.75, 90);
+      const rMax = Math.max(rMin * 1.35, Math.min(vw, 1400) * 0.3);
 
       const tx = new Float32Array(n), ty = new Float32Array(n);
-      const sx = new Float32Array(n), sy = new Float32Array(n); // converge start
       const r0 = new Float32Array(n), a0 = new Float32Array(n); // vortex start (polar)
       const rT = new Float32Array(n), aT = new Float32Array(n); // vortex end (polar)
       const delay = new Float32Array(n);
@@ -168,36 +162,21 @@ export default function ParticleTitle({ children }) {
         const x = points[idx[i] * 2], y = points[idx[i] * 2 + 1];
         tx[i] = x;
         ty[i] = y;
-        const u = rect.width > 0 ? x / rect.width : 0.5; // 0 = left edge, 1 = right edge
         const r = rMin + Math.random() * (rMax - rMin);
-
-        if (mode === "vortex") {
-          // Polar coords in the flattened (squashed) frame around the centre.
-          const qx = x - cx, qy = (y - cy) / squash;
-          rT[i] = Math.hypot(qx, qy);
-          const end = Math.atan2(qy, qx);
-          r0[i] = r;
-          a0[i] = Math.random() * Math.PI * 2;
-          // Unwrap so every dot turns the same way (counter-clockwise on screen)
-          // by `spin` extra turns on its way in.
-          let e = end;
-          while (e < a0[i]) e += Math.PI * 2;
-          aT[i] = e + cfg.spin * Math.PI * 2;
-          // Outer dots start later → a coherent shrinking ring.
-          delay[i] = ((r - rMin) / (rMax - rMin)) * cfg.maxDelay * 0.7 + Math.random() * cfg.maxDelay * 0.3;
-        } else {
-          // Radially outward from the centre, through the target point.
-          let dx = x - cx, dy = (y - cy) * 2.2;
-          const len = Math.hypot(dx, dy) || 1;
-          dx /= len;
-          dy /= len;
-          sx[i] = x + dx * r;
-          sy[i] = y + dy * r * 0.6;
-          // Left-to-right sweep with a little jitter.
-          delay[i] = u * cfg.maxDelay * 0.85 + Math.random() * cfg.maxDelay * 0.15;
-        }
+        // Polar coords in the flattened (squashed) frame around the centre.
+        const qx = x - cx, qy = (y - cy) / squash;
+        rT[i] = Math.hypot(qx, qy);
+        const end = Math.atan2(qy, qx);
+        r0[i] = r;
+        a0[i] = Math.random() * Math.PI * 2;
+        // Unwrap so every dot turns the same way by SPIN_TURNS extra turns.
+        let e = end;
+        while (e < a0[i]) e += Math.PI * 2;
+        aT[i] = e + SPIN_TURNS * Math.PI * 2;
+        // Outer dots start later → a coherent shrinking ring.
+        delay[i] = ((r - rMin) / (rMax - rMin)) * MAX_DELAY_S * 0.7 + Math.random() * MAX_DELAY_S * 0.3;
       }
-      const total = cfg.maxDelay + cfg.travel;
+      const total = MAX_DELAY_S + TRAVEL_S;
       const radius = Math.max(0.8, fontSize * 0.022);
 
       // Viewport-sized fixed canvas so dots can come from far outside the word.
@@ -234,20 +213,15 @@ export default function ParticleTitle({ children }) {
         const t = (now - t0) / 1000;
 
         for (let i = 0; i < n; i++) {
-          const u = Math.min(1, Math.max(0, (t - delay[i]) / cfg.travel));
-          if (mode === "vortex") {
-            const e = easeInOutCubic(u);
-            // Before/while moving in, dots keep circling; the drift term fades out
-            // with progress so they land exactly on the target.
-            const ang = a0[i] + (aT[i] - a0[i]) * e + 0.9 * t * (1 - e);
-            const rad = r0[i] + (rT[i] - r0[i]) * e;
-            px[i] = cx + Math.cos(ang) * rad;
-            py[i] = cy + Math.sin(ang) * rad * squash;
-          } else {
-            const e = easeOutCubic(u);
-            px[i] = sx[i] + (tx[i] - sx[i]) * e;
-            py[i] = sy[i] + (ty[i] - sy[i]) * e;
-          }
+          const u = Math.min(1, Math.max(0, (t - delay[i]) / TRAVEL_S));
+          const ea = easeInOutCubic(Math.min(1, u / SPIN_END)); // angle progress
+          const er = easeInOutCubic(u); // radius progress
+          // Dots keep circling before they move in; the drift fades out with
+          // the angle progress so they end exactly at their target angle.
+          const ang = a0[i] + (aT[i] - a0[i]) * ea + 0.9 * t * (1 - ea);
+          const rad = r0[i] + (rT[i] - r0[i]) * er;
+          px[i] = cx + Math.cos(ang) * rad;
+          py[i] = cy + Math.sin(ang) * rad * squash;
         }
 
         if (t >= total) {
