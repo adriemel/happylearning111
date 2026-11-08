@@ -7,8 +7,18 @@ import { useEffect, useRef, useState } from "react";
 let introPlayed = false;
 
 const FONT_TIMEOUT_MS = 1500; // skip the intro if web fonts take longer than this
-const MAX_DURATION_S = 2.6; // hard cap; particles are snapped to targets after this
 const FADE_MS = 300;
+
+// Motion styles. "vortex" (default): dots circle the word on a flattened disc and
+// spiral in. "converge": dots stream in radially from all sides, left to right.
+// Preview override: ?intro=converge or ?intro=vortex
+const MODES = {
+  vortex: { travel: 2.6, maxDelay: 1.1, spin: 1.1 },
+  converge: { travel: 2.4, maxDelay: 1.4 },
+};
+
+const easeInOutCubic = (u) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
+const easeOutCubic = (u) => 1 - (1 - u) ** 3;
 
 /**
  * One-time particle intro for a piece of hero text.
@@ -41,13 +51,19 @@ export default function ParticleTitle({ children }) {
     let cancelled = false;
     let rafId = 0;
     let fadeTimer = 0;
+    let startWidth = window.innerWidth;
 
     const finishNow = () => {
       cancelled = true;
       cancelAnimationFrame(rafId);
       clearTimeout(fadeTimer);
-      window.removeEventListener("resize", finishNow);
+      window.removeEventListener("resize", onResize);
       setPhase("done");
+    };
+    // Mobile browsers fire resize when the URL bar hides on scroll (height only);
+    // end the intro only on a real width change.
+    const onResize = () => {
+      if (window.innerWidth !== startWidth) finishNow();
     };
 
     const start = async () => {
@@ -73,23 +89,27 @@ export default function ParticleTitle({ children }) {
         return;
       }
 
-      window.addEventListener("resize", finishNow);
+      startWidth = window.innerWidth;
+      window.addEventListener("resize", onResize);
       run(cs, font, text);
     };
 
     const run = (cs, font, text) => {
+      const param = new URLSearchParams(window.location.search).get("intro");
+      const mode = param in MODES ? param : "vortex";
+      const cfg = MODES[mode];
+
       const rect = target.getBoundingClientRect();
       const fontSize = parseFloat(cs.fontSize);
-      const padX = Math.round(rect.height * 0.8);
-      const padY = Math.round(rect.height * 0.5);
-      const cssW = Math.ceil(rect.width) + 2 * padX;
-      const cssH = Math.ceil(rect.height) + 2 * padY;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-      // Offscreen raster of the text at device resolution, in the same box geometry.
+      // Offscreen raster of the text in span-local CSS px (small pad for overhangs).
+      const pad = Math.ceil(rect.height * 0.3);
       const off = document.createElement("canvas");
-      off.width = Math.ceil(cssW * dpr);
-      off.height = Math.ceil(cssH * dpr);
+      off.width = Math.ceil((rect.width + 2 * pad) * dpr);
+      off.height = Math.ceil((rect.height + 2 * pad) * dpr);
       const octx = off.getContext("2d", { willReadFrequently: true });
       if (!octx) {
         finishNow();
@@ -104,15 +124,15 @@ export default function ParticleTitle({ children }) {
       const ascent = m.fontBoundingBoxAscent ?? m.actualBoundingBoxAscent ?? fontSize * 0.8;
       const descent = m.fontBoundingBoxDescent ?? m.actualBoundingBoxDescent ?? fontSize * 0.2;
       // Centre the font's content box vertically in the span's box.
-      const baseline = padY + (rect.height - (ascent + descent)) / 2 + ascent;
-      octx.fillText(text, padX, baseline);
+      const baseline = pad + (rect.height - (ascent + descent)) / 2 + ascent;
+      octx.fillText(text, pad, baseline);
 
       const { data, width: ow, height: oh } = octx.getImageData(0, 0, off.width, off.height);
       const step = Math.max(1, Math.round(dpr)); // ~1 sample per CSS pixel
       const points = [];
       for (let y = 0; y < oh; y += step) {
         for (let x = 0; x < ow; x += step) {
-          if (data[(y * ow + x) * 4 + 3] > 128) points.push(x / dpr, y / dpr);
+          if (data[(y * ow + x) * 4 + 3] > 128) points.push(x / dpr - pad, y / dpr - pad);
         }
       }
       const nPoints = points.length / 2;
@@ -122,7 +142,7 @@ export default function ParticleTitle({ children }) {
       }
 
       // Random subset of target points.
-      const wanted = window.innerWidth < 700 ? 400 : 800;
+      const wanted = vw < 700 ? 400 : 800;
       const n = Math.min(wanted, nPoints);
       const idx = Array.from({ length: nPoints }, (_, i) => i);
       for (let i = 0; i < n; i++) {
@@ -130,28 +150,59 @@ export default function ParticleTitle({ children }) {
         [idx[i], idx[j]] = [idx[j], idx[i]];
       }
 
+      // All coordinates are span-local CSS px; (cx, cy) is the word centre.
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const squash = 0.38; // vertical flattening of the vortex disc
+      // Start radius: well outside the word, scaled to the viewport.
+      const rMin = Math.max(rect.width * 0.9, 120);
+      const rMax = Math.max(rMin * 1.4, Math.min(vw, 1400) * 0.55);
+
       const tx = new Float32Array(n), ty = new Float32Array(n);
+      const sx = new Float32Array(n), sy = new Float32Array(n); // converge start
+      const r0 = new Float32Array(n), a0 = new Float32Array(n); // vortex start (polar)
+      const rT = new Float32Array(n), aT = new Float32Array(n); // vortex end (polar)
+      const delay = new Float32Array(n);
       const px = new Float32Array(n), py = new Float32Array(n);
-      const vx = new Float32Array(n), vy = new Float32Array(n);
-      const omega = new Float32Array(n);
       for (let i = 0; i < n; i++) {
-        tx[i] = points[idx[i] * 2];
-        ty[i] = points[idx[i] * 2 + 1];
-        px[i] = Math.random() * cssW;
-        py[i] = Math.random() * cssH;
-        vx[i] = (Math.random() - 0.5) * 60;
-        vy[i] = (Math.random() - 0.5) * 60;
-        omega[i] = 4.5 + Math.random() * 2; // rad/s, spread gives organic convergence
+        const x = points[idx[i] * 2], y = points[idx[i] * 2 + 1];
+        tx[i] = x;
+        ty[i] = y;
+        const u = rect.width > 0 ? x / rect.width : 0.5; // 0 = left edge, 1 = right edge
+        const r = rMin + Math.random() * (rMax - rMin);
+
+        if (mode === "vortex") {
+          // Polar coords in the flattened (squashed) frame around the centre.
+          const qx = x - cx, qy = (y - cy) / squash;
+          rT[i] = Math.hypot(qx, qy);
+          const end = Math.atan2(qy, qx);
+          r0[i] = r;
+          a0[i] = Math.random() * Math.PI * 2;
+          // Unwrap so every dot turns the same way (counter-clockwise on screen)
+          // by `spin` extra turns on its way in.
+          let e = end;
+          while (e < a0[i]) e += Math.PI * 2;
+          aT[i] = e + cfg.spin * Math.PI * 2;
+          // Outer dots start later → a coherent shrinking ring.
+          delay[i] = ((r - rMin) / (rMax - rMin)) * cfg.maxDelay * 0.7 + Math.random() * cfg.maxDelay * 0.3;
+        } else {
+          // Radially outward from the centre, through the target point.
+          let dx = x - cx, dy = (y - cy) * 2.2;
+          const len = Math.hypot(dx, dy) || 1;
+          dx /= len;
+          dy /= len;
+          sx[i] = x + dx * r;
+          sy[i] = y + dy * r * 0.6;
+          // Left-to-right sweep with a little jitter.
+          delay[i] = u * cfg.maxDelay * 0.85 + Math.random() * cfg.maxDelay * 0.15;
+        }
       }
-      const zeta = 0.75; // damping ratio
+      const total = cfg.maxDelay + cfg.travel;
       const radius = Math.max(0.8, fontSize * 0.022);
 
-      canvas.width = off.width;
-      canvas.height = off.height;
-      canvas.style.width = `${cssW}px`;
-      canvas.style.height = `${cssH}px`;
-      canvas.style.left = `${-padX}px`;
-      canvas.style.top = `${-padY}px`;
+      // Viewport-sized fixed canvas so dots can come from far outside the word.
+      canvas.width = Math.ceil(vw * dpr);
+      canvas.height = Math.ceil(vh * dpr);
       const ctx = canvas.getContext("2d");
       if (!ctx) {
         finishNow();
@@ -163,47 +214,52 @@ export default function ParticleTitle({ children }) {
       setPhase("running");
 
       const draw = (alpha) => {
-        ctx.clearRect(0, 0, cssW, cssH);
+        // Re-read the span position each frame so the dots follow page scroll.
+        const r = target.getBoundingClientRect();
+        ctx.clearRect(0, 0, vw, vh);
         ctx.globalAlpha = alpha;
         ctx.beginPath();
         for (let i = 0; i < n; i++) {
-          ctx.moveTo(px[i] + radius, py[i]);
-          ctx.arc(px[i], py[i], radius, 0, Math.PI * 2);
+          const x = r.left + px[i], y = r.top + py[i];
+          ctx.moveTo(x + radius, y);
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
         }
         ctx.fill();
       };
 
-      let t0 = 0, last = 0;
+      let t0 = 0;
       const frame = (now) => {
         if (cancelled) return;
-        if (!t0) t0 = last = now;
-        const dt = Math.min((now - last) / 1000, 1 / 30);
-        last = now;
-        const elapsed = (now - t0) / 1000;
+        if (!t0) t0 = now;
+        const t = (now - t0) / 1000;
 
-        let settled = true;
         for (let i = 0; i < n; i++) {
-          const w = omega[i];
-          const dx = tx[i] - px[i], dy = ty[i] - py[i];
-          // Damped spring, semi-implicit Euler.
-          vx[i] += (w * w * dx - 2 * zeta * w * vx[i]) * dt;
-          vy[i] += (w * w * dy - 2 * zeta * w * vy[i]) * dt;
-          px[i] += vx[i] * dt;
-          py[i] += vy[i] * dt;
-          if (settled && (Math.abs(dx) > 0.25 || Math.abs(dy) > 0.25 ||
-              Math.abs(vx[i]) > 4 || Math.abs(vy[i]) > 4)) settled = false;
+          const u = Math.min(1, Math.max(0, (t - delay[i]) / cfg.travel));
+          if (mode === "vortex") {
+            const e = easeInOutCubic(u);
+            // Before/while moving in, dots keep circling; the drift term fades out
+            // with progress so they land exactly on the target.
+            const ang = a0[i] + (aT[i] - a0[i]) * e + 0.9 * t * (1 - e);
+            const rad = r0[i] + (rT[i] - r0[i]) * e;
+            px[i] = cx + Math.cos(ang) * rad;
+            py[i] = cy + Math.sin(ang) * rad * squash;
+          } else {
+            const e = easeOutCubic(u);
+            px[i] = sx[i] + (tx[i] - sx[i]) * e;
+            py[i] = sy[i] + (ty[i] - sy[i]) * e;
+          }
         }
 
-        if (settled || elapsed >= MAX_DURATION_S) {
+        if (t >= total) {
           px.set(tx);
           py.set(ty);
           draw(1);
-          window.removeEventListener("resize", finishNow);
+          window.removeEventListener("resize", onResize);
           setPhase("reveal");
           fadeTimer = setTimeout(() => !cancelled && setPhase("done"), FADE_MS);
           return;
         }
-        draw(Math.min(1, elapsed / 0.3)); // brief fade-in of the scattered dots
+        draw(Math.min(1, t / 0.5)); // brief fade-in of the scattered dots
         rafId = requestAnimationFrame(frame);
       };
       rafId = requestAnimationFrame(frame);
@@ -215,7 +271,7 @@ export default function ParticleTitle({ children }) {
       cancelled = true;
       cancelAnimationFrame(rafId);
       clearTimeout(fadeTimer);
-      window.removeEventListener("resize", finishNow);
+      window.removeEventListener("resize", onResize);
       // A real unmount mid-intro must not leave the text hidden on remount.
       if (introPlayed) setPhase("done");
     };

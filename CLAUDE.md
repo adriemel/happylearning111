@@ -59,7 +59,7 @@ HappyLearning/
 │   ├── TopBar.jsx              # Sticky top bar: brand, search (⌘K / /), lang toggle, tweaks btn
 │   ├── Hero.jsx                # Badge + title row ("Lern" + ParticleTitle-wrapped .title-hub + StickFigure) + subtitle + divider
 │   ├── StickFigure.jsx         # Waving stick figure SVG — do NOT merge the two nested <g>s
-│   ├── ParticleTitle.jsx       # "use client" one-time canvas particle intro for "hub" in the hero title (module flag, skips on reduced motion)
+│   ├── ParticleTitle.jsx       # "use client" one-time canvas particle intro for "hub" (vortex default, ?intro=converge for preview; module flag, skips on reduced motion)
 │   ├── SubjectNav.jsx          # Legacy chip bar (not used by the homepage)
 │   ├── Section.jsx             # Accessible collapsible topic + batched card grid
 │   ├── PageCard.js             # Card: subject tag, lang badge, title, desc, Öffnen/Open, API badge

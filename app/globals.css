@@ -244,7 +244,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    The text stays in the DOM; it is only hidden while the dots run. */
 .particle-title { position: relative; }
 .particle-title-canvas {
-  position: absolute;
+  /* Viewport-sized so dots can fly in from far outside the word; stays below the sticky top bar. */
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
   pointer-events: none;
   opacity: 1;
   transition: opacity 300ms ease;
