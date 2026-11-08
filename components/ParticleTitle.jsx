@@ -116,18 +116,27 @@ export default function ParticleTitle({ children }) {
       octx.textBaseline = "alphabetic";
       octx.fillStyle = "#000";
       const m = octx.measureText(text);
-      const ascent = m.fontBoundingBoxAscent ?? m.actualBoundingBoxAscent ?? fontSize * 0.8;
-      const descent = m.fontBoundingBoxDescent ?? m.actualBoundingBoxDescent ?? fontSize * 0.2;
-      // Centre the font's content box vertically in the span's box.
-      const baseline = pad + (rect.height - (ascent + descent)) / 2 + ascent;
+      // Baseline measured in the DOM, not from canvas font metrics: WebKit
+      // (iPhone/iPad Safari) reports fontBoundingBoxAscent differently from
+      // Chromium, which put the dots too low there. An empty inline-block's
+      // bottom edge sits exactly on the parent's baseline.
+      const marker = document.createElement("span");
+      marker.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline";
+      target.appendChild(marker);
+      const domBaseline = marker.getBoundingClientRect().bottom - rect.top;
+      marker.remove();
+      const baseline = pad + domBaseline;
       octx.fillText(text, pad, baseline);
+      // If canvas letter-spacing is unsupported (older Safari), the raster is
+      // wider/narrower than the DOM text; stretch x to match the span width.
+      const xScale = m.width > 0 && Math.abs(rect.width / m.width - 1) > 0.01 ? rect.width / m.width : 1;
 
       const { data, width: ow, height: oh } = octx.getImageData(0, 0, off.width, off.height);
       const step = Math.max(1, Math.round(dpr)); // ~1 sample per CSS pixel
       const points = [];
       for (let y = 0; y < oh; y += step) {
         for (let x = 0; x < ow; x += step) {
-          if (data[(y * ow + x) * 4 + 3] > 128) points.push(x / dpr - pad, y / dpr - pad);
+          if (data[(y * ow + x) * 4 + 3] > 128) points.push((x / dpr - pad) * xScale, y / dpr - pad);
         }
       }
       const nPoints = points.length / 2;
