@@ -1,4 +1,5 @@
 import StickFigure from "./StickFigure";
+import ParticleTitle from "./ParticleTitle";
 import { T } from "@/lib/i18n";
 
 export default function Hero({ lang }) {
@@ -10,7 +11,10 @@ export default function Hero({ lang }) {
       </div>
       <div className="title-row">
         <h1 className="hero-title">
-          <span className="title-script">Lern</span>hub
+          <span className="title-script">Lern</span>
+          <ParticleTitle>
+            <span className="title-hub">hub</span>
+          </ParticleTitle>
         </h1>
         <StickFigure size={44} />
       </div>
