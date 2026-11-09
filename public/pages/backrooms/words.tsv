@@ -19,9 +19,9 @@ Saludar	Yo tambien	ich auch (mir auch)	Saludar
 Saludar	Yo	Ich	Saludar
 Saludar	¿Como te llamas?	Wie heißt du?	Saludar
 Saludar	Me llamo Pablo	Ich heiße Pablo	Saludar
-Saludar	No, es una broma, me llamo Max.	Nein, das ist ein Witz, ich heiße Max.	Saludar
-Saludar	Yo soy Juan	Ich bin Juan	Saludar
-Saludar	Soy Walter	Ich bin Walter	Saludar
+Saludar	No, es una broma, me llamo Bjarne.	Nein, das ist ein Witz, ich heiße Bjarne.	Saludar
+Saludar	Yo soy Bjarne	Ich bin Bjarne	Saludar
+Saludar	Soy Bjarne	Ich bin Bjarne	Saludar
 Saludar	Mi nombre es Pablo.	Mein Name ist Pablo.	Saludar
 Saludar	¿De donde eres?	Woher kommst du?	Saludar
 Saludar	Soy de Alemania.	Ich komme aus Deutschland.	Saludar
@@ -37,7 +37,7 @@ Saludar	¿Como se dice 'buenos días' en alemán?	Was heißt 'buenos días' auf 
 Saludar	En alemán 'buenos días' se dice 'Guten Tag'.	'Buenos días' heißt 'Guten Tag' auf deutsch.	Saludar
 Saludar	¿Como es tu apellido?	Wie ist dein Nachname?	Saludar
 Saludar	el apellido	der Nachname	Saludar
-Saludar	Me llamo Ali y mi apellido es Muller.	Ich heiße Ali und mit Nachnamen Muller.	Saludar
+Saludar	Me llamo Bjarne y mi apellido es Driemel.	Ich heiße Bjarne und mit Nachnamen Driemel.	Saludar
 Saludar	de acuerdo	alles klar	Saludar
 Colores	negro	schwarz	Colores
 Colores	blanco	weiß	Colores
@@ -743,3 +743,164 @@ Unidad5B	Siempre hago deporte por la tarde.	Am Nachmittag mache ich immer Sport.
 Unidad5B	Si tengo tiempo, voy a tu casa.	Wenn ich Zeit habe, komme ich zu dir.	
 Unidad5B	Quiero ir en bicicleta.	Ich möchte mit dem Fahrrad fahren.	
 Unidad5B	Los sábados siempre ordeno la habitación.	Samstags räume ich immer das Zimmer auf.	
+Unidad5B	¿Tienes ganas de bailar?	Hast du Lust zu tanzen?	
+Unidad5B	¿Quieres jugar al baloncesto?	Willst du Basketball spielen?	
+Unidad5B	¿Por qué no vamos a esquiar?	Warum gehen wir nicht Ski fahren?	
+Unidad5B	¡Genial! ¿Dónde?	Klasse! Wo?	Saludar
+Unidad5B	¡Buena idea! ¿A qué hora?	Gute Idee! Um wie viel Uhr?	Saludar
+Unidad5B	Claro, ¿cuándo?	Klar, wann?	Saludar
+Unidad5B	Gracias, pero no puedo.	Danke, aber ich kann nicht.	Saludar
+Unidad5B	No puedo esquiar mañana.	Ich kann morgen nicht Ski fahren.	
+Unidad5B	Lo siento, hoy no tengo ganas.	Es tut mir leid, heute habe ich keine Lust.	
+Unidad6A	llevar algo	etw. tragen	Palabras
+Unidad6A	La chica lleva una gorra.	Das Mädchen trägt eine Kappe.	
+Unidad6A	el abrigo	der Mantel	Palabras
+Unidad6A	el bañador	der Badeanzug, die Badehose	Palabras
+Unidad6A	Necesito el bañador. Hoy vamos a la playa.	Ich brauche den Badeanzug. Heute gehen wir an den Strand.	
+Unidad6A	el bikini	der Bikini	Palabras
+Unidad6A	En la playa llevo un bikini.	Am Strand trage ich einen Bikini.	
+Unidad6A	la blusa	die Bluse	Palabras
+Unidad6A	la bufanda	der Schal	Palabras
+Unidad6A	la camisa	das Hemd	Palabras
+Unidad6A	la camiseta	das T-Shirt	Palabras
+Unidad6A	la chaqueta	die Jacke	Palabras
+Unidad6A	la falda	der Rock	Palabras
+Unidad6A	las gafas de sol	die Sonnenbrille	Palabras
+Unidad6A	¿Dónde están mis gafas de sol?	Wo ist meine Sonnenbrille?	
+Unidad6A	el guante	der Handschuh	Palabras
+Unidad6A	el jersey (pl. los jerséis)	der Pullover	Palabras
+Unidad6A	el pantalón	die Hose	Palabras
+Unidad6A	¿Compramos el pantalón?	Kaufen wir die Hose?	
+Unidad6A	la sandalia	die Sandale	Palabras
+Unidad6A	el vaquero	die Jeans(hose)	Palabras
+Unidad6A	el vestido	das Kleid	Palabras
+Unidad6A	las zapatillas de deporte	die Sportschuhe	Palabras
+Unidad6A	el calcetín	die Socke	Palabras
+Unidad6A	¿Dónde están mis calcetines?	Wo sind meine Socken?	
+Unidad6A	el mal gusto	der schlechte Geschmack	Palabras
+Unidad6A	largo, larga	lang	Palabras
+Unidad6A	elegante	elegant	Palabras
+Unidad6A	el dibujo	die Zeichnung	Palabras
+Unidad6A	antiguo, antigua	alt	Palabras
+Unidad6A	En mi barrio hay una farmacia antigua.	In meinem Viertel gibt es eine alte Apotheke.	
+Unidad6A	original	originell	Palabras
+Unidad6A	normal	normal	Palabras
+Unidad6A	ancho, ancha	breit, weit	Palabras
+Unidad6A	estrecho, estrecha	eng	Palabras
+Unidad6A	moderno, moderna	modern	Palabras
+Unidad6A	nuevo, nueva	neu	Palabras
+Unidad6A	viejo, vieja	alt	Palabras
+Unidad6A	corto, corta	kurz	Palabras
+Unidad6A	caro, cara	teuer	Palabras
+Unidad6A	barato, barata	billig	Palabras
+Unidad6A	grande	groß	Palabras
+Unidad6A	pequeño, pequeña	klein	Palabras
+Unidad6A	Mi instituto es pequeño.	Meine Schule ist klein.	
+Unidad6A	por eso	deswegen, deshalb	Palabras
+Unidad6A	Los animales son mi pasión. Por eso, tengo un perro.	Tiere sind meine Leidenschaft. Deshalb habe ich einen Hund.	
+Unidad6A	de segunda mano	gebraucht	Palabras
+Unidad6A	Compro un abrigo de segunda mano.	Ich kaufe einen Secondhand-Mantel.	
+Unidad6A	bueno, buena	gut	Palabras
+Unidad6A	En la tienda hay ropa muy buena.	Im Geschäft gibt es sehr gute Kleidung.	
+Unidad6A	interesante	interessant	Palabras
+Unidad6A	Leo un libro interesante.	Ich lese ein interessantes Buch.	
+Unidad6A	comentar algo	etw. meinen, etw. erwidern	Palabras
+Unidad6A	Es verdad.	Das ist wahr.	Saludar
+Unidad6A	¿Verdad?	… Nicht wahr?	Saludar
+Unidad6A	contestar (algo)	antworten, etw. beantworten	Palabras
+Unidad6A	el medio ambiente	die Umwelt	Palabras
+Unidad6A	la industria	die Industrie	Palabras
+Unidad6A	contaminante	umweltschädlich	Palabras
+Unidad6A	por ejemplo	zum Beispiel	Palabras
+Unidad6A	la etiqueta	das Etikett	Palabras
+Unidad6A	la gente	die Leute	Palabras
+Unidad6A	La gente no tiene tiempo.	Die Leute haben keine Zeit.	
+Unidad6A	la basura	der Müll	Palabras
+Unidad6A	el puesto	der (Verkaufs-)Stand	Palabras
+Unidad6A	En la plaza hay un puesto de bocadillos.	Auf dem Platz gibt es einen Stand, der belegte Brötchen verkauft.	
+Unidad6A	el mueble	das Möbelstück	Casa_Familia
+Unidad6A	Tengo pocos muebles.	Ich habe wenige Möbel.	
+Unidad6A	mientras	während	Palabras
+Unidad6A	Mientras tú vas al baño, yo compro la carpeta.	Während du auf die Toilette gehst, kaufe ich den Ordner.	
+Unidad6A	¿Cuánto cuesta...?	Wie viel kostet ...?	Saludar
+Unidad6A	¿Cuánto cuesta la falda?	Wie viel kostet der Rock?	
+Unidad6A	costar algo	etw. kosten	Palabras
+Unidad6A	La falda cuesta 50 euros.	Der Rock kostet 50 Euro.	
+Unidad6A	preguntar algo	etw. fragen	Palabras
+Unidad6A	el vendedor / la vendedora	der Verkäufer / die Verkäuferin	Palabras
+Unidad6A	joven	jung	Palabras
+Unidad6A	creer algo	etw. glauben, etw. meinen	Palabras
+Unidad6A	Creo que la chica se llama Feven.	Ich glaube, dass das Mädchen Feven heißt.	
+Unidad6A	vender algo (a)	etw. verkaufen (für)	Palabras
+Unidad6A	Vendo mi bicicleta a 30 euros.	Ich verkaufe mein Fahrrad für 30 Euro.	
+Unidad6A	bonito, bonita	schön	Palabras
+Unidad6A	Tengo una habitación bonita.	Ich habe ein schönes Zimmer.	
+Unidad6A	dentro	drinnen	Palabras
+Unidad6A	raro, rara	seltsam	Palabras
+Unidad6A	Mira, tengo un mensaje, pero es raro.	Schau mal, ich habe eine Nachricht, aber sie ist seltsam.	
+Unidad6A	otra vez	noch einmal, (schon) wieder	Palabras
+Unidad6A	el anillo	der Ring	Palabras
+Unidad6A	el oro	das Gold	Palabras
+Unidad6A	Un anillo de oro es caro.	Ein Ring aus Gold ist teuer.	
+Unidad6A	vuestro, vuestra	euer, eure	Palabras
+Unidad6A	el dinero	das Geld	Palabras
+Unidad6A	nuestro, nuestra	unser, unsere	Palabras
+Unidad6A	¿Cómo se llama vuestro instituto? Nuestro instituto se llama «El Feal».	Wie heißt eure Schule? Unsere Schule heißt „El Feal“.	
+Unidad6B	te gusta algo / hacer algo	dir gefällt etw., du magst etw. (tun)	Palabras
+Unidad6B	¿Te gusta el chocolate?	Magst du Schokolade?	
+Unidad6B	decorar algo	etw. dekorieren, etw. schmücken	Palabras
+Unidad6B	¿Cómo quieres decorar tu habitación?	Wie möchtest du dein Zimmer dekorieren?	
+Unidad6B	la receta	das Rezept	Comida_Bebida
+Unidad6B	preparar algo	etw. zubereiten, etw. vorbereiten	Palabras
+Unidad6B	¿Preparo una pizza para hoy por la noche?	Soll ich eine Pizza für heute Abend zubereiten?	
+Unidad6B	la comida	das Essen	Comida_Bebida
+Unidad6B	la invitación	die Einladung	Palabras
+Unidad6B	Tengo que escribir las invitaciones para la fiesta.	Ich muss die Einladungen für die Party schreiben.	
+Unidad6B	la lista	die Liste	Palabras
+Unidad6B	Preparo una lista de canciones para la fiesta.	Ich stelle eine Playlist für die Party zusammen.	
+Unidad6B	limpiar algo	etw. putzen, sauber machen	Palabras
+Unidad6B	Tienes que limpiar tu habitación.	Du musst dein Zimmer sauber machen.	
+Unidad6B	me gusta algo / hacer algo	mir gefällt etw., ich mag etw. (tun)	Palabras
+Unidad6B	No me gustan los lunes.	Ich mag Montage nicht.	
+Unidad6B	A mí no.	Mir nicht. / Ich nicht.	Saludar
+Unidad6B	Me gusta el jamón. A mí no.	Ich mag Schinken. Ich nicht.	
+Unidad6B	A mí sí.	Mir schon. / Ich schon.	Saludar
+Unidad6B	No me gusta el fútbol. A mí sí.	Ich mag Fußball nicht. Ich schon.	
+Unidad6B	A mí también.	Mir auch. / Ich auch.	Saludar
+Unidad6B	Me gusta la música española. A mí también.	Ich mag spanische Musik. Ich auch.	
+Unidad6B	A mí tampoco.	Mir auch nicht. / Ich auch nicht.	Saludar
+Unidad6B	No me gusta el instituto. A mí tampoco.	Mir gefällt die Schule nicht. Mir auch nicht.	
+Unidad6B	la imaginación	die Vorstellung, die Fantasie	Palabras
+Unidad6B	poco, poca	wenig	Palabras
+Unidad6B	Hoy hay poca gente aquí.	Heute sind wenige Leute hier.	
+Unidad6B	el ingrediente	die Zutat	Comida_Bebida
+Unidad6B	el plato	das Gericht, der Gang	Comida_Bebida
+Unidad6B	¡Me gusta mucho la cocina mexicana! Tiene platos muy interesantes.	Die mexikanische Küche finde ich toll! Sie hat so interessante Gerichte.	
+Unidad6B	divertido, divertida	lustig	Palabras
+Unidad6B	el enlace	der Link	Palabras
+Unidad6B	la hamburguesa	der (Ham-)Burger, die Frikadelle	Comida_Bebida
+Unidad6B	el pescado	der Fisch	Comida_Bebida
+Unidad6B	el huevo	das Ei	Comida_Bebida
+Unidad6B	la aceituna	die Olive	Comida_Bebida
+Unidad6B	la verdura	das Gemüse	Comida_Bebida
+Unidad6B	Yo como mucha verdura.	Ich esse viel Gemüse.	
+Unidad6B	la zanahoria	die Karotte	Comida_Bebida
+Unidad6B	No me gustan las zanahorias.	Ich mag keine Karotten.	
+Unidad6B	el brócoli	der Brokkoli	Comida_Bebida
+Unidad6B	mucho, mucha	viel	Palabras
+Unidad6B	la pasta	die Nudeln	Comida_Bebida
+Unidad6B	Para cenar, hay pasta con verdura.	Zum Abendessen gibt's Nudeln mit Gemüse.	
+Unidad6B	la salsa	die Soße	Comida_Bebida
+Unidad6B	Me gusta la pasta con salsa de tomate.	Ich mag Nudeln mit Tomatensoße.	
+Unidad6B	la albahaca	das Basilikum	Comida_Bebida
+Unidad6B	la galleta	der Keks	Comida_Bebida
+Unidad6B	Solo me gustan las galletas de chocolate.	Ich mag nur Schokokekse.	
+Unidad6B	la crema	die Creme	Comida_Bebida
+Unidad6B	el pan	das Brot	Comida_Bebida
+Unidad6B	el salami	die Salami	Comida_Bebida
+Unidad6B	Quiero un bocadillo de salami, por favor.	Ich hätte gerne ein Salamibrötchen.	
+Unidad6B	el pepino	die Gurke	Comida_Bebida
+Unidad6B	la patata frita	der Kartoffelchip	Comida_Bebida
+Unidad6B	el agua mineral (f.)	das Mineralwasser	Comida_Bebida
+Unidad6B	la naranja	die Orange	Comida_Bebida
+Unidad6B	Bebo zumo de naranja.	Ich trinke Orangensaft.	

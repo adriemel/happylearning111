@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {parseTSV,choices,spellingChoices,playable,lengths,Session,key} from '../../public/pages/backrooms/vocabulary.mjs';
 const categories=parseTSV(readFileSync(new URL('../../public/pages/backrooms/words.tsv',import.meta.url),'utf8'));
-assert.equal(categories.size,11);assert(![...categories.keys()].some(c=>/^x/i.test(c)));
+assert.equal(categories.size,13);assert(![...categories.keys()].some(c=>/^x/i.test(c)));
 for(const pool of categories.values())for(const entry of pool){const options=choices(entry,pool);assert(options.length>=2&&options.length<=3);assert.equal(new Set(options.map(key)).size,options.length);assert.equal(options.filter(o=>entry.answers.some(a=>key(a)===key(o))).length,1);}
 const pool=categories.get('Saludar');const duplicates=parseTSV('category\tes\tde\nTest\tSoy Bjarne\tIch bin Bjarne\nTest\tYo soy Bjarne\tIch bin Bjarne').get('Test');assert.equal(duplicates.length,1);assert.equal(duplicates[0].answers.length,2);
 assert.deepEqual(lengths(12),[5,10,12]);assert.deepEqual(lengths(2),[2]);assert.deepEqual(lengths(0),[]);
