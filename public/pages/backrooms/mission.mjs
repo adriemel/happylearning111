@@ -2,7 +2,7 @@ import {shuffle, key, spellingChoices} from './vocabulary.mjs';
 
 const conversations = [
   {es:'Tengo hambre.', answer:'Aquí tienes un bocadillo.', wrong:['Buenas noches.','Me llamo Pablo.'], help:'„Ich habe Hunger.“ — „Hier hast du ein belegtes Brötchen.“'},
-  {es:'¿Cómo te llamas?', answer:'Me llamo Bjarne.', wrong:['Tengo hambre.','Hasta mañana.'], help:'„Wie heißt du?“ — „Ich heiße Bjarne.“'},
+  {es:'¿Cómo te llamas?', answer:'Me llamo Max.', wrong:['Tengo hambre.','Hasta mañana.'], help:'„Wie heißt du?“ — „Ich heiße Max.“'},
   {es:'¿Dónde está la salida?', answer:'La salida está allí.', wrong:['Me llamo Ana.','Tengo doce años.'], help:'„Wo ist der Ausgang?“ — „Der Ausgang ist dort.“'},
   {es:'Muchas gracias.', answer:'De nada.', wrong:['Tengo sed.','Me llamo Pablo.'], help:'„Vielen Dank.“ — „Gern geschehen.“'},
   {es:'Tengo sed.', answer:'Aquí tienes agua.', wrong:['Hasta mañana.','Tengo doce años.'], help:'„Ich habe Durst.“ — „Hier hast du Wasser.“'},

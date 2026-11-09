@@ -12,7 +12,7 @@ The homepage entry is in `lib/pages.js`. All game assets live here; Three.js 0.1
 
 ## Vocabulary
 
-`words.tsv` was downloaded from https://github.com/adriemel/tap-to-vocab/blob/main/data/words.tsv on 2026-11-09. Replace this file to update vocabulary. Required tab-separated headers: category, es, de. Additional columns are ignored. Leading/trailing whitespace and Unicode normalization are handled; incomplete rows and categories starting with x (case insensitive) are excluded. Identical German prompts within a category are grouped with accepted Spanish alternatives, preventing a known valid answer from becoming a distractor. No vocabulary text is hard-coded.
+`words.tsv` was downloaded from https://github.com/adriemel/tap-to-vocab/blob/main/data/words.tsv on 2026-11-09, except four Saludar rows that keep generic names (Max, Juan, Walter, Ali Muller) instead of real names. Replace this file to update vocabulary. Required tab-separated headers: category, es, de. Additional columns are ignored. Leading/trailing whitespace and Unicode normalization are handled; incomplete rows and categories starting with x (case insensitive) are excluded. Identical German prompts within a category are grouped with accepted Spanish alternatives, preventing a known valid answer from becoming a distractor. No vocabulary text is hard-coded.
 
 Accuracy is first-attempt correctness among encountered questions. Session size counts unique German prompts with at least one distinct distractor. Single-answer categories cannot start.
 
