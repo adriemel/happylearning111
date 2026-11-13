@@ -313,6 +313,80 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
 .vgl-tabelle td small{display:block;font-weight:400;color:var(--tinte-hell);font-size:.78rem}
 .vgl-tabelle tr.nur-pflanze th{background:rgba(143,196,92,.35)}
 .vgl-text p{margin:0 0 14px}
+/* ---------- Energie, Zellatmung, Ernährung, Priestley, Kreislauf ---------- */
+.karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:26px}
+.karte{border:2px solid var(--tinte);background:#fffaef;padding:16px 18px;box-shadow:5px 5px 0 var(--schatten)}
+.karte h4{font-family:'Fraunces',serif;font-size:1.15rem;margin:0 0 6px;color:var(--blatt)}
+.karte p{margin:0;font-size:.94rem}
+.kette{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:760px){.kette{grid-template-columns:1fr 1fr}}
+.glied{font-family:'Karla',sans-serif;font-size:.95rem;font-weight:700;text-align:left;color:var(--tinte);
+  padding:12px 14px;border:2px solid var(--tinte);border-radius:3px;background:#fffaef;cursor:pointer;
+  box-shadow:4px 4px 0 var(--schatten);transition:transform .15s,background .15s;min-height:44px}
+.glied:hover{transform:translateY(-2px)}
+.glied b{display:block;font-family:'Fraunces',serif;font-size:1.5rem;line-height:1;color:var(--blatt-hell)}
+.glied.gesehen{background:rgba(143,196,92,.25)}
+.glied.aktiv{background:var(--sonne)}
+.glied.aktiv b{color:var(--tinte)}
+.zwei-spalten{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+@media(max-width:780px){.zwei-spalten{grid-template-columns:1fr}}
+.zwei-spalten > .merk{margin:0}
+.stoffbox{border:2px solid var(--tinte);background:#fffaef;padding:18px 22px;box-shadow:6px 6px 0 var(--schatten)}
+.stoffbox h3{font-family:'Fraunces',serif;font-size:1.45rem;margin:0 0 8px}
+.stoffbox ul,.liste{margin:0;padding-left:20px}
+.stoffbox li,.liste li{margin-bottom:6px}
+.stoffbox p{margin:0 0 8px}
+.stoffbox.auto{border-top:8px solid var(--blatt)}
+.stoffbox.hetero{border-top:8px solid var(--membran)}
+.stoffbox.hetero .bk-kopf{color:var(--membran)}
+.sortier{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.org{border:2px solid var(--tinte);background:#fffaef;padding:12px 14px;box-shadow:4px 4px 0 var(--schatten)}
+.org p{margin:0}
+.org .name{font-weight:700;font-size:1.02rem}
+.org .hinweis{font-size:.85rem;color:var(--tinte-hell);margin-bottom:8px}
+.org .knoepfe{display:flex;gap:8px}
+.org button{flex:1;font-family:'Karla',sans-serif;font-weight:700;font-size:.9rem;padding:8px 6px;min-height:40px;border:1.5px solid var(--tinte);border-radius:3px;background:var(--papier);color:var(--tinte);cursor:pointer}
+.org button:hover:not(:disabled){background:#fff}
+.org button:disabled{cursor:default}
+.org button.ok{background:var(--blatt-hell)}
+.org button.nope{background:#f3b8b2}
+.org .warum{display:none;font-size:.86rem;margin-top:8px;border-left:4px solid var(--blatt);padding-left:9px}
+.org.fertig .warum{display:block}
+.wahl-titel{margin:0 0 6px;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--tinte-hell)}
+.wahl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.wahl button{font-family:'Karla',sans-serif;font-weight:700;font-size:.93rem;padding:8px 14px;min-height:40px;border:1.5px solid var(--tinte);border-radius:3px;background:var(--papier);color:var(--tinte);cursor:pointer}
+.wahl button[aria-pressed="true"]{background:var(--tinte);color:var(--papier)}
+.wahl button:disabled{opacity:.5;cursor:default}
+.pr-flamme{transform-box:fill-box;transform-origin:50% 100%;transition:transform .4s,opacity .4s;animation:flackern .5s ease-in-out infinite alternate}
+@keyframes flackern{from{transform:scale(1,1)}to{transform:scale(.94,1.06)}}
+.pr-maus{transform-box:fill-box;transform-origin:center;transition:opacity .5s,transform .6s}
+.pr-maus.bewusstlos{opacity:.55;transform:rotate(8deg) translateY(4px)}
+.liste{margin-bottom:12px}
+#klBuehne svg .kl-stoff,#klBuehne svg .kl-energie{transition:opacity .3s}
+#klBuehne[data-modus="stoffe"] .kl-energie{opacity:.12}
+#klBuehne[data-modus="energie"] .kl-stoff{opacity:.12}
+.text-tab td{text-align:left;font-weight:400}
+.text-tab tbody th{width:20%}
+.energie-kette{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.energie-kette > div{flex:1 1 140px;border:2px solid var(--tinte);padding:12px 14px;font-weight:700;display:flex;flex-direction:column;justify-content:center;box-shadow:4px 4px 0 var(--schatten)}
+.energie-kette small{display:block;font-weight:400;font-size:.82rem;margin-top:4px}
+.ek-form.licht{background:#ffe58a}
+.ek-form.chemisch{background:var(--blatt-hell)}
+.ek-form.nutz{background:#f2c79a}
+.ek-form.waerme{background:#f3b8b2}
+.ek-schritt{background:transparent;border-style:dashed !important;box-shadow:none !important;text-align:center;flex:0 1 130px !important}
+.ek-schritt::before{content:"⟶";font-size:1.5rem;line-height:1;color:var(--sonne)}
+.gemeinsam-box{margin-top:30px}
+.gemeinsam-box h4{font-family:'Fraunces',serif;font-size:1.2rem;margin:0 0 8px}
+.kc{display:flex;gap:14px;align-items:flex-start;border:2px solid var(--tinte);background:#fffaef;padding:12px 16px;margin-bottom:10px;box-shadow:4px 4px 0 var(--schatten)}
+.kc.erledigt{background:rgba(143,196,92,.22)}
+.kc input{width:22px;height:22px;margin-top:3px;flex:none;accent-color:var(--blatt);cursor:pointer}
+.kc details{flex:1}
+.kc summary{cursor:pointer;font-weight:700}
+.kc summary .s{font-weight:400;color:var(--tinte-hell);font-size:.88rem}
+.kc .antwort{margin-top:10px;border-left:5px solid var(--blatt);padding-left:12px;font-size:.95rem}
+.kc .antwort p{margin:0 0 8px}
+.kc .antwort a{color:var(--wasser);font-weight:700}
 @media(max-width:560px){.vgl-tabelle{font-size:.8rem}.vgl-tabelle th,.vgl-tabelle td{padding:6px 4px}.vgl-tabelle thead th{font-size:.74rem}}
 </style>
 </head>
@@ -322,7 +396,7 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
 <header class="hero">
   <p class="kicker">Biologie · Klasse 7 · Gymnasium Niedersachsen</p>
   <h1>Die <span class="gruen">Pflanzenzelle</span><br>und die <span class="sonnig">Fotosynthese</span></h1>
-  <p>Pflanzen bauen sich ihre Nahrung selbst. Dafür brauchen sie nur Licht, Wasser und ein Gas aus der Luft. Auf dieser Seite schaust du dir zuerst an, wie eine Pflanzenzelle aufgebaut ist. Danach findest du heraus, was in ihr passiert, wenn die Sonne scheint, und wie ein ganzes Laubblatt aus verschiedenen Geweben gebaut ist.</p>
+  <p>Pflanzen bauen sich ihre Nahrung selbst. Dafür brauchen sie nur Licht, Wasser und ein Gas aus der Luft. Auf dieser Seite schaust du dir zuerst an, wie eine Pflanzenzelle aufgebaut ist. Danach findest du heraus, was in ihr passiert, wenn die Sonne scheint, und wie ein ganzes Laubblatt aus verschiedenen Geweben gebaut ist. Zum Schluss lernst du, wie Pflanzen die gespeicherte Energie durch Zellatmung wieder nutzen und warum Pflanzen und Tiere voneinander abhängen.</p>
 </header>
 
 <!-- ============ 1. MIKROSKOP ============ -->
@@ -599,6 +673,29 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
         <p><b>Warum sieht die Pflanzenzelle eckig aus?</b> Die feste Zellwand gibt ihr eine stabile Form. Von innen drückt die prall gefüllte Vakuole gegen die Wand. Eine Tierzelle hat nur die dünne, bewegliche Zellmembran als Grenze. Deshalb ist sie meist rundlich und kann ihre Form ändern.</p>
         <p><b>Warum hat die Tierzelle keine Chloroplasten?</b> Tiere betreiben keine Fotosynthese. Sie müssen energiereiche Stoffe mit der Nahrung aufnehmen. In ihren Mitochondrien wird diese Nahrung genauso wie bei Pflanzen durch Zellatmung verwertet.</p>
         <p class="merk"><b>Merke:</b> Zellwand, Chloroplasten und große Vakuole gibt es nur in der Pflanzenzelle. Alle anderen Bestandteile besitzen Pflanzen- und Tierzellen gemeinsam.</p>
+      </div>
+    </div>
+    <div class="zwei-spalten gemeinsam-box">
+      <div class="stoffbox auto">
+        <p class="bk-kopf">Gemeinsamkeiten</p>
+        <h4>Das haben beide Zellen</h4>
+        <ul>
+          <li>einen <b>Zellkern</b> mit der Erbinformation, der die Vorgänge in der Zelle steuert</li>
+          <li>eine <b>Zellmembran</b>, die die Zelle abgrenzt und regelt, welche Stoffe hinein- und hinausgelangen</li>
+          <li><b>Zellplasma</b> mit ER, Golgi-Apparat und Ribosomen, die Stoffe herstellen und verteilen</li>
+          <li><b>Mitochondrien</b>: Beide Zellen betreiben Zellatmung und gewinnen so Energie aus Glukose</li>
+          <li>Beide sind Grundbausteine von Geweben und Organen</li>
+        </ul>
+      </div>
+      <div class="stoffbox hetero">
+        <p class="bk-kopf">Unterschiede</p>
+        <h4>Das unterscheidet sie</h4>
+        <ul>
+          <li><b>Zellwand</b>: nur Pflanzenzelle, deshalb eckig und fest. Tierzelle: rundlich, veränderliche Form</li>
+          <li><b>Chloroplasten</b>: nur Pflanzenzelle. Pflanzen sind deshalb <b>autotroph</b>, Tiere <b>heterotroph</b> (siehe Abschnitt 08)</li>
+          <li><b>Große Vakuole</b>: nur Pflanzenzelle, hält die Zelle prall</li>
+          <li><b>Speicherstoff</b>: Pflanzen speichern Stärke, Tiere vor allem Fett und Glykogen („tierische Stärke“)</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -896,16 +993,375 @@ footer{border-top:3px double var(--tinte-hell);padding-top:20px;font-size:.86rem
   </details>
 </section>
 
-<!-- ============ 6. QUIZ ============ -->
+<!-- ============ 6. ENERGIE ============ -->
+<section id="energie" style="animation-delay:.22s">
+  <div class="sec-kopf"><span class="nr">06</span><h2>Wofür Pflanzen Energie brauchen</h2></div>
+  <p class="sec-intro">Eine Pflanze steht scheinbar nur still herum. Trotzdem arbeitet sie ständig: Sie wächst, baut neue Stoffe auf und bildet Blüten und Samen. Für all diese <b>Lebensprozesse</b> braucht sie Energie, genau wie ein Tier.</p>
+
+  <div class="karten">
+    <div class="karte"><h4>Wachstum</h4><p>Zellen teilen sich und werden größer. Neue Wurzeln, Blätter und Triebe entstehen. Dafür müssen Zellwände und andere Zellbestandteile neu aufgebaut werden.</p></div>
+    <div class="karte"><h4>Keimung</h4><p>Ein Samen keimt im dunklen Boden, wo noch keine Fotosynthese möglich ist. Die Energie stammt aus der Stärke, die im Samen gespeichert ist.</p></div>
+    <div class="karte"><h4>Fortpflanzung</h4><p>Die Pflanze bildet Blüten, Pollen, Nektar, Früchte und Samen. Das kostet viel Energie und viele Baustoffe.</p></div>
+    <div class="karte"><h4>Stofftransport</h4><p>Die Wurzel nimmt Mineralstoffe aus dem Boden auf. Zucker wird aus den Blättern in Wurzeln, Knollen und Früchte transportiert.</p></div>
+    <div class="karte"><h4>Aufbau von Stoffen</h4><p>Aus Glukose stellt die Pflanze Stärke, Cellulose für die Zellwand, Fette und Eiweiße her.</p></div>
+    <div class="karte"><h4>Bewegung</h4><p>Blüten öffnen und schließen sich, Triebe wenden sich zum Licht, Ranken winden sich um eine Stütze.</p></div>
+  </div>
+  <p class="merk definition"><b>Merke:</b> Pflanzen brauchen Energie für Wachstum, Entwicklung (zum Beispiel Keimung), Fortpflanzung, Stofftransport, den Aufbau von Stoffen und Bewegung.</p>
+
+  <h3 class="unterkopf">Wie gewinnt die Pflanze ihre Energie?</h3>
+  <p class="sec-intro">Die Pflanze gewinnt ihre Energie in zwei Schritten. Klicke dich durch den Weg der Energie, vom Sonnenlicht bis zum Lebensprozess.</p>
+  <div class="kette" id="ewKette" role="group" aria-label="Weg der Energie in der Pflanze"></div>
+  <div class="info" id="ewInfo" aria-live="polite" style="min-height:0">
+    <h3>Wähle einen Schritt</h3>
+    <p>Starte am besten bei Schritt 1.</p>
+  </div>
+  <p class="merk definition" style="margin-top:22px"><b>Merke:</b> Bei der <b>Fotosynthese</b> in den Chloroplasten wird Lichtenergie in chemische Energie umgewandelt und in Glukose gespeichert. Bei der <b>Zellatmung</b> in den Mitochondrien wird diese Energie wieder freigesetzt und für die Lebensprozesse nutzbar gemacht.</p>
+</section>
+
+<!-- ============ 7. ZELLATMUNG ============ -->
+<section id="zellatmung" style="animation-delay:.24s">
+  <div class="sec-kopf"><span class="nr">07</span><h2>Zellatmung: Energie aus Zucker</h2></div>
+  <p class="sec-intro">Die Glukose aus der Fotosynthese ist ein Energiespeicher. Damit die Zelle die Energie nutzen kann, muss sie die Glukose wieder abbauen. Das geschieht bei der <b>Zellatmung</b>. Sie läuft in jeder lebenden Zelle ab, bei Pflanzen und Tieren, Tag und Nacht.</p>
+
+  <div class="zell-layout">
+    <div class="buehne">
+      <svg viewBox="0 0 380 250" role="img" aria-labelledby="mito-titel mito-desc">
+        <title id="mito-titel">Mitochondrium im Längsschnitt</title>
+        <desc id="mito-desc">Ein bohnenförmiges Mitochondrium mit glatter äußerer Membran und einer stark gefalteten inneren Membran.</desc>
+        <ellipse cx="190" cy="125" rx="160" ry="82" fill="#f2c79a" stroke="#183a26" stroke-width="3"/>
+        <defs><clipPath id="mitoClip"><ellipse cx="190" cy="125" rx="146" ry="69"/></clipPath></defs>
+        <ellipse cx="190" cy="125" rx="146" ry="69" fill="#fbe3c4" stroke="#c0392b" stroke-width="2.5"/>
+        <g clip-path="url(#mitoClip)" fill="#f7d2ac" stroke="#c0392b" stroke-width="2.5"><rect x="74" y="36" width="12" height="114" rx="6"/><rect x="96" y="100" width="12" height="114" rx="6"/><rect x="118" y="36" width="12" height="114" rx="6"/><rect x="140" y="100" width="12" height="114" rx="6"/><rect x="162" y="36" width="12" height="114" rx="6"/><rect x="184" y="100" width="12" height="114" rx="6"/><rect x="206" y="36" width="12" height="114" rx="6"/><rect x="228" y="100" width="12" height="114" rx="6"/><rect x="250" y="36" width="12" height="114" rx="6"/><rect x="272" y="100" width="12" height="114" rx="6"/><rect x="294" y="36" width="12" height="114" rx="6"/></g>
+        <g font-family="Karla,sans-serif" font-size="14" fill="#183a26" font-weight="700">
+          <line x1="70" y1="38" x2="92" y2="62" stroke="#183a26" stroke-width="1.5"/>
+          <text x="10" y="30">äußere Membran</text>
+          <line x1="250" y1="226" x2="236" y2="186" stroke="#183a26" stroke-width="1.5"/>
+          <text x="170" y="244">innere Membran (gefaltet)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="info">
+      <h3>Das Mitochondrium</h3>
+      <p class="rolle">Ort der Zellatmung · „Kraftwerk der Zelle“</p>
+      <p>Die Zellatmung läuft in den <b>Mitochondrien</b> ab (Einzahl: das Mitochondrium). Sie sind von zwei Membranen umgeben. Die innere Membran ist stark gefaltet. So entsteht eine große Fläche, an der die Zellatmung ablaufen kann.</p>
+      <p>Zellen, die viel Energie brauchen, zum Beispiel Muskelzellen, besitzen besonders viele Mitochondrien.</p>
+      <p class="merk"><b>Merke:</b> Pflanzenzellen haben Chloroplasten <i>und</i> Mitochondrien. Tierzellen haben nur Mitochondrien. Die Zellatmung findet also in beiden Zelltypen statt.</p>
+    </div>
+  </div>
+
+  <div class="zwei-spalten" style="margin:34px 0">
+    <div class="stoffbox">
+      <p class="bk-kopf">Diese Stoffe werden umgewandelt</p>
+      <h3>Ausgangsstoffe</h3>
+      <ul>
+        <li><b>Glukose</b> (Traubenzucker): bei Pflanzen aus der Fotosynthese, bei Tieren und Menschen aus der Nahrung</li>
+        <li><b>Sauerstoff</b>: aus der Luft oder aus dem Wasser</li>
+      </ul>
+    </div>
+    <div class="stoffbox">
+      <p class="bk-kopf">Diese Stoffe entstehen</p>
+      <h3>Produkte</h3>
+      <ul>
+        <li><b>Kohlenstoffdioxid</b>: wird an die Umgebung abgegeben, beim Menschen über die Lunge ausgeatmet</li>
+        <li><b>Wasser</b></li>
+        <li>Dabei wird <b>Energie</b> frei. Energie ist kein Stoff, sie steht deshalb nicht als Produkt in der Gleichung, sondern am Pfeil.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="puzzle">
+    <h3 style="font-family:Fraunces,serif;font-size:1.4rem;margin:0 0 6px;text-align:center">Setze die Wortgleichung der Zellatmung zusammen</h3>
+    <p style="text-align:center;margin:0 0 22px">Klicke auf einen Begriff, um ihn in das nächste freie Feld zu setzen. Ein Klick auf ein Feld nimmt ihn wieder heraus. Zwei Begriffe gehören nicht dazu.</p>
+    <div class="gleichung">
+      <div class="slot leer" data-zslot="0">Ausgangsstoff 1</div>
+      <div class="op">+</div>
+      <div class="slot leer" data-zslot="1">Ausgangsstoff 2</div>
+      <div class="pfeil">Mitochondrium<span>&#10230;</span>Energie wird frei</div>
+      <div class="slot leer" data-zslot="2">Produkt 1</div>
+      <div class="op">+</div>
+      <div class="slot leer" data-zslot="3">Produkt 2</div>
+    </div>
+    <div class="chips" id="zaChips"></div>
+    <div class="knopfreihe">
+      <button class="knopf" id="zaPruefen">Prüfen</button>
+      <button class="knopf zweit" id="zaReset">Nochmal</button>
+    </div>
+    <p class="rueckmeldung" id="zaRueck" aria-live="polite"></p>
+  </div>
+
+  <div class="zwei-spalten" style="margin-top:30px">
+    <p class="merk"><b>Achtung, Verwechslungsgefahr:</b> Zellatmung ist nicht dasselbe wie das Atmen mit der Lunge. Beim Atmen gelangt Sauerstoff in den Körper und Kohlenstoffdioxid hinaus (Gasaustausch). Die Zellatmung selbst findet danach in jeder einzelnen Zelle statt. Pflanzen haben keine Lunge, betreiben aber in allen lebenden Zellen Zellatmung, auch in der Wurzel, die gar keine Chloroplasten hat.</p>
+    <p class="merk"><b>So kann man es nachweisen:</b> Keimende Erbsen in einer Thermosflasche werden messbar wärmer, denn bei der Zellatmung wird auch Wärme frei. Leitet man die Luft aus dem Gefäß in Kalkwasser, wird es trüb. Das zeigt: Es ist Kohlenstoffdioxid entstanden.</p>
+  </div>
+
+  <details class="profi">
+    <summary>Für Profis: Zellatmung mit chemischen Formeln</summary>
+    <div class="formel">C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6 O<sub>2</sub> &#10230; 6 CO<sub>2</sub> + 6 H<sub>2</sub>O</div>
+    <p>Vergleiche mit der Fotosynthese in Abschnitt 03: Es ist genau die umgekehrte Gleichung. Die freigesetzte Energie wird in den Mitochondrien in einem kleinen Molekül zwischengespeichert, dem <b>ATP</b>. ATP ist der Energieträger, mit dem die Zelle ihre Arbeit „bezahlt“, zum Beispiel beim Aufbau von Stoffen oder beim Zusammenziehen eines Muskels.</p>
+  </details>
+</section>
+
+<!-- ============ 8. AUTOTROPH / HETEROTROPH ============ -->
+<section id="ernaehrung" style="animation-delay:.26s">
+  <div class="sec-kopf"><span class="nr">08</span><h2>Autotroph und heterotroph</h2></div>
+  <p class="sec-intro">Alle Lebewesen brauchen energiereiche Stoffe wie Glukose. Es gibt aber zwei Möglichkeiten, an sie heranzukommen: selbst herstellen oder von anderen Lebewesen aufnehmen.</p>
+
+  <div class="wort-herkunft">
+    <div>griechisch <b>autos</b> = selbst</div>
+    <div>griechisch <b>heteros</b> = anders, fremd</div>
+    <div>griechisch <b>trophe</b> = Ernährung</div>
+  </div>
+
+  <div class="zwei-spalten" style="margin-bottom:30px">
+    <div class="stoffbox auto">
+      <p class="bk-kopf">Selbsternährer</p>
+      <h3>autotroph</h3>
+      <p>Autotrophe Lebewesen stellen ihre energiereichen Stoffe <b>selbst</b> aus energiearmen Stoffen her: aus Kohlenstoffdioxid und Wasser, mit Hilfe von Lichtenergie (Fotosynthese).</p>
+      <p><i>Beispiele:</i> grüne Pflanzen, Moose, Algen</p>
+    </div>
+    <div class="stoffbox hetero">
+      <p class="bk-kopf">Fremdernährer</p>
+      <h3>heterotroph</h3>
+      <p>Heterotrophe Lebewesen können keine Fotosynthese betreiben. Sie müssen energiereiche Stoffe mit der <b>Nahrung</b> aufnehmen, also von anderen Lebewesen.</p>
+      <p><i>Beispiele:</i> Tiere, Menschen, Pilze, die meisten Bakterien</p>
+    </div>
+  </div>
+
+  <h3 class="unterkopf">Sortiere: autotroph oder heterotroph?</h3>
+  <p class="sec-intro">Vorsicht, zwei Fallen sind dabei.</p>
+  <div class="sortier" id="ahSortier"></div>
+  <p class="punkte" id="ahPunkte" style="margin-top:20px">0 von 10 richtig sortiert</p>
+
+  <p class="merk definition" style="margin-top:26px"><b>Merke:</b> Autotroph heißt: ernährt sich selbst durch Fotosynthese. Heterotroph heißt: ist auf energiereiche Stoffe aus der Nahrung angewiesen. Wichtig: Auch autotrophe Pflanzen betreiben Zellatmung, um die Energie ihrer Glukose zu nutzen. Und alle heterotrophen Lebewesen hängen am Ende von den autotrophen ab, denn jede Nahrungskette beginnt mit einem autotrophen Lebewesen, meist einer Pflanze.</p>
+</section>
+
+<!-- ============ 9. PRIESTLEY ============ -->
+<section id="priestley" style="animation-delay:.28s">
+  <div class="sec-kopf"><span class="nr">09</span><h2>Priestleys Versuche: Pflanzen „verbessern“ die Luft</h2></div>
+  <p class="sec-intro">Der englische Naturforscher <b>Joseph Priestley</b> (1733–1804) wollte 1771 wissen, warum eine Kerze in einem geschlossenen Gefäß nach kurzer Zeit erlischt. Dazu stellte er Kerzen, Mäuse und Pflanzen unter eine luftdicht abgeschlossene Glasglocke. Probiere seine Versuche hier selbst aus.</p>
+
+  <div class="labor">
+    <div class="regler-box">
+      <p class="wahl-titel">Unter der Glocke</p>
+      <div class="wahl" id="prWahlObjekt">
+        <button type="button" data-wert="kerze" aria-pressed="true">brennende Kerze</button>
+        <button type="button" data-wert="maus" aria-pressed="false">Maus</button>
+      </div>
+      <p class="wahl-titel">Pflanze dazu?</p>
+      <div class="wahl" id="prWahlPflanze">
+        <button type="button" data-wert="nein" aria-pressed="true">ohne Pflanze</button>
+        <button type="button" data-wert="ja" aria-pressed="false">mit Minzpflanze</button>
+      </div>
+      <p class="wahl-titel">Licht</p>
+      <div class="wahl" id="prWahlLicht">
+        <button type="button" data-wert="hell" aria-pressed="true">hell</button>
+        <button type="button" data-wert="dunkel" aria-pressed="false">dunkel</button>
+      </div>
+      <div class="knopfreihe" style="justify-content:flex-start;margin:16px 0 14px">
+        <button class="knopf" id="prStart">Glocke schließen und starten</button>
+      </div>
+      <div class="messwert"><span>Sauerstoff in der Glocke</span><b id="prO2">21 %</b></div>
+      <div class="balken" style="margin-top:8px"><i id="prBalken" style="width:100%;background:var(--wasser)"></i></div>
+      <p style="font-size:.8rem;margin:-10px 0 0;color:var(--tinte-hell)">Vereinfachtes Modell mit Beispielwerten. Die Zeit ist stark gerafft: In Wirklichkeit dauerten Priestleys Versuche Tage.</p>
+      <p class="status" id="prStatus">Wähle einen Versuchsaufbau und starte.</p>
+    </div>
+
+    <div class="laborszene">
+      <svg viewBox="0 0 400 320" role="img" aria-labelledby="pr-titel">
+        <title id="pr-titel">Glasglocke mit Kerze oder Maus und wahlweise einer Pflanze</title>
+        <rect width="400" height="320" fill="#f4f7e4"/>
+        <g id="prSonne">
+          <circle cx="350" cy="48" r="24" fill="#e5a017"/>
+          <g stroke="#e5a017" stroke-width="4" stroke-linecap="round">
+            <line x1="350" y1="10" x2="350" y2="2"/><line x1="312" y1="48" x2="304" y2="48"/>
+            <line x1="323" y1="21" x2="317" y2="15"/><line x1="323" y1="75" x2="317" y2="81"/>
+            <line x1="377" y1="21" x2="383" y2="15"/>
+          </g>
+        </g>
+        <rect x="60" y="272" width="280" height="12" fill="#5f5f57"/>
+        <rect x="40" y="284" width="320" height="36" fill="#c9b48a"/>
+        <!-- Kerze -->
+        <g id="prKerze">
+          <rect x="138" y="200" width="24" height="72" fill="#fffaef" stroke="#183a26" stroke-width="2"/>
+          <line x1="150" y1="200" x2="150" y2="190" stroke="#26262a" stroke-width="2"/>
+          <g id="prFlamme" class="pr-flamme">
+            <path d="M150,148 C162,166 164,180 150,192 C136,180 138,166 150,148 Z" fill="#e5a017"/>
+            <path d="M150,166 C156,176 156,184 150,190 C144,184 144,176 150,166 Z" fill="#ffe58a"/>
+          </g>
+          <path id="prRauch" d="M150,188 C144,176 156,168 150,156 C144,146 154,138 150,128" fill="none" stroke="#9a9a92" stroke-width="3" stroke-linecap="round" opacity="0"/>
+        </g>
+        <!-- Maus -->
+        <g id="prMaus" style="display:none">
+          <g id="prMausKoerper" class="pr-maus">
+            <path d="M110,262 C96,264 86,256 78,262" fill="none" stroke="#7a6f6a" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="140" cy="254" rx="32" ry="17" fill="#a39a92" stroke="#183a26" stroke-width="2"/>
+            <circle cx="172" cy="246" r="12" fill="#a39a92" stroke="#183a26" stroke-width="2"/>
+            <circle cx="166" cy="233" r="7" fill="#e8b4b0" stroke="#183a26" stroke-width="2"/>
+            <circle cx="183" cy="249" r="3" fill="#e8b4b0"/>
+            <circle id="prAuge" cx="175" cy="243" r="2.3" fill="#183a26"/>
+            <rect x="124" y="268" width="6" height="5" fill="#a39a92"/><rect x="150" y="268" width="6" height="5" fill="#a39a92"/>
+          </g>
+          <text id="prZzz" x="186" y="222" font-family="Fraunces,serif" font-size="18" font-weight="900" fill="#183a26" opacity="0">z z z</text>
+        </g>
+        <!-- Pflanze -->
+        <g id="prPflanze" style="display:none">
+          <path d="M232,272 L238,240 L282,240 L288,272 Z" fill="#b5653a" stroke="#183a26" stroke-width="2"/>
+          <path d="M260,240 L260,150" stroke="#3d6b4f" stroke-width="4"/>
+          <g fill="#4f9b3e" stroke="#183a26" stroke-width="1.5">
+            <path d="M260,222 C240,222 228,210 226,198 C242,198 256,206 260,222 Z"/>
+            <path d="M260,222 C280,222 292,210 294,198 C278,198 264,206 260,222 Z"/>
+            <path d="M260,192 C242,190 234,178 232,168 C246,170 258,178 260,192 Z"/>
+            <path d="M260,192 C278,190 286,178 288,168 C274,170 262,178 260,192 Z"/>
+            <path d="M260,162 C250,158 246,148 248,140 C256,144 262,152 260,162 Z"/>
+            <path d="M260,162 C270,158 274,148 272,140 C264,144 258,152 260,162 Z"/>
+          </g>
+        </g>
+        <!-- Glasglocke -->
+        <path d="M70,272 L70,128 C70,62 128,38 200,38 C272,38 330,62 330,128 L330,272" fill="rgba(91,192,235,.16)" stroke="#2b83a6" stroke-width="3"/>
+        <circle cx="200" cy="30" r="10" fill="#cfe9f5" stroke="#2b83a6" stroke-width="3"/>
+        <path d="M96,120 C100,86 122,66 152,58" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+        <rect id="prDunkel" width="400" height="320" fill="#183a26" opacity="0" pointer-events="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="zwei-spalten" style="margin-top:34px">
+    <div class="info" style="min-height:0">
+      <h3>Was Priestley beobachtete</h3>
+      <p class="rolle">1771 und 1772</p>
+      <ul class="liste">
+        <li>Eine Kerze unter der Glocke erlischt nach kurzer Zeit. Eine Maus unter der Glocke wird nach einiger Zeit bewusstlos.</li>
+        <li>Priestley stellte einen Minzzweig in die Luft, in der eine Kerze erloschen war. Nach etwa zehn Tagen konnte dort wieder eine Kerze brennen.</li>
+        <li>Mit einer Pflanze unter der Glocke blieb auch eine Maus viel länger munter.</li>
+      </ul>
+      <p>Priestley schloss daraus: Kerze und Tier „verderben“ die Luft, die Pflanze „verbessert“ sie wieder. Den Sauerstoff kannte man damals noch nicht. Priestley gehört 1774 zu seinen Entdeckern.</p>
+    </div>
+    <div class="info" style="min-height:0">
+      <h3>Wie wir es heute erklären</h3>
+      <p class="rolle">Pflanze und Tier beeinflussen sich gegenseitig</p>
+      <ul class="liste">
+        <li>Maus und Kerze <b>verbrauchen Sauerstoff</b> und geben <b>Kohlenstoffdioxid</b> ab. Die Maus durch Zellatmung, die Kerze durch Verbrennung.</li>
+        <li>Die Pflanze nimmt dieses Kohlenstoffdioxid auf und gibt durch Fotosynthese <b>Sauerstoff</b> ab, aber nur im Licht.</li>
+        <li>Das Tier liefert also, was die Pflanze braucht, und die Pflanze liefert, was das Tier braucht.</li>
+      </ul>
+      <p class="merk"><b>Merke:</b> Die Lebensvorgänge von Pflanzen und Tieren ergänzen sich: Die Zellatmung der Tiere liefert Kohlenstoffdioxid für die Fotosynthese der Pflanzen, die Fotosynthese liefert Sauerstoff für die Zellatmung der Tiere.</p>
+    </div>
+  </div>
+
+  <details class="profi">
+    <summary>Für Profis: Was Priestley übersehen hat</summary>
+    <p>Andere Forscher konnten Priestleys Versuch zunächst nicht wiederholen: Bei ihnen klappte er manchmal nicht. Der niederländische Arzt <b>Jan Ingenhousz</b> fand 1779 den Grund. Pflanzen verbessern die Luft nur <b>im Licht</b> und nur mit ihren <b>grünen Teilen</b>. Im Dunkeln betreibt die Pflanze nur Zellatmung und verbraucht selbst Sauerstoff. Stelle im Versuch oben „dunkel“ ein und vergleiche.</p>
+    <p>Übrigens: Versuche mit Mäusen unter einer Glasglocke würde man heute aus Tierschutzgründen so nicht mehr durchführen.</p>
+  </details>
+</section>
+
+<!-- ============ 10. KREISLAUF & ENERGIEUMWANDLUNG ============ -->
+<section id="kreislauf" style="animation-delay:.3s">
+  <div class="sec-kopf"><span class="nr">10</span><h2>Fotosynthese und Zellatmung gehören zusammen</h2></div>
+  <p class="sec-intro">Vergleiche die beiden Wortgleichungen: Was bei der Fotosynthese entsteht, wird bei der Zellatmung verbraucht, und umgekehrt. Die beiden Vorgänge bilden einen <b>Stoffkreislauf</b>. In einer grünen Blattzelle laufen sogar beide nebeneinander ab.</p>
+
+  <div class="blatt-werkzeuge">
+    <button type="button" class="knopf" id="klStoffe" aria-pressed="true">Stoffe zeigen</button>
+    <button type="button" class="knopf zweit" id="klEnergie" aria-pressed="false">Energie zeigen</button>
+  </div>
+  <div class="blatt-buehne" id="klBuehne" data-modus="stoffe">
+    <svg viewBox="0 0 900 430" role="img" aria-labelledby="kl-titel kl-desc">
+      <title id="kl-titel">Kreislauf zwischen Fotosynthese und Zellatmung</title>
+      <desc id="kl-desc">Links der Chloroplast mit der Fotosynthese, rechts das Mitochondrium mit der Zellatmung. Oben fließen Glukose und Sauerstoff vom Chloroplasten zum Mitochondrium, unten Kohlenstoffdioxid und Wasser zurück. Lichtenergie kommt von der Sonne in den Chloroplasten. Aus dem Mitochondrium kommt nutzbare Energie für die Lebensprozesse und Wärme.</desc>
+      <defs>
+        <marker id="klPfeilT" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="14" refX="14" refY="7" orient="auto"><path d="M0,0 L16,7 L0,14 z" fill="#183a26"/></marker>
+        <marker id="klPfeilG" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="14" refX="14" refY="7" orient="auto"><path d="M0,0 L16,7 L0,14 z" fill="#e5a017"/></marker>
+        <marker id="klPfeilR" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="14" refX="14" refY="7" orient="auto"><path d="M0,0 L16,7 L0,14 z" fill="#c0392b"/></marker>
+      </defs>
+
+      <!-- Chloroplast -->
+      <ellipse cx="210" cy="225" rx="135" ry="78" fill="#8fc45c" stroke="#183a26" stroke-width="3"/>
+      <g fill="#4f9b3e" stroke="#183a26" stroke-width="1.2">
+        <rect x="120" y="200" width="30" height="10"/><rect x="120" y="212" width="30" height="10"/><rect x="120" y="224" width="30" height="10"/><rect x="120" y="236" width="30" height="10"/>
+        <rect x="195" y="190" width="30" height="10"/><rect x="195" y="202" width="30" height="10"/><rect x="195" y="214" width="30" height="10"/>
+        <rect x="270" y="210" width="30" height="10"/><rect x="270" y="222" width="30" height="10"/><rect x="270" y="234" width="30" height="10"/><rect x="270" y="246" width="30" height="10"/>
+      </g>
+      <text x="210" y="272" text-anchor="middle" font-family="Fraunces,serif" font-weight="900" font-size="22" fill="#183a26">Fotosynthese</text>
+      <text x="210" y="330" text-anchor="middle" font-family="Karla,sans-serif" font-weight="700" font-size="15" fill="#3d6b4f">Chloroplast</text>
+
+      <!-- Mitochondrium -->
+      <ellipse cx="690" cy="225" rx="135" ry="72" fill="#f2c79a" stroke="#183a26" stroke-width="3"/>
+      <defs><clipPath id="klMitoClip"><ellipse cx="690" cy="225" rx="122" ry="60"/></clipPath></defs>
+      <ellipse cx="690" cy="225" rx="122" ry="60" fill="#fbe3c4" stroke="#c0392b" stroke-width="2.2"/>
+      <g clip-path="url(#klMitoClip)" fill="#f7d2ac" stroke="#c0392b" stroke-width="2.2"><rect x="578" y="145" width="12" height="98" rx="6"/><rect x="598" y="207" width="12" height="98" rx="6"/><rect x="618" y="145" width="12" height="98" rx="6"/><rect x="750" y="207" width="12" height="98" rx="6"/><rect x="770" y="145" width="12" height="98" rx="6"/><rect x="790" y="207" width="12" height="98" rx="6"/></g>
+      <text x="690" y="232" text-anchor="middle" font-family="Fraunces,serif" font-weight="900" font-size="22" fill="#183a26">Zellatmung</text>
+      <text x="690" y="324" text-anchor="middle" font-family="Karla,sans-serif" font-weight="700" font-size="15" fill="#3d6b4f">Mitochondrium</text>
+
+      <!-- Stoffe -->
+      <g class="kl-stoff">
+        <path d="M300,165 C380,92 520,92 600,165" fill="none" stroke="#183a26" stroke-width="4" marker-end="url(#klPfeilT)"/>
+        <text x="450" y="92" text-anchor="middle" font-family="Karla,sans-serif" font-weight="700" font-size="19" fill="#183a26">Glukose + Sauerstoff</text>
+        <path d="M600,290 C520,366 380,366 300,290" fill="none" stroke="#183a26" stroke-width="4" marker-end="url(#klPfeilT)"/>
+        <text x="450" y="378" text-anchor="middle" font-family="Karla,sans-serif" font-weight="700" font-size="19" fill="#183a26">Kohlenstoffdioxid + Wasser</text>
+      </g>
+
+      <!-- Energie -->
+      <g class="kl-energie">
+        <circle cx="70" cy="60" r="30" fill="#e5a017"/>
+        <path d="M100,78 L160,148" fill="none" stroke="#e5a017" stroke-width="6" marker-end="url(#klPfeilG)"/>
+        <text x="112" y="44" font-family="Karla,sans-serif" font-weight="700" font-size="17" fill="#a06d00">Lichtenergie</text>
+        <text x="450" y="132" text-anchor="middle" font-family="Karla,sans-serif" font-weight="700" font-size="16" fill="#a06d00">chemische Energie, gespeichert in Glukose</text>
+        <path d="M790,165 L850,95" fill="none" stroke="#e5a017" stroke-width="6" marker-end="url(#klPfeilG)"/>
+        <text x="895" y="58" text-anchor="end" font-family="Karla,sans-serif" font-weight="700" font-size="16" fill="#a06d00">nutzbare Energie</text>
+        <text x="895" y="78" text-anchor="end" font-family="Karla,sans-serif" font-size="14" fill="#a06d00">für Wachstum, Bewegung …</text>
+        <path d="M790,290 C805,300 800,312 815,322 C830,332 825,344 845,355" fill="none" stroke="#c0392b" stroke-width="5" marker-end="url(#klPfeilR)"/>
+        <text x="895" y="392" text-anchor="end" font-family="Karla,sans-serif" font-weight="700" font-size="16" fill="#c0392b">Wärme</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="tabelle-scroll" style="margin-bottom:30px">
+    <table class="vgl-tabelle text-tab">
+      <caption>Fotosynthese und Zellatmung im Vergleich</caption>
+      <thead><tr><th scope="col"></th><th scope="col">Fotosynthese</th><th scope="col">Zellatmung</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Ort</th><td>Chloroplasten</td><td>Mitochondrien</td></tr>
+        <tr><th scope="row">Wer?</th><td>nur Pflanzen und Algen (autotroph)</td><td>alle Lebewesen</td></tr>
+        <tr><th scope="row">Wann?</th><td>nur bei Licht</td><td>immer, Tag und Nacht</td></tr>
+        <tr><th scope="row">Ausgangsstoffe</th><td>Kohlenstoffdioxid + Wasser</td><td>Glukose + Sauerstoff</td></tr>
+        <tr><th scope="row">Produkte</th><td>Glukose + Sauerstoff</td><td>Kohlenstoffdioxid + Wasser</td></tr>
+        <tr><th scope="row">Energie</th><td>Lichtenergie wird als chemische Energie in Glukose <b>gespeichert</b></td><td>chemische Energie aus Glukose wird <b>freigesetzt</b> und nutzbar gemacht</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="unterkopf">Energieumwandlung Schritt für Schritt</h3>
+  <p class="sec-intro">Energie kann nicht erzeugt und nicht vernichtet werden. Sie wird nur von einer Form in eine andere <b>umgewandelt</b>. Fotosynthese und Zellatmung sind dafür gute Beispiele.</p>
+  <div class="energie-kette">
+    <div class="ek-form licht">Lichtenergie<small>Sonne</small></div>
+    <div class="ek-schritt">Fotosynthese<small>im Chloroplasten</small></div>
+    <div class="ek-form chemisch">chemische Energie<small>in Glukose (und Stärke)</small></div>
+    <div class="ek-schritt">Zellatmung<small>im Mitochondrium</small></div>
+    <div class="ek-form nutz">nutzbare Energie<small>Bewegungsenergie, Aufbau neuer Stoffe, Transport …</small></div>
+    <div class="ek-form waerme">+ Wärme<small>wird an die Umgebung abgegeben</small></div>
+  </div>
+  <p class="merk definition" style="margin-top:22px"><b>Merke:</b> Bei der Fotosynthese wird <b>Lichtenergie in chemische Energie</b> umgewandelt. Bei der Zellatmung wird die <b>chemische Energie</b> der Glukose freigesetzt und in nutzbare Formen umgewandelt, etwa <b>Bewegungsenergie</b>. Dabei entsteht immer auch <b>Wärme</b>. Die Stoffe bewegen sich im Kreislauf, die Energie aber fließt hindurch: Sie kommt als Licht und geht als Wärme.</p>
+</section>
+
+<!-- ============ 11. KANN ICH ============ -->
+<section id="kannich" style="animation-delay:.32s">
+  <div class="sec-kopf"><span class="nr">11</span><h2>Kann ich …? Die Lernliste</h2></div>
+  <p class="sec-intro">Die Fragen 1–5, 7–9, 11 und 13 aus dem Buch (Kapitel B „Was Pflanzen und Tieren gemeinsam ist“). Versuche jede Frage erst selbst laut zu beantworten. Dann klappe die Musterantwort auf und hake ab, was du sicher kannst. Deine Häkchen merkt sich dieser Browser.</p>
+  <p class="fortschritt"><span id="kcZaehler">0</span> von <span id="kcGesamt">0</span> abgehakt</p>
+  <div class="balken"><i id="kcBalken"></i></div>
+  <div id="kcListe"></div>
+</section>
+
+<!-- ============ 12. QUIZ ============ -->
 <section id="quiz" style="animation-delay:.25s">
-  <div class="sec-kopf"><span class="nr">06</span><h2>Teste dich selbst</h2></div>
-  <p class="sec-intro">Dreizehn Fragen zu allem, was oben steht. Nach jedem Klick siehst du sofort, ob es gestimmt hat.</p>
+  <div class="sec-kopf"><span class="nr">12</span><h2>Teste dich selbst</h2></div>
+  <p class="sec-intro">Fragen zu allem, was oben steht. Nach jedem Klick siehst du sofort, ob es gestimmt hat.</p>
   <div id="quizbox"></div>
-  <p class="punkte" id="punkte">0 von 13 richtig</p>
+  <p class="punkte" id="punkte">0 Fragen beantwortet</p>
 </section>
 
 <footer>
-  <p>Lernseite Biologie, Jahrgang 7. Inhalte nach dem Kerncurriculum Niedersachsen: Zellaufbau der Pflanzenzelle, Vergleich mit der Tierzelle, Fotosynthese als Wortgleichung und Aufbau des Laubblattes (Basiskonzept Struktur und Funktion). Die Zeichnungen orientieren sich am Schulbuchschema.</p>
+  <p>Lernseite Biologie, Jahrgang 7. Inhalte nach dem Kerncurriculum Niedersachsen: Zellaufbau der Pflanzenzelle, Vergleich mit der Tierzelle, Fotosynthese als Wortgleichung und Aufbau des Laubblattes (Basiskonzept Struktur und Funktion), Zellatmung, autotrophe und heterotrophe Ernährung, Priestleys Versuche sowie Fotosynthese und Zellatmung als Stoffkreislauf mit Energieumwandlung (Basiskonzept Stoff- und Energieumwandlung). Die Zeichnungen orientieren sich am Schulbuchschema.</p>
 </footer>
 
 </div>
@@ -1559,7 +2015,34 @@ const fragen = [
    e:"Über die Hohlräume gelangt Kohlenstoffdioxid zu allen Zellen, Sauerstoff und Wasserdampf gelangen hinaus."},
   {f:"Was ist die Kutikula?",
    a:["Eine Schicht aus Zellen mit vielen Chloroplasten","Die Öffnung zwischen zwei Schließzellen","Eine wachsartige Schicht auf der Epidermis","Ein Teil der Blattader"], r:2,
-   e:"Die Wachsschicht vermindert den Wasserverlust über die Blattoberfläche."}
+   e:"Die Wachsschicht vermindert den Wasserverlust über die Blattoberfläche."},
+  {f:"Für welchen Vorgang braucht eine Pflanze Energie?",
+   a:["Nur für die Fotosynthese","Für Wachstum, Blütenbildung und Stofftransport","Gar nicht, Pflanzen bewegen sich ja nicht","Nur nachts für die Zellatmung"], r:1,
+   e:"Auch Pflanzen leben aktiv: Sie wachsen, bilden Blüten und Samen, transportieren Stoffe und bauen neue Stoffe auf."},
+  {f:"Welche Stoffe werden bei der Zellatmung umgewandelt?",
+   a:["Kohlenstoffdioxid und Wasser","Glukose und Sauerstoff","Stärke und Licht","Sauerstoff und Wasser"], r:1,
+   e:"Glukose wird mit Sauerstoff abgebaut. Dabei wird Energie frei."},
+  {f:"Welche Stoffe entstehen bei der Zellatmung?",
+   a:["Glukose und Sauerstoff","Stärke und Wasser","Kohlenstoffdioxid und Wasser","Nur Energie"], r:2,
+   e:"Kohlenstoffdioxid und Wasser sind die Produkte. Energie ist kein Stoff, sie wird frei."},
+  {f:"Was bedeutet „heterotroph“?",
+   a:["Ein Lebewesen stellt seine Nahrung durch Fotosynthese selbst her","Ein Lebewesen nimmt energiereiche Stoffe von anderen Lebewesen auf","Ein Lebewesen braucht keinen Sauerstoff","Ein Lebewesen lebt nur im Wasser"], r:1,
+   e:"Hetero heißt fremd: Heterotrophe Lebewesen ernähren sich von anderen Lebewesen."},
+  {f:"Welches dieser Lebewesen ist heterotroph?",
+   a:["Moos","Grünalge","Champignon","Buche"], r:2,
+   e:"Pilze haben keine Chloroplasten und können keine Fotosynthese betreiben."},
+  {f:"Priestley stellte eine grüne Pflanze zu einer Maus unter die Glasglocke. Was beobachtete er?",
+   a:["Die Maus wurde schneller bewusstlos","Die Maus blieb viel länger munter","Die Pflanze verwelkte sofort","Es passierte gar nichts"], r:1,
+   e:"Die Pflanze gibt durch Fotosynthese Sauerstoff ab und nimmt das Kohlenstoffdioxid der Maus auf."},
+  {f:"Wie hängen Fotosynthese und Zellatmung zusammen?",
+   a:["Sie haben nichts miteinander zu tun","Die Produkte der Fotosynthese sind die Ausgangsstoffe der Zellatmung","Beide laufen nur in Tieren ab","Beide brauchen Licht"], r:1,
+   e:"Glukose und Sauerstoff aus der Fotosynthese werden bei der Zellatmung verbraucht, und umgekehrt. Ein Stoffkreislauf."},
+  {f:"Welche Energieumwandlung findet bei der Fotosynthese statt?",
+   a:["Chemische Energie wird zu Wärme","Lichtenergie wird zu chemischer Energie","Bewegungsenergie wird zu Lichtenergie","Wärme wird zu Lichtenergie"], r:1,
+   e:"Die Lichtenergie wird als chemische Energie in der Glukose gespeichert."},
+  {f:"Welchen Zellbestandteil haben Pflanzen- und Tierzellen gemeinsam?",
+   a:["Chloroplasten","Zellwand","Mitochondrien","Große Vakuole"], r:2,
+   e:"Beide Zelltypen betreiben Zellatmung in Mitochondrien. Die anderen drei gibt es nur in der Pflanzenzelle."}
 ];
 
 let score=0, beantwortet=0;
@@ -1589,6 +2072,245 @@ fragen.forEach((q,qi)=>{
   const e=document.createElement('p'); e.className='erklaerung'; e.textContent=q.e; d.appendChild(e);
   box.appendChild(d);
 });
+document.getElementById('punkte').textContent='0 von '+fragen.length+' richtig';
+
+/* =========================================================
+   TEIL 7: Energieweg, Zellatmung, Ernährung, Priestley, Kreislauf, Lernliste
+   ========================================================= */
+(function(){
+  /* ---- Weg der Energie ---- */
+  const schritte = [
+    {kurz:"Licht", name:"1 · Sonnenlicht", rolle:"Lichtenergie",
+     text:"Alles beginnt mit dem Licht der Sonne. Es trifft auf die Blätter. Lichtenergie kann die Pflanze aber nicht direkt für ihr Wachstum verwenden."},
+    {kurz:"Fotosynthese", name:"2 · Fotosynthese im Chloroplasten", rolle:"Licht wird zu chemischer Energie",
+     text:"Das Chlorophyll in den Chloroplasten fängt das Licht ein. Mit dieser Energie baut die Pflanze aus Kohlenstoffdioxid und Wasser Glukose auf. Die Lichtenergie steckt jetzt als chemische Energie in der Glukose."},
+    {kurz:"Glukose & Stärke", name:"3 · Glukose und Stärke", rolle:"Energiespeicher",
+     text:"Glukose wird in alle Teile der Pflanze transportiert oder als Stärke gespeichert, zum Beispiel in Kartoffelknollen oder Samen. So hat die Pflanze auch nachts und im Winter einen Energievorrat."},
+    {kurz:"Zellatmung", name:"4 · Zellatmung im Mitochondrium", rolle:"Energie wird freigesetzt",
+     text:"In den Mitochondrien wird Glukose mit Sauerstoff abgebaut. Dabei wird die gespeicherte Energie frei, und es entstehen Kohlenstoffdioxid und Wasser. Das passiert in jeder lebenden Pflanzenzelle, Tag und Nacht."},
+    {kurz:"Lebensprozesse", name:"5 · Lebensprozesse", rolle:"Die Energie wird genutzt",
+     text:"Mit der freigesetzten Energie wächst die Pflanze, baut Stoffe auf, transportiert Zucker, bildet Blüten und Samen und bewegt Blätter und Blüten. Ein Teil der Energie geht als Wärme an die Umgebung."}
+  ];
+  const kette = document.getElementById('ewKette');
+  const ewInfo = document.getElementById('ewInfo');
+  schritte.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='glied';
+    b.innerHTML = '<b>'+(i+1)+'</b>'+s.kurz;
+    b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',()=>{
+      kette.querySelectorAll('.glied').forEach(x=>{x.classList.remove('aktiv');x.setAttribute('aria-pressed','false');});
+      b.classList.add('aktiv','gesehen'); b.setAttribute('aria-pressed','true');
+      ewInfo.innerHTML = '<h3>'+s.name+'</h3><p class="rolle">'+s.rolle+'</p><p>'+s.text+'</p>'+
+        (i<schritte.length-1 ? '<button type="button" class="knopf zweit" id="ewWeiter">Weiter zu Schritt '+(i+2)+'</button>' : '');
+      const w = document.getElementById('ewWeiter');
+      if(w) w.addEventListener('click',()=>kette.children[i+1].click());
+    });
+    kette.appendChild(b);
+  });
+
+  /* ---- Wortgleichung Zellatmung ---- */
+  const zaBegriffe = ["Kohlenstoffdioxid","Glukose","Licht","Wasser","Stärke","Sauerstoff"];
+  const zaSlots = [...document.querySelectorAll('[data-zslot]')];
+  const zaPlatzhalter = zaSlots.map(s=>s.textContent);
+  const zaChips = document.getElementById('zaChips');
+  const zaRueck = document.getElementById('zaRueck');
+  const zaBelegung = [null,null,null,null];
+  zaBegriffe.forEach(w=>{
+    const c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=w; c.dataset.wort=w;
+    c.addEventListener('click',()=>{
+      const frei = zaBelegung.indexOf(null);
+      if(frei<0){zaRueck.textContent='Alle Felder sind voll. Klicke auf ein Feld, um es zu leeren.';return;}
+      zaBelegung[frei]=w; c.classList.add('weg'); zaZeichne();
+    });
+    zaChips.appendChild(c);
+  });
+  zaSlots.forEach((s,i)=>{
+    s.addEventListener('click',()=>{
+      if(!zaBelegung[i]) return;
+      zaChips.querySelector('[data-wort="'+zaBelegung[i]+'"]').classList.remove('weg');
+      zaBelegung[i]=null; zaZeichne();
+    });
+  });
+  function zaZeichne(){
+    zaSlots.forEach((s,i)=>{
+      s.classList.remove('richtig','falsch');
+      s.textContent = zaBelegung[i] || zaPlatzhalter[i];
+      s.classList.toggle('leer',!zaBelegung[i]);
+      s.classList.toggle('voll',!!zaBelegung[i]);
+    });
+    zaRueck.textContent='';
+  }
+  document.getElementById('zaPruefen').addEventListener('click',()=>{
+    if(zaBelegung.includes(null)){zaRueck.textContent='Fülle zuerst alle vier Felder.';return;}
+    const links=["Glukose","Sauerstoff"], rechts=["Kohlenstoffdioxid","Wasser"];
+    let alle=true;
+    zaSlots.forEach((s,i)=>{
+      const ok = (i<2?links:rechts).includes(zaBelegung[i]);
+      s.classList.add(ok?'richtig':'falsch'); if(!ok) alle=false;
+    });
+    zaRueck.textContent = alle
+      ? 'Richtig! Glukose + Sauerstoff ⟶ Kohlenstoffdioxid + Wasser. Dabei wird Energie frei.'
+      : 'Noch nicht ganz. Tipp: Die Zellatmung ist die Umkehrung der Fotosynthese.';
+  });
+  document.getElementById('zaReset').addEventListener('click',()=>{
+    zaBelegung.fill(null); zaChips.querySelectorAll('.chip').forEach(c=>c.classList.remove('weg')); zaZeichne();
+  });
+
+  /* ---- Sortieren: autotroph / heterotroph ---- */
+  const lebewesen = [
+    {n:"Buche", h:"Laubbaum", r:"auto", w:"Grüne Blätter mit Chloroplasten: Die Buche betreibt Fotosynthese."},
+    {n:"Kuh", h:"frisst Gras", r:"hetero", w:"Die Kuh nimmt energiereiche Stoffe mit dem Gras auf."},
+    {n:"Champignon", h:"Pilz, wächst im Boden", r:"hetero", w:"Falle! Pilze sehen pflanzenähnlich aus, haben aber keine Chloroplasten. Sie ernähren sich von abgestorbenen Pflanzenresten."},
+    {n:"Grünalge", h:"lebt im Teich", r:"auto", w:"Algen besitzen Chloroplasten und betreiben Fotosynthese."},
+    {n:"Mensch", h:"isst Brot und Gemüse", r:"hetero", w:"Wir nehmen energiereiche Stoffe mit der Nahrung auf."},
+    {n:"Venusfliegenfalle", h:"fängt Insekten", r:"auto", w:"Falle! Sie fängt Insekten nur, um Mineralstoffe wie Stickstoff zu bekommen. Ihre Glukose stellt sie mit grünen Blättern durch Fotosynthese selbst her."},
+    {n:"Löwenzahn", h:"Wiesenpflanze", r:"auto", w:"Grüne Blätter: Fotosynthese."},
+    {n:"Regenwurm", h:"frisst Laub und Erde", r:"hetero", w:"Der Regenwurm frisst abgestorbene Pflanzenteile."},
+    {n:"Moos", h:"wächst auf Steinen", r:"auto", w:"Moose sind grüne Pflanzen und betreiben Fotosynthese."},
+    {n:"Amsel", h:"frisst Würmer und Beeren", r:"hetero", w:"Tiere sind immer heterotroph."}
+  ];
+  const sortier = document.getElementById('ahSortier');
+  const ahPunkte = document.getElementById('ahPunkte');
+  let ahRichtig=0, ahFertig=0;
+  lebewesen.forEach(l=>{
+    const d=document.createElement('div'); d.className='org';
+    d.innerHTML='<p class="name">'+l.n+'</p><p class="hinweis">'+l.h+'</p>'+
+      '<div class="knoepfe"><button type="button" data-w="auto">autotroph</button><button type="button" data-w="hetero">heterotroph</button></div>'+
+      '<p class="warum">'+l.w+'</p>';
+    d.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+      if(d.classList.contains('fertig')) return;
+      d.classList.add('fertig'); ahFertig++;
+      d.querySelectorAll('button').forEach(x=>{x.disabled=true; if(x.dataset.w===l.r) x.classList.add('ok');});
+      if(b.dataset.w===l.r) ahRichtig++; else b.classList.add('nope');
+      ahPunkte.textContent = ahRichtig+' von '+lebewesen.length+' richtig sortiert'+(ahFertig===lebewesen.length?' – fertig.':'');
+    }));
+    sortier.appendChild(d);
+  });
+
+  /* ---- Priestley-Versuch ---- */
+  const pr = {objekt:'kerze', pflanze:'nein', licht:'hell'};
+  let prTimer=null;
+  const prO2=document.getElementById('prO2'), prBalken=document.getElementById('prBalken'), prStatus=document.getElementById('prStatus');
+  const prFlamme=document.getElementById('prFlamme'), prRauch=document.getElementById('prRauch');
+  const prMausK=document.getElementById('prMausKoerper'), prZzz=document.getElementById('prZzz'), prAuge=document.getElementById('prAuge');
+  function prWahl(id,key){
+    const g=document.getElementById(id);
+    g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+      if(prTimer) return;
+      g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+      pr[key]=b.dataset.wert; prSzene(21);
+      prStatus.textContent='Wähle einen Versuchsaufbau und starte.';
+    }));
+  }
+  prWahl('prWahlObjekt','objekt'); prWahl('prWahlPflanze','pflanze'); prWahl('prWahlLicht','licht');
+  function prSzene(o2, aus){
+    document.getElementById('prKerze').style.display = pr.objekt==='kerze'?'':'none';
+    document.getElementById('prMaus').style.display = pr.objekt==='maus'?'':'none';
+    document.getElementById('prPflanze').style.display = pr.pflanze==='ja'?'':'none';
+    document.getElementById('prSonne').style.display = pr.licht==='hell'?'':'none';
+    document.getElementById('prDunkel').setAttribute('opacity', pr.licht==='hell'?'0':'.35');
+    prO2.textContent = o2.toFixed(1).replace('.',',')+' %';
+    prBalken.style.width = (o2/21*100)+'%';
+    prFlamme.style.opacity = aus?0:1;
+    prRauch.setAttribute('opacity', aus?'.8':'0');
+    prMausK.classList.toggle('bewusstlos',!!aus);
+    prZzz.setAttribute('opacity', aus?'1':'0');
+    prAuge.setAttribute('r', aus?'0.8':'2.3');
+  }
+  function prSperre(an){
+    document.querySelectorAll('#priestley .wahl button').forEach(b=>b.disabled=an);
+    document.getElementById('prStart').disabled=an;
+  }
+  document.getElementById('prStart').addEventListener('click',()=>{
+    if(prTimer) return;
+    let o2=21, t=0;
+    const kerze = pr.objekt==='kerze';
+    const verbrauch = kerze ? .15 : .12;          /* Beispielwerte pro Schritt */
+    const grenze    = kerze ? 16 : 12;             /* Kerze erlischt / Maus wird bewusstlos */
+    const pflanzeDa = pr.pflanze==='ja', hell = pr.licht==='hell';
+    const pflanze   = pflanzeDa ? (hell ? verbrauch + .03 : -.02) : 0;  /* im Dunkeln nur Zellatmung */
+    prSzene(o2); prSperre(true);
+    prStatus.textContent='Die Glocke ist geschlossen … beobachte die Anzeige.';
+    prTimer=setInterval(()=>{
+      t++;
+      o2 = Math.min(21, o2 - verbrauch + pflanze);
+      const aus = o2<=grenze;
+      prSzene(Math.max(o2,0), aus);
+      if(aus || t>=90){
+        clearInterval(prTimer); prTimer=null; prSperre(false);
+        prStatus.innerHTML = prErgebnis(kerze, pflanzeDa, hell, aus);
+      }
+    },90);
+  });
+  function prErgebnis(kerze, pflanzeDa, hell, aus){
+    const wer = kerze ? 'Die Kerze' : 'Die Maus';
+    if(aus && !pflanzeDa) return kerze
+      ? '<b>Die Kerze erlischt.</b> Die Flamme hat den Sauerstoff in der Glocke verbraucht. Priestley sagte: Die Luft ist „verdorben“.'
+      : '<b>Die Maus wird bewusstlos.</b> Sie hat durch ihre Zellatmung den Sauerstoff in der Glocke verbraucht und Kohlenstoffdioxid abgegeben.';
+    if(aus && pflanzeDa) return '<b>'+wer+(kerze?' erlischt':' wird bewusstlos')+', sogar etwas schneller als ohne Pflanze!</b> Im Dunkeln findet keine Fotosynthese statt. Die Pflanze betreibt nur Zellatmung und verbraucht selbst Sauerstoff. Genau das entdeckte Jan Ingenhousz 1779.';
+    return kerze
+      ? '<b>Die Kerze brennt weiter.</b> Die Minze nimmt Kohlenstoffdioxid auf und gibt durch Fotosynthese Sauerstoff ab. (In Priestleys echtem Versuch dauerte das etwa zehn Tage.)'
+      : '<b>Die Maus bleibt munter.</b> Die Minze gibt im Licht durch Fotosynthese Sauerstoff ab und nimmt das Kohlenstoffdioxid der Maus auf. Pflanze und Tier versorgen sich gegenseitig.';
+  }
+  prSzene(21);
+
+  /* ---- Kreislauf: Stoffe / Energie ---- */
+  const klB=document.getElementById('klBuehne'), klS=document.getElementById('klStoffe'), klE=document.getElementById('klEnergie');
+  function klModus(m){
+    klB.dataset.modus=m;
+    klS.setAttribute('aria-pressed',String(m==='stoffe')); klE.setAttribute('aria-pressed',String(m==='energie'));
+    klS.classList.toggle('zweit',m!=='stoffe'); klE.classList.toggle('zweit',m!=='energie');
+  }
+  klS.addEventListener('click',()=>klModus('stoffe')); klE.addEventListener('click',()=>klModus('energie'));
+
+  /* ---- Lernliste "Kann ich …?" ---- */
+  const kannIch = [
+    {nr:1, f:"beispielhaft Lebensprozesse benennen, für die Pflanzen Energie benötigen?", link:"#energie",
+     a:"<p>Pflanzen brauchen Energie zum Beispiel für <b>Wachstum</b> (Zellteilung, Aufbau neuer Zellen), <b>Keimung</b>, <b>Fortpflanzung</b> (Bildung von Blüten, Früchten und Samen), <b>Stofftransport</b> (Zucker in Wurzel und Früchte, Aufnahme von Mineralstoffen), den <b>Aufbau von Stoffen</b> wie Stärke, Cellulose und Eiweißen sowie für <b>Bewegungen</b> wie das Öffnen von Blüten.</p>"},
+    {nr:2, f:"erklären, wie Pflanzen die benötigte Energie gewinnen?", link:"#energie",
+     a:"<p>In zwei Schritten: Bei der <b>Fotosynthese</b> in den Chloroplasten wandeln Pflanzen Lichtenergie in chemische Energie um und speichern sie in <b>Glukose</b> (oder als Stärke). Bei der <b>Zellatmung</b> in den Mitochondrien bauen sie die Glukose mit Sauerstoff wieder ab. Dabei wird die Energie frei und kann für die Lebensprozesse genutzt werden.</p>"},
+    {nr:3, f:"die Stoffe nennen, die ein Lebewesen bei der Zellatmung umwandelt?", link:"#zellatmung",
+     a:"<p><b>Glukose</b> (Traubenzucker) und <b>Sauerstoff</b>. Das sind die Ausgangsstoffe der Zellatmung.</p>"},
+    {nr:4, f:"die Stoffe nennen, die bei der Zellatmung in der Zelle entstehen?", link:"#zellatmung",
+     a:"<p><b>Kohlenstoffdioxid</b> und <b>Wasser</b>. Außerdem wird Energie frei.</p><p><i>Wortgleichung:</i> Glukose + Sauerstoff ⟶ Kohlenstoffdioxid + Wasser (Energie wird frei)</p>"},
+    {nr:5, f:"die Begriffe „autotroph“ und „heterotroph“ erläutern?", link:"#ernaehrung",
+     a:"<p><b>Autotroph</b> (selbst ernährend): Das Lebewesen stellt seine energiereichen Stoffe selbst aus energiearmen Stoffen her, mit Hilfe von Lichtenergie durch Fotosynthese. Beispiel: grüne Pflanzen, Algen.</p><p><b>Heterotroph</b> (fremd ernährend): Das Lebewesen muss energiereiche Stoffe mit der Nahrung von anderen Lebewesen aufnehmen. Beispiel: Tiere, Menschen, Pilze.</p>"},
+    {nr:7, f:"den Zellbestandteil nennen, in dem die Zellatmung abläuft?", link:"#zellatmung",
+     a:"<p>Im <b>Mitochondrium</b> (Mehrzahl: Mitochondrien), dem „Kraftwerk der Zelle“. Es hat zwei Membranen, die innere ist stark gefaltet. Mitochondrien gibt es in Pflanzen- und in Tierzellen.</p>"},
+    {nr:8, f:"anhand der Versuche von PRIESTLEY erläutern, wie sich die Lebensvorgänge von Pflanzen und Tieren gegenseitig beeinflussen?", link:"#priestley",
+     a:"<p><b>Versuch:</b> Unter einer luftdicht geschlossenen Glasglocke erlischt eine Kerze, eine Maus wird bewusstlos. Stellt man eine grüne Pflanze dazu, brennt die Kerze wieder und die Maus bleibt länger munter.</p><p><b>Erklärung:</b> Maus (Zellatmung) und Kerze (Verbrennung) verbrauchen Sauerstoff und geben Kohlenstoffdioxid ab. Die Pflanze nutzt das Kohlenstoffdioxid für die Fotosynthese und gibt Sauerstoff ab, den die Maus zum Atmen braucht. Pflanze und Tier versorgen sich also gegenseitig. Das funktioniert nur im Licht (Ingenhousz, 1779).</p>"},
+    {nr:9, f:"den Zusammenhang zwischen Fotosynthese und Zellatmung erläutern?", link:"#kreislauf",
+     a:"<p>Die <b>Produkte der Fotosynthese</b> (Glukose und Sauerstoff) sind die <b>Ausgangsstoffe der Zellatmung</b>. Die Produkte der Zellatmung (Kohlenstoffdioxid und Wasser) sind die Ausgangsstoffe der Fotosynthese. Die beiden Vorgänge bilden einen <b>Stoffkreislauf</b>, die Gleichungen sind genau umgekehrt.</p><p>Bei der Fotosynthese wird Energie gespeichert, bei der Zellatmung wird sie freigesetzt. In grünen Pflanzenzellen laufen beide Vorgänge ab, in Tierzellen nur die Zellatmung.</p>"},
+    {nr:11, f:"die Energieumwandlung am Beispiel Fotosynthese und Zellatmung erklären?", link:"#kreislauf",
+     a:"<p><b>Fotosynthese:</b> Lichtenergie ⟶ chemische Energie (gespeichert in Glukose).</p><p><b>Zellatmung:</b> chemische Energie der Glukose ⟶ nutzbare Energie für die Zelle, zum Beispiel Bewegungsenergie bei Muskeln oder Energie zum Aufbau neuer Stoffe, und dabei immer auch <b>Wärme</b>.</p><p>Energie wird dabei nicht erzeugt oder verbraucht, sondern nur umgewandelt. Stoffe gehen im Kreislauf, Energie fließt hindurch.</p>"},
+    {nr:13, f:"die Gemeinsamkeiten und Unterschiede von Pflanzen- und Tierzelle nennen?", link:"#vergleich",
+     a:"<p><b>Gemeinsam:</b> Zellkern, Zellmembran, Zellplasma, Mitochondrien, ER, Golgi-Apparat, Ribosomen. Beide betreiben Zellatmung.</p><p><b>Nur Pflanzenzelle:</b> Zellwand aus Cellulose (feste, eckige Form), Chloroplasten (Fotosynthese, autotroph), große Vakuole mit Zellsaft. Tierzellen sind rundlich, veränderlich in der Form und ernähren sich heterotroph.</p>"}
+  ];
+  const kcListe=document.getElementById('kcListe'), kcZ=document.getElementById('kcZaehler'), kcB=document.getElementById('kcBalken');
+  document.getElementById('kcGesamt').textContent=kannIch.length;
+  const KC_KEY='bio7-kannich';
+  let kcStand={};
+  try{ kcStand = JSON.parse(localStorage.getItem(KC_KEY)||'{}') || {}; }catch(e){ kcStand={}; }
+  function kcZaehle(){
+    const n = kannIch.filter(k=>kcStand[k.nr]).length;
+    kcZ.textContent=n; kcB.style.width=(n/kannIch.length*100)+'%';
+  }
+  kannIch.forEach(k=>{
+    const d=document.createElement('div'); d.className='kc'+(kcStand[k.nr]?' erledigt':'');
+    const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!kcStand[k.nr];
+    cb.setAttribute('aria-label','Frage '+k.nr+' kann ich');
+    cb.addEventListener('change',()=>{
+      kcStand[k.nr]=cb.checked; d.classList.toggle('erledigt',cb.checked); kcZaehle();
+      try{ localStorage.setItem(KC_KEY, JSON.stringify(kcStand)); }catch(e){}
+    });
+    const det=document.createElement('details');
+    det.innerHTML='<summary>'+k.nr+' · Kann ich '+k.f+'</summary><div class="antwort">'+k.a+
+      '<p><a href="'+k.link+'">Zum Abschnitt auf dieser Seite ↑</a></p></div>';
+    d.appendChild(cb); d.appendChild(det); kcListe.appendChild(d);
+  });
+  kcZaehle();
+})();
 </script>
 <!-- MICROSCOPE_3D_START -->
 <style>
