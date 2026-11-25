@@ -10,6 +10,7 @@ import Hero from "./Hero";
 import Section from "./Section";
 import PageCard from "./PageCard";
 import Tweaks from "./Tweaks";
+import ClassroomRing from "./ClassroomRing";
 
 const BATCH = 12;
 
@@ -77,11 +78,19 @@ export default function LernhubApp() {
               <header className="library-heading">
                 <h2 id="topics-heading">{t.yourTopics}</h2>
                 <span className="library-count">{subjects.length} {t.subjects} · A–Z</span>
+                <div className="lang-toggle view-toggle" role="group" aria-label={t.view}>
+                  <button className={tweaks.view === "room" ? "on" : ""} aria-pressed={tweaks.view === "room"} onClick={() => set({ view: "room" })}>{t.viewRoom}</button>
+                  <button className={tweaks.view === "list" ? "on" : ""} aria-pressed={tweaks.view === "list"} onClick={() => set({ view: "list" })}>{t.viewList}</button>
+                </div>
               </header>
-              {subjects.slice(0, topicLimit).map(subject => <Section key={subject} subject={subject}
-                items={PANELS.filter(p => p.subject === subject)} lang={lang}
-                open={openSubject === subject} onToggle={() => setOpenSubject(current => current === subject ? null : subject)} />)}
-              {subjects.length > topicLimit && <button className="library-action load-more" onClick={() => setTopicLimit(n => n + BATCH)}>{t.moreTopics}</button>}
+              {tweaks.view === "room" && <ClassroomRing subjects={subjects} panels={PANELS} lang={lang} />}
+              {tweaks.view === "list" && <>
+                {subjects.slice(0, topicLimit).map(subject => <Section key={subject} subject={subject}
+                  items={PANELS.filter(p => p.subject === subject)} lang={lang}
+                  open={openSubject === subject} onToggle={() => setOpenSubject(current => current === subject ? null : subject)} />)}
+                {subjects.length > topicLimit && <button className="library-action load-more" onClick={() => setTopicLimit(n => n + BATCH)}>{t.moreTopics}</button>}
+              </>}
+              {!tweaks.view && <div className="classroom-placeholder" aria-hidden="true" />}
             </section>
           </>
         )}

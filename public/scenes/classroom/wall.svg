@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+  <!-- Back wall. Palette: bg-card-h #181736, bg-card #12112a, bg-elev #15142f. Tiles horizontally. -->
+  <defs>
+    <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#181736"/>
+      <stop offset="0.62" stop-color="#12112a"/>
+      <stop offset="1" stop-color="#12112a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#w)"/>
+  <!-- ceiling shadow -->
+  <rect width="1200" height="40" fill="#0c0b1c" opacity="0.6"/>
+  <!-- panel seams -->
+  <g stroke="#15142f" stroke-width="2">
+    <line x1="1" y1="40" x2="1" y2="462"/>
+    <line x1="300" y1="40" x2="300" y2="462"/>
+    <line x1="600" y1="40" x2="600" y2="462"/>
+    <line x1="900" y1="40" x2="900" y2="462"/>
+  </g>
+  <!-- chair rail -->
+  <rect y="300" width="1200" height="4" fill="#15142f"/>
+  <rect y="304" width="1200" height="158" fill="#0c0b1c" opacity="0.25"/>
+</svg>

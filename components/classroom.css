@@ -1,0 +1,251 @@
+/* ─────────────────────────────────────────────
+   Classroom ring — components/ClassroomRing.jsx
+   3D subject boards around the viewer. Colors come only from the :root tokens in
+   globals.css; subject colors reuse the existing [data-subject] .subject-tag bindings.
+   ───────────────────────────────────────────── */
+
+.library-heading .view-toggle { margin-left: auto; }
+
+.classroom-placeholder { height: clamp(360px, 62vh, 560px); }
+
+.classroom { position: relative; }
+.classroom-viewport { position: relative; }
+
+.classroom-stage {
+  position: relative;
+  height: clamp(360px, 62vh, 560px);
+  overflow: hidden;
+  touch-action: pan-y;
+  perspective: var(--persp, 500px);
+  perspective-origin: 50% 46%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.classroom-stage.is-dragging { cursor: grabbing; }
+
+/* Room layers (scene.json). --x is the settled parallax offset, --drag the live drag angle. */
+.classroom-layer {
+  position: absolute;
+  left: calc(var(--tile, 0px) * -3);
+  width: calc(100% + var(--tile, 0px) * 6);
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  pointer-events: none;
+  transform: translate3d(calc(var(--x, 0px) - var(--drag, 0) * var(--f, 0) * 1px), 0, 0);
+  will-change: transform;
+}
+
+.classroom-camera {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform-style: preserve-3d;
+  transform-origin: 50% 46%;
+  pointer-events: none; /* full-size plane in the 3D context: would win hit-testing over the boards */
+}
+
+/* Ring centre at z = perspective: the viewer stands in the middle of the room. The ring pivots about
+   the eye, but its own plane is moved back to z = 0 (trailing translateZ) and each board adds it again:
+   same picture, and the ring's matrix stays invertible (a plane through the eye breaks hit-testing). */
+.classroom-ring {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(var(--persp)) rotateY(calc((var(--angle, 0) + var(--drag, 0)) * 1deg)) translateZ(calc(var(--persp) * -1));
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .classroom-ring,
+  .classroom-layer { transition: transform .6s cubic-bezier(.3, .7, .2, 1); }
+  .board,
+  .classroom-front { transition: opacity .4s ease; }
+}
+.classroom-stage.is-dragging .classroom-ring,
+.classroom-stage.is-dragging .classroom-layer,
+.classroom-stage.is-instant .classroom-ring,
+.classroom-stage.is-instant .classroom-layer,
+.classroom-stage .classroom-layer.is-rebasing { transition: none; }
+
+.classroom-stage.is-zoomed .classroom-front { opacity: 0; }
+
+/* ── Boards ── */
+.board {
+  position: absolute;
+  width: var(--bw);
+  height: var(--bh);
+  left: calc(var(--bw) / -2);
+  top: calc(var(--bh) / -2);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.1rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.board[data-active] { border-color: var(--border-h); }
+.classroom-stage.is-zoomed .board { cursor: default; }
+
+.board-blurb {
+  font: 0.68rem/1.5 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.board-count { font: 0.72rem var(--font-mono); color: var(--text-secondary); }
+
+.board-preview {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 0;
+  overflow: hidden;
+  margin-top: 0.2rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+  font: 0.82rem/1.35 var(--font-sans);
+  color: var(--text-secondary);
+  opacity: 0.75;
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+.board-preview li { flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.board-open {
+  margin-top: auto;
+  align-self: flex-start;
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid var(--lime);
+  border-radius: 6px;
+  background: var(--lime-dim);
+  color: var(--lime);
+  font: 0.75rem var(--font-mono);
+  letter-spacing: 0.05em;
+  touch-action: manipulation;
+}
+.board-open:hover { background: var(--lime-glow); }
+
+/* Zoomed board: full page list */
+.board-head { display: flex; align-items: center; gap: 8px; }
+.board-back {
+  margin-left: auto;
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--lime);
+  font: 0.7rem var(--font-mono);
+  touch-action: manipulation;
+}
+.board-back:hover { border-color: var(--lime); background: var(--lime-dim); }
+.board-heading { font: 600 0.95rem/1.35 var(--font-sans); color: var(--text-primary); }
+.board-heading:focus { outline: none; }
+.board-heading:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
+.board-heading .board-count { margin-left: 6px; font-weight: 400; }
+.board-list {
+  list-style: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 2px 4px 2px 0;
+}
+.board-link {
+  display: grid;
+  gap: 4px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elev);
+  transition: border-color .15s ease, background .15s ease;
+}
+.board-link:hover { border-color: var(--border-h); background: var(--bg-card-h); }
+.board-link:focus-visible { outline-offset: 1px; }
+.board-link-top { display: flex; align-items: center; gap: 6px; }
+.board-link-title { font: 600 0.85rem/1.3 var(--font-sans); color: var(--text-primary); overflow-wrap: anywhere; }
+.board-link-top .card-lang { margin-left: auto; }
+.board-link-desc { font: 0.75rem/1.5 var(--font-sans); color: var(--text-secondary); }
+[data-descriptions="hide"] .board-link-desc { display: none; }
+
+/* ── Controls ── */
+.ring-arrow {
+  position: absolute;
+  top: 46%;
+  z-index: 3;
+  translate: 0 -50%;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-card);
+  color: var(--lime);
+  font: 1.4rem/1 var(--font-mono);
+  touch-action: manipulation;
+  transition: border-color .15s ease, opacity .15s ease;
+}
+.ring-arrow-prev { left: 10px; }
+.ring-arrow-next { right: 10px; }
+.ring-arrow:hover:not(:disabled) { border-color: var(--lime); }
+.ring-arrow:disabled { opacity: 0.35; cursor: default; }
+
+/* A–Z quick jump: one dot per subject in its color (via the .subject-tag bindings). */
+.ring-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0;
+  margin-top: 12px;
+}
+.ring-dot-btn {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  touch-action: manipulation;
+}
+.ring-dot-btn:disabled { opacity: 0.35; cursor: default; }
+.ring-dots .ring-dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--tag-text);
+  transition: width .15s ease, height .15s ease;
+}
+/* Active dot: larger + ring, not color alone. */
+.ring-dots [aria-current="true"] .ring-dot {
+  width: 14px;
+  height: 14px;
+  outline: 2px solid var(--tag-text);
+  outline-offset: 3px;
+}
+
+.classroom-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

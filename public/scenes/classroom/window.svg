@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560">
+  <!-- Window high on the wall plus its light patch on the floor. Covers the full stage height;
+       the horizon (top of floor.svg) is at y = 431 (77 %). Palette: border #272548, bg-card-h #181736.
+       Transparent elsewhere; tiles horizontally. -->
+  <defs>
+    <linearGradient id="pane" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#272548"/>
+      <stop offset="1" stop-color="#181736"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#272548" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#272548" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="patch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#272548" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#272548" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="480" cy="95" rx="200" ry="120" fill="url(#glow)"/>
+  <rect x="400" y="22" width="160" height="150" rx="3" fill="url(#pane)" opacity="0.9"/>
+  <g fill="none" stroke="#272548" stroke-width="5">
+    <rect x="400" y="22" width="160" height="150" rx="3"/>
+    <line x1="480" y1="22" x2="480" y2="172"/>
+    <line x1="400" y1="92" x2="560" y2="92"/>
+  </g>
+  <rect x="390" y="172" width="180" height="7" rx="2" fill="#272548"/>
+  <!-- light patch on the floor -->
+  <polygon points="400,433 560,433 680,560 280,560" fill="url(#patch)"/>
+</svg>

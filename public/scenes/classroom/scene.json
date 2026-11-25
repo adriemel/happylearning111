@@ -1,0 +1,51 @@
+{
+  "name": "classroom",
+  "notes": "Room for components/ClassroomRing.jsx. To swap the room, replace the SVG files and this JSON; no code change. Per layer: file (relative to this folder), z (drawing order; layers with z > ringZ are drawn in front of the boards and fade out while zoomed), parallax (px the layer shifts per degree of ring rotation), tileAspect (SVG width / height; the layer is scaled to its height and repeated horizontally), top / bottom / height (CSS lengths inside the stage).",
+  "ringZ": 5,
+  "layers": [
+    {
+      "id": "wall",
+      "file": "wall.svg",
+      "z": 0,
+      "parallax": 0.6,
+      "tileAspect": 2,
+      "top": "0",
+      "height": "100%"
+    },
+    {
+      "id": "floor",
+      "file": "floor.svg",
+      "z": 1,
+      "parallax": 0.6,
+      "tileAspect": 5.2632,
+      "top": "77%",
+      "height": "23%"
+    },
+    {
+      "id": "window",
+      "file": "window.svg",
+      "z": 2,
+      "parallax": 1.2,
+      "tileAspect": 1.7143,
+      "top": "0",
+      "height": "100%"
+    },
+    {
+      "id": "desks",
+      "file": "desks.svg",
+      "z": 10,
+      "parallax": 3,
+      "tileAspect": 5,
+      "bottom": "0",
+      "height": "19%"
+    }
+  ],
+  "tokens": {
+    "--bg": "#0c0b1c",
+    "--bg-card": "#12112a",
+    "--bg-card-h": "#181736",
+    "--bg-elev": "#15142f",
+    "--border": "#272548",
+    "shade (--bg darkened, desks only)": "#07060f"
+  }
+}

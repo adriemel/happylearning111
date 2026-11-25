@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="200" viewBox="0 0 1000 200">
+  <!-- Near layer: desk and chair silhouettes. Fill #07060f (bg darkened), edges border #272548.
+       Three desks per tile, 70 px gaps including the wrap, so the tile repeats seamlessly. -->
+  <defs>
+    <g id="desk">
+      <rect x="95" y="34" width="70" height="60" rx="8" fill="#07060f" stroke="#272548" stroke-width="3"/>
+      <rect x="0" y="86" width="260" height="18" rx="4" fill="#07060f" stroke="#272548" stroke-width="2.5"/>
+      <rect x="10" y="105" width="240" height="44" fill="#07060f"/>
+      <rect x="14" y="105" width="10" height="95" fill="#07060f"/>
+      <rect x="236" y="105" width="10" height="95" fill="#07060f"/>
+    </g>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.6" stop-color="#07060f" stop-opacity="0"/>
+      <stop offset="1" stop-color="#07060f" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <use href="#desk" x="35"/>
+  <use href="#desk" x="365"/>
+  <use href="#desk" x="695"/>
+  <rect width="1000" height="200" fill="url(#fade)"/>
+</svg>

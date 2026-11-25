@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="228" viewBox="0 0 1200 228">
+  <!-- Floor below the horizon. Palette: bg-card #12112a, bg #0c0b1c, bg-card-h #181736, border #272548. -->
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12112a"/>
+      <stop offset="1" stop-color="#0c0b1c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="228" fill="url(#f)"/>
+  <!-- horizon line where wall meets floor -->
+  <rect width="1200" height="2" fill="#272548"/>
+  <rect y="2" width="1200" height="8" fill="#181736" opacity="0.5"/>
+  <!-- floorboards, spacing grows toward the viewer -->
+  <g stroke="#181736" stroke-width="1.5" opacity="0.8">
+    <line x1="0" y1="24" x2="1200" y2="24"/>
+    <line x1="0" y1="54" x2="1200" y2="54"/>
+    <line x1="0" y1="94" x2="1200" y2="94"/>
+    <line x1="0" y1="146" x2="1200" y2="146"/>
+    <line x1="0" y1="212" x2="1200" y2="212"/>
+  </g>
+</svg>
