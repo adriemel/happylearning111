@@ -66,6 +66,7 @@
   .classroom-layer { transition: transform .6s cubic-bezier(.3, .7, .2, 1); }
   .board,
   .classroom-front { transition: opacity .4s ease; }
+  .board-backlight { transition: opacity .5s ease; }
   .board[data-active] {
     transition: opacity .4s ease, width .5s cubic-bezier(.3, .7, .2, 1), height .5s cubic-bezier(.3, .7, .2, 1),
       left .5s cubic-bezier(.3, .7, .2, 1), top .5s cubic-bezier(.3, .7, .2, 1);
@@ -92,7 +93,6 @@
   flex-direction: column;
   gap: 0.55rem;
   padding: 1.1rem;
-  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg-card);
@@ -100,6 +100,44 @@
   pointer-events: auto;
 }
 .board[data-active] { border-color: var(--border-h); }
+
+/* Backlight: a static glow in the subject color behind the active board (own element on the ring,
+   2 px behind the board). Only its opacity changes; box-shadow itself is never animated. */
+.board-backlight {
+  --m: 100px; /* room for the glow inside this box */
+  position: absolute;
+  width: calc(var(--bw) + 2 * var(--m));
+  height: calc(var(--bh) + 2 * var(--m));
+  left: calc((var(--bw) + 2 * var(--m)) / -2);
+  top: calc((var(--bh) + 2 * var(--m)) / -2);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+}
+.board-backlight[data-on] { opacity: 1; }
+.board-backlight .subject-tag {
+  position: absolute;
+  inset: var(--m);
+  align-self: stretch;   /* .subject-tag sets align-self: flex-start, which shrinks an abspos box to 0 height */
+  justify-self: stretch;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--tag-text) 35%, transparent);
+  box-shadow:
+    0 0 28px 3px color-mix(in srgb, var(--tag-text) 55%, transparent),
+    0 0 70px 16px color-mix(in srgb, var(--tag-text) 26%, transparent);
+}
+
+/* Subject name on the boards: larger than the card chip, scaled with the board width. */
+.board > .subject-tag,
+.board-head > .subject-tag {
+  font-size: clamp(0.85rem, calc(var(--bw) * 0.052), 1.25rem);
+  padding: 0.3em 0.7em;
+  letter-spacing: 0.06em;
+  border-radius: 6px;
+}
 .classroom-stage.is-zoomed .board { cursor: default; }
 .classroom-stage.is-zoomed .board[data-active] {
   width: var(--zw);

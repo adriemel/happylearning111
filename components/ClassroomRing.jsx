@@ -4,7 +4,7 @@
 // Plain DOM + CSS 3D transforms. Rotation is a CSS transition; only the zoom uses GSAP (loaded on demand).
 // Room art comes from public/scenes/classroom/scene.json, so swapping the room needs no code change.
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { T } from "@/lib/i18n";
 import { SUBJECT_META } from "@/lib/subjects";
 import "./classroom.css";
@@ -15,6 +15,7 @@ const PREVIEW_TITLES = 4;
 const SWIPE_PX = 40;   // drag distance that counts as a swipe
 const SLOP_PX = 8;     // movement before a press becomes a drag (keeps taps as clicks)
 const OPACITY = [1, 0.8, 0.3]; // by circular distance from the active board; further = hidden
+const BOARD_GAP = 0.22;   // gap between neighbouring boards, as a fraction of the board width
 const ZOOM_SCALE = 1.02;  // camera scale part of the zoom
 const ZOOM_DOLLY = 1.06;  // total apparent magnification from the camera (translateZ + scale)
 const ZOOM_SECONDS = 0.6;
@@ -67,9 +68,10 @@ export default function ClassroomRing({ subjects, panels, lang }) {
 
   const active = N ? mod(pos, N) : 0;
   const angle = pos * step;
-  // Neighbouring boards just touch. Viewer stands at the ring centre (perspective = R), so the
-  // front board renders 1:1. N < 3 would give a degenerate ring, so R is computed as for 3.
-  const R = size && N ? size.W / (2 * Math.tan(Math.PI / Math.max(N, 3))) : 0;
+  // Ring polygon side = board width + gap, so neighbours stand apart (BOARD_GAP = 0: they touch).
+  // Viewer stands at the ring centre (perspective = R), so the front board renders 1:1.
+  // N < 3 would give a degenerate ring, so R is computed as for 3.
+  const R = size && N ? (size.W * (1 + BOARD_GAP)) / (2 * Math.tan(Math.PI / Math.max(N, 3))) : 0;
 
   // Subject list changed (DE/EN re-sort or a new subject): keep the same subject in front, jump without animation.
   const [prevSubjects, setPrevSubjects] = useState(subjects);
@@ -293,7 +295,14 @@ export default function ClassroomRing({ subjects, panels, lang }) {
                   const pages = sortPages(panels.filter(p => p.subject === s), lang);
                   const label = `${name(s)}, ${fmt(t.slideOf, { i: i + 1, n: N })}`;
                   return (
-                    <div key={s} className="board" data-subject={s} data-active={isActive || undefined}
+                    <Fragment key={s}>
+                    {/* Backlight: own element 2 px behind the board, sized to contain its glow (glow overflowing a
+                        3D-transformed board gets clipped by Chrome's layer bounds). Color via the .subject-tag binding. */}
+                    <div className="board-backlight" data-subject={s} data-on={(isActive && !zoomed) || undefined} aria-hidden="true"
+                      style={{ transform: `translateZ(var(--persp)) rotateY(${-i * step}deg) translateZ(${-R - 2}px)` }}>
+                      <span className="subject-tag" />
+                    </div>
+                    <div className="board" data-subject={s} data-active={isActive || undefined}
                       role="group" aria-roledescription={t.slide} aria-label={label}
                       aria-hidden={visible ? undefined : "true"} inert={!visible || undefined}
                       style={{
@@ -338,6 +347,7 @@ export default function ClassroomRing({ subjects, panels, lang }) {
                         </>
                       )}
                     </div>
+                    </Fragment>
                   );
                 })}
               </div>

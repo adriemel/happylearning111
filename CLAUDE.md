@@ -100,7 +100,7 @@ Persists `{ density: "cozy", descriptions: "show", lang: "de", view: null }`. To
 - **Spacious** — 3 cols with more gap/padding
 
 ## Classroom ring (`ClassroomRing.jsx`)
-- Plain DOM + CSS 3D: stage has `perspective: R`, ring sits at `translateZ(R)` (viewer in the room centre) and rotates by `pos × 360/N`; board `i` is at `rotateY(-i·step) translateZ(-R)` with `R = W / (2·tan(π/N))`, so neighbours touch. `pos` is unwrapped (last → first is one step). W/H are recomputed from the stage size (ResizeObserver).
+- Plain DOM + CSS 3D: stage has `perspective: R`, ring sits at `translateZ(R)` (viewer in the room centre) and rotates by `pos × 360/N`; board `i` is at `rotateY(-i·step) translateZ(-R)` with `R = W·(1 + BOARD_GAP) / (2·tan(π/N))`; `BOARD_GAP` (0.22) leaves a gap between neighbours (0 = they touch). The active board has a backlight glow in its subject color (opacity fade only). `pos` is unwrapped (last → first is one step). W/H are recomputed from the stage size (ResizeObserver).
 - Rotation is a CSS transition only (no per-frame JS); drag writes one CSS variable (`--drag`) per animation frame. Visibility by circular distance: 1 / 0.8 / 0.3, further boards are `inert` + `aria-hidden`. Never shows boards at ≥ 90°.
 - Zoom (tap/Enter on the front board): GSAP `import("gsap")` on demand moves the camera (`translateZ` + slight scale), the board grows to show the full page list; Esc or "Zurück" zooms out. Reduced motion: no transitions, zoom is instant.
 - Keyboard: Tab to the front board's "Öffnen" button, ←/→ rotate, Enter zooms, Esc back; the A–Z dot strip follows in Tab order. `aria-live` announces the active subject.
