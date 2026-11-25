@@ -38,7 +38,7 @@ That's it — the card appears automatically in the correct subject section with
 
 The homepage shows the three newest dated entries above a collapsed topic library. Keep `addedAt` unchanged when updating a page; it means first publication, not last edit. Existing dates were backfilled from the first catalog registration in Git history. Undated entries remain discoverable in their topic and search but are excluded from Recently added.
 
-Topics sort alphabetically by the current DE/EN display name and only one topic opens at a time. The library reveals 12 topics at a time, each topic reveals 6 pages at a time, and global search and the additions archive reveal 12 pages at a time. Search covers the whole catalog, including collapsed or not-yet-shown topics. The original dark/neon palette remains unchanged.
+Topics sort alphabetically by the current DE/EN display name and only one topic opens at a time. The library reveals 12 topics at a time, each topic reveals 6 pages at a time, and global search and the additions archive reveal 12 pages at a time. Search covers the whole catalog, including collapsed or not-yet-shown topics. The palette is a midnight-blue dark theme with neon subject colors (retuned 2026-11 so that no two subjects look alike); see Design System.
 
 ### Adding a new subject
 If the subject doesn't exist yet, also:
@@ -79,8 +79,9 @@ HappyLearning/
 
 ## Design System
 - **Fonts:** Instrument Serif (title/card titles) · Syne (UI/body) · DM Mono (tags/labels/mono)
-- **Key colors:** `#0b0c0f` bg · `#e4ddd4` text · `#b5f23d` lime accent
-- **Subject tag colors:** Mathematik `#ffb02e` · Physik `#8e9dff` · Chemie `#5ddc95` · Biologie `#c9954a` · Erdkunde `#2fb0c9` · Deutsch `#de7bcc` · Englisch `#f5d547` · Musik `#ff6b9d` · Allgemein `#b398ff`
+- **Key colors:** `#0c0b1c` bg (midnight) · `#12112a` card · `#181736` card hover · `#15142f` elevated · `#272548` border · `#e4ddd4` text · `#b5f23d` lime accent (the single UI accent)
+- **Subject tag colors:** Mathematik `#ff8a2e` · Physik `#5b8cff` · Chemie `#5ddc95` · Biologie `#c9954a` · Erdkunde `#2fb0c9` · Deutsch `#c77dff` · Englisch `#f5e642` · Musik `#ff6b9d` · Allgemein `#b8c7d9` · AI für Kinder `#9ff3ff` · Games `#ff4f38`
+- Each subject has `--tag-X-text` plus `--tag-X-bg` / `--tag-X-border` (same RGB at 0.10 / 0.30 alpha). Every text color keeps ≥ 5.9:1 contrast on `--bg` (lowest: Games 5.95, Physik 6.15). The sticky top bar uses `--bg` as `rgba(12, 11, 28, 0.82)`; keep it in sync if `--bg` changes.
 - **CSS variables** defined in `:root` in `globals.css` — change there to retheme
 - Dark theme throughout; cards lift on hover with lime border glow
 - `data-density` on `<html>` drives grid columns + card padding (set by `LernhubApp` via `useEffect`)

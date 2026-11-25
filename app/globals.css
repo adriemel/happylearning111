@@ -12,11 +12,11 @@
 
 :root {
   /* Core palette */
-  --bg:        #0b0c0f;
-  --bg-card:   #111318;
-  --bg-card-h: #161820;
-  --bg-elev:   #141620;
-  --border:    #22252e;
+  --bg:        #0c0b1c;
+  --bg-card:   #12112a;
+  --bg-card-h: #181736;
+  --bg-elev:   #15142f;
+  --border:    #272548;
   --border-h:  #b5f23d;
 
   /* Text */
@@ -30,13 +30,13 @@
   --lime-glow: rgba(181, 242, 61, 0.18);
 
   /* Subject tag colors (translucent on dark) */
-  --tag-mathe-bg:      rgba(255, 176, 46, 0.10);
-  --tag-mathe-text:    #ffb02e;
-  --tag-mathe-border:  rgba(255, 176, 46, 0.30);
+  --tag-mathe-bg:      rgba(255, 138, 46, 0.10);
+  --tag-mathe-text:    #ff8a2e;
+  --tag-mathe-border:  rgba(255, 138, 46, 0.30);
 
-  --tag-physik-bg:     rgba(120, 140, 255, 0.10);
-  --tag-physik-text:   #8e9dff;
-  --tag-physik-border: rgba(120, 140, 255, 0.30);
+  --tag-physik-bg:     rgba(91, 140, 255, 0.10);
+  --tag-physik-text:   #5b8cff;
+  --tag-physik-border: rgba(91, 140, 255, 0.30);
 
   --tag-chemie-bg:     rgba(80, 220, 140, 0.10);
   --tag-chemie-text:   #5ddc95;
@@ -50,29 +50,29 @@
   --tag-erdkunde-text:   #2fb0c9;
   --tag-erdkunde-border: rgba(47, 176, 201, 0.30);
 
-  --tag-deutsch-bg:     rgba(220, 110, 200, 0.10);
-  --tag-deutsch-text:   #de7bcc;
-  --tag-deutsch-border: rgba(220, 110, 200, 0.30);
+  --tag-deutsch-bg:     rgba(199, 125, 255, 0.10);
+  --tag-deutsch-text:   #c77dff;
+  --tag-deutsch-border: rgba(199, 125, 255, 0.30);
 
-  --tag-englisch-bg:     rgba(245, 213, 71, 0.10);
-  --tag-englisch-text:   #f5d547;
-  --tag-englisch-border: rgba(245, 213, 71, 0.30);
+  --tag-englisch-bg:     rgba(245, 230, 66, 0.10);
+  --tag-englisch-text:   #f5e642;
+  --tag-englisch-border: rgba(245, 230, 66, 0.30);
 
-  --tag-allgemein-bg:     rgba(180, 140, 255, 0.10);
-  --tag-allgemein-text:   #b398ff;
-  --tag-allgemein-border: rgba(180, 140, 255, 0.30);
+  --tag-allgemein-bg:     rgba(184, 199, 217, 0.10);
+  --tag-allgemein-text:   #b8c7d9;
+  --tag-allgemein-border: rgba(184, 199, 217, 0.30);
 
-  --tag-aikids-bg:      rgba(46, 232, 217, 0.10);
-  --tag-aikids-text:    #2ee8d9;
-  --tag-aikids-border:  rgba(46, 232, 217, 0.30);
+  --tag-aikids-bg:      rgba(159, 243, 255, 0.10);
+  --tag-aikids-text:    #9ff3ff;
+  --tag-aikids-border:  rgba(159, 243, 255, 0.30);
 
   --tag-musik-bg:       rgba(255, 107, 157, 0.10);
   --tag-musik-text:     #ff6b9d;
   --tag-musik-border:   rgba(255, 107, 157, 0.30);
 
-  --tag-games-bg:       rgba(255, 92, 56, 0.10);
-  --tag-games-text:     #ff5c38;
-  --tag-games-border:   rgba(255, 92, 56, 0.30);
+  --tag-games-bg:       rgba(255, 79, 56, 0.10);
+  --tag-games-text:     #ff4f38;
+  --tag-games-border:   rgba(255, 79, 56, 0.30);
 
   /* Typography — values injected by next/font via <html> class variables */
 
@@ -104,7 +104,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ── Top bar ── */
 .topbar {
   position: sticky; top: 0; z-index: 30;
-  background: rgba(11, 12, 15, 0.82);
+  background: rgba(12, 11, 28, 0.82);
   backdrop-filter: saturate(160%) blur(14px);
   -webkit-backdrop-filter: saturate(160%) blur(14px);
   border-bottom: 1px solid var(--border);
@@ -317,7 +317,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ── Subject nav (sticky sub-bar) ── */
 .subjectnav {
   position: sticky; top: 59px; z-index: 20;
-  background: rgba(11, 12, 15, 0.85);
+  background: rgba(12, 11, 28, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
