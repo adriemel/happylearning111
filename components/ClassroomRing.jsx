@@ -15,8 +15,8 @@ const PREVIEW_TITLES = 4;
 const SWIPE_PX = 40;   // drag distance that counts as a swipe
 const SLOP_PX = 8;     // movement before a press becomes a drag (keeps taps as clicks)
 const OPACITY = [1, 0.8, 0.3]; // by circular distance from the active board; further = hidden
-const ZOOM_SCALE = 1.02;
-const ZOOM_MAX = 1.6;
+const ZOOM_SCALE = 1.02;  // camera scale part of the zoom
+const ZOOM_DOLLY = 1.06;  // total apparent magnification from the camera (translateZ + scale)
 const ZOOM_SECONDS = 0.6;
 
 const mod = (a, n) => ((a % n) + n) % n;
@@ -28,7 +28,10 @@ function boardSize(cw, sh) {
   const f = 0.58 - (0.26 * Math.min(Math.max(cw - 480, 0), 640)) / 640;
   const W = Math.round(Math.min(380, Math.max(180, cw * f)));
   const H = Math.round(Math.min(W * 1.3, sh * 0.58)); // front board spans ~17..75 % of the stage height
-  return { W, H };
+  // Zoomed board: grows to most of the stage so the full page list has room, also on phones.
+  const ZW = Math.round(Math.min(cw * 0.88, 560));
+  const ZH = Math.round(sh * 0.84);
+  return { W, H, ZW, ZH };
 }
 
 function sortPages(pages, lang) {
@@ -171,7 +174,7 @@ export default function ClassroomRing({ subjects, panels, lang }) {
 
   const zoomTarget = useCallback(() => {
     if (!size) return { z: 0, scale: 1 };
-    const s = Math.min(ZOOM_MAX, (size.cw * 0.94) / size.W, (size.sh * 0.9) / size.H);
+    const s = Math.min(ZOOM_DOLLY, (size.cw * 0.96) / size.ZW, (size.sh * 0.94) / size.ZH);
     if (s <= ZOOM_SCALE) return { z: 0, scale: Math.max(1, s) };
     return { z: R * (1 - ZOOM_SCALE / s), scale: ZOOM_SCALE }; // apparent scale = scale * R / (R - z)
   }, [size, R]);
@@ -264,7 +267,7 @@ export default function ClassroomRing({ subjects, panels, lang }) {
         <button type="button" className="ring-arrow ring-arrow-next" aria-label={t.nextSubject} disabled={zoomed || N < 2} onClick={() => go(1)}>›</button>
         <div ref={stageRef}
           className={`classroom-stage${dragging ? " is-dragging" : ""}${instant ? " is-instant" : ""}${zoomed ? " is-zoomed" : ""}`}
-          style={size ? { "--persp": `${R}px`, "--bw": `${size.W}px`, "--bh": `${size.H}px` } : undefined}
+          style={size ? { "--persp": `${R}px`, "--bw": `${size.W}px`, "--bh": `${size.H}px`, "--zw": `${size.ZW}px`, "--zh": `${size.ZH}px` } : undefined}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove}
           onPointerUp={e => endDrag(e, false)} onPointerCancel={e => endDrag(e, true)}
           onClickCapture={onClickCapture} onFocus={loadGsap}>

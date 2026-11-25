@@ -38,7 +38,7 @@ That's it — the card appears automatically in the correct subject section with
 
 The homepage shows the three newest dated entries above a collapsed topic library. Keep `addedAt` unchanged when updating a page; it means first publication, not last edit. Existing dates were backfilled from the first catalog registration in Git history. Undated entries remain discoverable in their topic and search but are excluded from Recently added.
 
-Topics sort alphabetically by the current DE/EN display name and only one topic opens at a time. The library reveals 12 topics at a time, each topic reveals 6 pages at a time, and global search and the additions archive reveal 12 pages at a time. Search covers the whole catalog, including collapsed or not-yet-shown topics. The palette is a midnight-blue dark theme with neon subject colors (retuned 2026-11 so that no two subjects look alike); see Design System.
+Topics sort alphabetically by the current DE/EN display name. "Deine Themen" has two views, toggled with `Raum | Liste` in its header (the `view` tweak): **Raum** shows the 3D classroom ring (`ClassroomRing`, one board per subject), **Liste** the accordion, where only one topic opens at a time. The library reveals 12 topics at a time, each topic reveals 6 pages at a time, and global search and the additions archive reveal 12 pages at a time. Search covers the whole catalog, including collapsed or not-yet-shown topics. The palette is a midnight-blue dark theme with neon subject colors (retuned 2026-11 so that no two subjects look alike); see Design System.
 
 ### Adding a new subject
 If the subject doesn't exist yet, also:
@@ -46,6 +46,8 @@ If the subject doesn't exist yet, also:
 - Add a metadata entry to `SUBJECT_META` in `/lib/subjects.js` (de/en name + blurb)
 - Add CSS color tokens to the `:root` block in `globals.css` (`--tag-X-bg`, `--tag-X-text`, `--tag-X-border`)
 - Add a `[data-subject="X"] .subject-tag { ... }` binding in `globals.css`
+
+The classroom ring needs nothing extra: the board, its dot and the ring radius follow from `PANELS` automatically, and board/dot colors reuse the `.subject-tag` binding.
 
 ## Project Structure
 ```
@@ -64,15 +66,18 @@ HappyLearning/
 │   ├── Section.jsx             # Accessible collapsible topic + batched card grid
 │   ├── PageCard.js             # Card: subject tag, lang badge, title, desc, Öffnen/Open, API badge
 │   ├── Tweaks.jsx              # Floating panel: density (Compact/Cozy/Spacious) + descriptions on/off
+│   ├── ClassroomRing.jsx       # "use client" Raum view: CSS 3D ring of subject boards, zoom (GSAP, lazy import), room parallax
+│   ├── classroom.css           # Styles for ClassroomRing (imported by it) + the view toggle placement
 │   └── hooks/
-│       ├── useTweaks.js        # Reads/writes localStorage "lernhub-tweaks"; defaults cozy/show/de
+│       ├── useTweaks.js        # Reads/writes localStorage "lernhub-tweaks"; defaults cozy/show/de, view by motion preference
 │       └── useSearch.js        # ⌘K / / / Escape keyboard shortcuts for the search input
 ├── lib/
 │   ├── pages.js                # SOURCE OF TRUTH — PANELS array + legacy PAGES + SUBJECT_COLORS
 │   ├── subjects.js             # SUBJECT_ORDER + SUBJECT_META (de/en names + blurbs)
 │   └── i18n.js                 # T dictionary — all UI strings in de + en
 ├── public/
-│   └── pages/                  # Raw HTML files — never touch these when adding a new page
+│   ├── pages/                  # Raw HTML files — never touch these when adding a new page
+│   └── scenes/classroom/       # Room art for ClassroomRing: wall/floor/window/desks.svg + scene.json
 ├── next.config.mjs
 └── package.json
 ```
@@ -88,10 +93,23 @@ HappyLearning/
 - `data-descriptions` on `<html>` shows/hides `.card-desc` globally
 
 ## Tweaks panel (localStorage key: `lernhub-tweaks`)
-Persists `{ density: "cozy", descriptions: "show", lang: "de" }`. Toggled from the top bar.
+Persists `{ density: "cozy", descriptions: "show", lang: "de", view: null }`. Toggled from the top bar; `view` is set by the `Raum | Liste` toggle in the "Deine Themen" header.
+- **view** — `"room"` or `"list"`. While unset (`null`) it defaults to `"room"`, or `"list"` when `prefers-reduced-motion: reduce` matches; the derived default is not persisted. While the search field is non-empty, search results replace both views.
 - **Compact** — 4 cols, hides desc + footer
 - **Cozy** — 3 cols (default)
 - **Spacious** — 3 cols with more gap/padding
+
+## Classroom ring (`ClassroomRing.jsx`)
+- Plain DOM + CSS 3D: stage has `perspective: R`, ring sits at `translateZ(R)` (viewer in the room centre) and rotates by `pos × 360/N`; board `i` is at `rotateY(-i·step) translateZ(-R)` with `R = W / (2·tan(π/N))`, so neighbours touch. `pos` is unwrapped (last → first is one step). W/H are recomputed from the stage size (ResizeObserver).
+- Rotation is a CSS transition only (no per-frame JS); drag writes one CSS variable (`--drag`) per animation frame. Visibility by circular distance: 1 / 0.8 / 0.3, further boards are `inert` + `aria-hidden`. Never shows boards at ≥ 90°.
+- Zoom (tap/Enter on the front board): GSAP `import("gsap")` on demand moves the camera (`translateZ` + slight scale), the board grows to show the full page list; Esc or "Zurück" zooms out. Reduced motion: no transitions, zoom is instant.
+- Keyboard: Tab to the front board's "Öffnen" button, ←/→ rotate, Enter zooms, Esc back; the A–Z dot strip follows in Tab order. `aria-live` announces the active subject.
+
+### Replacing the room
+Everything lives in `public/scenes/classroom/`; no code change needed:
+- Replace or add SVG layers. Each layer is scaled to its height and repeated horizontally, so its left and right edges must tile. Do not put `--` inside SVG/XML comments (invalid XML, the browser then shows nothing).
+- Edit `scene.json`: per layer `file`, `z` (draw order; `z > ringZ` = in front of the boards, faded out while zoomed), `parallax` (px shift per degree of ring rotation), `tileAspect` (SVG width / height), and `top` / `bottom` / `height` (CSS lengths in the stage). `tokens` documents which palette colors the art uses.
+- Keep the horizon below the front board (~77 % of the stage height) and front layers below ~76 %, or they cover the board.
 
 ## HTML Files
 All 25 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts CDN). No local assets.

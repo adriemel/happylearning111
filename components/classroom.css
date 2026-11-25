@@ -66,6 +66,10 @@
   .classroom-layer { transition: transform .6s cubic-bezier(.3, .7, .2, 1); }
   .board,
   .classroom-front { transition: opacity .4s ease; }
+  .board[data-active] {
+    transition: opacity .4s ease, width .5s cubic-bezier(.3, .7, .2, 1), height .5s cubic-bezier(.3, .7, .2, 1),
+      left .5s cubic-bezier(.3, .7, .2, 1), top .5s cubic-bezier(.3, .7, .2, 1);
+  }
 }
 .classroom-stage.is-dragging .classroom-ring,
 .classroom-stage.is-dragging .classroom-layer,
@@ -97,6 +101,12 @@
 }
 .board[data-active] { border-color: var(--border-h); }
 .classroom-stage.is-zoomed .board { cursor: default; }
+.classroom-stage.is-zoomed .board[data-active] {
+  width: var(--zw);
+  height: var(--zh);
+  left: calc(var(--zw) / -2);
+  top: calc(var(--zh) / -2);
+}
 
 .board-blurb {
   font: 0.68rem/1.5 var(--font-mono);
