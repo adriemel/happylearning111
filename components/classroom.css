@@ -130,8 +130,7 @@
     0 0 70px 16px color-mix(in srgb, var(--tag-text) 26%, transparent);
 }
 
-/* Subject name on the boards: larger than the card chip, scaled with the board width. */
-.board > .subject-tag,
+/* Zoomed board: subject chip, larger than the card chip, scaled with the board width. */
 .board-head > .subject-tag {
   font-size: clamp(0.85rem, calc(var(--bw) * 0.052), 1.25rem);
   padding: 0.3em 0.7em;
@@ -170,6 +169,48 @@
   mask-image: linear-gradient(to bottom, #000 55%, transparent);
 }
 .board-preview li { flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Poster layout (board not zoomed): centred icon halo, large title, inline page list ──
+   Sizes scale with the board width (--bw) so phones (180 px boards) and desktop (~360 px) both work. */
+.board-poster { align-items: center; text-align: center; gap: 0.45rem; }
+.board-poster .board-halo {
+  --halo: clamp(40px, calc(var(--bw) * 0.19), 70px);
+  flex-shrink: 0;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  width: var(--halo);
+  height: var(--halo);
+  padding: calc(var(--halo) * 0.22);
+  margin-top: 0.15rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 18px var(--tag-border);
+}
+.board-poster .board-icon { width: 100%; height: 100%; color: var(--tag-text); }
+.board-poster .board-title {
+  align-self: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 800 clamp(1rem, calc(var(--bw) * 0.07), 1.55rem)/1.1 var(--font-sans);
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem;
+}
+.board-poster .board-pill {
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.board-poster .board-preview {
+  align-self: stretch;
+  gap: 0.25rem;
+  margin-top: 0.1rem;
+  padding-top: 0;
+  border-top: 0;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+.board-poster .board-open { align-self: center; }
 
 .board-open {
   margin-top: auto;

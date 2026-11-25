@@ -47,7 +47,7 @@ If the subject doesn't exist yet, also:
 - Add CSS color tokens to the `:root` block in `globals.css` (`--tag-X-bg`, `--tag-X-text`, `--tag-X-border`)
 - Add a `[data-subject="X"] .subject-tag { ... }` binding in `globals.css`
 
-The classroom ring needs nothing extra: the board, its dot and the ring radius follow from `PANELS` automatically, and board/dot colors reuse the `.subject-tag` binding.
+The classroom ring needs nothing extra: the board, its dot and the ring radius follow from `PANELS` automatically, and board/dot colors reuse the `.subject-tag` binding. Optionally add an icon for the subject in `components/SubjectIcon.jsx` (paste the inner SVG of a Lucide icon from lucide.dev); without one the board shows a generic book icon.
 
 ## Project Structure
 ```
@@ -68,6 +68,7 @@ HappyLearning/
 │   ├── Tweaks.jsx              # Floating panel: density (Compact/Cozy/Spacious) + descriptions on/off
 │   ├── ClassroomRing.jsx       # "use client" Raum view: CSS 3D ring of subject boards, zoom (GSAP, lazy import), room parallax
 │   ├── classroom.css           # Styles for ClassroomRing (imported by it) + the view toggle placement
+│   ├── SubjectIcon.jsx         # Inline Lucide SVG icon per subject for the classroom boards (ISC license notice inside)
 │   └── hooks/
 │       ├── useTweaks.js        # Reads/writes localStorage "lernhub-tweaks"; defaults cozy/show/de, view by motion preference
 │       └── useSearch.js        # ⌘K / / / Escape keyboard shortcuts for the search input
@@ -100,7 +101,7 @@ Persists `{ density: "cozy", descriptions: "show", lang: "de", view: null }`. To
 - **Spacious** — 3 cols with more gap/padding
 
 ## Classroom ring (`ClassroomRing.jsx`)
-- Plain DOM + CSS 3D: stage has `perspective: R`, ring sits at `translateZ(R)` (viewer in the room centre) and rotates by `pos × 360/N`; board `i` is at `rotateY(-i·step) translateZ(-R)` with `R = W·(1 + BOARD_GAP) / (2·tan(π/N))`; `BOARD_GAP` (0.22) leaves a gap between neighbours (0 = they touch). The active board has a backlight glow in its subject color (opacity fade only). `pos` is unwrapped (last → first is one step). W/H are recomputed from the stage size (ResizeObserver).
+- Plain DOM + CSS 3D: stage has `perspective: R`, ring sits at `translateZ(R)` (viewer in the room centre) and rotates by `pos × 360/N`; board `i` is at `rotateY(-i·step) translateZ(-R)` with `R = W·(1 + BOARD_GAP) / (2·tan(π/N))`; `BOARD_GAP` (0.22) leaves a gap between neighbours (0 = they touch). The active board has a backlight glow in its subject color (opacity fade only). Board layout ("poster"): centred icon halo (`SubjectIcon`), large subject title, blurb, page-count pill, up to 4 newest page titles, "Öffnen"; sizes scale with the board width. `pos` is unwrapped (last → first is one step). W/H are recomputed from the stage size (ResizeObserver).
 - Rotation is a CSS transition only (no per-frame JS); drag writes one CSS variable (`--drag`) per animation frame. Visibility by circular distance: 1 / 0.8 / 0.3, further boards are `inert` + `aria-hidden`. Never shows boards at ≥ 90°.
 - Zoom (tap/Enter on the front board): GSAP `import("gsap")` on demand moves the camera (`translateZ` + slight scale), the board grows to show the full page list; Esc or "Zurück" zooms out. Reduced motion: no transitions, zoom is instant.
 - Keyboard: Tab to the front board's "Öffnen" button, ←/→ rotate, Enter zooms, Esc back; the A–Z dot strip follows in Tab order. `aria-live` announces the active subject.

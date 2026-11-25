@@ -7,6 +7,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { T } from "@/lib/i18n";
 import { SUBJECT_META } from "@/lib/subjects";
+import SubjectIcon from "./SubjectIcon";
 import "./classroom.css";
 
 const SCENE_URL = "/scenes/classroom/scene.json";
@@ -302,7 +303,7 @@ export default function ClassroomRing({ subjects, panels, lang }) {
                       style={{ transform: `translateZ(var(--persp)) rotateY(${-i * step}deg) translateZ(${-R - 2}px)` }}>
                       <span className="subject-tag" />
                     </div>
-                    <div className="board" data-subject={s} data-active={isActive || undefined}
+                    <div className={`board${isActive && zoomed ? "" : " board-poster"}`} data-subject={s} data-active={isActive || undefined}
                       role="group" aria-roledescription={t.slide} aria-label={label}
                       aria-hidden={visible ? undefined : "true"} inert={!visible || undefined}
                       style={{
@@ -337,9 +338,11 @@ export default function ClassroomRing({ subjects, panels, lang }) {
                         </>
                       ) : (
                         <>
-                          <span className="subject-tag">{name(s)}</span>
+                          {/* .subject-tag on halo and title only pulls in the subject color variables */}
+                          <span className="subject-tag board-halo"><SubjectIcon subject={s} className="board-icon" /></span>
+                          <span className="subject-tag board-title">{name(s)}</span>
                           <p className="board-blurb">{SUBJECT_META[s]?.blurb?.[lang]}</p>
-                          <p className="board-count">{count(pages.length)}</p>
+                          <p className="board-count board-pill">{count(pages.length)}</p>
                           <ul className="board-preview">
                             {pages.slice(0, PREVIEW_TITLES).map(p => <li key={p.id}>{p.title[lang]}</li>)}
                           </ul>
