@@ -12,7 +12,6 @@ import "./classroom.css";
 
 const SCENE_URL = "/scenes/classroom/scene.json";
 const SCENE_DIR = SCENE_URL.slice(0, SCENE_URL.lastIndexOf("/") + 1);
-const PREVIEW_TITLES = 4;
 const SWIPE_PX = 40;   // drag distance that counts as a swipe
 const SLOP_PX = 8;     // movement before a press becomes a drag (keeps taps as clicks)
 const OPACITY = [1, 0.8, 0.3]; // by circular distance from the active board; further = hidden
@@ -343,9 +342,6 @@ export default function ClassroomRing({ subjects, panels, lang }) {
                           <span className="subject-tag board-title">{name(s)}</span>
                           <p className="board-blurb">{SUBJECT_META[s]?.blurb?.[lang]}</p>
                           <p className="board-count board-pill">{count(pages.length)}</p>
-                          <ul className="board-preview">
-                            {pages.slice(0, PREVIEW_TITLES).map(p => <li key={p.id}>{p.title[lang]}</li>)}
-                          </ul>
                           {isActive && <button type="button" ref={openRef} className="board-open" aria-label={`${t.open}: ${name(s)}`} />}
                         </>
                       )}

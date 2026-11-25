@@ -153,24 +153,7 @@
 }
 .board-count { font: 0.72rem var(--font-mono); color: var(--text-secondary); }
 
-.board-preview {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  min-height: 0;
-  overflow: hidden;
-  margin-top: 0.2rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--border);
-  font: 0.82rem/1.35 var(--font-sans);
-  color: var(--text-secondary);
-  opacity: 0.75;
-  mask-image: linear-gradient(to bottom, #000 55%, transparent);
-}
-.board-preview li { flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* ── Poster layout (board not zoomed): centred icon halo, large title, inline page list ──
+/* ── Poster layout (board not zoomed): centred icon halo, large title, blurb, page count ──
    Sizes scale with the board width (--bw) so phones (180 px boards) and desktop (~360 px) both work. */
 .board-poster { align-items: center; justify-content: center; text-align: center; gap: 0.45rem; }
 .board-poster .board-halo {
@@ -194,21 +177,12 @@
   background: none;
   font: 800 clamp(1rem, calc(var(--bw) * 0.07), 1.55rem)/1.1 var(--font-sans);
   letter-spacing: 0.05em;
-  margin-top: 0.2rem;
+  margin-top: 0.9rem; /* breathing room below the icon */
 }
 .board-poster .board-pill {
   padding: 2px 10px;
   border: 1px solid var(--border);
   border-radius: 999px;
-}
-.board-poster .board-preview {
-  align-self: stretch;
-  gap: 0.25rem;
-  margin-top: 0.1rem;
-  padding-top: 0;
-  border-top: 0;
-  font-size: 0.8rem;
-  opacity: 0.85;
 }
 /* Invisible button over the whole front board: tap/click anywhere zooms in, and keyboard users get a
    focus stop (Tab, Enter) with an accessible name ("Öffnen: Physik"). No visible label by design. */
