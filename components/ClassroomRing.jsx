@@ -346,7 +346,7 @@ export default function ClassroomRing({ subjects, panels, lang }) {
                           <ul className="board-preview">
                             {pages.slice(0, PREVIEW_TITLES).map(p => <li key={p.id}>{p.title[lang]}</li>)}
                           </ul>
-                          {isActive && <button type="button" ref={openRef} className="board-open" aria-label={`${t.open}: ${name(s)}`}>{t.open} →</button>}
+                          {isActive && <button type="button" ref={openRef} className="board-open" aria-label={`${t.open}: ${name(s)}`} />}
                         </>
                       )}
                     </div>

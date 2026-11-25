@@ -172,9 +172,9 @@
 
 /* ── Poster layout (board not zoomed): centred icon halo, large title, inline page list ──
    Sizes scale with the board width (--bw) so phones (180 px boards) and desktop (~360 px) both work. */
-.board-poster { align-items: center; text-align: center; gap: 0.45rem; }
+.board-poster { align-items: center; justify-content: center; text-align: center; gap: 0.45rem; }
 .board-poster .board-halo {
-  --halo: clamp(40px, calc(var(--bw) * 0.19), 70px);
+  --halo: clamp(32px, calc(var(--bw) * 0.152), 56px); /* 0.8 x the first version */
   flex-shrink: 0;
   align-self: center;
   justify-content: center;
@@ -210,22 +210,19 @@
   font-size: 0.8rem;
   opacity: 0.85;
 }
-.board-poster .board-open { align-self: center; }
-
+/* Invisible button over the whole front board: tap/click anywhere zooms in, and keyboard users get a
+   focus stop (Tab, Enter) with an accessible name ("Öffnen: Physik"). No visible label by design. */
 .board-open {
-  margin-top: auto;
-  align-self: flex-start;
-  min-height: 32px;
-  padding: 6px 12px;
-  border: 1px solid var(--lime);
-  border-radius: 6px;
-  background: var(--lime-dim);
-  color: var(--lime);
-  font: 0.75rem var(--font-mono);
-  letter-spacing: 0.05em;
+  position: absolute;
+  inset: 0;
+  align-self: stretch;
+  justify-self: stretch;
+  z-index: 1;
+  border-radius: inherit;
+  background: none;
   touch-action: manipulation;
 }
-.board-open:hover { background: var(--lime-glow); }
+.board-open:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; }
 
 /* Zoomed board: full page list */
 .board-head { display: flex; align-items: center; gap: 8px; }
