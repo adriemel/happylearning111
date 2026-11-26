@@ -16,7 +16,7 @@
   body{margin:0;font-family:'Atkinson Hyperlegible',Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 0%,#DBEAFE 0,#F8FAFC 35%,#FFFFFF 100%);line-height:1.55;font-size:18px}
   .layout{display:grid;grid-template-columns:270px minmax(0,1200px);max-width:1600px;margin:0 auto}
   nav{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#10233F,#12335D);color:white;padding:24px 16px;overflow:auto}
-  nav h2{font-family:'Space Grotesk';font-size:24px;margin:0 0 4px} nav p{font-size:14px;opacity:.75;margin:0 0 18px}
+  nav h2{font-family:'Space Grotesk';font-size:24px;margin:0 0 4px;color:white} nav p{font-size:14px;opacity:.75;margin:0 0 18px}
   nav a{display:block;color:rgba(255,255,255,.84);text-decoration:none;padding:9px 11px;border-radius:14px;font-size:15px;margin:4px 0;border:1px solid transparent}
   nav a:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:white}
   main{padding:34px 42px 72px}.cover,.panel,section{background:rgba(255,255,255,.94);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius)}
@@ -32,7 +32,19 @@
   .risk{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.risk div{padding:16px;border-radius:18px;text-align:center;font-weight:700}.low{background:#DCFCE7}.mid{background:#FEF3C7}.high{background:#FFE4E6}.checklist li{margin:8px 0}.fact-row{display:grid;grid-template-columns:160px 1fr;gap:14px;border-top:1px solid var(--line);padding:12px 0}.status{font-weight:700;color:#166534}
   details.quiz{background:#F1F5F9;border:2px dashed #93C5FD;border-radius:20px;padding:16px;margin-top:16px}summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:20px}
   .game{background:linear-gradient(135deg,#EFF6FF,#F5F3FF);border:3px solid #BFDBFE;border-radius:24px;padding:20px}.sentence{font-size:24px;font-weight:700;background:white;border-radius:18px;padding:16px;border:2px solid #DBEAFE}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.option{border:0;border-radius:18px;background:white;padding:14px;text-align:left;cursor:pointer;font:inherit;font-weight:700;box-shadow:0 8px 16px rgba(16,35,63,.08);border:2px solid transparent}.option:hover,.option:focus{border-color:var(--blue);outline:none}.bar{height:13px;background:#E5E7EB;border-radius:999px;overflow:hidden;margin-top:8px}.fill{height:100%;width:0;background:linear-gradient(90deg,#60A5FA,#A78BFA);transition:width .35s}.score{font-weight:700;background:#ECFDF5;border:2px solid #86EFAC;border-radius:18px;padding:12px}.result{min-height:56px;font-weight:700}.red-note{color:#B91C1C;font-weight:800;font-size:20px;margin:10px 0 0}.controls{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:999px;background:var(--navy);color:white;padding:11px 16px;font-weight:700;cursor:pointer}.btn.secondary{background:#475569}.footer{text-align:center;color:var(--muted);font-size:14px;margin-top:28px;padding-top:22px;border-top:2px solid var(--line)}
-  @media(max-width:860px){.layout{display:block}nav{position:relative;height:auto}.grid,.grid.three,.risk,.options,.fact-row{grid-template-columns:1fr}main{padding:18px}h1{font-size:38px}.cover,section{padding:22px}}
+
+  /* Layout-Korrekturen */
+  .cover > *{position:relative;z-index:1}
+  section > .card, section > .grid, section > .rule, section > .prompt + .grid, section > .risk{margin-top:16px}
+  .grid + .card, .grid + .prompt, .prompt + .prompt{margin-top:16px}
+  .rule{align-items:center}.rule p{margin:0}
+  .flow{flex-wrap:nowrap}.bubble{border-radius:22px;flex:0 1 auto}
+  .prompt{overflow-wrap:anywhere;line-height:1.5}
+  .btn,.option{font:inherit;font-weight:700}
+  .option:disabled{color:var(--ink);cursor:default}
+  .option .tiny{font-weight:400}
+  h1,h2,h3{hyphens:auto}h1,h2,h3,p,li{overflow-wrap:break-word}
+  @media(max-width:860px){.layout{display:block}nav{position:relative;height:auto;padding:16px}nav a{display:inline-block;margin:3px 2px;padding:6px 10px;border-color:rgba(255,255,255,.18);font-size:14px}.flow{flex-direction:column}.arrow{transform:rotate(90deg);line-height:1}.bubble{width:100%;max-width:340px}.grid,.grid.three,.risk,.options,.fact-row{grid-template-columns:1fr}main{padding:18px}h1{font-size:38px}.cover,section{padding:22px}}
   @media print{nav{display:none}.layout{display:block}main{padding:0}.cover,section{box-shadow:none;break-inside:avoid}.game button{display:none}}
 </style>
 </head>
@@ -53,7 +65,7 @@
   <section id="llm">
     <h2>🤖 1 · Was ist ein LLM?</h2>
     <p class="lead">Ein LLM ist eine Sprachmuster-Maschine. Es baut Antworten, indem es wahrscheinliche nächste Textstücke vorhersagt.</p>
-    <p>LLM bedeutet <strong>Large Language Model</strong>, auf Deutsch etwa: großes Sprachmodell. Es wird mit sehr vielen Sprachbeispielen trainiert, je nach Modell manchmal auch mit anderen Daten. Dabei lernt es Muster: Welche Wörter oft zusammen vorkommen, wie Erklärungen aufgebaut sind und welche Art von Antwort normalerweise zu einer Frage passt.</p>
+    <p>LLM bedeutet <strong>Large Language Model</strong>, auf Deutsch etwa: großes Sprachmodell. Es wird mit riesigen Mengen an Texten trainiert, je nach Modell auch mit Bildern, Ton oder anderen Daten. Dabei lernt es Muster: Welche Wörter oft zusammen vorkommen, wie Erklärungen aufgebaut sind und welche Art von Antwort normalerweise zu einer Frage passt.</p>
     <div class="diagram">
       <div class="flow"><div class="bubble">Trainingsbeispiele<br>📚 🌐 💬</div><div class="arrow">→</div><div class="bubble">Muster<br>🧠</div><div class="arrow">→</div><div class="bubble">Nächstes Token<br>🔤</div></div>
     </div>
@@ -64,7 +76,7 @@
       <div class="card good"><div class="icon">✅</div><h3>Nützlich für</h3><p>Erklären, Zusammenfassen, Umschreiben, Übersetzen, Ideen sammeln, Üben und Hilfe beim Programmieren.</p></div>
       <div class="card warn"><div class="icon">⚠️</div><h3>Hier musst du prüfen</h3><p>Exakte Fakten, aktuelle Ereignisse, Mathe, Zitate, Quellen, medizinische oder rechtliche Themen und alles Wichtige.</p></div>
     </div>
-    <div class="card tip"><strong>Wichtiges Wort: Halluzination.</strong> Das bedeutet: Die KI gibt eine falsche Antwort, die sicher und überzeugend klingt. Das passiert, weil das Modell wahrscheinlichen Text erzeugt; es beweist nicht automatisch, dass dieser Text stimmt.</div>
+    <div class="card tip"><strong>Wichtiges Wort: Halluzination.</strong> Das bedeutet: Die KI gibt eine falsche Antwort, die sicher und überzeugend klingt. Das passiert, weil das Modell wahrscheinlichen Text erzeugt. Ob dieser Text auch stimmt, prüft es dabei nicht automatisch.</div>
   </section>
 
   <section id="chatbot">
@@ -81,7 +93,7 @@
 
   <section id="tools">
     <h2>🌐 3 · Welche Chatbots gibt es, und was können sie?</h2>
-    <p>Bekannte KI-Assistenten sind zum Beispiel ChatGPT, Gemini, Copilot, Claude und Perplexity. Ihre Funktionen und Datenschutzregeln ändern sich. Diese Liste ist deshalb nur eine Sammlung von Beispielen, keine feste Rangliste.</p>
+    <p>Bekannte KI-Assistenten sind zum Beispiel ChatGPT, Gemini, Copilot, Claude und Perplexity. Ihre Funktionen und Datenschutzregeln ändern sich. Die Liste ist deshalb nur eine Auswahl von Beispielen, keine Rangliste.</p>
     <div class="grid three">
       <div class="card"><div class="icon">✍️</div><h3>Schreibhelfer</h3><p>Gut für Entwürfe, Erklärungen, Zusammenfassungen und bessere Formulierungen.</p></div>
       <div class="card"><div class="icon">🔎</div><h3>Suchhelfer</h3><p>Nützlich, wenn Quellen angezeigt werden, die du öffnen und prüfen kannst.</p></div>
@@ -97,8 +109,8 @@
       <div class="card warn"><h3>Nicht einfügen</h3><p>Passwörter, Adressen, Telefonnummern, private Fotos, private Schul- oder Arbeitsdokumente, unveröffentlichte Daten, medizinische Informationen oder Dinge, die jemanden bloßstellen könnten.</p></div>
       <div class="card good"><h3>Sicherer ist</h3><p>Ausgedachte Beispiele, öffentliche Fakten, kurze Texte, die du teilen darfst, und Fragen ohne persönliche Details.</p></div>
     </div>
-    <div class="rule"><div class="num">!</div><p><strong>Vor dem Absenden fragen:</strong> „Wäre es okay, wenn das öffentlich würde oder von einer Firma geprüft wird?“ Wenn die Antwort nein ist, füge es nicht ein.</p></div>
-    <div class="card purple"><h3>Alters-Realitätscheck</h3><p>Manche KI-Dienste verlangen ein Mindestalter von 13 Jahren und die Zustimmung der Eltern. Manche verlangen 18+. Schul- oder Familienkonten können besondere Schutzfunktionen haben. Prüfe immer die Regeln des konkreten Tools.</p></div>
+    <div class="rule"><div class="num">!</div><p><strong>Vor dem Absenden fragen:</strong> „Wäre es okay, wenn das öffentlich würde oder jemand bei der Firma es liest?“ Wenn die Antwort Nein ist, füge es nicht ein.</p></div>
+    <div class="card purple"><h3>Alters-Realitätscheck</h3><p>Die Regeln sind je nach Dienst verschieden. Beispiele (Stand November 2026): <strong>ChatGPT</strong> ab 13 Jahren, unter 18 nur mit Erlaubnis der Eltern. <strong>Claude</strong> erst ab 18. <strong>Gemini</strong> für Kinder unter 13 nur über ein Google-Konto, das die Eltern verwalten. Schul- oder Familienkonten können besondere Schutzfunktionen haben. Prüfe immer die Regeln des Tools, das du benutzen willst.</p></div>
   </section>
 
   <section id="prompting">
@@ -119,8 +131,8 @@
       <div class="sentence" id="sentence">Spiel wird geladen …</div>
       <div class="options" id="options"></div>
       <div class="result" id="result"></div>
-      <div class="score" id="score">Punkte: 0 / 0</div><br>
-      <div class="controls"><button class="btn" id="nextBtn">Nächste Runde</button><button class="btn secondary" id="resetBtn">Punkte zurücksetzen</button></div>
+      <div class="score" id="score">Punkte: 0 / 0</div>
+      <div class="controls" style="margin-top:14px"><button class="btn" id="nextBtn">Nächste Runde</button><button class="btn secondary" id="resetBtn">Punkte zurücksetzen</button></div>
     </div>
     <p class="tiny">Nach deiner Auswahl zeigt das Spiel vereinfachte erfundene Wahrscheinlichkeiten. Sie stammen nicht aus einem echten Live-KI-Modell. Die Lektion stimmt trotzdem: Satzbau und Bedeutung verändern, welche nächsten Wörter wahrscheinlich werden.</p>
   </section>
@@ -128,12 +140,12 @@
   <section id="context">
     <h2>🧠 7 · Kontextfenster und Kontext-Chaos</h2>
     <p class="lead">Ein Chatbot kann nur mit den Informationen arbeiten, die ihm gerade zur Verfügung stehen.</p>
-    <p>Das <strong>Kontextfenster</strong> ist wie der Schreibtisch der KI. Dort liegen dein Prompt, der bisherige Chatverlauf, hochgeladene Texte und Anweisungen. Wenn der Chat zu voll wird, können alte Details übersehen, vermischt oder widersprüchlich verwendet werden.</p>
+    <p>Das <strong>Kontextfenster</strong> ist wie der Schreibtisch der KI. Dort liegen dein Prompt, der bisherige Chatverlauf, hochgeladene Texte und Anweisungen. Je voller der Chat wird, desto eher werden Details übersehen, vermischt oder widersprüchlich verwendet. Ist das Fenster ganz voll, beenden manche Apps den Chat, lassen alte Nachrichten weg oder fassen sie automatisch zusammen.</p>
     <div class="grid">
       <div class="card warn"><h3>Anzeichen für Kontext-Chaos</h3><ul class="checklist"><li>Die KI vergisst das Ziel.</li><li>Sie mischt alte und neue Anweisungen.</li><li>Sie wiederholt einen Fehler.</li><li>Sie beantwortet eine Frage, die du gar nicht gestellt hast.</li></ul></div>
       <div class="card good"><h3>So behebst du es</h3><ul class="checklist"><li>Starte einen neuen Chat.</li><li>Füge eine kurze Zusammenfassung ein.</li><li>Nenne nur die wichtigen Fakten.</li><li>Gib eine klare nächste Aufgabe.</li></ul></div>
     </div>
-    <div class="prompt">Neustart - öffne einen neuen Chat:<br><br>Ziel: [Ziel]. Wichtige Fakten: [Fakten]. Entscheidungen bisher: [Entscheidungen]. Nächste Aufgabe: [Aufgabe]. Bitte [anaylsiere/schreibe/erkläre] weiter.</div>
+    <div class="prompt">Neustart – öffne einen neuen Chat und füge ein:<br><br>Ziel: [Ziel]. Wichtige Fakten: [Fakten]. Entscheidungen bisher: [Entscheidungen]. Nächste Aufgabe: [Aufgabe]. Bitte [analysiere/schreibe/erkläre] weiter.</div>
   </section>
 
   <section id="trust">
@@ -154,20 +166,20 @@
       <div class="card blue"><h3>KI kann mir helfen beim …</h3><p>Verstehen, Entwerfen, Umschreiben, Ordnen, Ideenfinden, Üben, Vergleichen und Beispiele-Bauen.</p></div>
       <div class="card warn"><h3>Ich muss prüfen …</h3><p>Fakten, Zahlen, Daten, Quellen, persönliche Daten und alles, was bewertet, veröffentlicht oder geteilt wird.</p></div>
     </div>
-    <div class="prompt">Kopier-und-nutz-Prompt:<br><br>Du bist eine freundliche Lehrkraft. Erkläre [THEMA] für ein 12-jähriges Kind. Nutze kurze Sätze, ein Beispiel und ein Mini-Quiz. Sag mir außerdem, was ich überprüfen sollte.</div>
+    <div class="prompt">Prompt zum Kopieren:<br><br>Du bist eine freundliche Lehrkraft. Erkläre [THEMA] für ein 12-jähriges Kind. Nutze kurze Sätze, ein Beispiel und ein Mini-Quiz. Sag mir außerdem, was ich überprüfen sollte.</div>
   </section>
 
-  <div class="footer">Kinderversion von Kurs 1 · KI-Grundlagen · Überarbeitet und fachlich geprüft · Mai 2026</div>
+  <div class="footer">Kinderversion von Kurs 1 · KI-Grundlagen · Überarbeitet und fachlich geprüft · November 2026</div>
 </main>
 </div>
 <script>
 const rounds = [
   {s:'Der Drache spuckt ___', options:[['Feuer',72,'Typisches Fantasy-Muster: Drachen speien Feuer.'],['Hausaufgaben',8,'Lustig, aber viel weniger wahrscheinlich.'],['unter',5,'Das passt grammatisch nicht gut.'],['weil',3,'Ein Bindewort ist hier unwahrscheinlich.']]},
   {s:'Nach der Schule ___ ich meistens', options:[['spiele',35,'Ein Verb passt: „ich spiele meistens …“'],['gespielt',9,'Die Vergangenheitsform passt hier schlecht.'],['weil',4,'Ein Begründungswort vervollständigt die Handlung nicht.'],['blau',2,'Ein Adjektiv passt hier nicht.']]},
-  {s:'Das schnellste Landtier ist der ___', options:[['Gepard',78,'Das ist ein bekanntes Faktenmuster. Wichtige Fakten trotzdem prüfen.'],['Banane',1,'Grammatisch und inhaltlich unpassend.'],['laufend',6,'Passt nach „der“ nicht gut.'],['Planet',3,'Falsche Kategorie.']]},
-  {s:'Kannst du mir das erklären, als wäre ich ___', options:[['12',46,'Eine häufige Prompt-Struktur fragt nach einem Altersniveau.'],['gestern',5,'Ein Zeitwort passt hier nicht gut.'],['leise',7,'Ein Adverb passt nach „ich wäre“ schlecht.'],['Vulkan',2,'Als Witz möglich, aber nicht wahrscheinlich.']]},
-  {s:'Weil es regnete, nahmen wir einen ___', options:[['Regenschirm',64,'Passt zur Bedeutung und zur Grammatik.'],['Gedanken',8,'Grammatisch möglich, aber inhaltlich schwach.'],['Lauf',6,'In anderen Sätzen möglich, hier aber schwach.'],['wütend',2,'Ein Adjektiv passt nach „einen“ nicht.']]},
-  {s:'In einem Rezept sind 200 Gramm Mehl eine ___', options:[['Mengenangabe',44,'Der Satz fragt nach einer Art von Information.'],['Fußball',3,'Falsches Thema.'],['schnell',1,'Ein Adverb passt nicht.'],['schlief',1,'Ein Verb passt nicht.']]}
+  {s:'Das schnellste Landtier ist der ___', options:[['Gepard',78,'Das ist ein bekanntes Faktenmuster. Wichtige Fakten trotzdem prüfen.'],['Banane',1,'Grammatisch und inhaltlich unpassend.'],['laufend',6,'Ein Adjektiv ohne Nomen danach passt hier nicht.'],['Planet',3,'Falsche Kategorie.']]},
+  {s:'Kannst du mir das erklären, als wäre ich ___', options:[['12',46,'Eine häufige Prompt-Struktur fragt nach einem Altersniveau.'],['gestern',5,'Ein Zeitwort passt hier nicht gut.'],['leise',7,'Grammatisch möglich, aber inhaltlich seltsam.'],['Vulkan',2,'Als Witz möglich, aber nicht wahrscheinlich.']]},
+  {s:'Weil es regnete, nahmen wir einen ___', options:[['Regenschirm',64,'Passt zur Bedeutung und zur Grammatik.'],['Gedanken',8,'Grammatisch möglich, aber inhaltlich schwach.'],['Bus',6,'Möglich, aber ohne Regenbezug weniger wahrscheinlich.'],['wütend',2,'Nach „einen“ fehlt hier ein Nomen.']]},
+  {s:'In einem Rezept sind 200 Gramm Mehl eine ___', options:[['Mengenangabe',44,'Der Satz fragt, welche Art von Information das ist.'],['Fußball',3,'Falsches Thema.'],['schnell',1,'Ein Adverb passt nicht.'],['schlief',1,'Ein Verb passt nicht.']]}
 ];
 let current=0, correct=0, total=0;
 const sentence=document.getElementById('sentence'), options=document.getElementById('options'), result=document.getElementById('result'), score=document.getElementById('score');
