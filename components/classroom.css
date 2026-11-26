@@ -65,7 +65,9 @@
   .classroom-ring,
   .classroom-layer { transition: transform .6s cubic-bezier(.3, .7, .2, 1); }
   .board,
-  .classroom-front { transition: opacity .4s ease; }
+  /* front layers move like the others and also fade while zoomed (both transitions, or the
+     transform one is lost and the parallax rebase never runs) */
+  .classroom-layer.classroom-front { transition: transform .6s cubic-bezier(.3, .7, .2, 1), opacity .4s ease; }
   .board-backlight { transition: opacity .5s ease; }
   .board[data-active] {
     transition: opacity .4s ease, width .5s cubic-bezier(.3, .7, .2, 1), height .5s cubic-bezier(.3, .7, .2, 1),
@@ -175,8 +177,12 @@
   padding: 0;
   border: 0;
   background: none;
-  font: 800 clamp(1rem, calc(var(--bw) * 0.07), 1.55rem)/1.1 var(--font-sans);
+  /* Scales with the board, but shrinks further so the longest word (--title-em, set in JSX) fits the
+     board width minus padding; words are never split (.subject-tag would allow it). */
+  font: 800 min(clamp(1rem, calc(var(--bw) * 0.07), 1.55rem), calc((var(--bw) - 2.4rem) / var(--title-em, 10)))/1.1 var(--font-sans);
   letter-spacing: 0.05em;
+  overflow-wrap: normal;
+  word-break: normal;
   margin-top: 0.9rem; /* breathing room below the icon */
 }
 .board-poster .board-pill {

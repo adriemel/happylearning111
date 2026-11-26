@@ -19,6 +19,8 @@ const BOARD_GAP = 0.22;   // gap between neighbouring boards, as a fraction of t
 const ZOOM_SCALE = 1.02;  // camera scale part of the zoom
 const ZOOM_DOLLY = 1.06;  // total apparent magnification from the camera (translateZ + scale)
 const ZOOM_SECONDS = 0.6;
+const REBASE_FALLBACK_MS = 700; // > rotation transition (0.6 s): rebase even if transitionend never fires
+const TITLE_EM_PER_CHAR = 1.36; // widest measured letter run in Syne 800 uppercase is ~1.34 em/char
 
 const mod = (a, n) => ((a % n) + n) % n;
 const fmt = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
@@ -60,6 +62,7 @@ export default function ClassroomRing({ subjects, panels, lang }) {
   const layerEls = useRef([]);
   const layerBase = useRef([]);
   const layerX = useRef([]);
+  const rebaseTimer = useRef(0);
   const dragRef = useRef(null);
   const suppressClick = useRef(false);
   const interacted = useRef(false);
@@ -148,7 +151,12 @@ export default function ClassroomRing({ subjects, panels, lang }) {
       el.style.setProperty("--x", `${layerX.current[i]}px`);
       if (settleNow) rebase(i);
     });
+    // Fallback: transitionend can be skipped (transition overridden, tab hidden, interrupted swipes);
+    // without a rebase the offset keeps growing and the layer slides off the stage.
+    clearTimeout(rebaseTimer.current);
+    rebaseTimer.current = setTimeout(() => layers.forEach((_, i) => rebase(i)), REBASE_FALLBACK_MS);
   }); // every render: cheap, and it must follow angle, size, scene and instant
+  useEffect(() => () => clearTimeout(rebaseTimer.current), []);
 
   const go = useCallback((delta) => {
     if (!delta) return;
@@ -339,7 +347,8 @@ export default function ClassroomRing({ subjects, panels, lang }) {
                         <>
                           {/* .subject-tag on halo and title only pulls in the subject color variables */}
                           <span className="subject-tag board-halo"><SubjectIcon subject={s} className="board-icon" /></span>
-                          <span className="subject-tag board-title">{name(s)}</span>
+                          <span className="subject-tag board-title"
+                            style={{ "--title-em": (Math.max(...name(s).split(/\s+/).map(w => w.length)) * TITLE_EM_PER_CHAR).toFixed(2) }}>{name(s)}</span>
                           <p className="board-blurb">{SUBJECT_META[s]?.blurb?.[lang]}</p>
                           <p className="board-count board-pill">{count(pages.length)}</p>
                           {isActive && <button type="button" ref={openRef} className="board-open" aria-label={`${t.open}: ${name(s)}`} />}
