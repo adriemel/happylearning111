@@ -145,7 +145,7 @@ All 25 HTML files are fully self-contained (inline CSS/JS, some use Google Fonts
 
 Multi-file pages live in their own folder under `/public/pages/` with a README (`file`/`href` point to the folder's `index.html`):
 - `backrooms/` — Vocab Escape (Games, DE), vendored Three.js.
-- `how-ai-works/` — Wie KI denkt (Allgemein, DE/EN toggle; catalog `lang` is "DE"). Synthwave z-axis flight: scrolling moves a camera forward through stations (GSAP + ScrollTrigger, vendored). Art (`assets/*.svg` + `scenes.js`), text (`content.js`), demo numbers (`model-data.js`) and animation logic (`engine.js`, `story.js`, `widgets.js`) are separate; see its README before editing.
+- `how-ai-works/` — Wie KI denkt (listed twice: Allgemein with `addedAt`, AI für Kinder without, so Recently added shows it once; DE/EN toggle; catalog `lang` is "DE"). Synthwave z-axis flight: scrolling moves a camera forward through stations (GSAP + ScrollTrigger, vendored). Art (`assets/*.svg` + `scenes.js`), text (`content.js`), demo numbers (`model-data.js`) and animation logic (`engine.js`, `story.js`, `widgets.js`) are separate; see its README before editing.
 
 ## Notes
 - `npm run dev` to run locally at `localhost:3000`
