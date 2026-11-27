@@ -1,42 +1,43 @@
 # Wie KI denkt · How AI thinks
 
-Scrollytelling page (DE/EN toggle) that follows one prompt ("Wie wird das Wetter morgen in Bremen?") from the chat window through harness, tool loop, LLM, tokens, embeddings, transformer layers, attention and softmax, and back out through the nested loops. Audience: teens and curious adults.
+Scrollytelling page (DE/EN toggle) for teens and curious adults. It follows one question ("Könnte ein Eisbär einen Pinguin fressen, wenn er in der Antarktis leben würde?" / "Could a polar bear eat a penguin if it lived on Antarctica?") into a language model: chat and harness, the LLM box (you dive into it), tokens, embedding matrix lookup, 3D meaning space, attention ("er"/"it": bear or penguin?), the layer stack, softmax and sampling, a fast-forward of the token loop, and back out to the finished answer.
 
 ## How it works
 
-- One fixed `#stage` holds all scenes stacked on top of each other. `#track` contains empty spacer divs (one "beat" per scene) that only create scroll length.
-- Each scene gets one GSAP timeline driven by one ScrollTrigger (`start: top bottom`, `end: bottom top`). The timeline has three parts: enter (first 100 vh, cross-fade and dolly in from the previous scene), main (the scene's story, one unit per text step) and exit (last 100 vh, fly-through zoom). Adjacent beats overlap exactly by 100 vh, so exit and the next enter run together.
-- Depth: layers in `scenes.js` carry a `depth` from -1 (far) to 1 (near). The same camera move scales and shifts each layer by its depth, which creates the parallax. The transformer tunnel uses CSS 3D (`perspective` + `translateZ`), the embedding space a small 2D-canvas projection. No Three.js: nothing here needs a real 3D renderer.
-- Reduced motion (OS setting) or the "Animation: aus" button switches to a static, linear document with all steps visible and the final state of every diagram. The button overrides the OS setting in both directions (`localStorage` key `aix-motion`).
-- Language: `?lang=de|en`, else `localStorage` `aix-lang`, else the Lernhub setting (`lernhub-tweaks.lang`), else the browser language.
+- **Scrolling flies forward.** All stations sit one behind the other on a z axis in one fixed `#world`. Native scrolling (wheel, trackpad, touch, keys) only provides distance: `#track` is an empty tall div. Nothing slides vertically; the scrollbar is hidden.
+- **One timeline.** `engine.js` builds a single GSAP timeline `[dwell 0][fly][dwell 1][fly]…` scrubbed by one ScrollTrigger. During a dwell the camera barely drifts and the station's story (`story.js`) plays step by step; during a fly the camera moves to the next station and the text panels swap.
+- **Projection.** `render(camZ)` scales each station and each decoration item by `perspective / (perspective + distance)` around the vanishing point (centre of the diagram area). The next station is always visible faintly in the distance. The floor/ceiling grids are CSS 3D planes whose tile offset follows the camera. Environments (`outside` synthwave landscape, `inside` the model) cross-fade during a flight; the LLM box stays opaque longer (`passFade`) so flying into it works as a portal.
+- **No Three.js.** The 3D meaning space is a small 2D-canvas projection; the layer tunnel uses CSS 3D. Nothing needs a real 3D renderer.
+- **Static mode.** OS reduced-motion setting or the "Animation: aus" button: a plain linear document with every step visible and the final state of each diagram. The button overrides the OS setting in both directions (`localStorage` key `aix-motion`).
+- **Language.** `?lang=de|en`, else `localStorage` `aix-lang`, else the Lernhub setting (`lernhub-tweaks.lang`), else the browser language.
 
 ## Files
 
 | File | Role |
 |------|------|
-| `index.html` | Scene markup (diagram skeletons, text slots) |
-| `theme.css` | Art direction tokens: colors, fonts, glow. Restyle here. |
+| `index.html` | Station markup (diagram skeletons, text slots) |
+| `theme.css` | Art direction tokens (synthwave colors, fonts, glow) |
 | `style.css` | Layout and components |
-| `scenes.js` | Scene manifest: beat length, accent color, background layers, camera move |
-| `assets/*.svg` | Scene layers (sky, hills, clouds, grid, glyphs, …) |
+| `scenes.js` | World manifest: environments (sky, sun, horizon, grid tiles, decoration), stations (order, environment, dwell length, accent), flight parameters |
+| `assets/*.svg` | Environment layers, grid tiles and decoration (`synth-*`, `inside-*`, `grid-*`, `deco-*`) |
 | `content.js` | All visible text, DE and EN |
-| `model-data.js` | Demo numbers: tokens, IDs, embedding points, attention head rules, logits, tool payloads |
-| `widgets.js` | Builds the data-driven widgets and their interaction (no scroll logic) |
-| `story.js` | Per-scene choreography on the scrubbed timeline |
-| `engine.js` | i18n, layer injection, scroll track, enter/exit camera, chapter nav |
+| `model-data.js` | Demo numbers: tokens and IDs, attention words and head rules, embedding points, logits |
+| `widgets.js` | Data-driven widgets; scroll-driven ones expose pure `render(p)` functions |
+| `story.js` | Per-station choreography |
+| `engine.js` | i18n, environments, decoration, flight timeline, projection, chapter nav |
 | `vendor/` | GSAP 3.13.0 + ScrollTrigger, vendored (no CDN at runtime) |
 
-## Replacing or adding art
+## Changing the look
 
-- Swap an SVG in `assets/` or point a layer in `scenes.js` at a new file. Layers are drawn with `object-fit: cover` on a box 24 % larger than the stage, so leave room at the edges for the camera moves. `fit: "bottom"` anchors ground layers.
-- Keep the centre-right area (desktop) or the upper half (phone) calm: the diagrams sit there. `front: true` layers sit in front of the diagram; keep them sparse.
+- Swap SVGs in `assets/` or point `scenes.js` at new files. Grid tiles are drawn at 48 px (`GRID` in `engine.js`, `.env-grid` in `style.css`).
+- A new environment: add it under `envs` and set `env` on the stations that should sit in it.
+- A new station: add a `<section class="station" data-station="id">` (same inner structure), an entry in `scenes.js` `stations`, texts in `content.js` (including `chapters`), and optionally `A.story.id.main()` in `story.js`.
 - Do not put a double hyphen inside SVG/XML comments (invalid XML, the browser shows nothing).
-- New scene: add a `<section class="scene" data-scene="id">` in `index.html` (same inner structure as the others), an entry in `scenes.js`, texts in `content.js` (including `chapters`), and optionally `A.story.id.main()` in `story.js`.
 
 ## Accuracy notes
 
-Token IDs, vector values, attention raw scores and logits are made up for illustration (stated on the page). The computations (softmax with causal mask per attention row, softmax with temperature, sampling) are real and run live. GPT-3 sizes (96 layers, d_model 12 288) are from Brown et al. (2020), arXiv:2005.14165.
+Token IDs, vectors, attention raw scores and logits are made up (stated on the page). Softmax with causal mask per attention row, softmax with temperature and sampling are computed live. Attention is shown on whole words for readability. GPT-3 sizes (96 layers, d_model 12 288) are from Brown et al. (2020), arXiv:2005.14165. The statement that feed-forward layers hold much factual knowledge is hedged ("vermutlich") and cites Geva et al. (2021).
 
 ## Local preview
 
-`npm run dev` and open `/pages/how-ai-works/index.html`, or serve `public/` with any static server. Plain `file://` also works (classic scripts, no fetch), except that browsers may block Google Fonts there.
+`npm run dev` and open `/pages/how-ai-works/index.html`, or serve `public/` with any static server.
