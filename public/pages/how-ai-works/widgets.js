@@ -32,8 +32,18 @@
     const pct = Math.round(Math.min(1, Math.abs(v)) * 85 + 10);
     return `color-mix(in srgb, var(${v < 0 ? "--neg" : "--pos"}) ${pct}%, var(--bg))`;
   };
+  // Vector rows show the (made-up) numbers on top of the colour cue.
+  let curLang = "de";
+  const num = (v) => (v < 0 ? "−" : "+") + fmt(curLang, Math.abs(v), 2);
+  const cellHTML = (v) => `<i class="${Math.abs(v) > 0.5 ? "dk" : ""}" style="--cell:${cellColor(v)}"><span>${num(v)}</span></i>`;
+  const paintCell = (c, v) => {
+    c.style.setProperty("--cell", cellColor(v));
+    c.classList.toggle("dk", Math.abs(v) > 0.5);
+    c.firstElementChild.textContent = num(v);
+  };
   const rowHTML = (label, values, cls = "") =>
-    `<div class="erow ${cls}"><span class="lab">${label}</span>${values.map((v) => `<i style="--cell:${cellColor(v)}"></i>`).join("")}</div>`;
+    `<div class="erow ${cls}"><span class="lab">${label}</span>${values.map(cellHTML).join("")}<span class="more">…</span></div>`;
+  const wordSeed = (s) => { let h = 7; for (const ch of s) h = (h * 31 + ch.codePointAt(0)) | 0; return Math.abs(h) % 100000; };
   const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
   const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
@@ -70,17 +80,18 @@
   }
 
   /* ── Embedding matrix browse ─────────────────────────── */
-  const EMB = (W.emb = { toks: [], sched: null, lastId: null, lastK: -1, lastPhi: -1 });
-  const NC = 10;
+  const EMB = (W.emb = { toks: [], sched: null, lastId: null, lastKey: "" });
+  const NC = 5, STACK = 8;
   function buildEmbed(lang, T) {
     EMB.toks = D.tokens[lang];
     EMB.lang = lang;
     EMB.sched = schedule(EMB.toks.map((_, i) => (i < 4 ? 1 : 0.32)));
     $("#emWindow").innerHTML = Array.from({ length: 9 }, () =>
-      `<div class="erow"><span class="lab"></span>${"<i></i>".repeat(NC)}</div>`).join("");
-    $("#emStack").innerHTML = EMB.toks.map(([t, id]) => rowHTML(spaceMark(t), vec(id, NC))).join("");
+      `<div class="erow"><span class="lab"></span>${"<i><span></span></i>".repeat(NC)}<span class="more">…</span></div>`).join("");
+    $("#emStack").innerHTML = '<span class="emb-up" id="emUp"></span>' +
+      EMB.toks.map(([t, id]) => rowHTML(spaceMark(t), vec(id, NC))).join("");
     $("#emMore").textContent = `… + ${fmt(lang, D.gpt3.dModel - NC)} ${T.more} (d = ${fmt(lang, D.gpt3.dModel)})`;
-    EMB.lastId = null; EMB.lastK = -1;
+    EMB.lastId = null; EMB.lastKey = "";
     EMB.render(EMB.p || 0);
   }
   EMB.paintWindow = function (center, hit) {
@@ -89,33 +100,42 @@
     $$("#emWindow .erow").forEach((row, r) => {
       const id = center + r - 4;
       const lab = row.firstElementChild;
+      const cells = row.querySelectorAll("i");
       row.classList.toggle("hit", hit && r === 4);
-      if (id < 0 || id >= D.vocabShown) { lab.textContent = ""; row.querySelectorAll("i").forEach((c) => c.style.setProperty("--cell", "transparent")); return; }
+      if (id < 0 || id >= D.vocabShown) {
+        lab.textContent = "";
+        row.style.visibility = "hidden";
+        return;
+      }
+      row.style.visibility = "";
       lab.textContent = fmt(EMB.lang, id);
       const v = vec(id, NC);
-      row.querySelectorAll("i").forEach((c, j) => c.style.setProperty("--cell", cellColor(v[j])));
+      cells.forEach((c, j) => paintCell(c, v[j]));
     });
   };
   EMB.render = function (p) {
     EMB.p = p;
     if (!EMB.sched) return;
     const { k, phi } = EMB.sched(p);
-    const toks = EMB.toks;
+    const toks = EMB.toks, n = toks.length;
     const from = k === 0 ? 0 : toks[k - 1][1], to = toks[k][1];
     const roll = clamp01(phi / 0.6);
-    const center = Math.round(from + (to - from) * ease(roll));
-    EMB.paintWindow(center, roll >= 1);
+    EMB.paintWindow(Math.round(from + (to - from) * ease(roll)), roll >= 1);
     const cur = $("#emCur");
     const txt = `${toks[k][0].replace(/^ /, "␣")}  →  #${fmt(EMB.lang, to)}`;
     if (cur.textContent !== txt) cur.textContent = txt;
-    if (k !== EMB.lastK || (phi > 0.7) !== (EMB.lastPhi > 0.7) || p >= 1) {
-      $$("#emStack .erow").forEach((row, j) => {
-        const on = j < k || (j === k && phi > 0.7) || p >= 1;
-        row.style.opacity = on ? "1" : "0";
-        row.classList.toggle("lit", j === k && phi > 0.7 && p < 1);
-      });
-    }
-    EMB.lastK = k; EMB.lastPhi = phi;
+    // the stack shows the newest STACK rows; older ones scroll away upwards
+    const last = p >= 1 ? n - 1 : (phi > 0.7 ? k : k - 1);
+    const first = Math.max(0, last - STACK + 1);
+    const lit = p < 1 && phi > 0.7 ? k : -1;
+    const key = `${first}|${last}|${lit}`;
+    if (key === EMB.lastKey) return;
+    EMB.lastKey = key;
+    $$("#emStack .erow").forEach((row, j) => {
+      row.style.display = j >= first && j <= last ? "" : "none";
+      row.classList.toggle("lit", j === lit);
+    });
+    $("#emUp").textContent = first > 0 ? `⋮ +${first}` : "";
   };
 
   /* ── Meaning space: 3D canvas (manual projection, no WebGL needed) ── */
@@ -214,16 +234,29 @@
     new ResizeObserver(() => E.request()).observe(cv);
   }
 
-  /* ── Transformer tunnel ──────────────────────────────── */
-  const TUN = (W.tunnel = { labels: [1, 2, 3, 4, 5, "…", 94, 95, 96], gap: 420, planes: [] });
-  function buildTunnel(T) {
+  /* ── Transformer tunnel: layers as sieves ─────────────── */
+  const TUN = (W.tunnel = { labels: [1, 2, 3, 4, 5, "…", 94, 95, 96], gap: 420, planes: [], lastL: -1 });
+  // vector of "?" after layer L: drifts from its embedding to its final vector (softmax scene)
+  TUN.vecAt = function (L) {
+    const t = clamp01((L - 1) / 95), s = t * t * (3 - 2 * t);
+    return TUN.a.map((a, j) => Math.max(-0.99, Math.min(0.99,
+      a * (1 - s) + TUN.b[j] * s + 0.35 * Math.sin(Math.PI * t) * Math.sin(5 * Math.PI * t + 1.7 * j))));
+  };
+  function buildTunnel(lang, T) {
+    const lastId = D.tokens[lang][D.tokens[lang].length - 1][1];
+    TUN.a = vec(lastId, NC);
+    TUN.b = vec(lastId + 4242, NC);
+    TUN.tr = T;
     const cam = $("#tunCam");
     cam.innerHTML = TUN.labels.map((l) =>
       l === "…"
         ? `<div class="plane gap"><span class="ptag">… ${esc(T.layer)} 6 – 93 …</span></div>`
-        : `<div class="plane"><span class="ptag">${esc(T.layer)} ${l}</span><div class="pbody"><div class="blk a">${esc(T.attn)}</div><span class="plus">+</span><div class="blk m">${esc(T.mlp)}</div></div><div class="beams"><i></i><i></i><i></i><i></i><i></i></div></div>`
+        : `<div class="plane"><span class="ptag">${esc(T.layer)} ${l}</span><div class="pbody"><div class="blk a">${esc(T.attn)}</div><span class="plus">+</span><div class="blk m">${esc(T.mlp)}</div></div>` +
+          `<div class="pvec">${TUN.vecAt(l).map((v) => `<i style="--cell:${cellColor(v)}"></i>`).join("")}</div></div>`
     ).join("");
     TUN.planes = [...cam.children];
+    $("#tunVec").innerHTML = `<span class="lab">?</span>${"<i><span></span></i>".repeat(NC)}<span class="more">…</span>`;
+    TUN.lastL = -1;
     TUN.update(TUN.p || 0);
   }
   TUN.update = function (p) {
@@ -243,12 +276,19 @@
     const i0 = Math.floor(k), fr = k - i0;
     const val = (i) => (TUN.labels[i] === "…" ? 49 : TUN.labels[i]);
     const a = val(i0), b = val(Math.min(n - 1, i0 + 1));
+    const L = Math.max(1, Math.min(96, Math.round(a + (b - a) * fr)));
+    if (L === TUN.lastL) return;
+    TUN.lastL = L;
     const hud = $("#layerNo");
-    if (hud) hud.textContent = String(Math.max(1, Math.min(96, Math.round(a + (b - a) * fr))));
+    if (hud) hud.textContent = String(L);
+    const lab = $("#tunVecLab");
+    if (lab && TUN.tr) lab.textContent = `${TUN.tr.vecLabel} ${L}`;
+    const v = TUN.vecAt(L);
+    $$("#tunVec i").forEach((c, j) => paintCell(c, v[j]));
   };
 
-  /* ── Attention ───────────────────────────────────────── */
-  const ATT = (W.attention = { head: 1, sel: null, lang: "de" });
+  /* ── Attention (simplified: spotlight on the sentence + matrix) ── */
+  const ATT = (W.attention = { head: 1, sel: null, lang: "de", tr: null });
   ATT.weights = function (h) {
     const ws = D.words[ATT.lang], head = D.heads[h];
     return ws.map((q, qi) => {
@@ -257,18 +297,17 @@
     });
   };
   function buildAttention(lang, T) {
-    ATT.lang = lang;
+    ATT.lang = lang; ATT.tr = T;
     const ws = D.words[lang], n = ws.length;
     if (ATT.sel === null || ATT.sel >= n) ATT.sel = D.attentionDefault;
     $("#attHeads").innerHTML = T.heads.map((h, i) => `<button type="button" data-h="${i}">${esc(h)}</button>`).join("");
-    $("#attHeads").setAttribute("aria-label", T.heads.join(", "));
-    const tokEl = $("#attTokens");
-    tokEl.style.setProperty("--n", n);
-    tokEl.setAttribute("aria-label", T.pick);
-    tokEl.innerHTML = ws.map((w, i) => `<button type="button" data-i="${i}">${esc(w.t)}</button>`).join("");
+    $("#attHeads").setAttribute("aria-label", T.headsLabel);
+    const sent = $("#attSent");
+    sent.setAttribute("aria-label", T.pick);
+    sent.innerHTML = ws.map((w, i) => `<button type="button" data-i="${i}"><b>${esc(w.t)}</b><small></small></button>`).join("");
     const m = $("#attMatrix");
     m.style.setProperty("--n", n);
-    let html = `<span class="lab" data-row="h"></span>` + ws.map((w) => `<span class="lab" data-row="h">${esc(w.t)}</span>`).join("");
+    let html = `<span class="corner" data-row="h"></span>` + ws.map((w) => `<span class="chd" data-row="h"><span>${esc(w.t)}</span></span>`).join("");
     ws.forEach((q, qi) => {
       html += `<span class="lab rlab" data-row="${qi}" data-r="${qi}">${esc(q.t)}</span>`;
       ws.forEach((_, ki) => {
@@ -281,46 +320,43 @@
     ATT.update();
   }
   ATT.update = function () {
-    const w = ATT.weights(ATT.head), lang = ATT.lang;
+    const w = ATT.weights(ATT.head), ws = D.words[ATT.lang], row = w[ATT.sel];
     $$("#attHeads button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.h === ATT.head)));
-    $$("#attTokens button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.i === ATT.sel)));
+    $("#attWho").textContent = ATT.tr.who.replace("{w}", ws[ATT.sel].t);
+    $$("#attSent button").forEach((b) => {
+      const i = +b.dataset.i, v = row[i];
+      b.setAttribute("aria-pressed", String(i === ATT.sel));
+      b.classList.toggle("sel", i === ATT.sel);
+      b.classList.toggle("future", v === null);
+      const small = b.lastElementChild;
+      if (v === null) {
+        small.textContent = "·";
+        b.style.background = ""; b.style.boxShadow = "";
+        b.title = ATT.tr.future;
+      } else {
+        small.textContent = Math.round(v * 100) + " %";
+        b.style.background = `rgba(255,107,157,${(0.1 + 0.75 * v).toFixed(3)})`;
+        b.style.boxShadow = `0 0 ${(4 + 34 * v).toFixed(0)}px rgba(255,107,157,${(0.15 + 0.85 * v).toFixed(2)})`;
+        b.title = "";
+      }
+    });
     $$("#attMatrix .cell:not(.mask)").forEach((c) => {
       const v = w[+c.dataset.r][+c.dataset.c];
-      c.style.setProperty("--w", (0.08 + 0.92 * v).toFixed(3));
-      c.lastElementChild.textContent = fmt(lang, v, 2).replace(/^0(?=[.,])/, "");
+      c.style.setProperty("--w", (0.06 + 0.94 * v).toFixed(3));
+      c.lastElementChild.textContent = String(Math.round(v * 100));
       c.classList.toggle("row-sel", +c.dataset.r === ATT.sel);
     });
     $$("#attMatrix .rlab").forEach((l) => l.classList.toggle("row-sel", +l.dataset.r === ATT.sel));
-    ATT.drawArcs(w[ATT.sel]);
-  };
-  ATT.drawArcs = function (row) {
-    const svg = $("#attArcs"), box = svg.parentElement;
-    const btns = $$("#attTokens button");
-    if (!btns.length || !row) return;
-    const bw = box.clientWidth, bh = svg.clientHeight || 60;
-    svg.setAttribute("viewBox", `0 0 ${bw} ${bh}`);
-    const cx = (b) => b.offsetLeft + b.offsetWidth / 2;
-    const x0 = cx(btns[ATT.sel]);
-    svg.innerHTML = row.map((v, i) => {
-      if (v === null) return "";
-      const x1 = cx(btns[i]);
-      const hgt = i === ATT.sel ? bh * 0.5 : Math.min(bh * 0.95, 18 + Math.abs(x1 - x0) * 0.4);
-      const d = i === ATT.sel
-        ? `M${x0 - 8} ${bh} C ${x0 - 22} ${bh - hgt}, ${x0 + 22} ${bh - hgt}, ${x0 + 8} ${bh}`
-        : `M${x0} ${bh} Q ${(x0 + x1) / 2} ${bh - hgt * 2} ${x1} ${bh}`;
-      return `<path d="${d}" stroke-width="${(1 + 9 * v).toFixed(2)}" opacity="${(0.15 + 0.85 * v).toFixed(2)}"/>`;
-    }).join("");
   };
   function bindAttention() {
     $("#attHeads").addEventListener("click", (e) => {
       const b = e.target.closest("button[data-h]");
       if (b) { ATT.head = +b.dataset.h; ATT.update(); }
     });
-    $("#attTokens").addEventListener("click", (e) => {
+    $("#attSent").addEventListener("click", (e) => {
       const b = e.target.closest("button[data-i]");
       if (b) { ATT.sel = +b.dataset.i; ATT.update(); }
     });
-    new ResizeObserver(() => ATT.update()).observe($("#attTokens"));
   }
 
   /* ── Softmax ─────────────────────────────────────────── */
@@ -331,7 +367,7 @@
     const toks = D.tokens[lang].slice(-6);
     $("#smxVecs").innerHTML = toks.map(([t, id], i) =>
       rowHTML(spaceMark(t), vec(id + 4242, NC), i === toks.length - 1 ? "last" : "")).join("") +
-      `<span class="tag">↑ ${esc(T.last)}</span>`;
+      `<span class="tag t-last">↑ ${esc(T.last)}</span><div id="smxNewWrap"></div>`;
     const L = D.logits[lang];
     const zero = ((0 - ZMIN) / (ZMAX - ZMIN)) * 100;
     $("#smxBars").innerHTML = L.map(([t, z], i) => {
@@ -347,7 +383,13 @@
     SMX.update();
     SMX.renderDrawn();
     $("#smxSlot").textContent = "▁";
+    SMX.setNew(SMX.top());
   }
+  SMX.top = () => { const L = D.logits[SMX.lang]; return L.reduce((a, b) => (b[1] > a[1] ? b : a))[0]; };
+  // the drawn word becomes a new row of the vector table (next round)
+  SMX.setNew = function (word) {
+    $("#smxNewWrap").innerHTML = rowHTML(esc(word), vec(wordSeed(word), NC), "new") + `<span class="tag t-new">↑ ${esc(SMX.tr.added)}</span>`;
+  };
   SMX.probs = () => W.softmax(D.logits[SMX.lang].map((r) => r[1]), SMX.T);
   SMX.update = function () {
     const p = SMX.probs();
@@ -369,6 +411,7 @@
     SMX.counts[i] = (SMX.counts[i] || 0) + 1;
     const slot = $("#smxSlot");
     slot.textContent = D.logits[SMX.lang][i][0];
+    SMX.setNew(D.logits[SMX.lang][i][0]);
     $$("#smxBars .srow").forEach((r, k) => r.classList.toggle("hit", k === i));
     SMX.renderDrawn();
     if (window.gsap && !document.documentElement.classList.contains("static")) {
@@ -384,7 +427,7 @@
       SMX.T = 1; r.value = "1"; SMX.counts = {};
       $("#smxSlot").textContent = "▁";
       $$("#smxBars .srow").forEach((row) => row.classList.remove("hit"));
-      SMX.update(); SMX.renderDrawn();
+      SMX.update(); SMX.renderDrawn(); SMX.setNew(SMX.top());
     });
   }
 
@@ -425,11 +468,12 @@
   /* ── Public API ──────────────────────────────────────── */
   let bound = false;
   W.build = function (lang, dict) {
+    curLang = lang;
     buildTokens(lang);
     buildEmbed(lang, dict.embed);
     buildSpace(dict.space);
     E.lang = lang;
-    buildTunnel(dict.layers);
+    buildTunnel(lang, dict.layers);
     buildAttention(lang, dict.attention);
     buildSoftmax(lang, dict.softmax);
     buildLoop(lang, dict);

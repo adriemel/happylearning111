@@ -68,13 +68,21 @@
 
     attention: {
       main(tl, el) {
-        tl.from(el.querySelector(".att-arcs"), { autoAlpha: 0, y: 16, duration: 0.3 }, 0.1);
-        tl.from(q(el, ".att-axis"), { autoAlpha: 0, duration: 0.2 }, 0.95);
-        tl.from(q(el, '[data-row="h"]'), { autoAlpha: 0, duration: 0.15 }, 0.95);
+        // step 0: spotlight on the sentence; step 1: the matrix; step 2: back, with the heads
+        const spot = el.querySelector(".att-spot"), mat = el.querySelector(".att-mat");
+        tl.fromTo(spot, { autoAlpha: 1 }, { autoAlpha: 1, duration: 0.01 }, 0);
+        tl.from(q(el, "#attSent button"), { autoAlpha: 0, y: 18, duration: 0.2, stagger: 0.04 }, 0.05);
+        tl.from(q(el, "#attSent small, #attWho"), { autoAlpha: 0, duration: 0.2 }, 0.45);
+        tl.to(spot, { autoAlpha: 0, y: -20, duration: 0.2 }, 1.0);
+        tl.fromTo(mat, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, 1.05);
+        tl.from(q(el, '#attMatrix [data-row="h"]'), { autoAlpha: 0, duration: 0.15 }, 1.05);
         const n = A.data.words.de.length;
-        for (let r = 0; r < n; r++) tl.from(q(el, `#attMatrix [data-row="${r}"]`), { autoAlpha: 0, x: -10, duration: 0.12, stagger: 0.015 }, 1.05 + r * 0.1);
-        tl.from(q(el, "#attHeads button, .att-note"), { autoAlpha: 0, y: 10, duration: 0.2, stagger: 0.06 }, 2.0);
-        tl.to(q(el, '.rlab[data-r="7"], #attTokens button[data-i="7"]'), { scale: 1.12, duration: 0.15, yoyo: true, repeat: 1 }, 2.1);
+        for (let r = 0; r < n; r++) tl.from(q(el, `#attMatrix [data-row="${r}"]`), { autoAlpha: 0, x: -10, duration: 0.1, stagger: 0.012 }, 1.12 + r * 0.08);
+        tl.to(mat, { autoAlpha: 0, duration: 0.2 }, 2.0);
+        tl.to(spot, { autoAlpha: 1, y: 0, duration: 0.2 }, 2.05);
+        tl.fromTo(el.querySelector(".att-headbar"), { autoAlpha: 0, y: -16, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.25, ease: "back.out(2)" }, 2.1);
+        tl.from(el.querySelector(".att-note"), { autoAlpha: 0, duration: 0.2 }, 2.3);
+        tl.to(q(el, "#attHeads button"), { scale: 1.08, duration: 0.1, yoyo: true, repeat: 1, stagger: 0.08 }, 2.4);
       },
     },
 
@@ -83,7 +91,8 @@
         prog(tl, W.tunnel.update, 0, ctx.N);
         tl.to(q(el, ".blk"), { boxShadow: "0 0 28px currentColor", duration: 0.3 }, 0.3);
         tl.to(q(el, ".plus"), { scale: 1.6, duration: 0.2, yoyo: true, repeat: 1 }, 2.05);
-        tl.to(q(el, ".beams i"), { scale: 1.8, duration: 0.2, yoyo: true, repeat: 1 }, 2.2);
+        tl.from(el.querySelector(".tun-vec"), { autoAlpha: 0, y: 20, duration: 0.25 }, 0.95);
+        tl.to(el.querySelector(".tun-vec"), { boxShadow: "0 0 30px rgba(255,210,63,.55)", duration: 0.2, yoyo: true, repeat: 1 }, 1.3);
       },
       staticProgress: 0,
       static() { W.tunnel.update(0); },
@@ -104,6 +113,12 @@
         tl.to(q(el, ".pwrap"), { scaleX: 1, duration: 0.3, stagger: 0.03, ease: "power2.out" }, 1.65);
         tl.to(q(el, ".vp, .h-prob"), { autoAlpha: 1, duration: 0.2 }, 1.75);
         tl.from(q(el, ".smx-ctrl, .smx-drawn, .smx-formula"), { autoAlpha: 0, y: 12, duration: 0.2, stagger: 0.06 }, 2.0);
+        // step 3: back to the vector table, the drawn word appended as a new row
+        tl.to(el.querySelector(".smx-b"), { autoAlpha: 0, y: -30, duration: 0.2 }, 3.0);
+        tl.to(el.querySelector(".smx-a"), { autoAlpha: 1, y: 0, scale: 1, duration: 0.25 }, 3.08);
+        tl.to(rows, { opacity: 1, duration: 0.2 }, 3.1);
+        tl.to(q(el, ".t-last, .smx-unembed"), { autoAlpha: 0, duration: 0.15 }, 3.1);
+        tl.fromTo("#smxNewWrap", { autoAlpha: 0, x: 60 }, { autoAlpha: 1, x: 0, duration: 0.3, ease: "power2.out" }, 3.3);
       },
     },
 

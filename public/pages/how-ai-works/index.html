@@ -77,7 +77,6 @@
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="llm.kicker"></p>
         <h2 class="headline" id="h-llm" data-i18n="llm.title" data-split></h2>
         <div class="steps" data-steps="llm.steps"></div>
       </div>
@@ -89,7 +88,6 @@
         <div class="tok-row" id="tokRow"></div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="tokens.kicker"></p>
         <h2 class="headline" id="h-tokens" data-i18n="tokens.title" data-split></h2>
         <div class="steps" data-steps="tokens.steps"></div>
       </div>
@@ -112,7 +110,6 @@
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="embed.kicker"></p>
         <h2 class="headline" id="h-embed" data-i18n="embed.title" data-split></h2>
         <div class="steps" data-steps="embed.steps"></div>
       </div>
@@ -128,7 +125,6 @@
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="space.kicker"></p>
         <h2 class="headline" id="h-space" data-i18n="space.title" data-split></h2>
         <div class="steps" data-steps="space.steps"></div>
       </div>
@@ -138,21 +134,24 @@
     <section class="station" data-station="attention" aria-labelledby="h-attention">
       <div class="wa world"><div class="world-inner">
         <div class="att">
-          <div class="att-heads" id="attHeads" role="group"></div>
-          <div class="att-arcs">
-            <svg id="attArcs" aria-hidden="true"></svg>
-            <div class="att-tokens" id="attTokens" role="group"></div>
+          <div class="att-headbar">
+            <span class="att-hl" data-i18n="attention.headsLabel"></span>
+            <div class="att-heads" id="attHeads" role="group"></div>
           </div>
-          <div class="att-matrix-wrap">
-            <span class="att-axis ax-cols" data-i18n="attention.colsLabel"></span>
-            <div class="att-matrix" id="attMatrix"></div>
-            <span class="att-axis ax-rows" data-i18n="attention.rowsLabel"></span>
+          <div class="att-views">
+            <div class="att-spot">
+              <p class="att-who" id="attWho"></p>
+              <div class="att-sent" id="attSent" role="group"></div>
+              <p class="note att-note" data-i18n="attention.note"></p>
+            </div>
+            <div class="att-mat">
+              <div class="att-matrix" id="attMatrix"></div>
+              <p class="att-axis" data-i18n="attention.axis"></p>
+            </div>
           </div>
-          <p class="note att-note" data-i18n="attention.note"></p>
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="attention.kicker"></p>
         <h2 class="headline" id="h-attention" data-i18n="attention.title" data-split></h2>
         <div class="steps" data-steps="attention.steps"></div>
       </div>
@@ -163,11 +162,11 @@
       <div class="wa world"><div class="world-inner">
         <div class="tunnel">
           <div class="tun-cam" id="tunCam"></div>
+          <div class="tun-vec"><small id="tunVecLab"></small><div class="erow" id="tunVec"></div></div>
           <div class="tun-hud"><span data-i18n="layers.layer"></span> <b id="layerNo">1</b> / 96</div>
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="layers.kicker"></p>
         <h2 class="headline" id="h-layers" data-i18n="layers.title" data-split></h2>
         <div class="steps" data-steps="layers.steps"></div>
       </div>
@@ -198,7 +197,6 @@
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="softmax.kicker"></p>
         <h2 class="headline" id="h-softmax" data-i18n="softmax.title" data-split></h2>
         <div class="steps" data-steps="softmax.steps"></div>
       </div>
@@ -211,7 +209,7 @@
           <div class="ff-pipe" id="ffPipe">
             <div class="ff-stage"><span class="ff-tok" id="ffTok">?</span><small data-i18n="loop.stages.0"></small></div>
             <div class="ff-stage"><span class="ff-vec" id="ffVec"></span><small data-i18n="loop.stages.1"></small></div>
-            <div class="ff-stage"><span class="ff-layers"><i></i><i></i><i></i><i></i></span><small data-i18n="loop.stages.2"></small></div>
+            <div class="ff-stage"><span class="ff-plane"><span class="fa"></span><span class="fp">+</span><span class="fm"></span></span><small data-i18n="loop.stages.2"></small></div>
             <div class="ff-stage"><span class="ff-bars" id="ffBars"></span><small data-i18n="loop.stages.3"></small></div>
             <div class="ff-stage ff-out"><span class="ff-tok" id="ffOut"></span></div>
           </div>
@@ -219,7 +217,6 @@
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="loop.kicker"></p>
         <h2 class="headline" id="h-loop" data-i18n="loop.title" data-split></h2>
         <div class="steps" data-steps="loop.steps"></div>
       </div>
@@ -237,7 +234,6 @@
         </div>
       </div></div>
       <div class="copy">
-        <p class="kicker" data-i18n="outro.kicker"></p>
         <h2 class="headline" id="h-outro" data-i18n="outro.title" data-split></h2>
         <div class="steps" data-steps="outro.steps"></div>
         <div class="outro-extra">

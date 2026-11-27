@@ -35,7 +35,7 @@ window.AIX.scenes = {
     inside: {
       sky: "assets/inside-void.svg", sun: "assets/inside-core.svg",
       floor: "assets/grid-cyan.svg", ceiling: "assets/grid-violet.svg", floorBg: "#05031a",
-      deco: ["assets/deco-cube.svg", "assets/deco-digits.svg", "assets/deco-ring.svg"], decoMode: "float",
+      deco: ["assets/deco-cube.svg", "assets/deco-ring.svg"], decoMode: "float",
     },
   },
   stations: [
@@ -44,9 +44,9 @@ window.AIX.scenes = {
     { id: "tokens", env: "inside", dwell: 260, accent: "#5ff4ff" },
     { id: "embed", env: "inside", dwell: 320, accent: "#5ddc95" },
     { id: "space", env: "inside", dwell: 300, accent: "#5ddc95" },
-    { id: "attention", env: "inside", dwell: 320, accent: "#ff6b9d" },
+    { id: "attention", env: "inside", dwell: 330, accent: "#ff6b9d" },
     { id: "layers", env: "inside", dwell: 300, accent: "#5b8cff" },
-    { id: "softmax", env: "inside", dwell: 330, accent: "#ffd23f" },
+    { id: "softmax", env: "inside", dwell: 400, accent: "#ffd23f" },
     { id: "loop", env: "inside", dwell: 340, accent: "#ff3fa4" },
     { id: "outro", env: "outside", dwell: 170, accent: "#b5f23d" },
   ],
