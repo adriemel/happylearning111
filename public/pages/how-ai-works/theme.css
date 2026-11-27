@@ -1,0 +1,44 @@
+/*
+ * Art direction tokens. Change these to restyle the whole experience;
+ * layout lives in style.css, scene art in assets/ + scenes.js.
+ * Matches the Lernhub midnight theme (see app/globals.css).
+ */
+:root {
+  color-scheme: dark;
+
+  --bg: #0c0b1c;
+  --bg-card: #12112a;
+  --bg-card-h: #181736;
+  --bg-elev: #15142f;
+  --bg-glass: rgba(12, 11, 28, 0.82);
+  --border: #272548;
+  --text: #e4ddd4;
+  --text-2: #a9a8b8;
+  --text-3: #6f7084;
+
+  --lime: #b5f23d;
+  --cyan: #9ff3ff;
+  --blue: #5b8cff;
+  --violet: #c77dff;
+  --pink: #ff6b9d;
+  --orange: #ff8a2e;
+  --yellow: #f5e642;
+  --green: #5ddc95;
+
+  /* per-scene accent, overridden from scenes.js */
+  --accent: var(--lime);
+
+  /* diverging colormap for vector cells: negative / positive */
+  --neg: #ff6b9d;
+  --pos: #9ff3ff;
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-ui: "Syne", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+
+  --radius: 14px;
+  --radius-s: 8px;
+  --glow: 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent),
+          0 0 32px color-mix(in srgb, var(--accent) 28%, transparent);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}

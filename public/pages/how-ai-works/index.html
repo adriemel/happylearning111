@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wie KI denkt · How AI thinks</title>
+  <meta name="description" content="Scrollytelling: vom Harness über Tools, Tokens, Embeddings und Attention bis zur Softmax.">
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Decide motion mode before first paint (no flash of the wrong layout).
+    (function () {
+      var pref = null;
+      try { pref = localStorage.getItem("aix-motion"); } catch (e) {}
+      var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (pref === "off" || (reduce && pref !== "force")) document.documentElement.classList.add("static");
+      document.documentElement.classList.add("js");
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="/" data-i18n="ui.back">← Lernhub</a>
+    <span class="brand" data-i18n="ui.brand">Wie KI denkt</span>
+    <div class="tb-right">
+      <button type="button" class="pill" id="motionBtn"></button>
+      <div class="seg" role="group" data-i18n-attr="aria-label:ui.lang">
+        <button type="button" data-lang="de">DE</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </div>
+    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  </header>
+
+  <nav class="chapters" id="chapters" data-i18n-attr="aria-label:ui.chapters"></nav>
+
+  <noscript><p class="noscript">Diese Seite braucht JavaScript. · This page needs JavaScript.</p></noscript>
+
+  <!-- Fixed stage: all environments stacked, cross-faded by scroll -->
+  <div id="stage">
+
+    <!-- 00 INTRO -->
+    <section class="scene scene-center" id="sc-intro" data-scene="intro" aria-labelledby="h-intro">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="chatwin">
+          <div class="chat-bar"><i></i><i></i><i></i><span data-i18n="intro.app"></span></div>
+          <div class="chat-body">
+            <div class="msg user"><span class="typed" id="introTyped" data-i18n="prompt"></span><span class="caret"></span></div>
+          </div>
+          <div class="chat-input"><span data-i18n="intro.input"></span><kbd id="enterKey">Enter ⏎</kbd></div>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="intro.kicker"></p>
+        <h1 class="headline" id="h-intro" data-i18n="intro.title" data-split></h1>
+        <div class="steps" data-steps="intro.steps"></div>
+        <p class="scroll-cue" aria-hidden="true"><span data-i18n="ui.scroll"></span><i></i></p>
+      </div>
+    </section>
+
+    <!-- 01 HARNESS -->
+    <section class="scene" id="sc-harness" data-scene="harness" aria-labelledby="h-harness">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="ctx">
+          <div class="ctx-head"><span data-i18n="harness.ctx"></span><span class="ctx-count"><b id="ctxCount">0</b> / 200 000 tokens</span></div>
+          <div class="ctx-strip">
+            <article class="card c-sys"><h3 data-i18n="harness.sysH"></h3><p data-i18n="harness.sys"></p></article>
+            <article class="card c-tools"><h3 data-i18n="harness.toolsH"></h3><p><code>get_weather(city, date)</code></p><p class="small" data-i18n="harness.tools"></p></article>
+            <article class="card c-hist"><h3 data-i18n="harness.histH"></h3><p data-i18n-html="harness.hist"></p></article>
+            <article class="card c-user"><h3 data-i18n="harness.userH"></h3><p data-i18n="prompt"></p></article>
+          </div>
+          <div class="ctx-out"><span class="arrow">↓</span><span data-i18n="harness.out"></span><b>LLM</b></div>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="harness.kicker"></p>
+        <h2 class="headline" id="h-harness" data-i18n="harness.title" data-split></h2>
+        <div class="steps" data-steps="harness.steps"></div>
+      </div>
+    </section>
+
+    <!-- 02 TOOLS -->
+    <section class="scene" id="sc-tools" data-scene="tools" aria-labelledby="h-tools">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="loopdia">
+          <svg viewBox="0 0 600 500" aria-hidden="true">
+            <path id="pathHL" class="lp" d="M150 250 C 210 120, 330 90, 450 120"/>
+            <path id="pathHA" class="lp" d="M150 250 C 210 380, 330 410, 450 380"/>
+            <circle id="packet" r="9" cx="150" cy="250"/>
+            <circle id="packetGlow" r="22" cx="150" cy="250"/>
+          </svg>
+          <div class="node n-h" style="left:25%;top:50%"><b data-i18n="tools.harness"></b></div>
+          <div class="node n-l" style="left:75%;top:24%"><b data-i18n="tools.llm"></b></div>
+          <div class="node n-a" style="left:75%;top:76%"><b data-i18n="tools.api"></b></div>
+          <div class="pkt-label" id="pktLabel"></div>
+          <pre class="bubble b-call" id="bCall"></pre>
+          <pre class="bubble b-res" id="bRes"></pre>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="tools.kicker"></p>
+        <h2 class="headline" id="h-tools" data-i18n="tools.title" data-split></h2>
+        <div class="steps" data-steps="tools.steps"></div>
+      </div>
+    </section>
+
+    <!-- 03 LLM -->
+    <section class="scene" id="sc-llm" data-scene="llm" aria-labelledby="h-llm">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="llm">
+          <div class="llm-in"><small data-i18n="llm.in"></small><span class="llm-ctx" data-i18n="llm.context"></span></div>
+          <div class="llm-box">
+            <div class="llm-slabs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="llm-face"><b>LLM</b><small data-i18n="llm.params"></small></div>
+          </div>
+          <div class="llm-out"><small data-i18n="llm.out"></small><div class="mini-bars" aria-hidden="true"><i style="--h:.9"></i><i style="--h:.62"></i><i style="--h:.35"></i><i style="--h:.22"></i><i style="--h:.14"></i><i style="--h:.08"></i></div></div>
+          <svg class="llm-loop" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M92 2 C 92 18, 8 18, 8 2"/></svg>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="llm.kicker"></p>
+        <h2 class="headline" id="h-llm" data-i18n="llm.title" data-split></h2>
+        <div class="steps" data-steps="llm.steps"></div>
+      </div>
+    </section>
+
+    <!-- 04 TOKENS -->
+    <section class="scene" id="sc-tokens" data-scene="tokens" aria-labelledby="h-tokens">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="tok">
+          <div class="tok-row" id="tokRow"></div>
+          <div class="tok-rare">
+            <span class="tok-label" data-i18n="tokens.rare"></span>
+            <span class="tok-word" id="tokRareWord"></span>
+            <div class="tok-row small" id="tokRare"></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="tokens.kicker"></p>
+        <h2 class="headline" id="h-tokens" data-i18n="tokens.title" data-split></h2>
+        <div class="steps" data-steps="tokens.steps"></div>
+      </div>
+    </section>
+
+    <!-- 05 EMBEDDINGS -->
+    <section class="scene" id="sc-embed" data-scene="embed" aria-labelledby="h-embed">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="emb">
+          <div class="emb-lookup">
+            <div class="emb-table" id="embTable" aria-hidden="true"></div>
+            <div class="emb-vec" id="embVec"></div>
+          </div>
+          <div class="emb-space" id="embSpace">
+            <canvas id="embCanvas" role="img" aria-label="3D embedding space"></canvas>
+            <p class="emb-hint" data-i18n="embed.hint"></p>
+            <ul class="emb-legend" id="embLegend"></ul>
+          </div>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="embed.kicker"></p>
+        <h2 class="headline" id="h-embed" data-i18n="embed.title" data-split></h2>
+        <div class="steps" data-steps="embed.steps"></div>
+      </div>
+    </section>
+
+    <!-- 06 TRANSFORMER LAYERS -->
+    <section class="scene" id="sc-layers" data-scene="layers" aria-labelledby="h-layers">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="tunnel" id="tunnel">
+          <div class="tun-cam" id="tunCam"></div>
+          <div class="tun-hud"><span data-i18n="layers.layer"></span> <b id="layerNo">1</b> / 96</div>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="layers.kicker"></p>
+        <h2 class="headline" id="h-layers" data-i18n="layers.title" data-split></h2>
+        <div class="steps" data-steps="layers.steps"></div>
+      </div>
+    </section>
+
+    <!-- 07 ATTENTION -->
+    <section class="scene" id="sc-attention" data-scene="attention" aria-labelledby="h-attention">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="att">
+          <div class="att-heads" id="attHeads" role="group"></div>
+          <div class="att-arcs">
+            <svg id="attArcs" aria-hidden="true"></svg>
+            <div class="att-tokens" id="attTokens" role="group"></div>
+          </div>
+          <div class="att-matrix-wrap">
+            <span class="att-axis ax-cols" data-i18n="attention.colsLabel"></span>
+            <div class="att-matrix" id="attMatrix"></div>
+            <span class="att-axis ax-rows" data-i18n="attention.rowsLabel"></span>
+          </div>
+          <p class="formula att-formula">Attention(Q,K,V) = softmax(QK<sup>T</sup>/√d<sub>k</sub> + M)·V</p>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="attention.kicker"></p>
+        <h2 class="headline" id="h-attention" data-i18n="attention.title" data-split></h2>
+        <div class="steps" data-steps="attention.steps"></div>
+      </div>
+    </section>
+
+    <!-- 08 SOFTMAX -->
+    <section class="scene" id="sc-softmax" data-scene="softmax" aria-labelledby="h-softmax">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="smx">
+          <p class="smx-sentence"><span data-i18n="softmax.prefix"></span><span class="smx-slot" id="smxSlot" aria-live="polite">▁</span></p>
+          <div class="smx-head"><span data-i18n="softmax.logits" class="h-logit"></span><span data-i18n="softmax.probs" class="h-prob"></span></div>
+          <div class="smx-bars" id="smxBars"></div>
+          <div class="smx-ctrl">
+            <label class="smx-temp"><span data-i18n="softmax.temp"></span> T = <output id="tOut">1.00</output>
+              <input type="range" id="tRange" min="0.1" max="2" step="0.05" value="1"></label>
+            <button type="button" class="btn" id="sampleBtn" data-i18n="softmax.sample"></button>
+            <button type="button" class="btn ghost" id="resetBtn" data-i18n="softmax.reset"></button>
+          </div>
+          <p class="smx-drawn"><span data-i18n="softmax.drawn"></span> <span id="smxDrawn"></span></p>
+          <p class="formula smx-formula">p<sub>i</sub> = e<sup>z<sub>i</sub>/T</sup> / Σ<sub>j</sub> e<sup>z<sub>j</sub>/T</sup></p>
+          <p class="note" data-i18n="softmax.note"></p>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="softmax.kicker"></p>
+        <h2 class="headline" id="h-softmax" data-i18n="softmax.title" data-split></h2>
+        <div class="steps" data-steps="softmax.steps"></div>
+      </div>
+    </section>
+
+    <!-- 09 LOOP / OUTRO -->
+    <section class="scene" id="sc-loop" data-scene="loop" aria-labelledby="h-loop">
+      <div class="layers back"></div>
+      <div class="world"><div class="world-inner">
+        <div class="outro">
+          <svg class="rings" viewBox="-310 -310 620 620" aria-hidden="true">
+            <defs>
+              <path id="rp0" d="M -90 0 A 90 90 0 1 1 90 0 A 90 90 0 1 1 -90 0"/>
+              <path id="rp1" d="M -180 0 A 180 180 0 1 1 180 0 A 180 180 0 1 1 -180 0"/>
+              <path id="rp2" d="M -270 0 A 270 270 0 1 1 270 0 A 270 270 0 1 1 -270 0"/>
+            </defs>
+            <g class="ring r0"><circle r="90"/><circle class="dot" cx="90" cy="0" r="7"/><text text-anchor="middle"><textPath href="#rp0" startOffset="25%" id="ringT0"></textPath></text></g>
+            <g class="ring r1"><circle r="180"/><circle class="dot" cx="180" cy="0" r="8"/><text text-anchor="middle"><textPath href="#rp1" startOffset="25%" id="ringT1"></textPath></text></g>
+            <g class="ring r2"><circle r="270"/><circle class="dot" cx="270" cy="0" r="9"/><text text-anchor="middle"><textPath href="#rp2" startOffset="75%" id="ringT2"></textPath></text></g>
+            <circle class="core" r="34"/><text class="core-t" y="1">LLM</text>
+          </svg>
+          <div class="answer"><div class="msg bot" id="answerMsg"><span id="answerText"></span></div></div>
+        </div>
+      </div></div>
+      <div class="layers front"></div>
+      <div class="copy">
+        <p class="kicker" data-i18n="loop.kicker"></p>
+        <h2 class="headline" id="h-loop" data-i18n="loop.title" data-split></h2>
+        <div class="steps" data-steps="loop.steps"></div>
+        <div class="outro-extra">
+          <p class="actions"><button type="button" class="btn" id="againBtn" data-i18n="loop.again"></button> <a class="btn ghost" href="/" data-i18n="ui.back"></a></p>
+          <details class="sources"><summary data-i18n="loop.sources"></summary>
+            <ul id="srcList"></ul>
+            <p class="note" data-i18n="loop.disclaimer"></p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scroll track: empty spacers that drive the timelines (built by engine.js) -->
+  <main id="track" aria-hidden="true"></main>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="scenes.js"></script>
+  <script src="content.js"></script>
+  <script src="model-data.js"></script>
+  <script src="widgets.js"></script>
+  <script src="story.js"></script>
+  <script src="engine.js"></script>
+</body>
+</html>
